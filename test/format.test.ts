@@ -38,6 +38,7 @@ test("readDenom", () => {
 test("readPercent", () => {
   expect(readPercent("1.23")).toBe("123.00%")
   expect(readPercent("1.23", { fixed: 3 })).toBe("123.000%")
+  expect(readPercent("1.23", { fixed: 0 })).toBe("123%")
   expect(readPercent("")).toBe("0%")
   expect(readPercent("NaN")).toBe("0%")
   expect(readPercent()).toBe("0%")

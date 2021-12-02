@@ -102,7 +102,7 @@ export const readPercent = (
   if (!validateValue(value)) return "0%"
 
   const DefaultFixed = 2
-  const fixed = config?.fixed || DefaultFixed
+  const fixed = isNil(config?.fixed) ? DefaultFixed : config?.fixed
   const n = new BigNumber(value).times(100)
   return (fixed ? n.toFixed(fixed) : n.toString()) + "%"
 }
