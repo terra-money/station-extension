@@ -41,7 +41,9 @@ export const formatNumber = (
   const n = new BigNumber(value).dp(integer ? 0 : dp, ROUNDING_MODE)
   const d = Array.from({ length: dp }, () => "0").join("")
   const fmt = prefix
-    ? "0.00a"
+    ? integer
+      ? "0a"
+      : "0.00a"
     : [comma ? "0,0" : "0", fixed ? d : `[${d}]`].join(".")
 
   return n.lt(1e-6)

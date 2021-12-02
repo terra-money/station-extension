@@ -11,6 +11,7 @@ test("readAmount", () => {
   expect(readAmount("1234567890", { integer: true })).toBe("1234")
   expect(readAmount("1234567890", { integer: false })).toBe("1234.56789")
   expect(readAmount("1234567890", { prefix: true })).toBe("1.23K")
+  expect(readAmount("1234567890", { prefix: true, integer: true })).toBe("1K")
   expect(readAmount("1234567890", { prefix: false })).toBe("1234.56789")
   expect(readAmount("1234567890", { comma: true, fixed: 2 })).toBe("1,234.56")
   expect(readAmount("1", { decimals: 7 })).toBe("0.0000001")
