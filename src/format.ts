@@ -40,11 +40,13 @@ export const formatNumber = (
   const dp = fixed || decimals
   const n = new BigNumber(value).dp(integer ? 0 : dp, ROUNDING_MODE)
   const d = Array.from({ length: dp }, () => "0").join("")
-  const fmt = prefix
-    ? integer
-      ? "0a"
-      : "0.00a"
-    : [comma ? "0,0" : "0", fixed ? d : `[${d}]`].join(".")
+  const fmt = !prefix
+    ? [comma ? "0,0" : "0", fixed ? d : `[${d}]`].join(".")
+    : integer
+    ? "0a"
+    : fixed === 1
+    ? "0.0a"
+    : "0.00a"
 
   return n.lt(1e-6)
     ? n.toString(10)
