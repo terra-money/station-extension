@@ -97,16 +97,23 @@ export const readDenom = (denom: string) =>
     : denom.slice(1).toUpperCase()
 
 /* percent */
-export const readPercent = (
+export const formatPercent = (
   value?: BigNumber.Value,
   config?: Partial<FormatConfig>
 ) => {
-  if (!validateValue(value)) return "0%"
+  if (!validateValue(value)) return "0"
 
   const DefaultFixed = 2
   const fixed = isNil(config?.fixed) ? DefaultFixed : config?.fixed
   const n = new BigNumber(value).times(100)
-  return (fixed ? n.toFixed(fixed) : n.toString()) + "%"
+  return fixed ? n.toFixed(fixed) : n.toString()
+}
+
+export const readPercent = (
+  value?: BigNumber.Value,
+  config?: Partial<FormatConfig>
+) => {
+  return formatPercent(value, config) + "%"
 }
 
 /* date */
