@@ -5,6 +5,7 @@ test("readAmount", () => {
   expect(readAmount("1234567890", { decimals: 7 })).toBe("123.456789")
   expect(readAmount("1234567890", { decimals: 0 })).toBe("1234567890")
   expect(readAmount("1234567890", { fixed: 6 })).toBe("1234.567890")
+  expect(readAmount("1234567890", { fixed: 0 })).toBe("1234")
   expect(readAmount("1234567890", { fixed: false })).toBe("1234.56789")
   expect(readAmount("1234567890", { comma: true })).toBe("1,234.56789")
   expect(readAmount("1234567890", { comma: false })).toBe("1234.56789")

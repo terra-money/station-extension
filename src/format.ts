@@ -37,7 +37,7 @@ export const formatNumber = (
   if (!validateValue(value)) return "0"
 
   const { decimals, comma, integer, fixed, prefix } = getConfig(config)
-  const dp = fixed || decimals
+  const dp = typeof fixed === "number" ? fixed : decimals
   const n = new BigNumber(value).dp(integer ? 0 : dp, ROUNDING_MODE)
   const d = Array.from({ length: dp }, () => "0").join("")
   const fmt = !prefix
