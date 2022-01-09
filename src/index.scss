@@ -3,3 +3,11 @@
 @import "reboot";
 @import "utils";
 @import "customize";
+
+#station {
+  min-width: 480px;
+  min-height: 600px; // Chrome extension maximum height
+  height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}

@@ -1,0 +1,27 @@
+.page {
+  overflow: hidden;
+  // padding here to position progress bar
+}
+
+.container {
+  padding: 20px;
+
+  .header & {
+    padding-top: 0;
+    padding-bottom: 12px;
+  }
+
+  .header > & {
+    padding-bottom: 16px;
+  }
+}
+
+.header {
+  background: var(--extension-bg);
+  color: var(--extension-text);
+  text-align: center;
+}
+
+.title {
+  font-size: 18px;
+}

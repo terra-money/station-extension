@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build-scripts": "webpack --config scripts/webpack.config.js",
+    "build": "cross-env REACT_APP_SANDBOX=true INLINE_RUNTIME_CHUNK=false react-app-rewired build && npm run build-scripts",
     "test": "react-scripts test",
     "prepare": "husky install",
     "pre-commit": "lint-staged",
@@ -21,6 +22,7 @@
     "@mui/material": "^5.2.7",
     "@terra-money/ledger-terra-js": "^1.1.0",
     "@terra-money/log-finder-ruleset": "^3.0.0",
+    "@terra-money/msg-reader": "^3.0.0",
     "@terra-money/terra.js": "^3.0.3",
     "@terra-money/wallet-provider": "^3.6.5",
     "@terra.kitchen/utils": "^1.0.6",
@@ -75,12 +77,18 @@
     "@types/react-router-dom": "^5.3.2",
     "@types/secp256k1": "^4.0.3",
     "@types/semver": "^7.3.9",
+    "cross-env": "^7.0.3",
+    "extension-port-stream": "^2.0.1",
+    "extensionizer": "^1.0.1",
     "husky": "^7.0.4",
     "lint-staged": "^12.1.7",
+    "post-message-stream": "^3.0.0",
+    "react-app-rewired": "^2.1.11",
     "react-error-overlay": "6.0.9",
     "react-scripts": "4.0.3",
     "source-map-explorer": "^2.5.2",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "webpack-cli": "^4.9.1"
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"

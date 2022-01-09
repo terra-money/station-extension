@@ -42,11 +42,15 @@ interface Params {
 export const getDecryptedKey = ({ name, password }: Params) => {
   const wallet = getStoredWallet(name)
 
-  if ("encrypted" in wallet) return decrypt(wallet.encrypted, password)
+  try {
+    if ("encrypted" in wallet) return decrypt(wallet.encrypted, password)
 
-  // legacy
-  const { privateKey: key } = JSON.parse(decrypt(wallet.wallet, password))
-  return key as string
+    // legacy
+    const { privateKey: key } = JSON.parse(decrypt(wallet.wallet, password))
+    return key as string
+  } catch {
+    throw new PasswordError("Incorrect password")
+  }
 }
 
 export class PasswordError extends Error {}

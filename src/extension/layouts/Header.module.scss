@@ -1,0 +1,12 @@
+@import "mixins";
+
+.header {
+  @include flex(space-between);
+  background: var(--extension-bg);
+  color: var(--extension-text);
+  padding: 10px;
+
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}

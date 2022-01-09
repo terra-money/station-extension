@@ -1,0 +1,8 @@
+@import "mixins";
+
+.button {
+  @include flex;
+  gap: 4px;
+  font-size: var(--font-size-small);
+  transition: opacity var(--transition);
+}

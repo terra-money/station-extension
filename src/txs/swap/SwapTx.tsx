@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next"
-import { LinkButton } from "components/general"
 import { Page } from "components/layout"
 import TxContext from "../TxContext"
 import SwapContext from "./SwapContext"
@@ -14,14 +13,8 @@ import SwapForm from "./SwapForm"
 const SwapTx = () => {
   const { t } = useTranslation()
 
-  const extra = (
-    <LinkButton to="/swap/multiple" size="small">
-      {t("Swap multiple coins")}
-    </LinkButton>
-  )
-
   return (
-    <Page title={t("Swap")} small extra={extra}>
+    <Page title={t("Swap")} small>
       <TxContext>
         <SwapContext>
           <SingleSwapContext>
