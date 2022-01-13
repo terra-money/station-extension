@@ -14,7 +14,7 @@ const Front = () => {
   const { requests } = useRequest()
   const { connect, tx } = requests
 
-  if (!wallet)
+  if (!wallet) {
     return (
       <ExtensionPage>
         <Col>
@@ -23,6 +23,7 @@ const Front = () => {
         </Col>
       </ExtensionPage>
     )
+  }
 
   if (connect) return <ConfirmConnect {...connect} />
   if (tx) return <ConfirmTx {...tx} />

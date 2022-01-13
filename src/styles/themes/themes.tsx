@@ -17,6 +17,14 @@ import FaviconMoon from "./Moon/favicon.svg"
 import FaviconWhale from "./Whale/favicon.svg"
 import FaviconMadness from "./Madness/favicon.svg"
 
+/* favicon */
+import FrontLight from "./Light/Front.png"
+import FrontDark from "./Dark/Front.png"
+import FrontBlossom from "./Blossom/Front.png"
+import FrontMoon from "./Moon/Front.png"
+import FrontWhale from "./Whale/Front.png"
+import FrontMadness from "./Madness/Front.png"
+
 /* preview */
 import { ReactComponent as PreviewLight } from "./Light/preview.svg"
 import { ReactComponent as PreviewDark } from "./Dark/preview.svg"
@@ -30,6 +38,7 @@ export interface Theme {
   unlock: Amount
   animation: string
   favicon: string
+  front: string
   preview: ReactNode
 }
 
@@ -39,6 +48,7 @@ export const themes: Theme[] = [
     unlock: toAmount("0"),
     animation: AnimationLight,
     favicon: FaviconLight,
+    front: FrontLight,
     preview: <PreviewLight />,
   },
   {
@@ -46,6 +56,7 @@ export const themes: Theme[] = [
     unlock: toAmount("0"),
     animation: AnimationDark,
     favicon: FaviconDark,
+    front: FrontDark,
     preview: <PreviewDark />,
   },
   {
@@ -53,6 +64,7 @@ export const themes: Theme[] = [
     unlock: toAmount("1"),
     animation: AnimationBlossom,
     favicon: FaviconBlossom,
+    front: FrontBlossom,
     preview: <PreviewBlossom />,
   },
   {
@@ -60,6 +72,7 @@ export const themes: Theme[] = [
     unlock: toAmount("10"),
     animation: AnimationMoon,
     favicon: FaviconMoon,
+    front: FrontMoon,
     preview: <PreviewMoon />,
   },
   {
@@ -67,6 +80,7 @@ export const themes: Theme[] = [
     unlock: toAmount("100"),
     animation: AnimationWhale,
     favicon: FaviconWhale,
+    front: FrontWhale,
     preview: <PreviewWhale />,
   },
   {
@@ -74,6 +88,7 @@ export const themes: Theme[] = [
     unlock: toAmount("1000"),
     animation: AnimationMadness,
     favicon: FaviconMadness,
+    front: FrontMadness,
     preview: <PreviewMadness />,
   },
 ]

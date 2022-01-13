@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { getErrorMessage } from "utils/error"
 import { useThemeAnimation } from "data/settings/Theme"
@@ -8,9 +9,10 @@ import { Flex, FlexColumn, Grid } from "components/layout"
 import { Form, FormError, FormItem, FormWarning } from "components/form"
 import { Input, Checkbox } from "components/form"
 import Overlay from "app/components/Overlay"
-import { useAuth } from "auth"
+import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
+import { isWallet, useAuth } from "auth"
 import { PasswordError } from "auth/scripts/keystore"
-import { getStoredPassword } from "../storage"
+import { getOpenURL, getStoredPassword } from "../storage"
 import { getIsDangerousTx, SignBytesRequest, TxRequest } from "../utils"
 import { useRequest } from "../RequestContainer"
 import ExtensionPage from "../components/ExtensionPage"
@@ -26,7 +28,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const animation = useThemeAnimation()
   const { wallet, ...auth } = useAuth()
   const { actions } = useRequest()
-  const passwordRequired = wallet && "name" in wallet
+  const passwordRequired = isWallet.single(wallet)
 
   /* form */
   const form = useForm<Values>({
@@ -58,6 +60,8 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
       ? t("Enter password")
       : ""
 
+  const navigate = useNavigate()
+  const toPostMultisigTx = useToPostMultisigTx()
   const submit = async ({ password }: Values) => {
     setSubmitting(true)
 
@@ -66,9 +70,19 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
 
       try {
         if (disabled) throw new Error(disabled)
-        const result = await auth[requestType](tx, password)
-        const response = { result, success: true }
-        actions.tx(requestType, props, response, nextPassword)
+
+        if (isWallet.multisig(wallet)) {
+          const unsignedTx = await auth.create(props.tx)
+          const { pathname, search } = toPostMultisigTx(unsignedTx)
+          const openURL = getOpenURL([pathname, search].join("?"))
+          actions.multisigTx(props)
+          if (openURL) openURL()
+          else navigate({ pathname, search })
+        } else {
+          const result = await auth[requestType](tx, password)
+          const response = { result, success: true }
+          actions.tx(requestType, props, response, nextPassword)
+        }
       } catch (error) {
         if (error instanceof PasswordError) {
           setIncorrect(error.message)
@@ -118,8 +132,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
 
   const error =
     props.requestType === "signBytes" &&
-    wallet &&
-    "ledger" in wallet &&
+    isWallet.ledger(wallet) &&
     t("Arbitrary data cannot be signed by Ledger")
 
   const SIZE = { width: 100, height: 100 }
@@ -127,7 +140,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
     <Overlay>
       <FlexColumn gap={20}>
         <img {...SIZE} src={animation} alt={t("Submitting...")} />
-        {wallet && "ledger" in wallet && <p>{t("Confirm in ledger")}</p>}
+        {isWallet.ledger(wallet) && <p>{t("Confirm in ledger")}</p>}
       </FlexColumn>
     </Overlay>
   ) : (

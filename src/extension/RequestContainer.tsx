@@ -22,6 +22,7 @@ interface RequestContext {
       response: TxResponse,
       password?: string
     ) => void
+    multisigTx: (request: PrimitiveDefaultRequest) => void
   }
 }
 
@@ -117,9 +118,26 @@ const RequestContainer: FC = ({ children }) => {
     })
   }
 
+  /* multisig */
+  const handleMultisigTx = (request: PrimitiveDefaultRequest) => {
+    // Delete request
+    extension.storage?.local.get(["post"], (storage: ExtensionStorage) => {
+      const list = storage.post || []
+      const next = list.filter(
+        ({ id, origin }) => !(id === request.id && origin === request.origin)
+      )
+
+      extension.storage?.local.set({ post: next }, () => setTx(undefined))
+    })
+  }
+
   /* context */
   const requests = { connect, tx }
-  const actions = { connect: handleConnect, tx: handleTx }
+  const actions = {
+    connect: handleConnect,
+    tx: handleTx,
+    multisigTx: handleMultisigTx,
+  }
 
   return (
     <RequestProvider value={{ requests, actions }}>{children}</RequestProvider>

@@ -8,6 +8,8 @@ import LatestTx from "app/sections/LatestTx"
 import NetworkName from "app/sections/NetworkName"
 import SendTx from "txs/send/SendTx"
 import SwapTx from "txs/swap/SwapTx"
+import SignMultisigTxPage from "pages/multisig/SignMultisigTxPage"
+import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
 import { storeNetwork, storeWalletAddress } from "./storage"
 import RequestContainer from "./RequestContainer"
 import ManageNetworks from "./networks/ManageNetworks"
@@ -33,9 +35,17 @@ const App = () => {
   const routes = useRoutes([
     { path: "/networks", element: <ManageNetworks /> },
     { path: "/network/new", element: <AddNetworkPage /> },
+
+    /* auth */
     { path: "/auth/*", element: <Auth /> },
+
+    /* default txs */
     { path: "/send", element: <SendTx /> },
     { path: "/swap", element: <SwapTx /> },
+    { path: "/multisig/sign", element: <SignMultisigTxPage /> },
+    { path: "/multisig/post", element: <PostMultisigTxPage /> },
+
+    /* 404 */
     { path: "*", element: <Front /> },
   ])
 

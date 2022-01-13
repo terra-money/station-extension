@@ -1,6 +1,7 @@
 import { ReactNode } from "react"
 import { Flex, Grid } from "components/layout"
-import { useAuth } from "auth"
+import { isWallet, useAuth } from "auth"
+import MultisigBadge from "auth/components/MultisigBadge"
 import Copy from "./Copy"
 import styles from "./WalletCard.module.scss"
 import WalletQR from "./WalletQR"
@@ -14,12 +15,18 @@ const WalletCard = ({ extra }: Props) => {
 
   if (!wallet) return null
   const { address } = wallet
-  const name = "name" in wallet ? wallet.name : undefined
+  const name = isWallet.local(wallet) ? wallet.name : undefined
 
   return (
     <div className={styles.wallet}>
       <Grid>
-        {name && <h1>{name}</h1>}
+        {name && (
+          <Flex gap={4} start>
+            {isWallet.multisig(wallet) && <MultisigBadge />}
+            <h1>{name}</h1>
+          </Flex>
+        )}
+
         <Flex gap={4} className={styles.address}>
           <Copy text={address}>{address}</Copy>
           <WalletQR />

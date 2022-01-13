@@ -8,7 +8,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build-scripts": "webpack --config scripts/webpack.config.js",
-    "build": "cross-env REACT_APP_SANDBOX=true INLINE_RUNTIME_CHUNK=false react-app-rewired build && npm run build-scripts",
+    "build": "cross-env react-app-rewired build && npm run build-scripts",
     "test": "react-scripts test",
     "prepare": "husky install",
     "pre-commit": "lint-staged",

@@ -5,7 +5,7 @@ import { Flex, Grid } from "components/layout"
 import styles from "./ExtensionList.module.scss"
 
 interface DefaultItemProps {
-  children: string
+  children: ReactNode
   description?: string
   icon?: ReactNode
   active?: boolean
@@ -22,7 +22,10 @@ interface ButtonItem extends DefaultItemProps {
 type Item = LinkItem | ButtonItem
 
 const ExtensionList = ({ list }: { list: Item[] }) => {
-  const renderItem = ({ children, description, icon, ...item }: Item) => {
+  const renderItem = (
+    { children, description, icon, ...item }: Item,
+    index: number
+  ) => {
     const props = {
       className: styles.item,
       children: (
@@ -32,14 +35,14 @@ const ExtensionList = ({ list }: { list: Item[] }) => {
 
             <Grid gap={2}>
               <h1 className={styles.title}>{children}</h1>
-              <p className={styles.desc}>{description}</p>
+              {description && <p className={styles.desc}>{description}</p>}
             </Grid>
           </Flex>
 
           <ChevronRightIcon fontSize="small" />
         </>
       ),
-      key: children,
+      key: index,
     }
 
     return "to" in item ? (

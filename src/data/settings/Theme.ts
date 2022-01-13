@@ -30,6 +30,11 @@ export const useThemeFavicon = () => {
   return favicon
 }
 
+export const useThemeFront = () => {
+  const { front } = useTheme()
+  return front
+}
+
 export const useThemeAnimation = () => {
   const { animation } = useTheme()
   return animation
