@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 import classNames from "classnames/bind"
-import BrightnessMediumIcon from "@mui/icons-material/BrightnessMedium"
+import PaletteOutlinedIcon from "@mui/icons-material/PaletteOutlined"
 import LockIcon from "@mui/icons-material/Lock"
 import InfoIcon from "@mui/icons-material/Info"
 import { capitalize } from "@mui/material"
@@ -68,7 +68,7 @@ const SelectTheme = () => {
       title={t("Select theme")}
       renderButton={(open) => (
         <HeaderIconButton onClick={open}>
-          <BrightnessMediumIcon style={{ fontSize: 18 }} />
+          <PaletteOutlinedIcon style={{ fontSize: 18 }} />
         </HeaderIconButton>
       )}
     >
@@ -78,7 +78,7 @@ const SelectTheme = () => {
         {address && themes.some((theme) => !validate?.(theme)) && (
           <Flex gap={4} className={styles.info}>
             <InfoIcon style={{ fontSize: 18 }} />
-            {t("Preview is available if wallet is diconnected")}
+            {t("Preview is available if wallet is disconnected")}
           </Flex>
         )}
       </Grid>
