@@ -155,7 +155,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
           {passwordRequired && (
             <Grid gap={4}>
               <FormItem label={t("Password")} error={incorrect}>
-                <Input type="password" {...register("password")} />
+                <Input type="password" {...register("password")} autoFocus />
               </FormItem>
 
               <Checkbox
