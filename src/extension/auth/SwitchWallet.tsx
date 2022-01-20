@@ -1,7 +1,8 @@
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
-import { Flex } from "components/layout"
+import { Flex, Grid } from "components/layout"
 import { isWallet, useAuth } from "auth"
 import MultisigBadge from "auth/components/MultisigBadge"
+import SelectPreconfigured from "auth/modules/select/SelectPreconfigured"
 import { clearStoredPassword } from "../storage"
 import ExtensionList from "../components/ExtensionList"
 
@@ -31,7 +32,12 @@ const SwitchWallet = () => {
         : { children, description: address, onClick: select }
     })
 
-  return <ExtensionList list={list} />
+  return (
+    <Grid gap={8}>
+      <SelectPreconfigured />
+      <ExtensionList list={list} />
+    </Grid>
+  )
 }
 
 export default SwitchWallet

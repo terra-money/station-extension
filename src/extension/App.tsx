@@ -10,7 +10,7 @@ import SendTx from "txs/send/SendTx"
 import SwapTx from "txs/swap/SwapTx"
 import SignMultisigTxPage from "pages/multisig/SignMultisigTxPage"
 import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
-import { storeNetwork, storeWalletAddress } from "./storage"
+import { clearWalletAddress, storeNetwork, storeWalletAddress } from "./storage"
 import RequestContainer from "./RequestContainer"
 import ManageNetworks from "./networks/ManageNetworks"
 import AddNetworkPage from "./networks/AddNetworkPage"
@@ -30,6 +30,7 @@ const App = () => {
 
   useEffect(() => {
     if (address) storeWalletAddress(address)
+    else clearWalletAddress()
   }, [address])
 
   const routes = useRoutes([

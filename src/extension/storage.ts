@@ -12,6 +12,10 @@ export const storeWalletAddress = (address: AccAddress) => {
   extension.storage?.local.set({ wallet: { address } })
 }
 
+export const clearWalletAddress = () => {
+  extension.storage?.local.remove("wallet")
+}
+
 /* password */
 export const getStoredPassword = (callback: (password: string) => void) => {
   extension.storage?.local.get(
