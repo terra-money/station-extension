@@ -6,6 +6,7 @@ import AuthButton from "../../components/AuthButton"
 import MultisigBadge from "../../components/MultisigBadge"
 import useAuth from "../../hooks/useAuth"
 import is from "../../scripts/is"
+import SelectPreconfigured from "./SelectPreconfigured"
 import styles from "./SwitchWallet.module.scss"
 
 const cx = classNames.bind(styles)
@@ -13,7 +14,7 @@ const cx = classNames.bind(styles)
 const SwitchWallet = () => {
   const { connectedWallet, wallets, connect } = useAuth()
 
-  return !wallets.length ? null : (
+  const localWallets = !!wallets.length && (
     <ul className={styles.list}>
       {wallets.map((wallet) => {
         const { name, address, lock } = wallet
@@ -46,6 +47,13 @@ const SwitchWallet = () => {
         )
       })}
     </ul>
+  )
+
+  return (
+    <>
+      <SelectPreconfigured />
+      {localWallets}
+    </>
   )
 }
 
