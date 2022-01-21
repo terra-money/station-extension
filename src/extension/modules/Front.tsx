@@ -1,4 +1,5 @@
 import { Col } from "components/layout"
+import TxContext from "txs/TxContext"
 import { useAuth } from "auth"
 import ExtensionPage from "../components/ExtensionPage"
 import SwitchWallet from "../auth/SwitchWallet"
@@ -25,8 +26,17 @@ const Front = () => {
     )
   }
 
-  if (connect) return <ConfirmConnect {...connect} />
-  if (tx) return <ConfirmTx {...tx} />
+  if (connect) {
+    return <ConfirmConnect {...connect} />
+  }
+
+  if (tx) {
+    return (
+      <TxContext>
+        <ConfirmTx {...tx} />
+      </TxContext>
+    )
+  }
 
   return <Assets />
 }
