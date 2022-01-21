@@ -8,8 +8,8 @@ const Welcome = () => {
   const front = useThemeFront()
 
   return (
-    <FlexColumn gap={8} className={styles.component}>
-      <img src={front} alt="Terra Station" width={120} height={145} />
+    <FlexColumn gap={20} className={styles.component}>
+      <img src={front} alt="Terra Station" width={105} height={120} />
       <p className={styles.content}>{t("Connect to Terra blockchain")}</p>
     </FlexColumn>
   )

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Terra Station Wallet",
-  "version": "2.3.1",
+  "version": "2.4.1",
   "background": {
     "scripts": ["background.js"],
     "persistent": true
