@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
-import { Button } from "components/general"
-import { Flex, Grid } from "components/layout"
+import { Grid } from "components/layout"
 import { ConnectRequest } from "../utils"
+import ConfirmButtons from "../components/ConfirmButtons"
 import { useRequest } from "../RequestContainer"
 import styles from "./ConfirmConnect.module.scss"
 
@@ -23,15 +23,18 @@ const ConfirmConnect = ({ origin }: ConnectRequest) => {
           </Grid>
         </header>
 
-        <Flex gap={10}>
-          <Button color="danger" onClick={() => actions.connect(origin, false)}>
-            {t("Deny")}
-          </Button>
-
-          <Button color="primary" onClick={() => actions.connect(origin, true)}>
-            {t("Connect")}
-          </Button>
-        </Flex>
+        <ConfirmButtons
+          buttons={[
+            {
+              onClick: () => actions.connect(origin, false),
+              children: t("Deny"),
+            },
+            {
+              onClick: () => actions.connect(origin, true),
+              children: t("Connect"),
+            },
+          ]}
+        />
       </Grid>
     </div>
   )

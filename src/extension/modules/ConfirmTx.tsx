@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { getErrorMessage } from "utils/error"
 import { useThemeAnimation } from "data/settings/Theme"
-import { Button } from "components/general"
-import { Flex, FlexColumn, Grid } from "components/layout"
+import { FlexColumn, Grid } from "components/layout"
 import { Form, FormError, FormItem, FormWarning } from "components/form"
 import { Input, Checkbox } from "components/form"
 import { useTx } from "txs/TxContext"
@@ -18,6 +17,7 @@ import { getIsDangerousTx, SignBytesRequest, TxRequest } from "../utils"
 import { useRequest } from "../RequestContainer"
 import ExtensionPage from "../components/ExtensionPage"
 import WalletCard from "../components/WalletCard"
+import ConfirmButtons from "../components/ConfirmButtons"
 import TxDetails from "./TxDetails"
 
 interface Values {
@@ -139,6 +139,8 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
     t("Arbitrary data cannot be signed by Ledger")
 
   const SIZE = { width: 100, height: 100 }
+  const label = props.requestType === "post" ? t("Post") : t("Sign")
+
   return submitting ? (
     <Overlay>
       <FlexColumn gap={20}>
@@ -170,15 +172,12 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
             </Grid>
           )}
 
-          <Flex gap={10}>
-            <Button color="danger" onClick={deny}>
-              {t("Deny")}
-            </Button>
-
-            <Button type="submit" color="primary">
-              {props.requestType === "post" ? t("Post") : t("Sign")}
-            </Button>
-          </Flex>
+          <ConfirmButtons
+            buttons={[
+              { onClick: deny, children: t("Deny") },
+              { type: "submit", children: label },
+            ]}
+          />
         </Form>
       </Grid>
     </ExtensionPage>

@@ -29,7 +29,7 @@ const Message = ({ msg, warn }: { msg: Msg; warn: boolean }) => {
     <article className={cx(styles.component, { warn })}>
       <button className={styles.header} onClick={toggle}>
         <TxMessage>{summary}</TxMessage>
-        <KeyboardArrowDownIcon fontSize="small" />
+        <KeyboardArrowDownIcon style={{ fontSize: 16 }} />
       </button>
 
       {!collapsed && (
