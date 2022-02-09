@@ -46,14 +46,16 @@ const InstantiateContractForm = () => {
 
   /* tx */
   const createTx = useCallback(
-    ({ admin, id, msg, ...values }: TxValues) => {
+    ({ id, msg, ...values }: TxValues) => {
       if (!address || !(id && msg)) return
       if (!validateMsg(msg)) return
 
+      const admin = values.admin || undefined
+      const code_id = Number(id)
       const init_msg = parseJSON(msg)
       const coins = getCoins(values.coins)
       const msgs = [
-        new MsgInstantiateContract(address, admin, id, init_msg, coins),
+        new MsgInstantiateContract(address, admin, code_id, init_msg, coins),
       ]
 
       return { msgs }
