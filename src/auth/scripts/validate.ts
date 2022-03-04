@@ -4,10 +4,10 @@ import wordlist from "./wordlist.json"
 const validate = {
   name: {
     alphanumeric: (name: string) =>
-      /^[a-z0-9-_]+$/.test(name) || "Enter alphanumeric characters",
+      /^[a-z0-9-_]+$/.test(name) || "Enter lowercase alphanumeric characters",
     length: (name: string) =>
       (name.length >= 3 && name.length <= 20) ||
-      "Enter 3-20 alphanumeric characters",
+      "Enter 3-20 lowercase alphanumeric characters",
     exists: (name: string) => {
       try {
         const { address } = getStoredWallet(name)
