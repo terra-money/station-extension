@@ -1,10 +1,11 @@
 import { ReactNode } from "react"
+import QrCodeIcon from "@mui/icons-material/QrCode"
 import { Flex, Grid } from "components/layout"
+import WalletQR from "app/sections/WalletQR"
 import { isWallet, useAuth } from "auth"
 import MultisigBadge from "auth/components/MultisigBadge"
 import Copy from "./Copy"
 import styles from "./WalletCard.module.scss"
-import WalletQR from "./WalletQR"
 
 interface Props {
   extra?: ReactNode
@@ -29,7 +30,13 @@ const WalletCard = ({ extra }: Props) => {
 
         <Flex gap={4} className={styles.address}>
           <Copy text={address}>{address}</Copy>
-          <WalletQR />
+          <WalletQR
+            renderButton={(open) => (
+              <button onClick={open}>
+                <QrCodeIcon fontSize="inherit" />
+              </button>
+            )}
+          />
         </Flex>
       </Grid>
 
