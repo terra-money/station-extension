@@ -1,12 +1,15 @@
+import { DEFAULT_GAS_ADJUSTMENT } from "config/constants"
 import themes from "styles/themes/themes"
 
 export enum SettingKey {
   Theme = "Theme",
   Currency = "Currency",
-  MinimumValue = "MinimumValue",
-  CustomTokens = "CustomTokens",
   CustomNetworks = "CustomNetworks",
-  AddressBook = "AddressBook",
+  GasAdjustment = "GasAdjustment", // Tx
+  AddressBook = "AddressBook", // Send
+  CustomTokens = "CustomTokens", // Wallet
+  MinimumValue = "MinimumValue", // Wallet (UST value to show on the list)
+  WithdrawAs = "WithdrawAs", // Rewards (Preferred denom to withdraw rewards)
 }
 
 const isSystemDarkMode =
@@ -22,10 +25,12 @@ const DefaultCustomTokens = {
 export const DefaultSettings = {
   [SettingKey.Theme]: DefaultTheme,
   [SettingKey.Currency]: "uusd",
-  [SettingKey.MinimumValue]: 0,
-  [SettingKey.CustomTokens]: DefaultCustomTokens as CustomTokens,
   [SettingKey.CustomNetworks]: [] as CustomNetwork[],
+  [SettingKey.GasAdjustment]: DEFAULT_GAS_ADJUSTMENT,
   [SettingKey.AddressBook]: [] as AddressBook[],
+  [SettingKey.CustomTokens]: DefaultCustomTokens as CustomTokens,
+  [SettingKey.MinimumValue]: 0,
+  [SettingKey.WithdrawAs]: "",
 }
 
 export const getLocalSetting = <T>(key: SettingKey): T => {
