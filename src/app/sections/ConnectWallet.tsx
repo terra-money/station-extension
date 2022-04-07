@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next"
-import UsbIcon from "@mui/icons-material/Usb"
 import { ConnectType, useWallet } from "@terra-money/wallet-provider"
 import { STATION } from "config/constants"
 import { RenderButton } from "types/components"
@@ -40,11 +39,6 @@ const ConnectWallet = ({ renderButton }: Props) => {
       children: name,
       onClick: () => connect(type, identifier),
     })),
-    {
-      icon: <UsbIcon />,
-      to: "/auth/ledger",
-      children: t("Access with ledger"),
-    },
     ...availableInstallTypes
       .filter((type) => type === ConnectType.EXTENSION)
       .map((type) => ({
