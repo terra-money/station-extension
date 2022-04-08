@@ -1,4 +1,4 @@
 declare module "extensionizer" {
-  const extensionizer: typeof chrome
+  const extensionizer: typeof browser
   export default extensionizer
 }
