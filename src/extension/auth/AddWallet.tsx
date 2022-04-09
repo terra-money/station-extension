@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next"
-import { isFirefox } from "react-device-detect"
 import UsbIcon from "@mui/icons-material/Usb"
 import useAvailable from "auth/hooks/useAvailable"
 import { getOpenURL } from "../storage"
@@ -9,24 +8,22 @@ const AddWallet = () => {
   const { t } = useTranslation()
   const available = useAvailable()
 
-  const availableList = available.map(({ to, ...item }) => {
-    const openURL = getOpenURL(to)
-    if (!openURL) return { ...item, to }
-    return { ...item, onClick: openURL }
-  })
-
-  const ledgerItem = {
-    icon: <UsbIcon />,
-    to: "/auth/ledger",
-    children: t("Access with ledger"),
-  }
-
-  const isLedgerAvailable = !isFirefox
-  const list = isLedgerAvailable
-    ? [...availableList, ledgerItem]
-    : availableList
-
-  return <ExtensionList list={list} />
+  return (
+    <ExtensionList
+      list={[
+        ...available,
+        {
+          icon: <UsbIcon />,
+          to: "/auth/ledger",
+          children: t("Access with ledger"),
+        },
+      ].map(({ to, ...item }) => {
+        const openURL = getOpenURL(to)
+        if (!openURL) return { ...item, to }
+        return { ...item, onClick: openURL }
+      })}
+    />
+  )
 }
 
 export default AddWallet
