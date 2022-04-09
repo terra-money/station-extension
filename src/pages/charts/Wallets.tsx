@@ -1,11 +1,12 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { last } from "ramda"
-import capitalize from "@mui/utils/capitalize"
+import BigNumber from "bignumber.js"
+import { capitalize } from "@mui/material"
 import { formatNumber } from "@terra.kitchen/utils"
-import { Aggregate, AggregateWallets } from "data/Terra/TerraAPI"
-import { useWallets } from "data/Terra/TerraAPI"
 import { combineState } from "data/query"
+import { AggregateWallets, useSumActiveWallets } from "data/Terra/TerraAPI"
+import { useWallets } from "data/Terra/TerraAPI"
 import { Select } from "components/form"
 import { Card } from "components/layout"
 import { TooltipIcon } from "components/display"
@@ -17,32 +18,12 @@ const Wallets = () => {
   const { t } = useTranslation()
 
   /* data */
-  const [filters, setFilters] = useState({
-    walletsType: AggregateWallets.TOTAL,
-    type: Aggregate.CUMULATIVE,
-  })
+  const [walletsType, setWalletsType] = useState(AggregateWallets.TOTAL)
+  const { data, ...dataState } = useWallets(walletsType)
+  const { data: sumActiveWallets, ...sumActiveWalletsState } =
+    useSumActiveWallets()
 
-  const { walletsType, type } = filters
-  const { data, ...result } = useWallets(walletsType, type)
-  const totalResult = useWallets(AggregateWallets.TOTAL, type) // for value
-  const { data: total, ...totalState } = totalResult
-  const state = combineState(result, totalState)
-
-  const handleChange = (
-    key: "walletsType" | "type",
-    value: AggregateWallets | Aggregate
-  ) => {
-    const next = { ...filters, [key]: value }
-
-    const invalid =
-      next.walletsType === AggregateWallets.ACTIVE &&
-      next.type === Aggregate.CUMULATIVE
-
-    if (!invalid) setFilters(next)
-    else if (key === "walletsType")
-      setFilters({ ...next, type: Aggregate.PERIODIC })
-    else setFilters({ ...next, walletsType: AggregateWallets.TOTAL })
-  }
+  const state = combineState(dataState, sumActiveWalletsState)
 
   /* render */
   const renderFilter = () => {
@@ -50,24 +31,10 @@ const Wallets = () => {
       <Filter>
         <Select
           value={walletsType}
-          onChange={(e) =>
-            handleChange("walletsType", e.target.value as AggregateWallets)
-          }
+          onChange={(e) => setWalletsType(e.target.value as AggregateWallets)}
           small
         >
           {Object.values(AggregateWallets).map((type) => (
-            <option value={type} key={type}>
-              {capitalize(type)}
-            </option>
-          ))}
-        </Select>
-
-        <Select
-          value={type}
-          onChange={(e) => handleChange("type", e.target.value as Aggregate)}
-          small
-        >
-          {Object.values(Aggregate).map((type) => (
             <option value={type} key={type}>
               {capitalize(type)}
             </option>
@@ -77,18 +44,27 @@ const Wallets = () => {
     )
   }
 
+  const isCumulative = walletsType === AggregateWallets.TOTAL
   const render = () => {
     return (
       <Range>
         {(range) => {
-          const filled = type === Aggregate.PERIODIC && !range
+          const filled = !isCumulative && !range
+          const values = data?.slice(-1 * range).map(({ value }) => value)
+          const total = {
+            [AggregateWallets.TOTAL]: data && last(data)?.value,
+            [AggregateWallets.NEW]:
+              values && BigNumber.sum(...values).toString(),
+            [AggregateWallets.ACTIVE]: sumActiveWallets?.[range],
+          }[walletsType]
+
           return (
             <ChartContainer
-              type={type === Aggregate.CUMULATIVE || filled ? "area" : "bar"}
+              type={isCumulative || filled ? "area" : "bar"}
               filled={filled}
               result={data}
               range={range}
-              total={total && last(total)?.value}
+              total={total}
               unit={t("wallets")}
               formatValue={(value) => formatNumber(value, { prefix: true })}
               formatY={(value) =>

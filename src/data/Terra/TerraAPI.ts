@@ -21,6 +21,7 @@ export enum AggregateStakingReturn {
 
 export enum AggregateWallets {
   TOTAL = "total",
+  NEW = "new",
   ACTIVE = "active",
 }
 
@@ -98,8 +99,12 @@ export const useTaxRewards = (type: Aggregate) => {
   return useTerraAPI<ChartDataItem[]>(`chart/tax-rewards/${type}`)
 }
 
-export const useWallets = (walletsType: AggregateWallets, type: Aggregate) => {
-  return useTerraAPI<ChartDataItem[]>(`chart/wallets/${walletsType}/${type}`)
+export const useWallets = (walletsType: AggregateWallets) => {
+  return useTerraAPI<ChartDataItem[]>(`chart/wallets/${walletsType}`)
+}
+
+export const useSumActiveWallets = () => {
+  return useTerraAPI<Record<string, string>>(`chart/wallets/active/sum`)
 }
 
 /* validators */

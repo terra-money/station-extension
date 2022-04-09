@@ -3,6 +3,7 @@ import { path } from "ramda"
 import classNames from "classnames/bind"
 import { ReactComponent as DropUpIcon } from "styles/images/icons/DropUp.svg"
 import { ReactComponent as DropDownIcon } from "styles/images/icons/DropDown.svg"
+import { TooltipIcon } from "components/display"
 import Grid from "./Grid"
 import PaginationButtons from "./PaginationButtons"
 import styles from "./Table.module.scss"
@@ -14,6 +15,7 @@ type Sorter<T> = (a: T, b: T) => number
 
 interface Column<T> {
   title?: string
+  tooltip?: string
   dataIndex?: string | string[]
   defaultSortOrder?: SortOrder
   sorter?: Sorter<T>
@@ -49,7 +51,7 @@ function Table<T>({ columns, dataSource, filter, rowKey, ...props }: Props<T>) {
   const renderPagination = () => {
     if (!pagination) return null
     const total = Math.ceil(dataSource.length / pagination)
-    if (!total) return null
+    if (!total || total === 1) return null
     const prevPage = page > 1 ? () => setPage((p) => p - 1) : undefined
     const nextPage = page < total ? () => setPage((p) => p + 1) : undefined
 
@@ -116,7 +118,7 @@ function Table<T>({ columns, dataSource, filter, rowKey, ...props }: Props<T>) {
         <thead>
           <tr>
             {columns.map((column, index) => {
-              const { title, sorter, defaultSortOrder } = column
+              const { title, tooltip, sorter, defaultSortOrder } = column
 
               const getCaretAttrs = (key: SortOrder) => {
                 const active = sorterIndex === index && sortOrder === key
@@ -134,7 +136,11 @@ function Table<T>({ columns, dataSource, filter, rowKey, ...props }: Props<T>) {
                       className={styles.sorter}
                       onClick={() => sort(index)}
                     >
-                      {title}
+                      {tooltip ? (
+                        <TooltipIcon content={tooltip}>{title}</TooltipIcon>
+                      ) : (
+                        title
+                      )}
 
                       <Grid gap={4}>
                         <DropUpIcon {...getCaretAttrs("asc")} />

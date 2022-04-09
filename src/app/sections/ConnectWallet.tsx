@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 import UsbIcon from "@mui/icons-material/Usb"
-import { ConnectType, useWallet } from "@terra-money/wallet-provider"
+import { useWallet } from "@terra-money/wallet-provider"
 import { STATION } from "config/constants"
 import { RenderButton } from "types/components"
 import { useAddress } from "data/wallet"
@@ -20,9 +20,7 @@ interface Props {
 const ConnectWallet = ({ renderButton }: Props) => {
   const { t } = useTranslation()
 
-  const { connect, install, availableConnections, availableInstallTypes } =
-    useWallet()
-
+  const { connect, availableConnections, availableInstallations } = useWallet()
   const { available } = useAuth()
 
   const address = useAddress()
@@ -45,12 +43,11 @@ const ConnectWallet = ({ renderButton }: Props) => {
       to: "/auth/ledger",
       children: t("Access with ledger"),
     },
-    ...availableInstallTypes
-      .filter((type) => type === ConnectType.EXTENSION)
-      .map((type) => ({
-        children: t("Install extension"),
-        onClick: () => install(type),
-      })),
+    ...availableInstallations.map(({ name, icon, url }) => ({
+      src: icon,
+      children: t(`Install ${name}`),
+      href: url,
+    })),
   ]
 
   return (

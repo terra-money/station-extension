@@ -117,11 +117,10 @@ const ProposalVotesByValidator = ({ id }: { id: number }) => {
               {options.map((key) => {
                 const { label } = getVoteOptionItem(key)
                 return (
-                  <Tooltip content={tooltipContents[key]}>
+                  <Tooltip content={tooltipContents[key]} key={key}>
                     <button
                       className={cx(styles.tab, { active: tab === key })}
                       onClick={() => setTab(key)}
-                      key={key}
                     >
                       {label} ({getCount(key)})
                     </button>
@@ -183,6 +182,8 @@ const ProposalVotesByValidator = ({ id }: { id: number }) => {
       </Grid>
     )
   }
+
+  if (!TerraProposal?.length) return null
 
   return (
     <Card {...state} title={t("Validators")} bordered>
