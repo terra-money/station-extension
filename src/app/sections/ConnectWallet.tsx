@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next"
+import { isFirefox } from "react-device-detect"
 import UsbIcon from "@mui/icons-material/Usb"
 import { ConnectType, useWallet } from "@terra-money/wallet-provider"
 import { STATION } from "config/constants"
@@ -12,7 +13,6 @@ import { FormHelp } from "components/form"
 import { useAuth } from "auth"
 import SwitchWallet from "auth/modules/select/SwitchWallet"
 import Connected from "./Connected"
-import { isFirefox } from "react-device-detect"
 
 interface Props {
   renderButton?: RenderButton
@@ -35,26 +35,31 @@ const ConnectWallet = ({ renderButton }: Props) => {
     </Button>
   )
 
-  const list: any[] = [
-    ...availableConnections.map(({ type, identifier, name, icon }) => ({
+  const connectionList = availableConnections.map(
+    ({ type, identifier, name, icon }) => ({
       src: icon,
       children: name,
       onClick: () => connect(type, identifier),
-    })),
-    ...availableInstallTypes
-      .filter((type) => type === ConnectType.EXTENSION)
-      .map((type) => ({
-        children: t("Install extension"),
-        onClick: () => install(type),
-      })),
-  ]
-
-  !isFirefox &&
-    list.push({
-      icon: <UsbIcon />,
-      to: "/auth/ledger",
-      children: t("Access with ledger"),
     })
+  )
+
+  const ledgerItem = {
+    icon: <UsbIcon />,
+    to: "/auth/ledger",
+    children: t("Access with ledger"),
+  }
+
+  const installList = availableInstallTypes
+    .filter((type) => type === ConnectType.EXTENSION)
+    .map((type) => ({
+      children: t("Install extension"),
+      onClick: () => install(type),
+    }))
+
+  const isLedgerAvailable = !isFirefox
+  const list = isLedgerAvailable
+    ? [...connectionList, ledgerItem, ...installList]
+    : [...connectionList, ...installList]
 
   return (
     <ModalButton
