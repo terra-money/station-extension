@@ -6,7 +6,7 @@ const connectRemote = (remotePort) => {
     return
   }
 
-  const origin = remotePort.sender.url
+  const origin = remotePort.sender.origin || remotePort.sender.url
 
   console.log("Station(background): connectRemote", remotePort)
   const portStream = new PortStream(remotePort)

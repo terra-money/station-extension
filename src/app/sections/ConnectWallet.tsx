@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next"
+import UsbIcon from "@mui/icons-material/Usb"
 import { ConnectType, useWallet } from "@terra-money/wallet-provider"
 import { STATION } from "config/constants"
 import { RenderButton } from "types/components"
@@ -11,6 +12,7 @@ import { FormHelp } from "components/form"
 import { useAuth } from "auth"
 import SwitchWallet from "auth/modules/select/SwitchWallet"
 import Connected from "./Connected"
+import { isFirefox } from "react-device-detect"
 
 interface Props {
   renderButton?: RenderButton
@@ -33,7 +35,7 @@ const ConnectWallet = ({ renderButton }: Props) => {
     </Button>
   )
 
-  const list = [
+  const list: any[] = [
     ...availableConnections.map(({ type, identifier, name, icon }) => ({
       src: icon,
       children: name,
@@ -46,6 +48,13 @@ const ConnectWallet = ({ renderButton }: Props) => {
         onClick: () => install(type),
       })),
   ]
+
+  !isFirefox &&
+    list.push({
+      icon: <UsbIcon />,
+      to: "/auth/ledger",
+      children: t("Access with ledger"),
+    })
 
   return (
     <ModalButton
