@@ -3,8 +3,36 @@ import PortStream from 'extension-port-stream'
 import LocalMessageDuplexStream from 'post-message-stream'
 
 if (shouldInjectProvider()) {
+  validateHostname()
   injectScript()
   start()
+}
+
+function validateHostname() {
+  const official = {
+    Station: ["station.terra.money"],
+    Anchor: ["anchorprotocol.com"],
+    Mirror: [
+      "mirror.finance",
+      "mirrorprotocol.app",
+      "mirrorprotocol.ch",
+      "mirrorprotocol.is",
+      "mirrormarket.finance",
+    ],
+    Pylon: ["pylon.money"],
+    Astroport: ["astroport.fi"],
+    Terraswap: ["terraswap.io"],
+  }
+
+  const hostname = document.location.hostname
+
+  Object.entries(official).forEach(([key, value]) => {
+    if (!hostname.includes(key.toLowerCase())) return
+    if (!value.some((v) => hostname.endsWith(v))) {
+      alert(`Warning from Terra Station Wallet extension:
+${hostname} which you visited includes "${key}", but is not an official domain.`)
+    }
+  })
 }
 
 /**
