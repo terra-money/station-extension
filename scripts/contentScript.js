@@ -22,6 +22,7 @@ function validateHostname() {
     Pylon: ["pylon.money"],
     Astroport: ["astroport.fi"],
     Terraswap: ["terraswap.io"],
+    PylonBoard: ["pylonboard.money"],
   }
 
   const hostname = document.location.hostname
