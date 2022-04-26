@@ -11,26 +11,34 @@ if (shouldInjectProvider()) {
 function validateHostname() {
   const official = {
     Station: ["station.terra.money"],
-    Anchor: ["anchorprotocol.com"],
+    Anchor: ["anchorprotocol.com", "anchor.money"],
     Mirror: [
       "mirror.finance",
       "mirrorprotocol.app",
       "mirrorprotocol.ch",
       "mirrorprotocol.is",
-      "mirrormarket.finance",
     ],
     Pylon: ["pylon.money"],
     Astroport: ["astroport.fi"],
     Terraswap: ["terraswap.io"],
   }
 
+  const whitelist = [
+    "mirrormarket.finance",
+    "mirror.xyz",
+    "cosmostation.io",
+    "playstation.com",
+  ]
+
   const hostname = document.location.hostname
 
   Object.entries(official).forEach(([key, value]) => {
-    if (!hostname.includes(key.toLowerCase())) return
-    if (!value.some((v) => hostname.endsWith(v))) {
+    if (hostname.includes(key.toLowerCase())) {
+      if (whitelist.some((v) => hostname.endsWith(v))) return
+      if (value.some((v) => hostname.endsWith(v))) return
       alert(`Warning from Terra Station Wallet extension:
-${hostname} which you visited includes "${key}", but is not an official domain.`)
+Ensure that the ${hostname} which includes "${key}" is legitimate.
+Never provide your wallet seed phrase.`)
     }
   })
 }
