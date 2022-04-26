@@ -1,6 +1,6 @@
-import extension from 'extensionizer'
-import PortStream from 'extension-port-stream'
-import LocalMessageDuplexStream from 'post-message-stream'
+import extension from "extensionizer"
+import PortStream from "extension-port-stream"
+import LocalMessageDuplexStream from "post-message-stream"
 
 if (shouldInjectProvider()) {
   validateHostname()
@@ -51,15 +51,15 @@ Never provide your wallet seed phrase.`)
 function injectScript() {
   try {
     const container = document.head || document.documentElement
-    const scriptTag = document.createElement('script')
+    const scriptTag = document.createElement("script")
     // FIXME (Ian Lee) <script async="false"> is useless. both async="false" and async="true" operate in async="true"
     //  by removing async attribute, the `inpage.js` will be complated before DOM loading.
     //scriptTag.setAttribute('async', 'false')
-    scriptTag.setAttribute('src', extension.runtime.getURL('inpage.js'))
+    scriptTag.setAttribute("src", extension.runtime.getURL("inpage.js"))
     container.insertBefore(scriptTag, container.children[0])
     container.removeChild(scriptTag)
   } catch (e) {
-    console.error('MsgDemo provider injection failed.', e)
+    console.error("MsgDemo provider injection failed.", e)
   }
 }
 
@@ -89,7 +89,7 @@ function shouldInjectProvider() {
 function doctypeCheck() {
   const { doctype } = window.document
   if (doctype) {
-    return doctype.name === 'html'
+    return doctype.name === "html"
   }
   return true
 }
@@ -122,7 +122,7 @@ function suffixCheck() {
 function documentElementCheck() {
   const documentElement = document.documentElement.nodeName
   if (documentElement) {
-    return documentElement.toLowerCase() === 'html'
+    return documentElement.toLowerCase() === "html"
   }
   return true
 }
@@ -133,12 +133,12 @@ function documentElementCheck() {
  */
 async function setupStreams() {
   const pageStream = new LocalMessageDuplexStream({
-    name: 'station:content',
-    target: 'station:inpage',
+    name: "station:content",
+    target: "station:inpage",
   })
 
   const extensionPort = extension.runtime.connect({
-    name: 'TerraStationExtension',
+    name: "TerraStationExtension",
   })
 
   const extensionStream = new PortStream(extensionPort)
@@ -152,12 +152,12 @@ async function setupStreams() {
  */
 function domIsReady() {
   // already loaded
-  if (['interactive', 'complete'].includes(document.readyState)) {
+  if (["interactive", "complete"].includes(document.readyState)) {
     return Promise.resolve()
   }
 
   // wait for load
   return new Promise((resolve) =>
-    window.addEventListener('DOMContentLoaded', resolve, { once: true })
+    window.addEventListener("DOMContentLoaded", resolve, { once: true })
   )
 }
