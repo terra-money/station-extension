@@ -1,11 +1,11 @@
-import { FC, useEffect, useMemo } from "react"
+import { PropsWithChildren, useEffect, useMemo } from "react"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { useNetwork, useNetworkName } from "data/wallet"
 import { isWallet, useAuth } from "auth"
 import Online from "./containers/Online"
 import WithNodeInfo from "./WithNodeInfo"
 
-const InitWallet: FC = ({ children }) => {
+const InitWallet = ({ children }: PropsWithChildren<{}>) => {
   useOnNetworkChange()
   const queryClient = useQueryClient()
   const networkName = useNetworkName()
