@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react"
+import { PropsWithChildren, ReactNode } from "react"
 import { Card } from "components/layout"
 import { ErrorBoundary, WithFetching } from "components/feedback"
 import Container from "../layouts/Container"
@@ -9,7 +9,9 @@ interface Props extends QueryState {
   title?: string
 }
 
-const ExtensionPage: FC<Props> = ({ header, title, children, ...props }) => {
+const ExtensionPage = (props: PropsWithChildren<Props>) => {
+  const { header, title, children } = props
+
   return (
     <WithFetching {...props}>
       {(progress, wrong) => (

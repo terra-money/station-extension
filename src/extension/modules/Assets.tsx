@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next"
+import { useIsClassic } from "data/query"
 import { useIsWalletEmpty } from "data/queries/bank"
 import { useActiveDenoms } from "data/queries/oracle"
 import { readNativeDenom } from "data/token"
@@ -18,6 +19,7 @@ import styles from "./Assets.module.scss"
 
 const Assets = () => {
   const { t } = useTranslation()
+  const isClassic = useIsClassic()
   const isWalletEmpty = useIsWalletEmpty()
   const { data: denoms, ...state } = useActiveDenoms()
   const coins = useCoins(denoms)
@@ -26,7 +28,8 @@ const Assets = () => {
 
   if (!(coins && ibc && cw20)) return null
 
-  const [, filtered] = coins
+  const [all, filtered] = coins
+  const list = isClassic ? filtered : all
 
   return (
     <ExtensionPage {...state} header={<ConnectedWallet />}>
@@ -36,7 +39,7 @@ const Assets = () => {
         )}
 
         <div className={styles.assets}>
-          {filtered.map((item) => {
+          {list.map((item) => {
             const { denom } = item
             return <Asset {...readNativeDenom(denom)} {...item} key={denom} />
           })}

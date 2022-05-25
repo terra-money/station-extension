@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react"
+import { PropsWithChildren, useEffect, useState } from "react"
 import extension from "extensionizer"
 import { isNil, uniq, update } from "ramda"
 import createContext from "utils/createContext"
@@ -29,7 +29,7 @@ interface RequestContext {
 export const [useRequest, RequestProvider] =
   createContext<RequestContext>("useRequest")
 
-const RequestContainer: FC = ({ children }) => {
+const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
   const [connect, setConnect] = useState<ConnectRequest>()
   const [tx, setTx] = useState<TxRequest | SignBytesRequest>()
 

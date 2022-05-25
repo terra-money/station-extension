@@ -1,7 +1,7 @@
-import { FC } from "react"
+import { PropsWithChildren } from "react"
 import styles from "./Header.module.scss"
 
-const Header: FC = ({ children }) => {
+const Header = ({ children }: PropsWithChildren<{}>) => {
   return <header className={styles.header}>{children}</header>
 }
 
