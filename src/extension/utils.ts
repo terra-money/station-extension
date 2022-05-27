@@ -1,4 +1,5 @@
 import { CreateTxOptions, Fee, Msg, Tx } from "@terra-money/terra.js"
+import { useIsClassic } from "data/query"
 
 /* primitive */
 export interface PrimitiveDefaultRequest {
@@ -70,20 +71,24 @@ export const parseDefault = (
   return { ...request, timestamp: new Date(request.id) }
 }
 
-export const parseTx = (request: PrimitiveTxRequest): TxRequest["tx"] => {
-  const { msgs, fee, memo } = request
-  const isProto = "@type" in JSON.parse(msgs[0])
-  return isProto
-    ? {
-        msgs: msgs.map((msg) => Msg.fromData(JSON.parse(msg))),
-        fee: fee ? Fee.fromData(JSON.parse(fee)) : undefined,
-        memo,
-      }
-    : {
-        msgs: msgs.map((msg) => Msg.fromAmino(JSON.parse(msg))),
-        fee: fee ? Fee.fromAmino(JSON.parse(fee)) : undefined,
-        memo,
-      }
+export const useParseTx = () => {
+  const isClassic = useIsClassic()
+
+  return (request: PrimitiveTxRequest): TxRequest["tx"] => {
+    const { msgs, fee, memo } = request
+    const isProto = "@type" in JSON.parse(msgs[0])
+    return isProto
+      ? {
+          msgs: msgs.map((msg) => Msg.fromData(JSON.parse(msg), isClassic)),
+          fee: fee ? Fee.fromData(JSON.parse(fee)) : undefined,
+          memo,
+        }
+      : {
+          msgs: msgs.map((msg) => Msg.fromAmino(JSON.parse(msg), isClassic)),
+          fee: fee ? Fee.fromAmino(JSON.parse(fee)) : undefined,
+          memo,
+        }
+  }
 }
 
 export const parseBytes = (

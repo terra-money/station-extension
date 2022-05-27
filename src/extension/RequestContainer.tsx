@@ -7,7 +7,7 @@ import { ExtensionStorage, PrimitiveDefaultRequest } from "./utils"
 import { ConnectRequest, RequestType, TxRequest } from "./utils"
 import { SignBytesRequest, TxResponse } from "./utils"
 import { isBytes, isSign } from "./utils"
-import { parseBytes, parseDefault, parseTx, toData } from "./utils"
+import { parseBytes, parseDefault, useParseTx, toData } from "./utils"
 
 interface RequestContext {
   requests: {
@@ -32,6 +32,7 @@ export const [useRequest, RequestProvider] =
 const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
   const [connect, setConnect] = useState<ConnectRequest>()
   const [tx, setTx] = useState<TxRequest | SignBytesRequest>()
+  const parseTx = useParseTx()
 
   useEffect(() => {
     // Requests from storage
