@@ -3,6 +3,7 @@ import classNames from "classnames/bind"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import { Coins, Msg } from "@terra-money/terra.js"
 import { readMsg } from "@terra-money/msg-reader"
+import { useIsClassic } from "data/query"
 import TxMessage from "app/containers/TxMessage"
 import styles from "./Message.module.scss"
 
@@ -10,7 +11,8 @@ const cx = classNames.bind(styles)
 
 const Message = ({ msg, warn }: { msg: Msg; warn: boolean }) => {
   const summary = readMsg(msg)
-  const { "@type": type } = msg.toData()
+  const isClassic = useIsClassic()
+  const { "@type": type } = msg.toData(isClassic)
 
   const [collapsed, setCollapsed] = useState(true)
   const toggle = () => setCollapsed(!collapsed)

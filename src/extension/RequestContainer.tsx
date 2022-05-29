@@ -2,6 +2,7 @@ import { PropsWithChildren, useEffect, useState } from "react"
 import extension from "extensionizer"
 import { isNil, uniq, update } from "ramda"
 import createContext from "utils/createContext"
+import { useIsClassic } from "data/query"
 import encrypt from "auth/scripts/encrypt"
 import { ExtensionStorage, PrimitiveDefaultRequest } from "./utils"
 import { ConnectRequest, RequestType, TxRequest } from "./utils"
@@ -30,6 +31,7 @@ export const [useRequest, RequestProvider] =
   createContext<RequestContext>("useRequest")
 
 const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
+  const isClassic = useIsClassic()
   const [connect, setConnect] = useState<ConnectRequest>()
   const [tx, setTx] = useState<TxRequest | SignBytesRequest>()
   const parseTx = useParseTx()
@@ -71,7 +73,7 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
         }
       }
     )
-  }, [])
+  }, [parseTx])
 
   /* connect */
   const handleConnect = (origin: string, allow: boolean) => {
@@ -113,7 +115,7 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
         ({ id, origin }) => id === request.id && origin === request.origin
       )
 
-      const result = toData(response.result)
+      const result = toData(response.result, isClassic)
       const next = update(index, { ...list[index], ...response, result }, list)
       extension.storage?.local.set({ [type]: next }, () => setTx(undefined))
     })

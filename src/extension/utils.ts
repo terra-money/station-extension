@@ -1,3 +1,4 @@
+import { useCallback } from "react"
 import { CreateTxOptions, Fee, Msg, Tx } from "@terra-money/terra.js"
 import { useIsClassic } from "data/query"
 
@@ -74,21 +75,24 @@ export const parseDefault = (
 export const useParseTx = () => {
   const isClassic = useIsClassic()
 
-  return (request: PrimitiveTxRequest): TxRequest["tx"] => {
-    const { msgs, fee, memo } = request
-    const isProto = "@type" in JSON.parse(msgs[0])
-    return isProto
-      ? {
-          msgs: msgs.map((msg) => Msg.fromData(JSON.parse(msg), isClassic)),
-          fee: fee ? Fee.fromData(JSON.parse(fee)) : undefined,
-          memo,
-        }
-      : {
-          msgs: msgs.map((msg) => Msg.fromAmino(JSON.parse(msg), isClassic)),
-          fee: fee ? Fee.fromAmino(JSON.parse(fee)) : undefined,
-          memo,
-        }
-  }
+  return useCallback(
+    (request: PrimitiveTxRequest): TxRequest["tx"] => {
+      const { msgs, fee, memo } = request
+      const isProto = "@type" in JSON.parse(msgs[0])
+      return isProto
+        ? {
+            msgs: msgs.map((msg) => Msg.fromData(JSON.parse(msg), isClassic)),
+            fee: fee ? Fee.fromData(JSON.parse(fee)) : undefined,
+            memo,
+          }
+        : {
+            msgs: msgs.map((msg) => Msg.fromAmino(JSON.parse(msg), isClassic)),
+            fee: fee ? Fee.fromAmino(JSON.parse(fee)) : undefined,
+            memo,
+          }
+    },
+    [isClassic]
+  )
 }
 
 export const parseBytes = (
@@ -98,20 +102,24 @@ export const parseBytes = (
   return Buffer.from(bytes, "base64")
 }
 
-export const toData = (result: any) => {
-  return result instanceof Tx ? result.toData() : result
+export const toData = (result: any, isClassic: boolean) => {
+  return result instanceof Tx ? result.toData(isClassic) : result
 }
 
 /* helpers */
 export const getIsNativeMsgFromExternal = (origin: string) => {
-  return (msg: Msg) => {
+  return (msg: Msg, isClassic: boolean) => {
     if (origin.includes("https://station.terra.money")) return false
-    return msg.toData()["@type"] !== "/terra.wasm.v1beta1.MsgExecuteContract"
+    const type = msg.toData(isClassic)["@type"]
+    return type !== "/terra.wasm.v1beta1.MsgExecuteContract"
   }
 }
 
-export const getIsDangerousTx = ({ msgs }: CreateTxOptions) =>
+export const getIsDangerousTx = (
+  { msgs }: CreateTxOptions,
+  isClassic: boolean
+) =>
   msgs.some((msg) => {
-    const data = msg.toData()
+    const data = msg.toData(isClassic)
     return data["@type"] === "/cosmos.authz.v1beta1.MsgGrant"
   })
