@@ -41,7 +41,13 @@ const Assets = () => {
         <div className={styles.assets}>
           {list.map((item) => {
             const { denom } = item
-            return <Asset {...readNativeDenom(denom)} {...item} key={denom} />
+            return (
+              <Asset
+                {...readNativeDenom(denom, isClassic)}
+                {...item}
+                key={denom}
+              />
+            )
           })}
 
           {!ibc.length
