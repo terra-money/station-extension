@@ -1,6 +1,6 @@
 import { FC, ForwardedRef, forwardRef, HTMLAttributes } from "react"
 import classNames from "classnames"
-import { truncate } from "@terra.kitchen/utils"
+import { truncate } from "@terra-rebels/kitchen-utils"
 import { FINDER } from "config/constants"
 import { useNetworkName } from "data/wallet"
 import ExternalLink from "./ExternalLink"

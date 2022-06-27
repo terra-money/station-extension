@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 import qs from "qs"
-import { readDenom } from "@terra.kitchen/utils"
+import { readDenom } from "@terra-rebels/kitchen-utils"
 import { ReactComponent as Binance } from "styles/images/exchanges/Binance.svg"
 import { ReactComponent as KuCoin } from "styles/images/exchanges/KuCoin.svg"
 import { ReactComponent as Huobi } from "styles/images/exchanges/Huobi.svg"

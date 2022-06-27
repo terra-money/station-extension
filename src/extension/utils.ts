@@ -1,4 +1,4 @@
-import { CreateTxOptions, Fee, Msg, Tx } from "@terra-money/terra.js"
+import { CreateTxOptions, Fee, Msg, Tx } from "@terra-rebels/terra.js"
 
 /* primitive */
 export interface PrimitiveDefaultRequest {

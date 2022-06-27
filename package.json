@@ -1,9 +1,19 @@
 {
-  "name": "terra-station",
+  "name": "@terra-rebels/station-extension",
+  "version": "0.0.1",
   "description": "A web application to interact with Terra Core.",
-  "hompage": "https://station.terra.money",
   "author": "Terra <engineering@terra.money> (https://terra.money)",
-  "repository": "github:terra-money/station",
+  "bugs": {
+    "url": "https://github.com/terra-rebels/station-extension/issues"
+  },
+  "contributors": [
+    "Terra Rebels (https://github.com/terra-rebels/)"
+  ],
+  "homepage": "https://github.com/terra-rebels/station-extension#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/terra-rebels/station-extension.git"
+  },
   "license": "MIT",
   "scripts": {
     "start": "react-scripts start",
@@ -15,16 +25,17 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "dependencies": {
-    "@anchor-protocol/anchor.js": "^5.0.2",
     "@ledgerhq/hw-transport-web-ble": "^6.27.1",
     "@mui/icons-material": "^5.6.1",
     "@mui/material": "^5.6.1",
-    "@terra-money/ledger-terra-js": "^1.2.2",
-    "@terra-money/log-finder-ruleset": "^3.0.0",
-    "@terra-money/msg-reader": "^3.0.1",
-    "@terra-money/terra.js": "^3.0.11",
-    "@terra-money/wallet-provider": "^3.8.1",
-    "@terra.kitchen/utils": "^1.0.6",
+    "@terra-rebels/anchor.js": "^0.0.1",
+    "@terra-rebels/ledger-terra-js": "^0.0.5",
+    "@terra-rebels/kitchen-utils": "^0.0.4",
+    "@terra-rebels/log-finder-ruleset": "^0.0.4",
+    "@terra-rebels/msg-reader": "^0.0.1",
+    "@terra-rebels/terra.js": "^0.0.4",
+    "@terra-rebels/terra.proto": "^0.0.4",
+    "@terra-rebels/wallet-provider": "^0.0.4",
     "@tippyjs/react": "^4.2.6",
     "axios": "^0.26.1",
     "bignumber.js": "^9.0.2",

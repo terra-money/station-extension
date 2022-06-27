@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 import { reverse } from "ramda"
-import { Proposal } from "@terra-money/terra.js"
+import { Proposal } from "@terra-rebels/terra.js"
 import { useProposals, useProposalStatusItem } from "data/queries/gov"
 import { Col, Card } from "components/layout"
 import { Fetching, Empty } from "components/feedback"
