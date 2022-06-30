@@ -3,7 +3,7 @@ import axios from "axios"
 import { isDenomTerraNative } from "@terra.kitchen/utils"
 import { Coins } from "@terra-money/terra.js"
 import createContext from "utils/createContext"
-import { queryKey, RefetchOptions } from "../query"
+import { queryKey, RefetchOptions, useIsClassic } from "../query"
 import { useAddress, useNetwork } from "../wallet"
 import { useLCDClient } from "./lcdClient"
 
@@ -33,6 +33,7 @@ export const [useBankBalance, BankBalanceProvider] =
 export const useInitialBankBalance = () => {
   const address = useAddress()
   const lcd = useLCDClient()
+  const isClassic = useIsClassic()
 
   return useQuery(
     [queryKey.bank.balance, address],
@@ -40,6 +41,26 @@ export const useInitialBankBalance = () => {
       if (!address) return new Coins()
       // TODO: Pagination
       // Required when the number of results exceed 100
+      if (isClassic) {
+        const [coins] = await lcd.bank.balance(address)
+        return coins
+      }
+
+      const [coins] = await lcd.bank.spendableBalances(address)
+      return coins
+    },
+    { ...RefetchOptions.DEFAULT }
+  )
+}
+
+export const useBalances = () => {
+  const address = useAddress()
+  const lcd = useLCDClient()
+
+  return useQuery(
+    [queryKey.bank.balances, address],
+    async () => {
+      if (!address) return new Coins()
       const [coins] = await lcd.bank.balance(address)
       return coins
     },
