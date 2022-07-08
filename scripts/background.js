@@ -180,7 +180,7 @@ const openPopup = () => {
   }
   !tabId &&
     extension.tabs.create(
-      { url: extension.extension.getURL("index.html"), active: false },
+      { url: extension.runtime.getURL("index.html"), active: false },
       (tab) => {
         tabId = tab.id
         extension.windows.getCurrent((window) => {
