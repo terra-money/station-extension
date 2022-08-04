@@ -3,7 +3,7 @@ import { LAZY_LIMIT } from "config/constants"
 
 export const useIsClassic = () => {
   const networkName = useChainID()
-  return networkName === "columbus-5" // TODO
+  return ["columbus-5", "rebel-1"].includes(networkName) // TODO: revert before PR
 }
 
 /* refetch */

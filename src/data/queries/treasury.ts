@@ -1,5 +1,5 @@
 import { useQueries, useQuery } from "react-query"
-import { isDenom, isDenomLuna } from "@terra.kitchen/utils"
+import { isDenom, isDenomLuna, isDenomTerra } from "@terra.kitchen/utils"
 import { queryKey, RefetchOptions } from "../query"
 import { useLCDClient } from "./lcdClient"
 
@@ -47,4 +47,4 @@ export const useTaxCaps = (denoms: Denom[], disabled = false) => {
 
 /* utils */
 export const getShouldTax = (token?: Token) =>
-  isDenom(token) && !isDenomLuna(token)
+  isDenomLuna(token) || isDenomTerra(token)
