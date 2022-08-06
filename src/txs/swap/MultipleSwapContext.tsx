@@ -33,7 +33,7 @@ const MultipleSwapContext = ({ children }: PropsWithChildren<{}>) => {
     .filter(isDenomTerraNative)
 
   /* treasury */
-  const { data: taxRate, ...taxRateState } = useTaxRate()
+  const { data: taxRate, ...taxRateState } = useTaxRate(!useIsClassic())
   const taxCapsState = useTaxCaps(denoms)
   const taxCaps = taxCapsState.every(({ isSuccess }) => isSuccess)
     ? zipObj(

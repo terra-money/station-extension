@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next"
+import { useIsClassic } from "data/query"
 import { useTaxRate } from "data/queries/treasury"
 import { Card } from "components/layout"
 import { ReadPercent } from "components/token"
@@ -8,7 +9,7 @@ import DashboardTag from "./components/DashboardTag"
 
 const TaxRate = () => {
   const { t } = useTranslation()
-  const { data: taxRate, ...state } = useTaxRate()
+  const { data: taxRate, ...state } = useTaxRate(!useIsClassic())
 
   const render = () => {
     if (!taxRate) return null

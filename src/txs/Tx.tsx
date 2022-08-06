@@ -108,7 +108,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const { gasPrices } = useTx()
 
   /* queries: conditional */
-  const shouldTax = !preventTax && getShouldTax(token) // add isClassic check before PR
+  const shouldTax = !preventTax && getShouldTax(token) && isClassic // add isClassic check before PR
   const { data: rate = "0", ...taxRateState } = useTaxRate(!shouldTax)
   const { data: cap = "0", ...taxCapState } = useTaxCap(token)
   const taxState = combineState(taxRateState, taxCapState)
@@ -343,7 +343,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
             </Fragment>
           ))}
 
-          {!!taxes.length && (
+          {!!isClassic && (
             <>
               <dt>{t("Tax")}</dt>
               <dd>
@@ -352,6 +352,9 @@ function Tx<TxValues>(props: Props<TxValues>) {
                     <Read {...coin} />
                   </p>
                 ))}
+                {!taxes.length && (
+                  <Read amount="0" token={token} decimals={decimals} />
+                )}
               </dd>
             </>
           )}
@@ -522,12 +525,9 @@ export const calcMinimumTaxAmount = (
   amount: BigNumber.Value,
   { rate, cap }: { rate: BigNumber.Value; cap: BigNumber.Value }
 ) => {
-  const tax = BigNumber.min(
-    new BigNumber(amount).times(rate),
-    cap
-  ).integerValue(BigNumber.ROUND_FLOOR)
-
-  return tax.gt(0) ? tax.toString() : undefined
+  return BigNumber.min(new BigNumber(amount).times(rate), cap)
+    .integerValue(BigNumber.ROUND_FLOOR)
+    .toString()
 }
 
 /* hooks */
