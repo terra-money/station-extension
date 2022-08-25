@@ -108,7 +108,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const { gasPrices } = useTx()
 
   /* queries: conditional */
-  const shouldTax = !preventTax && getShouldTax(token) && isClassic // add isClassic check before PR
+  const shouldTax = !preventTax && getShouldTax(token) && isClassic
   const { data: rate = "0", ...taxRateState } = useTaxRate(!shouldTax)
   const { data: cap = "0", ...taxCapState } = useTaxCap(token)
   const taxState = combineState(taxRateState, taxCapState)

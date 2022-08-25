@@ -5,7 +5,6 @@ import { Card } from "components/layout"
 import { ReadPercent } from "components/token"
 import { TooltipIcon } from "components/display"
 import DashboardContent from "./components/DashboardContent"
-import DashboardTag from "./components/DashboardTag"
 
 const TaxRate = () => {
   const { t } = useTranslation()
@@ -16,7 +15,6 @@ const TaxRate = () => {
     return (
       <DashboardContent
         value={<ReadPercent fixed={3}>{taxRate}</ReadPercent>}
-        footer={<DashboardTag>{t("Capped at 1 SDT")}</DashboardTag>}
       />
     )
   }
@@ -27,7 +25,7 @@ const TaxRate = () => {
       title={
         <TooltipIcon
           content={t(
-            "Fees added to any Terra stablecoin transaction, excluding market swaps, to provide stability in the market."
+            "Burn tax and other taxes that could be enabled on the network."
           )}
         >
           {t("Tax rate")}
