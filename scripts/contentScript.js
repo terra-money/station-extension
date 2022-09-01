@@ -3,44 +3,8 @@ import PortStream from "extension-port-stream"
 import LocalMessageDuplexStream from "post-message-stream"
 
 if (shouldInjectProvider()) {
-  validateHostname()
   injectScript()
   start()
-}
-
-function validateHostname() {
-  const official = {
-    Station: ["station.terra.money"],
-    Anchor: ["anchorprotocol.com", "anchor.money"],
-    Mirror: [
-      "mirror.finance",
-      "mirrorprotocol.app",
-      "mirrorprotocol.ch",
-      "mirrorprotocol.is",
-    ],
-    Pylon: ["pylon.money"],
-    Astroport: ["astroport.fi"],
-    Terraswap: ["terraswap.io"],
-  }
-
-  const whitelist = [
-    "mirrormarket.finance",
-    "mirror.xyz",
-    "cosmostation.io",
-    "playstation.com",
-  ]
-
-  const hostname = document.location.hostname
-
-  Object.entries(official).forEach(([key, value]) => {
-    if (hostname.includes(key.toLowerCase())) {
-      if (whitelist.some((v) => hostname.endsWith(v))) return
-      if (value.some((v) => hostname.endsWith(v))) return
-      alert(`Warning from Terra Station Wallet extension:
-Ensure that the ${hostname} which includes "${key}" is legitimate.
-Never provide your wallet seed phrase.`)
-    }
-  })
 }
 
 /**
