@@ -108,7 +108,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
     initialGasDenom,
     gasPrices,
     gasAdjustment,
-    tx: simulationTx,
+    msgs: simulationTx?.msgs.map((msg) => msg.toData()),
   }
 
   const { data: estimatedGas, ...estimatedGasState } = useQuery(
@@ -232,7 +232,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
         const result = await auth.post({ ...tx, fee }, password)
         setLatestTx({ txhash: result.txhash, queryKeys, redirectAfterTx })
       } else {
-        const { result } = await post({ ...tx, fee })
+        const { result } = await post({ ...tx, fee, isClassic })
         setLatestTx({ txhash: result.txhash, queryKeys, redirectAfterTx })
       }
 
