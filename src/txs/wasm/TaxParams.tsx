@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { PropsWithChildren } from "react"
 import { zipObj } from "ramda"
 import createContext from "utils/createContext"
 import { useBankBalance } from "data/queries/bank"
@@ -9,11 +9,7 @@ import { TaxParams } from "../utils"
 export const [useTaxParams, TaxParamsProvider] =
   createContext<TaxParams>("useTaxParams")
 
-interface Props {
-  children: React.ReactNode
-}
-
-const TaxParamsContext: FC<Props> = ({ children }) => {
+const TaxParamsContext = ({ children }: PropsWithChildren<{}>) => {
   const bankBalance = useBankBalance()
 
   const denoms = bankBalance.toArray().map(({ denom }) => denom) ?? []
