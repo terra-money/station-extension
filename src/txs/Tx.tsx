@@ -11,7 +11,8 @@ import { head, isNil } from "ramda"
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"
 import { isDenom, isDenomIBC, readDenom } from "@terra.kitchen/utils"
-import { Coin, Coins, LCDClient, CreateTxOptions, Fee } from "@terra-money/terra.js"
+import { Coin, Coins, CreateTxOptions } from "@terra-money/terra.js"
+import { LCDClient, Fee } from "@terra-money/terra.js"
 import { ConnectType, UserDenied } from "@terra-money/wallet-types"
 import { CreateTxFailed, TxFailed } from "@terra-money/wallet-types"
 import { useWallet, useConnectedWallet } from "@terra-money/use-wallet"
@@ -22,12 +23,8 @@ import { getAmount, sortCoins } from "utils/coin"
 import { getErrorMessage } from "utils/error"
 import { getLocalSetting, SettingKey } from "utils/localStorage"
 import { useCurrency } from "data/settings/Currency"
-import {
-  queryKey,
-  combineState,
-  RefetchOptions,
-  useIsClassic,
-} from "data/query"
+import { RefetchOptions } from "data/query"
+import { queryKey, combineState, useIsClassic } from "data/query"
 import { useAddress, useNetwork } from "data/wallet"
 import { isBroadcastingState, latestTxState } from "data/queries/tx"
 import { useBankBalance, useIsWalletEmpty } from "data/queries/bank"
@@ -121,7 +118,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
     initialGasDenom,
     gasPrices,
     gasAdjustment,
-    msgs: simulationTx?.msgs.map((msg) => msg.toData()),
+    msgs: simulationTx?.msgs.map((msg) => msg.toData(isClassic)),
   }
 
   const { data: estimatedGas, ...estimatedGasState } = useQuery(
@@ -246,8 +243,9 @@ function Tx<TxValues>(props: Props<TxValues>) {
       if (!tx) throw new Error("Tx is not defined")
 
       const gasCoins = new Coins([Coin.fromData(gasFee)])
-      const taxCoin = token && taxAmount && new Coin(token, taxAmount)
-      const taxCoins = props.taxes ?? taxCoin
+      const taxCoin =
+        token && taxAmount && has(taxAmount) && new Coin(token, taxAmount)
+      const taxCoins = sanitizeTaxes(props.taxes) ?? taxCoin
       const feeCoins = taxCoins ? gasCoins.add(taxCoins) : gasCoins
       const fee = new Fee(estimatedGas, feeCoins)
 
@@ -520,14 +518,20 @@ export const calcMax = ({ balance, rate, cap, gasAmount }: Params) => {
   return { max, tax }
 }
 
-  export const calcMinimumTaxAmount = (
-    amount: BigNumber.Value,
-    { rate, cap }: { rate: BigNumber.Value; cap: BigNumber.Value }
-  ) => {
-    return BigNumber.min(new BigNumber(amount).times(rate), cap)
-      .integerValue(BigNumber.ROUND_FLOOR)
-      .toString()
-  }
+export const calcMinimumTaxAmount = (
+  amount: BigNumber.Value,
+  { rate, cap }: { rate: BigNumber.Value; cap: BigNumber.Value }
+) => {
+  return BigNumber.min(new BigNumber(amount).times(rate), cap)
+    .integerValue(BigNumber.ROUND_FLOOR)
+    .toString()
+}
+
+const sanitizeTaxes = (taxes?: Coins) => {
+  return taxes?.toArray().filter((tax) => has(tax.amount.toString())).length
+    ? taxes
+    : undefined
+}
 
 /* hooks */
 export const useTxKey = () => {
