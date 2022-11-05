@@ -1,30 +1,15 @@
-import { useIsAnchorAvailable } from "data/external/anchor"
-import { Auto, Page } from "components/layout"
-import Coins from "./Coins"
-import Tokens from "./Tokens"
-import Vesting from "./Vesting"
-import Rewards from "./Rewards"
-import AnchorEarn from "./AnchorEarn"
+import styles from "./Wallet.module.scss"
+import NetWorth from "./NetWorth"
+import AssetList from "./AssetList"
 
 const Wallet = () => {
   const isAnchorAvailable = useIsAnchorAvailable()
 
   return (
-    <Page title="Wallet">
-      <Auto
-        columns={[
-          <>
-            <Coins />
-            <Tokens />
-            <Vesting />
-          </>,
-          <>
-            <Rewards />
-            {isAnchorAvailable && <AnchorEarn />}
-          </>,
-        ]}
-      />
-    </Page>
+    <div className={styles.wallet}>
+      <NetWorth />
+      <AssetList />
+    </div>
   )
 }
 
