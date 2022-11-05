@@ -2,6 +2,7 @@ import { always } from "ramda"
 import BigNumber from "bignumber.js"
 import { AccAddress } from "@terra-money/terra.js"
 import { validateMsg } from "utils/data"
+import { isValidName } from "../data/external/nameResolver"
 
 const lessThan = (max: number, label = "Amount", optional = false) => {
   return (value = 0) => {
@@ -90,4 +91,4 @@ export default validate
 
 /* tns */
 export const validateRecipient = (address: string) =>
-  AccAddress.validate(address) || address.endsWith(".ust")
+  AccAddress.validate(address) || isValidName(address)

@@ -1,9 +1,7 @@
-import { useQuery } from "react-query"
 import { Buffer } from "buffer"
 import keccak256 from "keccak256"
-import { queryKey, RefetchOptions } from "../query"
-import { useLCDClient } from "../queries/lcdClient"
-import { useTerraContracts } from "../Terra/TerraAssets"
+import { TerraContracts } from "../Terra/TerraAssets"
+import { LCDClient } from "@terra-money/terra.js"
 
 /**
  * Resolve terra address from a domain name.
@@ -11,43 +9,38 @@ import { useTerraContracts } from "../Terra/TerraAssets"
  * @param name - A TNS identifier such as "alice.ust"
  * @returns The terra address of the specified name, null if not resolvable
  */
-export const useTnsAddress = (name: string) => {
-  const lcd = useLCDClient()
-  const { data: contracts } = useTerraContracts()
+export async function resolveTnsAddress(
+  lcd: LCDClient,
+  contracts: TerraContracts | undefined,
+  name: string
+) {
+  if (!contracts) return
 
-  return useQuery(
-    [queryKey.TNS, name],
-    async () => {
-      if (!contracts) return
+  const { tnsRegistry: registry } = contracts
 
-      const { tnsRegistry: registry } = contracts
+  if (!registry) return
 
-      if (!registry) return
-
-      /**
-       * Get the resolver address of a given domain name.
-       *
-       * @param name - A TNS identifier such as "alice.ust"
-       * @returns The Resolver contract address of the specified name, null if the domain does not exist.
-       *
-       * @see https://docs.ens.domains/#ens-architecture for the role of Resolver Contract
-       */
-      const { resolver } = await lcd.wasm.contractQuery<{ resolver: string }>(
-        registry,
-        { get_record: { name } }
-      )
-
-      if (!resolver) return
-
-      const { address } = await lcd.wasm.contractQuery<{ address: string }>(
-        resolver,
-        { get_terra_address: { node: node(name) } }
-      )
-
-      return address
-    },
-    { ...RefetchOptions.INFINITY, enabled: name.endsWith(".ust") }
+  /**
+   * Get the resolver address of a given domain name.
+   *
+   * @param name - A TNS identifier such as "alice.ust"
+   * @returns The Resolver contract address of the specified name, null if the domain does not exist.
+   *
+   * @see https://docs.ens.domains/#ens-architecture for the role of Resolver Contract
+   */
+  const { resolver } = await lcd.wasm.contractQuery<{ resolver: string }>(
+    registry,
+    { get_record: { name } }
   )
+
+  if (!resolver) return
+
+  const { address } = await lcd.wasm.contractQuery<{ address: string }>(
+    resolver,
+    { get_terra_address: { node: node(name) } }
+  )
+
+  return address
 }
 
 /**
@@ -56,28 +49,23 @@ export const useTnsAddress = (name: string) => {
  * @param address - A terra address
  * @returns The TNS name of the specified address, null if not resolvable
  */
-export const useTnsName = (address: string) => {
-  const lcd = useLCDClient()
-  const { data: contracts } = useTerraContracts()
+export async function resolveTnsName(
+  lcd: LCDClient,
+  contracts: TerraContracts | undefined,
+  address: string
+) {
+  if (!contracts || !address) return
 
-  return useQuery(
-    [queryKey.TNS, address],
-    async () => {
-      if (!contracts || !address) return
+  const { tnsReverseRecord: reverseRecord } = contracts
 
-      const { tnsReverseRecord: reverseRecord } = contracts
+  if (!reverseRecord) return
 
-      if (!reverseRecord) return
-
-      const { name } = await lcd.wasm.contractQuery<{ name: string | null }>(
-        reverseRecord,
-        { get_name: { address } }
-      )
-
-      return name
-    },
-    { ...RefetchOptions.INFINITY, enabled: Boolean(contracts) }
+  const { name } = await lcd.wasm.contractQuery<{ name: string | null }>(
+    reverseRecord,
+    { get_name: { address } }
   )
+
+  return name
 }
 
 /**

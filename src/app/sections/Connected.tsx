@@ -7,7 +7,7 @@ import UsbIcon from "@mui/icons-material/Usb"
 import { truncate } from "@terra.kitchen/utils"
 import { useWallet } from "@terra-money/wallet-provider"
 import { useAddress } from "data/wallet"
-import { useTnsName } from "data/external/tns"
+import { useResolveName } from "data/external/nameResolver"
 import { Button, Copy, FinderLink } from "components/general"
 import CopyStyles from "components/general/Copy.module.scss"
 import { Flex, Grid } from "components/layout"
@@ -23,7 +23,7 @@ const Connected = () => {
   const { disconnect } = useWallet()
   const address = useAddress()
   const { wallet, getLedgerKey } = useAuth()
-  const { data: name } = useTnsName(address ?? "")
+  const { data: name } = useResolveName(address ?? "")
 
   /* hack to close popover */
   const [key, setKey] = useState(0)
