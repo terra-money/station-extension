@@ -22,8 +22,8 @@ const Tokens = () => {
       <>
         {!ibc.length
           ? null
-          : ibc.map(({ denom }) => (
-              <IBCAsset denom={denom} key={denom}>
+          : ibc.map(({ denom, base_denom }) => (
+              <IBCAsset denom={denom} base={base_denom} key={denom}>
                 {(item) => <Asset {...item} />}
               </IBCAsset>
             ))}
