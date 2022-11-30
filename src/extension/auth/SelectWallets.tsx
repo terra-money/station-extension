@@ -1,4 +1,5 @@
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"
+import KeyboardBackspaceRoundedIcon from "@mui/icons-material/KeyboardBackspaceRounded"
 import AddIcon from "@mui/icons-material/Add"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import { useAuth } from "auth"
@@ -38,7 +39,7 @@ export default function ManageWallets() {
       case Path.select:
         return (
           <>
-            <SwitchWallet />
+            <SwitchWallet manage={() => setPath(Path.manage)} />
             <Button
               className={styles.add__button}
               onClick={() => setPath(Path.add)}
@@ -84,6 +85,15 @@ export default function ManageWallets() {
       modalKey={address}
       maxHeight
     >
+      {path !== Path.select && (
+        <button
+          onClick={() => setPath(Path.select)}
+          style={{ position: "absolute", top: 16, left: 20 }}
+        >
+          <KeyboardBackspaceRoundedIcon style={{ fontSize: 24 }} />
+        </button>
+      )}
+
       {render()}
     </ModalButton>
   )

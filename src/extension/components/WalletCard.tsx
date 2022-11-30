@@ -29,7 +29,7 @@ const WalletCard = ({ extra }: Props) => {
         )}
 
         <Flex gap={4} className={styles.address}>
-          <Copy text={address}>{address}</Copy>
+          <Copy text={address}></Copy>
           <WalletQR
             renderButton={(open) => (
               <button onClick={open}>

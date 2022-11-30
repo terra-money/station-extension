@@ -1,14 +1,18 @@
 import { ReactNode } from "react"
 import { Link } from "react-router-dom"
-import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import { Flex, Grid } from "components/layout"
 import styles from "./ExtensionList.module.scss"
+import classNames from "classnames"
+import Copy from "./Copy"
+import MoreVertIcon from "@mui/icons-material/MoreVert"
+import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 
 interface DefaultItemProps {
   children: ReactNode
   description?: string
   icon?: ReactNode
   active?: boolean
+  manage?: () => void
 }
 
 interface LinkItem extends DefaultItemProps {
@@ -23,11 +27,13 @@ type Item = LinkItem | ButtonItem
 
 const ExtensionList = ({ list }: { list: Item[] }) => {
   const renderItem = (
-    { children, description, icon, ...item }: Item,
+    { children, description, icon, active, manage, ...item }: Item,
     index: number
   ) => {
     const props = {
-      className: styles.item,
+      className: active
+        ? classNames(styles.item, styles.item__active)
+        : styles.item,
       children: (
         <>
           <Flex gap={8}>
@@ -35,11 +41,24 @@ const ExtensionList = ({ list }: { list: Item[] }) => {
 
             <Grid gap={2}>
               <h1 className={styles.title}>{children}</h1>
-              {description && <p className={styles.desc}>{description}</p>}
+              {description && (
+                <p className={styles.desc}>
+                  terra1...{description.substring(description.length - 18)}
+                </p>
+              )}
             </Grid>
           </Flex>
 
-          <ChevronRightIcon fontSize="small" />
+          <Flex gap={0}>
+            {description && <Copy text={description} />}
+            {manage ? (
+              <button>
+                <MoreVertIcon />
+              </button>
+            ) : (
+              <ChevronRightIcon />
+            )}
+          </Flex>
         </>
       ),
       key: index,
@@ -48,7 +67,7 @@ const ExtensionList = ({ list }: { list: Item[] }) => {
     return "to" in item ? (
       <Link {...props} to={item.to} />
     ) : (
-      <button {...props} onClick={item.onClick} />
+      <button {...props} onClick={manage ? manage : item.onClick} />
     )
   }
 
