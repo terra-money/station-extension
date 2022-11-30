@@ -7,8 +7,8 @@ import AddWallet from "../auth/AddWallet"
 import { useRequest } from "../RequestContainer"
 import ConfirmConnect from "./ConfirmConnect"
 import ConfirmTx from "./ConfirmTx"
-import Assets from "./Assets"
 import Welcome from "./Welcome"
+import Wallet from "pages/wallet/Wallet"
 
 const Front = () => {
   const { wallet, wallets } = useAuth()
@@ -38,7 +38,7 @@ const Front = () => {
     )
   }
 
-  return <Assets />
+  return <Wallet />
 }
 
 export default Front

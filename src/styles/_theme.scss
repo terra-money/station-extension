@@ -13,6 +13,7 @@
   --modal-width: 520px;
   --input-height: 45px;
   --wallet-width: 380px;
+  --extension-width: min(100%, 600px);
 
   // fonts
   --font-family-monospace: "Source Code Pro", monospace;
@@ -89,8 +90,8 @@
   --danger: hsl(0, 83%, 60%);
   --danger-light: hsl(0, 83%, 60% / 0.1);
 
-  --extension-bg: hsl(227 62% 11%);
-  --extension-text: hsl(210 89% 61%);
+  --extension-bg: var(--card-bg);
+  --extension-text: var(--text);
 }
 
 .dark {
@@ -130,8 +131,8 @@
   --input-bg: var(--card-bg);
   --input-border: hsl(0 0% 30%);
 
-  --extension-bg: hsl(240 1% 15%);
-  --extension-text: hsl(210 100% 77%);
+  --extension-bg: var(--card-bg);
+  --extension-text: var(--text);
 }
 
 .blossom {

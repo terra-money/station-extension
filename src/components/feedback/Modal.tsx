@@ -86,7 +86,7 @@ export const ModalButton = (props: PropsWithChildren<ModalButtonProps>) => {
 
   useEffect(() => {
     close()
-  }, [modalKey])
+  }, [modalKey, pathname])
 
   return (
     <ModalProvider value={close}>

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Proposal } from "@terra-money/terra.js"
-import { combineState, useIsClassic } from "data/query"
+import { combineState } from "data/query"
 import { useProposals, useProposalStatusItem } from "data/queries/gov"
 import { useTerraAssets } from "data/Terra/TerraAssets"
 import { Col, Card } from "components/layout"
@@ -15,7 +15,7 @@ import ChainFilter from "components/layout/ChainFilter"
 
 const ProposalsByStatus = ({ status }: { status: Proposal.Status }) => {
   const { t } = useTranslation()
-  const isClassic = useIsClassic()
+  const networkName = useNetworkName()
 
   const { data: whitelistData, ...whitelistState } = useTerraAssets<{
     [key: string]: number[]

@@ -17,7 +17,7 @@ import InitNetworks from "app/InitNetworks"
 import InitWallet from "app/InitWallet"
 import InitTheme from "app/InitTheme"
 import ElectronVersion from "app/ElectronVersion"
-import App from "app/App"
+import App from "extension/App"
 import InitChains from "app/InitChains"
 
 const connectorOpts = { bridge: BRIDGE }

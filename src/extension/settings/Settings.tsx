@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next"
 import SettingsIcon from "@mui/icons-material/Settings"
 import FullscreenIcon from "@mui/icons-material/Fullscreen"
-import { useIsClassic } from "data/query"
 import { Flex, Tabs } from "components/layout"
 import { Popover } from "components/display"
 import HeaderIconButton from "app/components/HeaderIconButton"
@@ -10,21 +9,17 @@ import { getOpenURL } from "../storage"
 import NetworkSetting from "./NetworkSetting"
 import LanguageSetting from "./LanguageSetting"
 import ThemeSetting from "./ThemeSetting"
-import BalanceSetting from "./BalanceSetting"
+import CurrencySetting from "app/sections/CurrencySetting"
 
 const Settings = () => {
   const { t } = useTranslation()
-  const isClassic = useIsClassic()
 
   const tabs = [
     { key: "network", tab: t("Network"), children: <NetworkSetting /> },
     { key: "lang", tab: t("Language"), children: <LanguageSetting /> },
     { key: "theme", tab: t("Theme"), children: <ThemeSetting /> },
-    { key: "balance", tab: t("Balance"), children: <BalanceSetting /> },
-  ].filter(({ key }) => {
-    if (key === "balance") return isClassic
-    return true
-  })
+    { key: "currency", tab: t("Currency"), children: <CurrencySetting /> },
+  ]
 
   const openURL = getOpenURL()
   const footer = (

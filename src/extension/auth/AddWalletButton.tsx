@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next"
-import AddCircleIcon from "@mui/icons-material/AddCircle"
+import AddIcon from "@mui/icons-material/Add"
 import { ModalButton } from "components/feedback"
 import AddWallet from "./AddWallet"
 import styles from "./ConnectedWallet.module.scss"
+import { Button } from "components/general"
 
 const AddWalletButton = () => {
   const { t } = useTranslation()
@@ -11,10 +12,10 @@ const AddWalletButton = () => {
     <ModalButton
       title={t("Add a wallet")}
       renderButton={(open) => (
-        <button className={styles.button} onClick={open}>
-          <AddCircleIcon style={{ fontSize: 16 }} />
+        <Button className={styles.add__button} onClick={open}>
+          <AddIcon style={{ fontSize: 18 }} />
           {t("Add a wallet")}
-        </button>
+        </Button>
       )}
     >
       <AddWallet />

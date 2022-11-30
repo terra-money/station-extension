@@ -45,7 +45,6 @@ const [useWalletRoute, WalletRouter] = createContext<{
 export { useWalletRoute, Path }
 
 const Wallet = () => {
-  const [isOpen, setIsOpen] = useState(true)
   const [route, setRoute] = useState<Route>({ path: Path.wallet })
 
   function BackButton() {
@@ -95,22 +94,7 @@ const Wallet = () => {
   }
 
   return (
-    <div className={`${styles.wallet} ${!isOpen && styles.wallet__closed}`}>
-      <button
-        className={styles.close}
-        onClick={() => {
-          setIsOpen((o) => !o)
-        }}
-      >
-        {isOpen ? (
-          <CloseIcon width={18} height={18} />
-        ) : (
-          <>
-            <span>Wallet</span>
-            <WalletIcon width={16} height={16} />
-          </>
-        )}
-      </button>
+    <div className={styles.wallet}>
       <WalletRouter value={{ route, setRoute }}>{render()}</WalletRouter>
     </div>
   )

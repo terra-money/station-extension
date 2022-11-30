@@ -4,6 +4,7 @@
   @include flex(space-between);
   background: var(--extension-bg);
   color: var(--extension-text);
+  border-bottom: var(--border-width) solid var(--card-border);
   padding: 10px;
 
   position: sticky;

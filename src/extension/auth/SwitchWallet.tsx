@@ -10,7 +10,7 @@ const SwitchWallet = () => {
   const { connectedWallet, wallets, connect } = useAuth()
 
   const list = wallets
-    .filter(({ name }) => name !== connectedWallet?.name)
+    //.filter(({ name }) => name !== connectedWallet?.name)
     .map((wallet) => {
       const select = () => {
         connect(name)

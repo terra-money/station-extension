@@ -16,9 +16,9 @@ import ManageNetworks from "./networks/ManageNetworks"
 import AddNetworkPage from "./networks/AddNetworkPage"
 import Auth from "./auth/Auth"
 import Header from "./layouts/Header"
-import Logo from "./layouts/Logo"
 import Settings from "./settings/Settings"
 import Front from "./modules/Front"
+import ManageWallets from "./auth/SelectWallets"
 
 const App = () => {
   const network = useNetwork()
@@ -57,7 +57,7 @@ const App = () => {
           <NetworkName />
 
           <Header>
-            <Logo />
+            <ManageWallets />
             <section>
               <LatestTx />
               <Settings />
