@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { getErrorMessage } from "utils/error"
-import { useIsClassic } from "data/query"
 import { useThemeAnimation } from "data/settings/Theme"
 import { FlexColumn, Grid } from "components/layout"
 import { Form, FormError, FormItem, FormWarning } from "components/form"
@@ -27,7 +26,6 @@ interface Values {
 
 const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const { t } = useTranslation()
-  const isClassic = useIsClassic()
   const animation = useThemeAnimation()
   const { wallet, ...auth } = useAuth()
   const { actions } = useRequest()
@@ -58,7 +56,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const [submitting, setSubmitting] = useState(false)
 
   const disabled =
-    "tx" in props && getIsDangerousTx(props.tx, isClassic)
+    "tx" in props && getIsDangerousTx(props.tx)
       ? t("Dangerous tx")
       : passwordRequired && !password
       ? t("Enter password")

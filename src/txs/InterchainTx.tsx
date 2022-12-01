@@ -35,7 +35,7 @@ import { Details } from "components/display"
 import { Read } from "components/token"
 import ConnectWallet from "app/sections/ConnectWallet"
 import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
-import { isWallet, useInterchainAuth } from "auth"
+import { isWallet, useAuth } from "auth"
 import { PasswordError } from "auth/scripts/keystore"
 
 import { toInput, CoinInput } from "./utils"
@@ -94,7 +94,7 @@ function InterchainTx<TxValues>(props: Props<TxValues>) {
   const chains = useChains()
   const { post } = useWallet()
   const connectedWallet = useConnectedWallet()
-  const { wallet, validatePassword, ...auth } = useInterchainAuth()
+  const { wallet, validatePassword, ...auth } = useAuth()
   const addresses = useInterchainAddresses()
   const isWalletEmpty = useIsWalletEmpty()
   const setLatestTx = useSetRecoilState(latestTxState)
@@ -226,7 +226,6 @@ function InterchainTx<TxValues>(props: Props<TxValues>) {
       if (isWallet.multisig(wallet)) {
         // TODO: broadcast only to terra if wallet is multisig
         const unsignedTx = await auth.create({ ...tx, fee })
-        // @ts-expect-error
         navigate(toPostMultisigTx(unsignedTx))
       } else if (wallet) {
         const result = await auth.post({ ...tx, fee }, password)
@@ -367,6 +366,7 @@ function InterchainTx<TxValues>(props: Props<TxValues>) {
       ? t("Coins required to post transactions")
       : ""
 
+  console.log(passwordRequired)
   const submitButton = (
     <>
       {walletError && <FormError>{walletError}</FormError>}

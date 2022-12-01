@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { CopyToClipboard } from "react-copy-to-clipboard"
 import classNames from "classnames/bind"
 import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 import CheckIcon from "@mui/icons-material/Check"

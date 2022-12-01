@@ -22,13 +22,10 @@ export const useNetworkState = () => {
 
 /* helpers */
 export const useNetworkOptions = () => {
-  const networks = useNetworks()
-
-  if (!sandbox) return
-
-  return Object.values(networks).map(({ name }) => {
-    return { value: name, label: name }
-  })
+  return [
+    { value: "mainnet", label: "mainnet" },
+    { value: "testnet", label: "testnet" },
+  ]
 }
 
 export const useNetwork = (): CustomNetwork => {

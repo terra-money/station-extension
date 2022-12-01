@@ -227,9 +227,11 @@ function Tx<TxValues>(props: Props<TxValues>) {
       const fee = new Fee(estimatedGas, feeCoins)
 
       if (isWallet.multisig(wallet)) {
+        // @ts-expect-error
         const unsignedTx = await auth.create({ ...tx, fee })
         navigate(toPostMultisigTx(unsignedTx))
       } else if (wallet) {
+        // @ts-expect-error
         const result = await auth.post({ ...tx, fee }, password)
         setLatestTx({
           txhash: result.txhash,

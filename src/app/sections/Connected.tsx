@@ -68,7 +68,7 @@ const Connected = () => {
                       className={CopyStyles.button}
                       onClick={async () => {
                         const lk = await getLedgerKey()
-                        lk.showAddressAndPubKey()
+                        lk.showAddressAndPubKey("terra")
                       }}
                     >
                       <UsbIcon fontSize="inherit" />
