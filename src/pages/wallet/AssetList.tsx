@@ -1,5 +1,5 @@
 import { FormError } from "components/form"
-import { InternalButton } from "components/general"
+import { Button } from "components/general"
 import { useBankBalance, useIsWalletEmpty } from "data/queries/bank"
 import { useMemoizedPrices } from "data/queries/coingecko"
 import { useNativeDenoms } from "data/token"
@@ -77,13 +77,11 @@ const AssetList = () => {
     <article className={styles.assetlist}>
       <div className={styles.assetlist__title}>
         <h3>Assets</h3>
-        <AddTokens>
-          {(open) => (
-            <InternalButton onClick={open}>{t("Add tokens")}</InternalButton>
-          )}
-        </AddTokens>
       </div>
       <div className={styles.assetlist__list}>{render()}</div>
+      <AddTokens>
+        {(open) => <Button onClick={open}>{t("+ Add tokens")}</Button>}
+      </AddTokens>
     </article>
   )
 }
