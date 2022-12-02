@@ -7,51 +7,63 @@ import { clearStoredPassword } from "../storage"
 import ExtensionList from "../components/ExtensionList"
 
 const SwitchWallet = ({ manage }: { manage?: () => void }) => {
-  const { connectedWallet, wallets, connect } = useAuth()
+  const { wallet, wallets, connect, connectedWallet } = useAuth()
 
-  const list = wallets
-    //.filter(({ name }) => name !== connectedWallet?.name)
-    .sort((a, b) => {
-      if (a.name === connectedWallet?.name) return -1
-      if (b.name === connectedWallet?.name) return 1
-      return 0
-    })
-    .map((wallet) => {
-      const select = () => {
-        connect(name)
-        clearStoredPassword()
-      }
-
-      const { name, address, lock } = wallet
-
-      const children = (
+  const list = [
+    wallet && {
+      children: (
         <Flex gap={4} start>
           {isWallet.multisig(wallet) && <MultisigBadge />}
-          {name}
-          {lock && <LockOutlinedIcon fontSize="inherit" className="muted" />}
+          {"name" in wallet ? wallet.name : "Ledger"}
         </Flex>
-      )
+      ),
+      description: wallet.address,
+      active: true,
+      onClick: () => {},
+      manage,
+    },
+    ...wallets
+      .filter(({ name }) => name !== connectedWallet?.name)
+      .sort((a, b) => {
+        if (a.name === connectedWallet?.name) return -1
+        if (b.name === connectedWallet?.name) return 1
+        return 0
+      })
+      .map((wallet) => {
+        const select = () => {
+          connect(name)
+          clearStoredPassword()
+        }
 
-      const active = address === connectedWallet?.address
+        const { name, address, lock } = wallet
 
-      return lock
-        ? {
-            children,
-            to: `/auth/unlock/${name}`,
-          }
-        : {
-            children,
-            description: address,
-            active,
-            onClick: active ? () => {} : select,
-            manage: active ? manage : undefined,
-          }
-    })
+        const children = (
+          <Flex gap={4} start>
+            {isWallet.multisig(wallet) && <MultisigBadge />}
+            {name}
+            {lock && <LockOutlinedIcon fontSize="inherit" className="muted" />}
+          </Flex>
+        )
+
+        return lock
+          ? {
+              children,
+              to: `/auth/unlock/${name}`,
+            }
+          : {
+              children,
+              description: address,
+              onClick: select,
+            }
+      }),
+  ]
 
   return (
     <Grid gap={8}>
       <SelectPreconfigured />
-      <ExtensionList list={list} />
+      <ExtensionList
+        list={list.filter((item) => item !== undefined) as any[]}
+      />
     </Grid>
   )
 }

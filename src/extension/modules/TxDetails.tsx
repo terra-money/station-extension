@@ -1,6 +1,6 @@
 import { Fragment } from "react"
 import { useTranslation } from "react-i18next"
-import { useChainID, useNetwork, useNetworkName } from "data/wallet"
+import { useNetwork } from "data/wallet"
 import { Grid } from "components/layout"
 import { Dl, ToNow } from "components/display"
 import { ReadMultiple } from "components/token"
