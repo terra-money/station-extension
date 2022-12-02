@@ -29,11 +29,12 @@ const WalletCard = ({ extra }: Props) => {
         )}
 
         <Flex gap={4} className={styles.address}>
+          <p>{address}</p>
           <Copy text={address}></Copy>
           <WalletQR
             renderButton={(open) => (
               <button onClick={open}>
-                <QrCodeIcon fontSize="inherit" />
+                <QrCodeIcon style={{ fontSize: 26, padding: 4 }} />
               </button>
             )}
           />

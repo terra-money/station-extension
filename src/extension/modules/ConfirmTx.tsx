@@ -7,7 +7,6 @@ import { useThemeAnimation } from "data/settings/Theme"
 import { FlexColumn, Grid } from "components/layout"
 import { Form, FormError, FormItem, FormWarning } from "components/form"
 import { Input, Checkbox } from "components/form"
-import { useTx } from "txs/TxContext"
 import Overlay from "app/components/Overlay"
 import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
 import { isWallet, useAuth } from "auth"
@@ -25,12 +24,12 @@ interface Values {
 }
 
 const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
+  console.log(props)
   const { t } = useTranslation()
   const animation = useThemeAnimation()
   const { wallet, ...auth } = useAuth()
   const { actions } = useRequest()
   const passwordRequired = isWallet.single(wallet)
-  const { gasPrices } = useTx()
 
   /* form */
   const form = useForm<Values>({
@@ -69,7 +68,10 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
 
     if ("tx" in props) {
       const { requestType, tx } = props
-      const txOptions = tx.fee ? tx : { ...tx, gasPrices, feeDenoms: ["uusd"] }
+      const txOptions = tx.fee
+        ? tx
+        : // TODO: do we need that?
+          { ...tx, gasPices: { uluna: 0.015 }, feeDenoms: ["uluna"] }
 
       try {
         if (disabled) throw new Error(disabled)
