@@ -1,3 +1,4 @@
+import { useNetwork } from "data/wallet"
 import createContext from "utils/createContext"
 
 interface Chains {
@@ -38,15 +39,6 @@ interface Chains {
 const [useFetchedData, ChainsProvider] = createContext<Chains>("useChains")
 export { ChainsProvider }
 
-export function useChains(
-  network?: "mainnet" | "testnet"
-): Chains["chains"]["mainnet"] {
-  const data = useFetchedData()
-  if (!data) return {}
-
-  return data.chains[network ?? "mainnet"]
-}
-
 export function useWhitelist(): Chains["whitelist"] {
   const data = useFetchedData()
   if (!data) return {}
@@ -55,7 +47,7 @@ export function useWhitelist(): Chains["whitelist"] {
 }
 
 export function useIBCChannels() {
-  const chains = useChains()
+  const network = useNetwork()
 
   return function getIBCChannel({
     from,
@@ -64,10 +56,10 @@ export function useIBCChannels() {
     from: string
     to: string
   }): string {
-    if (chains[from].name === "Terra") {
-      return chains[to].ibc?.fromTerra ?? ""
-    } else if (chains[to].name === "Terra") {
-      return chains[from].ibc?.toTerra ?? ""
+    if (network[from].name === "Terra") {
+      return network[to].ibc?.fromTerra ?? ""
+    } else if (network[to].name === "Terra") {
+      return network[from].ibc?.toTerra ?? ""
     } else {
       // one of the 2 chains MUST be Terra
       return ""

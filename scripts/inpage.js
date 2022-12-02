@@ -1,4 +1,7 @@
+// legacy terra webapps
 window.isTerraExtensionAvailable = true
+// new inetchain webapps
+window.isStationExtensionAvailable = true
 
 // ---------------------------------------------
 // for multiple extension support

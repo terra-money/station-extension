@@ -86,6 +86,13 @@ const connectRemote = (remotePort) => {
 
         break
 
+      case "interchain-info":
+        extension.storage.local.get(["networks"], ({ networks }) => {
+          sendResponse("onInterchainInfo", networks)
+        })
+
+        break
+
       case "connect":
         const handleChangeConnect = (changes, namespace) => {
           // It is recursive.

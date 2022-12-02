@@ -1,15 +1,15 @@
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import AddressBox from "components/form/AddressBox"
-import { useChains } from "data/queries/chains"
+import { useNetwork } from "data/wallet"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import styles from "./ReceivePage.module.scss"
 
 const ReceivePage = () => {
-  const chains = useChains()
+  const network = useNetwork()
   const addresses = useInterchainAddresses()
   // sort Terra first
-  const list = Object.values(chains).sort((a, b) => {
+  const list = Object.values(network).sort((a, b) => {
     if (a.name === "Terra") return -1
     if (b.name === "Terra") return 1
     return 0
@@ -22,7 +22,7 @@ const ReceivePage = () => {
       setChain(list[0].chainID)
     }
     // eslint-disable-next-line
-  }, [chains])
+  }, [network])
 
   // TODO: handle wallet not connected
   return (

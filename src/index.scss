@@ -5,7 +5,7 @@
 @import "customize";
 
 #station {
-  min-width: var(--extension-width); // 400px
+  min-width: 400px;
   min-height: 600px; // Chrome extension maximum height
   height: 100vh;
   overflow-y: auto;

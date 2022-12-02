@@ -42,7 +42,6 @@ import { toInput, CoinInput } from "./utils"
 import { useTx } from "./TxContext"
 import styles from "./Tx.module.scss"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
-import { useChains } from "data/queries/chains"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 
 interface Props<TxValues> {
@@ -91,7 +90,6 @@ function InterchainTx<TxValues>(props: Props<TxValues>) {
   const { t } = useTranslation()
   const network = useNetwork()
   const lcd = useInterchainLCDClient()
-  const chains = useChains()
   const { post } = useWallet()
   const connectedWallet = useConnectedWallet()
   const { wallet, validatePassword, ...auth } = useAuth()
@@ -140,14 +138,14 @@ function InterchainTx<TxValues>(props: Props<TxValues>) {
 
   const getGasAmount = useCallback(
     (denom: CoinDenom) => {
-      const gasPrice = chains[chain]?.gasPrices[denom]
+      const gasPrice = network[chain]?.gasPrices[denom]
       if (isNil(estimatedGas) || !gasPrice) return "0"
       return new BigNumber(estimatedGas)
         .times(gasPrice)
         .integerValue(BigNumber.ROUND_CEIL)
         .toString()
     },
-    [estimatedGas, chain, chains]
+    [estimatedGas, chain, network]
   )
 
   const gasAmount = getGasAmount(gasDenom)
@@ -272,8 +270,8 @@ function InterchainTx<TxValues>(props: Props<TxValues>) {
     : false
 
   const availableGasDenoms = useMemo(() => {
-    return Object.keys(chains[chain]?.gasPrices || {})
-  }, [chain, chains])
+    return Object.keys(network[chain]?.gasPrices || {})
+  }, [chain, network])
 
   useEffect(() => {
     if (availableGasDenoms.includes(gasDenom)) return

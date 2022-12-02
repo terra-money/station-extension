@@ -1,5 +1,6 @@
 import { useCallback } from "react"
 import { CreateTxOptions, Fee, Msg, Tx } from "@terra-money/feather.js"
+import { useChainID } from "data/wallet"
 
 /* primitive */
 export interface PrimitiveDefaultRequest {
@@ -11,7 +12,7 @@ export interface PrimitiveTxRequest
   extends Partial<TxResponse>,
     PrimitiveDefaultRequest {
   msgs: string[]
-  chainID: string
+  chainID?: string
   fee?: string
   memo?: string
 }
@@ -73,23 +74,29 @@ export const parseDefault = (
 }
 
 export const useParseTx = () => {
-  return useCallback((request: PrimitiveTxRequest): TxRequest["tx"] => {
-    const { msgs, fee, memo, chainID } = request
-    const isProto = "@type" in JSON.parse(msgs[0])
-    return isProto
-      ? {
-          msgs: msgs.map((msg) => Msg.fromData(JSON.parse(msg))),
-          fee: fee ? Fee.fromData(JSON.parse(fee)) : undefined,
-          memo,
-          chainID,
-        }
-      : {
-          msgs: msgs.map((msg) => Msg.fromAmino(JSON.parse(msg))),
-          fee: fee ? Fee.fromAmino(JSON.parse(fee)) : undefined,
-          memo,
-          chainID,
-        }
-  }, [])
+  // for lecacy support
+  const defaultChainID = useChainID()
+
+  return useCallback(
+    (request: PrimitiveTxRequest): TxRequest["tx"] => {
+      const { msgs, fee, memo, chainID } = request
+      const isProto = "@type" in JSON.parse(msgs[0])
+      return isProto
+        ? {
+            msgs: msgs.map((msg) => Msg.fromData(JSON.parse(msg))),
+            fee: fee ? Fee.fromData(JSON.parse(fee)) : undefined,
+            memo,
+            chainID: chainID ?? defaultChainID,
+          }
+        : {
+            msgs: msgs.map((msg) => Msg.fromAmino(JSON.parse(msg))),
+            fee: fee ? Fee.fromAmino(JSON.parse(fee)) : undefined,
+            memo,
+            chainID: chainID ?? defaultChainID,
+          }
+    },
+    [defaultChainID]
+  )
 }
 
 export const parseBytes = (

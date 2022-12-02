@@ -1,7 +1,7 @@
 import { useConnectedWallet } from "@terra-money/use-wallet"
 import { bech32 } from "bech32"
-import { useChains } from "data/queries/chains"
 import useAuth from "./useAuth"
+import { useNetwork } from "./useNetwork"
 
 const useAddress = () => {
   const { wallet } = useAuth()
@@ -11,16 +11,19 @@ const useAddress = () => {
 export const useInterchainAddresses = () => {
   const connected = useConnectedWallet()
   const { wallet } = useAuth()
-  const chains = useChains()
+  const network = useNetwork()
 
   const address = wallet?.address ?? connected?.terraAddress
   if (!address) return
   const { words } = bech32.decode(address)
 
-  const addresses = Object.values(chains).reduce((acc, { prefix, chainID }) => {
-    acc[chainID] = bech32.encode(prefix, words)
-    return acc
-  }, {} as Record<string, string>)
+  const addresses = Object.values(network).reduce(
+    (acc, { prefix, chainID }) => {
+      acc[chainID] = bech32.encode(prefix, words)
+      return acc
+    },
+    {} as Record<string, string>
+  )
 
   return addresses
 }

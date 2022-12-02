@@ -1,6 +1,6 @@
+import { useNetwork } from "data/wallet"
 import { useEffect, useState } from "react"
 import styles from "./ChainSelector.module.scss"
-import { useChains } from "data/queries/chains"
 
 interface Props {
   chainsList: string[]
@@ -8,8 +8,8 @@ interface Props {
 }
 
 const ChainSelector = ({ chainsList, onChange }: Props) => {
-  const chains = useChains()
-  const list = Object.values(chains)
+  const networks = useNetwork()
+  const list = Object.values(networks)
     .filter((c) => chainsList.includes(c.chainID))
     .sort((a, b) => {
       if (a.name === "Terra") return -1

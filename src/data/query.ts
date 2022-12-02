@@ -1,9 +1,8 @@
-import { useChainID } from "auth/hooks/useNetwork"
 import { LAZY_LIMIT } from "config/constants"
 
+// TODO: remove
 export const useIsClassic = () => {
-  const networkName = useChainID()
-  return networkName === "columbus-5" // TODO
+  return false
 }
 
 /* refetch */

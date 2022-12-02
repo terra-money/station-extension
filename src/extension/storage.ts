@@ -3,13 +3,19 @@ import extension from "extensionizer"
 import decrypt from "auth/scripts/decrypt"
 
 /* network */
-export const storeNetwork = (network: TerraNetwork) => {
-  extension.storage?.local.set({ network })
+export const storeNetwork = (
+  network: TerraNetwork,
+  networks: Record<ChainID, InterchainNetwork>
+) => {
+  extension.storage?.local.set({ network, networks })
 }
 
 /* wallet */
-export const storeWalletAddress = (address: AccAddress) => {
-  extension.storage?.local.set({ wallet: { address } })
+export const storeWalletAddress = (
+  address: AccAddress,
+  addresses: Record<ChainID, AccAddress>
+) => {
+  extension.storage?.local.set({ wallet: { address, addresses } })
 }
 
 export const clearWalletAddress = () => {

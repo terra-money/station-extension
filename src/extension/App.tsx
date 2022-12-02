@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useRoutes } from "react-router-dom"
-import { useAddress, useNetwork } from "data/wallet"
+import { useAddress, useChainID, useNetwork, useNetworkName } from "data/wallet"
 import { ErrorBoundary } from "components/feedback"
 import { fallback } from "app/App"
 import InitBankBalance from "app/InitBankBalance"
@@ -19,19 +19,23 @@ import Header from "./layouts/Header"
 import Settings from "./settings/Settings"
 import Front from "./modules/Front"
 import ManageWallets from "./auth/SelectWallets"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
 
 const App = () => {
   const network = useNetwork()
+  const name = useNetworkName()
+  const chainID = useChainID()
   const address = useAddress()
+  const addresses = useInterchainAddresses()
 
   useEffect(() => {
-    storeNetwork(network)
-  }, [network])
+    storeNetwork({ ...network[chainID], name }, network)
+  }, [network, chainID, name])
 
   useEffect(() => {
-    if (address) storeWalletAddress(address)
+    if (address) storeWalletAddress(address, addresses ?? {})
     else clearWalletAddress()
-  }, [address])
+  }, [address, addresses])
 
   const routes = useRoutes([
     { path: "/networks", element: <ManageNetworks /> },
