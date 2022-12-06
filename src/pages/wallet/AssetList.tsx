@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next"
 import AddTokens from "./AddTokens"
 import Asset from "./Asset"
 import styles from "./AssetList.module.scss"
+import AddIcon from "@mui/icons-material/Add"
 
 const AssetList = () => {
   const { t } = useTranslation()
@@ -80,7 +81,12 @@ const AssetList = () => {
       </div>
       <div className={styles.assetlist__list}>{render()}</div>
       <AddTokens>
-        {(open) => <Button onClick={open}>{t("+ Add tokens")}</Button>}
+        {(open) => (
+          <Button onClick={open}>
+            <AddIcon />
+            {t("Add tokens")}
+          </Button>
+        )}
       </AddTokens>
     </article>
   )
