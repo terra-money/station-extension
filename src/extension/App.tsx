@@ -20,6 +20,7 @@ import Settings from "./settings/Settings"
 import Front from "./modules/Front"
 import ManageWallets from "./auth/SelectWallets"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { Flex } from "components/layout"
 
 const App = () => {
   const network = useNetwork()
@@ -58,14 +59,13 @@ const App = () => {
     <ErrorBoundary fallback={fallback}>
       <InitBankBalance>
         <RequestContainer>
-          <NetworkName />
-
           <Header>
             <ManageWallets />
-            <section>
+            <Flex gap={5}>
               <LatestTx />
+              <NetworkName />
               <Settings />
-            </section>
+            </Flex>
           </Header>
 
           <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>

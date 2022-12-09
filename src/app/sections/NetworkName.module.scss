@@ -1,6 +1,7 @@
 .text {
   font-weight: var(--bold);
-  padding: 4px;
+  padding: 3px 12px;
+  border-radius: var(--border-radius);
   text-align: center;
 }
 
