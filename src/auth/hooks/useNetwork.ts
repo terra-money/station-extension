@@ -1,6 +1,8 @@
 import { atom, useRecoilState, useRecoilValue } from "recoil"
 import { useNetworks } from "app/InitNetworks"
 import { getStoredNetwork, storeNetwork } from "../scripts/network"
+import useAuth from "./useAuth"
+import is from "../scripts/is"
 
 const networkState = atom({
   key: "network",
@@ -29,6 +31,16 @@ export const useNetworkOptions = () => {
 export const useNetwork = (): Record<ChainID, InterchainNetwork> => {
   const networks = useNetworks()
   const network = useRecoilValue(networkState)
+  const { wallet } = useAuth()
+
+  // multisig wallet are supported only on terra
+  if (is.multisig(wallet)) {
+    const terra = Object.values(
+      networks[network as NetworkName] as Record<ChainID, InterchainNetwork>
+    ).find(({ prefix }) => prefix === "terra")
+    if (!terra) return {}
+    return { [terra.chainID]: terra }
+  }
 
   return networks[network as NetworkName]
 }

@@ -68,7 +68,7 @@ export default function ManageWallets() {
 
   return (
     <ModalButton
-      title={t("Switch wallet")}
+      title={t("Manage Wallets")}
       renderButton={(open) => (
         <button
           onClick={() => {
