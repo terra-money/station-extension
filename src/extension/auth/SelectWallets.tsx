@@ -12,6 +12,8 @@ import AddWallet from "./AddWallet"
 import ManageWallet from "./ManageWallet"
 import styles from "./SelectWallets.module.scss"
 import SwitchWallet from "./SwitchWallet"
+import { bech32 } from "bech32"
+import is from "auth/scripts/is"
 
 enum Path {
   select = "select",
@@ -24,8 +26,17 @@ export default function ManageWallets() {
   const address = useAddress()
   const { t } = useTranslation()
   const [path, setPath] = useState(Path.select)
-  const selectedWallet = wallets.find((w) => w.address === wallet?.address)
-  const isLedger = (wallet as LedgerWallet)?.ledger
+  const selectedWallet = wallets.find((w) => {
+    if ("words" in w) {
+      return w.words["330"] === wallet?.words["330"]
+    } else {
+      return (
+        Buffer.from(bech32.decode(w.address).words).toString("hex") ===
+        wallet?.words["330"]
+      )
+    }
+  })
+  const isLedger = is.ledger(wallet)
 
   if (!selectedWallet && !isLedger)
     return (

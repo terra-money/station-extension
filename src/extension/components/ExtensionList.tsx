@@ -6,10 +6,11 @@ import classNames from "classnames"
 import Copy from "./Copy"
 import MoreVertIcon from "@mui/icons-material/MoreVert"
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
+import { addressFromWords } from "utils/bech32"
 
 interface DefaultItemProps {
   children: ReactNode
-  description?: string
+  description?: string | { "330": string }
   icon?: ReactNode
   active?: boolean
   manage?: () => void
@@ -30,6 +31,10 @@ const ExtensionList = ({ list }: { list: Item[] }) => {
     { children, description, icon, active, manage, ...item }: Item,
     index: number
   ) => {
+    const address =
+      description && typeof description !== "string"
+        ? addressFromWords(description["330"])
+        : description
     const props = {
       className: active
         ? classNames(styles.item, styles.item__active)
@@ -41,16 +46,16 @@ const ExtensionList = ({ list }: { list: Item[] }) => {
 
             <Grid gap={2}>
               <h1 className={styles.title}>{children}</h1>
-              {description && (
+              {address && (
                 <p className={styles.desc}>
-                  terra1...{description.substring(description.length - 18)}
+                  terra1...{address.substring(address.length - 18)}
                 </p>
               )}
             </Grid>
           </Flex>
 
           <Flex gap={0}>
-            {description && <Copy text={description} />}
+            {address && <Copy text={address} />}
             {manage ? (
               <button>
                 <MoreVertIcon />

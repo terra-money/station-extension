@@ -11,6 +11,7 @@ import { Checkbox, Input, Submit } from "components/form"
 import validate from "../scripts/validate"
 import useAuth from "../hooks/useAuth"
 import { isBleAvailable } from "utils/ledger"
+import { wordsFromAddress } from "utils/bech32"
 
 interface Values {
   index: number
@@ -49,8 +50,18 @@ const AccessWithLedgerForm = () => {
         ? await BluetoothTransport.create(LEDGER_TRANSPORT_TIMEOUT)
         : undefined
 
-      const key = await LedgerKey.create(transport, index)
-      connectLedger(key.accAddress("terra"), index, bluetooth)
+      // TODO: might want to use 118 on terra too
+      const key330 = await LedgerKey.create({ transport, index })
+      const key118 = await LedgerKey.create({ transport, index, coinType: 118 })
+      connectLedger(
+        {
+          "330": wordsFromAddress(key330.accAddress("terra")),
+          "118": wordsFromAddress(key118.accAddress("terra")),
+        },
+        index,
+        bluetooth
+      )
+
       navigate("/", { replace: true })
     } catch (error) {
       setError(error as Error)

@@ -67,7 +67,7 @@ const Connected = () => {
                     <button
                       className={CopyStyles.button}
                       onClick={async () => {
-                        const lk = await getLedgerKey()
+                        const lk = await getLedgerKey("330")
                         lk.showAddressAndPubKey("terra")
                       }}
                     >

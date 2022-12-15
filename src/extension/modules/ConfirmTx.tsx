@@ -24,7 +24,6 @@ interface Values {
 }
 
 const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
-  console.log(props)
   const { t } = useTranslation()
   const animation = useThemeAnimation()
   const { wallet, ...auth } = useAuth()

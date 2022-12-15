@@ -5,6 +5,7 @@ import MultisigBadge from "auth/components/MultisigBadge"
 import SelectPreconfigured from "auth/modules/select/SelectPreconfigured"
 import { clearStoredPassword } from "../storage"
 import ExtensionList from "../components/ExtensionList"
+import { addressFromWords } from "utils/bech32"
 
 const SwitchWallet = ({ manage }: { manage?: () => void }) => {
   const { wallet, wallets, connect, connectedWallet } = useAuth()
@@ -17,7 +18,7 @@ const SwitchWallet = ({ manage }: { manage?: () => void }) => {
           {"name" in wallet ? wallet.name : "Ledger"}
         </Flex>
       ),
-      description: wallet.address,
+      description: wallet.words,
       active: true,
       onClick: () => {},
       manage,
@@ -35,7 +36,12 @@ const SwitchWallet = ({ manage }: { manage?: () => void }) => {
           clearStoredPassword()
         }
 
-        const { name, address, lock } = wallet
+        const { name, lock } = wallet
+
+        const address =
+          "address" in wallet
+            ? wallet.address
+            : addressFromWords(wallet.words["330"])
 
         const children = (
           <Flex gap={4} start>

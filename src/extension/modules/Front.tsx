@@ -30,7 +30,6 @@ const Front = () => {
   }
 
   if (tx) {
-    console.log("tx", tx)
     return <ConfirmTx {...tx} />
   }
 
