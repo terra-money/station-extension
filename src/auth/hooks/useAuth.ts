@@ -66,7 +66,11 @@ const useAuth = () => {
   )
 
   const connectLedger = useCallback(
-    (words: { "330": string; "118": string }, index = 0, bluetooth = false) => {
+    (
+      words: { "330": string; "118"?: string },
+      index = 0,
+      bluetooth = false
+    ) => {
       const wallet = { words, ledger: true as const, index, bluetooth }
       storeWallet(wallet)
       setWallet(wallet as any)

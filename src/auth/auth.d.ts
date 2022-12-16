@@ -24,7 +24,7 @@ interface SingleWallet {
 interface LedgerWallet {
   words: {
     "330": string
-    "118": string
+    "118"?: string
   }
   ledger: true
   index: number
