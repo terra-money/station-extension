@@ -46,13 +46,20 @@ const AccessWithLedgerForm = () => {
     setError(undefined)
 
     try {
-      const transport = bluetooth
-        ? await BluetoothTransport.create(LEDGER_TRANSPORT_TIMEOUT)
-        : undefined
-
       // TODO: might want to use 118 on terra too
-      const key330 = await LedgerKey.create({ transport, index })
-      const key118 = await LedgerKey.create({ transport, index, coinType: 118 })
+      const key330 = await LedgerKey.create({
+        transport: bluetooth
+          ? () => BluetoothTransport.create(LEDGER_TRANSPORT_TIMEOUT)
+          : undefined,
+        index,
+      })
+      const key118 = await LedgerKey.create({
+        transport: bluetooth
+          ? () => BluetoothTransport.create(LEDGER_TRANSPORT_TIMEOUT)
+          : undefined,
+        index,
+        coinType: 118,
+      })
       connectLedger(
         {
           "330": wordsFromAddress(key330.accAddress("terra")),

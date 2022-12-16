@@ -107,7 +107,7 @@ const useAuth = () => {
     if (!is.ledger(wallet)) throw new Error("Ledger device is not connected")
     const { index, bluetooth } = wallet
     const transport = bluetooth
-      ? await BluetoothTransport.create(LEDGER_TRANSPORT_TIMEOUT)
+      ? () => BluetoothTransport.create(LEDGER_TRANSPORT_TIMEOUT)
       : undefined
 
     return LedgerKey.create({ transport, index, coinType: Number(coinType) })
