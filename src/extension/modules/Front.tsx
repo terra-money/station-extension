@@ -8,11 +8,14 @@ import ConfirmConnect from "./ConfirmConnect"
 import ConfirmTx from "./ConfirmTx"
 import Welcome from "./Welcome"
 import Wallet from "pages/wallet/Wallet"
+import WelcomeModal from "app/sections/WelcomeModal"
 
 const Front = () => {
   const { wallet, wallets } = useAuth()
   const { requests } = useRequest()
   const { connect, tx } = requests
+
+  const showWelcomeModal = localStorage.getItem("welcomeModal") === null
 
   if (!wallet) {
     return (
@@ -21,6 +24,7 @@ const Front = () => {
           {wallets.length ? <SwitchWallet /> : <Welcome />}
           <AddWallet />
         </Col>
+        {showWelcomeModal && <WelcomeModal />}
       </ExtensionPage>
     )
   }
