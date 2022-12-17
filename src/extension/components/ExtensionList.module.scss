@@ -24,10 +24,22 @@
 }
 
 .item__active {
-  background: var(--button-primary-bg);
   border: var(--border-width) solid var(--button-primary-bg);
+  background: hsl(
+    var(--button-primary-bg-h),
+    var(--button-primary-bg-s),
+    var(--button-primary-bg-l)
+  );
+  color: var(--button-primary-text);
+  transition: background var(--transition);
+
   &:hover {
-    background: var(--card-bg-muted);
+    background: hsl(
+      var(--button-primary-bg-h),
+      var(--button-primary-bg-s),
+      calc(var(--button-primary-bg-l) - 5%)
+    );
+
     text-decoration: none;
   }
 }
