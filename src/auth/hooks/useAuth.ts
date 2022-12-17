@@ -5,8 +5,6 @@ import { CreateTxOptions, Tx, isTxError } from "@terra-money/feather.js"
 import { AccAddress, SignDoc } from "@terra-money/feather.js"
 import { RawKey, SignatureV2 } from "@terra-money/feather.js"
 import { LedgerKey } from "@terra-money/ledger-station-js"
-import BluetoothTransport from "@ledgerhq/hw-transport-web-ble"
-import { LEDGER_TRANSPORT_TIMEOUT } from "config/constants"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import is from "../scripts/is"
 import { PasswordError } from "../scripts/keystore"
@@ -18,6 +16,7 @@ import encrypt from "../scripts/encrypt"
 import useAvailable from "./useAvailable"
 import { useNetwork } from "./useNetwork"
 import { addressFromWords, wordsFromAddress } from "utils/bech32"
+import { createTransport } from "utils/ledger"
 
 export const walletState = atom({
   key: "wallet",
@@ -110,9 +109,7 @@ const useAuth = () => {
   const getLedgerKey = async (coinType: string) => {
     if (!is.ledger(wallet)) throw new Error("Ledger device is not connected")
     const { index, bluetooth } = wallet
-    const transport = bluetooth
-      ? () => BluetoothTransport.create(LEDGER_TRANSPORT_TIMEOUT)
-      : undefined
+    const transport = bluetooth ? createTransport : undefined
 
     return LedgerKey.create({ transport, index, coinType: Number(coinType) })
   }

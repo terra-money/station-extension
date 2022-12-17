@@ -12,6 +12,6 @@
 }
 
 .completeAnimation {
-  width: 400px;
+  width: min(400px, 80vw);
   margin: 0 auto;
 }

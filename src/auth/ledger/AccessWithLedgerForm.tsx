@@ -70,17 +70,15 @@ const AccessWithLedgerForm = () => {
       setPage(Pages.connect)
       // TODO: might want to use 118 on terra too
       const key330 = await LedgerKey.create({
-        transport: async () => {
-          const t = await createTransport()
-          setPage(Pages.openTerra)
-          return t
-        },
+        transport: bluetooth ? createTransport : undefined,
         index,
+        onConnect: () => setPage(Pages.openTerra),
       })
       setWords({ "330": wordsFromAddress(key330.accAddress("terra")) })
       setPage(Pages.askCosmos)
     } catch (error) {
       setError(error as Error)
+      setPage(Pages.form)
     }
   }
 
@@ -91,13 +89,10 @@ const AccessWithLedgerForm = () => {
       setPage(Pages.connect)
       // TODO: might want to use 118 on terra too
       const key118 = await LedgerKey.create({
-        transport: async () => {
-          const t = await createTransport()
-          setPage(Pages.openCosmos)
-          return t
-        },
+        transport: bluetooth ? createTransport : undefined,
         index,
         coinType: 118,
+        onConnect: () => setPage(Pages.openCosmos),
       })
       setWords((w) => ({
         ...w,
@@ -106,6 +101,7 @@ const AccessWithLedgerForm = () => {
       setPage(Pages.complete)
     } catch (error) {
       setError(error as Error)
+      setPage(Pages.askCosmos)
     }
   }
 
@@ -173,6 +169,8 @@ const AccessWithLedgerForm = () => {
             <>
               <section className="center">
                 <p>{t("Do you want to import your Cosmos accounts?")}</p>
+
+                {error && <FormError>{error.message}</FormError>}
 
                 <Button
                   className={styles.mainButton}
