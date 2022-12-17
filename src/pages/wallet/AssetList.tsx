@@ -80,14 +80,16 @@ const AssetList = () => {
         <h3>Assets</h3>
       </div>
       <div className={styles.assetlist__list}>{render()}</div>
-      <AddTokens>
-        {(open) => (
-          <Button onClick={open}>
-            <AddIcon />
-            {t("Add tokens")}
-          </Button>
-        )}
-      </AddTokens>
+      <div className={styles.assetlist__add}>
+        <AddTokens>
+          {(open) => (
+            <Button onClick={open}>
+              <AddIcon />
+              {t("Add tokens")}
+            </Button>
+          )}
+        </AddTokens>
+      </div>
     </article>
   )
 }

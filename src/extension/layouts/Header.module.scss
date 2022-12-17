@@ -6,7 +6,7 @@
   color: var(--extension-text);
   border-bottom: var(--border-width) solid var(--card-border);
   padding: 10px;
-
+  height: var(--header-height);
   position: sticky;
   top: 0;
   z-index: 1;
