@@ -16,7 +16,7 @@ import encrypt from "../scripts/encrypt"
 import useAvailable from "./useAvailable"
 import { useNetwork } from "./useNetwork"
 import { addressFromWords, wordsFromAddress } from "utils/bech32"
-import { createTransport } from "utils/ledger"
+import { createBleTransport } from "utils/ledger"
 
 export const walletState = atom({
   key: "wallet",
@@ -109,7 +109,7 @@ const useAuth = () => {
   const getLedgerKey = async (coinType: string) => {
     if (!is.ledger(wallet)) throw new Error("Ledger device is not connected")
     const { index, bluetooth } = wallet
-    const transport = bluetooth ? createTransport : undefined
+    const transport = bluetooth ? createBleTransport : undefined
 
     return LedgerKey.create({ transport, index, coinType: Number(coinType) })
   }

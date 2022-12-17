@@ -8,7 +8,7 @@ import { Form, FormError, FormItem, FormWarning } from "components/form"
 import { Checkbox, Input, Submit } from "components/form"
 import validate from "../scripts/validate"
 import useAuth from "../hooks/useAuth"
-import { createTransport, isBleAvailable } from "utils/ledger"
+import { createBleTransport, isBleAvailable } from "utils/ledger"
 import { wordsFromAddress } from "utils/bech32"
 
 import Lottie from "lottie-react"
@@ -70,7 +70,7 @@ const AccessWithLedgerForm = () => {
       setPage(Pages.connect)
       // TODO: might want to use 118 on terra too
       const key330 = await LedgerKey.create({
-        transport: bluetooth ? createTransport : undefined,
+        transport: bluetooth ? createBleTransport : undefined,
         index,
         onConnect: () => setPage(Pages.openTerra),
       })
@@ -89,7 +89,7 @@ const AccessWithLedgerForm = () => {
       setPage(Pages.connect)
       // TODO: might want to use 118 on terra too
       const key118 = await LedgerKey.create({
-        transport: bluetooth ? createTransport : undefined,
+        transport: bluetooth ? createBleTransport : undefined,
         index,
         coinType: 118,
         onConnect: () => setPage(Pages.openCosmos),
