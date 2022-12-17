@@ -2,6 +2,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import { Flex, Grid } from "components/layout"
 import { isWallet, useAuth } from "auth"
 import MultisigBadge from "auth/components/MultisigBadge"
+import UsbIcon from "@mui/icons-material/Usb"
+import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import SelectPreconfigured from "auth/modules/select/SelectPreconfigured"
 import { clearStoredPassword } from "../storage"
 import ExtensionList from "../components/ExtensionList"
@@ -15,6 +17,11 @@ const SwitchWallet = ({ manage }: { manage?: () => void }) => {
       children: (
         <Flex gap={4} start>
           {isWallet.multisig(wallet) && <MultisigBadge />}
+          {isWallet.ledger(wallet) && wallet.bluetooth ? (
+            <BluetoothIcon fontSize="small" />
+          ) : (
+            <UsbIcon fontSize="small" />
+          )}
           {"name" in wallet ? wallet.name : "Ledger"}
         </Flex>
       ),
