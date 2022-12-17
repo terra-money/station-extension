@@ -6,6 +6,7 @@ import { isWallet, useAuth } from "auth"
 import MultisigBadge from "auth/components/MultisigBadge"
 import Copy from "./Copy"
 import styles from "./WalletCard.module.scss"
+import { useAddress } from "data/wallet"
 
 interface Props {
   extra?: ReactNode
@@ -13,9 +14,9 @@ interface Props {
 
 const WalletCard = ({ extra }: Props) => {
   const { wallet } = useAuth()
+  const address = useAddress()
 
-  if (!wallet) return null
-  const { address } = wallet
+  if (!wallet || !address) return null
   const name = isWallet.local(wallet) ? wallet.name : undefined
 
   return (

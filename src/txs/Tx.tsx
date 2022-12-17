@@ -238,6 +238,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
           chainID: "phoenix-1",
         })
       } else {
+        // @ts-expect-error
         const { result } = await post({ ...tx, fee })
         setLatestTx({
           txhash: result.txhash,

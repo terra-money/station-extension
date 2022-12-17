@@ -234,7 +234,6 @@ function InterchainTx<TxValues>(props: Props<TxValues>) {
           chainID: chain,
         })
       } else {
-        // @ts-expect-error
         const { result } = await post({ ...tx, fee })
         setLatestTx({
           txhash: result.txhash,
@@ -364,7 +363,6 @@ function InterchainTx<TxValues>(props: Props<TxValues>) {
       ? t("Coins required to post transactions")
       : ""
 
-  console.log(passwordRequired)
   const submitButton = (
     <>
       {walletError && <FormError>{walletError}</FormError>}

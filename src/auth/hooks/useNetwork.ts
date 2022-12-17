@@ -1,7 +1,7 @@
 import { atom, useRecoilState, useRecoilValue } from "recoil"
 import { useNetworks } from "app/InitNetworks"
 import { getStoredNetwork, storeNetwork } from "../scripts/network"
-import useAuth from "./useAuth"
+import { walletState } from "./useAuth"
 import is from "../scripts/is"
 
 const networkState = atom({
@@ -31,7 +31,7 @@ export const useNetworkOptions = () => {
 export const useNetwork = (): Record<ChainID, InterchainNetwork> => {
   const networks = useNetworks()
   const network = useRecoilValue(networkState)
-  const { wallet } = useAuth()
+  const wallet = useRecoilValue(walletState)
 
   // multisig wallet are supported only on terra
   if (is.multisig(wallet)) {
@@ -40,6 +40,17 @@ export const useNetwork = (): Record<ChainID, InterchainNetwork> => {
     ).find(({ prefix }) => prefix === "terra")
     if (!terra) return {}
     return { [terra.chainID]: terra }
+  }
+
+  if (!wallet?.words?.["118"]) {
+    const chains330 = Object.values(
+      networks[network as NetworkName] as Record<ChainID, InterchainNetwork>
+    ).filter(({ coinType }) => coinType === "330")
+
+    return chains330.reduce((acc, chain) => {
+      acc[chain.chainID] = chain
+      return acc
+    }, {} as Record<ChainID, InterchainNetwork>)
   }
 
   return networks[network as NetworkName]
