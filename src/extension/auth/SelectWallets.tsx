@@ -2,6 +2,8 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"
 import KeyboardBackspaceRoundedIcon from "@mui/icons-material/KeyboardBackspaceRounded"
 import AddIcon from "@mui/icons-material/Add"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import UsbIcon from "@mui/icons-material/Usb"
+import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import { useAuth } from "auth"
 import { ModalButton } from "components/feedback"
 import { Button } from "components/general"
@@ -88,7 +90,15 @@ export default function ManageWallets() {
           }}
           className={styles.manage__wallets}
         >
-          <AccountBalanceWalletIcon style={{ fontSize: 18 }} />{" "}
+          {isLedger ? (
+            wallet.bluetooth ? (
+              <BluetoothIcon style={{ fontSize: 18 }} />
+            ) : (
+              <UsbIcon style={{ fontSize: 18 }} />
+            )
+          ) : (
+            <AccountBalanceWalletIcon style={{ fontSize: 18 }} />
+          )}{" "}
           {isLedger ? "Ledger" : selectedWallet?.name}
           <ExpandMoreIcon style={{ fontSize: 18 }} />
         </button>
