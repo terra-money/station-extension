@@ -1,6 +1,9 @@
-type NetworkName = string
+type NetworkName = "mainnet" | "testnet" | string
 type ChainID = string
-type InterchainNetworks = Record<NetworkName, Record<ChainID>>
+type InterchainNetworks = Record<
+  NetworkName,
+  Record<ChainID, InterchainNetwork>
+>
 
 interface InterchainNetwork {
   chainID: ChainID
