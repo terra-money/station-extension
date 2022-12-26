@@ -3,8 +3,45 @@ import PortStream from "extension-port-stream"
 import LocalMessageDuplexStream from "post-message-stream"
 
 if (shouldInjectProvider()) {
+  checkWebpage()
   injectScript()
   start()
+}
+
+/**
+ * Check if the current webpage is a known scam
+ *
+ */
+function checkWebpage() {
+  extension.storage.local.get(["blacklist"], async ({ blacklist }) => {
+    const WARNING_PAGE = `https://scam-warning.terra.money/`
+
+    function checkAndRedirect(list) {
+      // if user is visiting a blacklisted domain or subdomain
+      if (list.some((url) => window.location.hostname.includes(url))) {
+        // and is not coming from the warning page
+        if (document.referrer.startsWith(WARNING_PAGE)) return
+        // redirect to warning page
+        window.location.href = WARNING_PAGE
+      }
+    }
+
+    if (blacklist && blacklist.list) {
+      checkAndRedirect(blacklist.list)
+    }
+
+    // update every 10min
+    if (!blacklist || !blacklist.updatedAt || blacklist.updatedAt > Date.now() - 1000 * 60 * 10) {
+      const BLACKLIST_URL = "https://assets.terra.money/blacklist.json"
+      const response = await fetch(BLACKLIST_URL)
+      const list = await response.json()
+      checkAndRedirect(list)
+
+      extension.storage.local.set({
+        blacklist: { list, updatedAt: Date.now() },
+      })
+    }
+  })
 }
 
 /**

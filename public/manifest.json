@@ -21,7 +21,7 @@
   "options_ui": {
     "page": "index.html"
   },
-  "web_accessible_resources": ["inpage.js"],
+  "web_accessible_resources": ["inpage.js", "index.html"],
   "icons": {
     "128": "icon-128.png",
     "180": "icon-180.png"
