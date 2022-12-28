@@ -18,7 +18,13 @@ function checkWebpage() {
 
     function checkAndRedirect(list) {
       // if user is visiting a blacklisted domain or subdomain
-      if (list.some((url) => window.location.hostname.includes(url))) {
+      if (
+        list.some(
+          (url) =>
+            window.location.hostname === url ||
+            window.location.hostname.endsWith(`.${url}`)
+        )
+      ) {
         // and is not coming from the warning page
         if (document.referrer.startsWith(WARNING_PAGE)) return
         // redirect to warning page
@@ -31,7 +37,10 @@ function checkWebpage() {
     }
 
     // update every 10min
-    if (!blacklist || !blacklist.updatedAt || blacklist.updatedAt > Date.now() - 1000 * 60 * 10) {
+    if (
+      !blacklist ||
+      blacklist.updatedAt > Date.now() - 1000 * 60 * 10
+    ) {
       const BLACKLIST_URL = "https://assets.terra.money/blacklist.json"
       const response = await fetch(BLACKLIST_URL)
       const list = await response.json()
