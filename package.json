@@ -84,7 +84,7 @@
     "post-message-stream": "^3.0.0",
     "react-app-rewired": "^2.1.11",
     "react-error-overlay": "6.0.9",
-    "react-scripts": "^4.0.3",
+    "react-scripts": "^5.0.1",
     "source-map-explorer": "^2.5.2",
     "typescript": "^4.6.4",
     "webpack-cli": "^4.9.1"
