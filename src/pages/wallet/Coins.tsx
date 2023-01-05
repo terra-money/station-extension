@@ -22,15 +22,6 @@ const Coins = () => {
             <FormError>{t("Coins required to post transactions")}</FormError>
           )}
 
-          {/*
-            TODO: Same thing with Coingecko data
-          isClassic && (
-            <Flex className={styles.select}>
-              {!isWalletEmpty && <SelectMinimumValue />}
-            </Flex>
-          )
-          */}
-
           <section>
             {coins.map(({ denom, ...item }) => (
               <Asset

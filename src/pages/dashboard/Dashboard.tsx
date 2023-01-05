@@ -16,10 +16,6 @@ const Dashboard = () => {
     <Page title={t("Dashboard")}>
       <Col>
         <header className={cx(styles.header, { trisect: true })}>
-          {
-            // TODO: recreate LunaPrice with coingecko API
-            // isClassic && <LunaPrice />
-          }
           <Issuance />
           <CommunityPool />
           <StakingRatio />

@@ -4,17 +4,14 @@ import { Link } from "react-router-dom"
 import VerifiedIcon from "@mui/icons-material/Verified"
 import { readPercent } from "@terra.kitchen/utils"
 import { Validator } from "@terra-money/terra.js"
-/* FIXME(terra.js): Import from terra.js */
 import { BondStatus } from "@terra-money/terra.proto/cosmos/staking/v1beta1/staking"
 import { bondStatusFromJSON } from "@terra-money/terra.proto/cosmos/staking/v1beta1/staking"
-import { combineState, useIsClassic } from "data/query"
+import { combineState } from "data/query"
 import { useValidators } from "data/queries/staking"
 import { useDelegations, useUnbondings } from "data/queries/staking"
 import { getCalcVotingPowerRate } from "data/Terra/TerraAPI"
 import { useTerraValidators } from "data/Terra/TerraAPI"
 import { Page, Card, Table, Flex, Grid } from "components/layout"
-import { TooltipIcon } from "components/display"
-import { Toggle } from "components/form"
 import { Read } from "components/token"
 import WithSearchInput from "pages/custom/WithSearchInput"
 import ProfileIcon from "./components/ProfileIcon"
@@ -24,7 +21,6 @@ import styles from "./Validators.module.scss"
 
 const Validators = () => {
   const { t } = useTranslation()
-  const isClassic = useIsClassic()
 
   const { data: validators, ...validatorsState } = useValidators()
   const { data: delegations, ...delegationsState } = useDelegations()
@@ -74,46 +70,12 @@ const Validators = () => {
     return t("{{count}} active validators", { count })
   }
 
-  const [byRank, setByRank] = useState(isClassic)
+  const [byRank, setByRank] = useState(false)
   const render = (keyword: string) => {
     if (!activeValidators) return null
 
     return (
       <>
-        {isClassic && (
-          <section>
-            <TooltipIcon
-              content={
-                <article>
-                  <ul className={styles.tooltip}>
-                    <li>
-                      40%: Uptime <small>(time-weighted, 90 days)</small>
-                    </li>
-                    <li>
-                      30%: Rewards <small>(past 30 days)</small>
-                    </li>
-                    <li>
-                      30%: Gov participation rate{" "}
-                      <small>(time-weighted, since Col-5)</small>
-                    </li>
-                  </ul>
-
-                  <p>
-                    <small>
-                      Up to 5% is deducted to the validators whose voting power
-                      is within top 33%
-                    </small>
-                  </p>
-                </article>
-              }
-            >
-              <Toggle checked={byRank} onChange={() => setByRank(!byRank)}>
-                {t("Weighted score")}
-              </Toggle>
-            </TooltipIcon>
-          </section>
-        )}
-
         <Table
           key={Number(byRank)}
           onSort={() => setByRank(false)}
@@ -222,7 +184,6 @@ const Validators = () => {
               ) => a - b,
               render: (value) => !!value && <Uptime>{value}</Uptime>,
               align: "right",
-              hidden: !isClassic,
             },
             {
               title: t("Rewards"),
@@ -242,7 +203,6 @@ const Validators = () => {
                   />
                 ),
               align: "right",
-              hidden: !isClassic,
             },
           ]}
         />
