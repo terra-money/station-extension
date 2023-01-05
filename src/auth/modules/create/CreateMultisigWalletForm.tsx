@@ -4,8 +4,8 @@ import { useFieldArray, useForm } from "react-hook-form"
 import axios from "axios"
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
-import { AccAddress, SimplePublicKey } from "@terra-money/terra.js"
-import { LegacyAminoMultisigPublicKey } from "@terra-money/terra.js"
+import { AccAddress, SimplePublicKey } from "@terra-money/feather.js"
+import { LegacyAminoMultisigPublicKey } from "@terra-money/feather.js"
 import { SAMPLE_ADDRESS } from "config/constants"
 import { getErrorMessage } from "utils/error"
 import { useLCDClient } from "data/queries/lcdClient"
@@ -45,6 +45,7 @@ const CreateMultisigWalletForm = ({ onCreated }: Props) => {
   const [error, setError] = useState<Error>()
 
   const paste = async (lines: string[]) => {
+    // @ts-expect-error
     const values = lines.filter(AccAddress.validate).map((value) => ({ value }))
     if (values.length) fieldArray.replace(values)
   }

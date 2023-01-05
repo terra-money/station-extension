@@ -10,7 +10,7 @@ import useProposalId from "pages/gov/useProposalId"
 import { getPlaceholder, toInput } from "../utils"
 import validate from "../validate"
 import { getInitialGasDenom } from "../Tx"
-import InterchainTx from "../InterchainTx"
+import InterchainTx from "../Tx"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useNetwork } from "data/wallet"
 

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
-import { AccAddress, MsgUpdateContractAdmin } from "@terra-money/terra.js"
+import { AccAddress, MsgUpdateContractAdmin } from "@terra-money/feather.js"
 import { useAddress } from "data/wallet"
 import { Form, FormItem } from "components/form"
 import { Input } from "components/form"

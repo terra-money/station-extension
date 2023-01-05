@@ -2,22 +2,19 @@ import { useCallback, useMemo } from "react"
 import { useQuery } from "react-query"
 import { sortDenoms } from "utils/coin"
 import { queryKey, RefetchOptions, useIsClassic } from "../query"
-import { useLCDClient } from "./lcdClient"
 import { ASSETS } from "config/constants"
 import axios from "axios"
 import { useCurrency } from "data/settings/Currency"
 
 // TODO: remove/move somewhere else
 export const useActiveDenoms = () => {
-  const lcd = useLCDClient()
   const isClassic = useIsClassic()
 
   return useQuery(
     [queryKey.coingecko.activeDenoms, isClassic],
     async () => {
       if (isClassic) {
-        const activeDenoms = await lcd.oracle.activeDenoms()
-        return sortDenoms(["uluna", ...activeDenoms])
+        return sortDenoms(["uluna"])
       } else {
         return ["uluna"]
       }

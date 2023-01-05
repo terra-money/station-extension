@@ -8,7 +8,7 @@ import { Form } from "components/form"
 import useProposalId from "pages/gov/useProposalId"
 import { getInitialGasDenom } from "../Tx"
 import styles from "./VoteForm.module.scss"
-import InterchainTx from "txs/InterchainTx"
+import InterchainTx from "txs/Tx"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 
 const cx = classNames.bind(styles)

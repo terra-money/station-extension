@@ -1,7 +1,12 @@
 import { useCallback } from "react"
 import BigNumber from "bignumber.js"
 import { fromPairs, zipObj } from "ramda"
-import { Coin, Coins, MsgExecuteContract, MsgSwap } from "@terra-money/terra.js"
+import {
+  Coin,
+  Coins,
+  MsgExecuteContract,
+  MsgSwap,
+} from "@terra-money/feather.js"
 import { isDenom, isDenomLuna } from "@terra.kitchen/utils"
 import { isDenomTerra, isDenomTerraNative } from "@terra.kitchen/utils"
 import { TERRASWAP_COMMISSION_RATE } from "config/constants"

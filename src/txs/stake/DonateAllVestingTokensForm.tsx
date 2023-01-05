@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
-import { MsgDonateAllVestingTokens } from "@terra-money/terra.js"
+import { MsgDonateAllVestingTokens } from "@terra-money/feather.js"
 import { useAddress } from "data/wallet"
 import { Account, parseVestingSchedule } from "data/queries/vesting"
 import { Form, FormItem, Input } from "components/form"
