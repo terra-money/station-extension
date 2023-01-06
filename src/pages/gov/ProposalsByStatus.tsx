@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { Proposal } from "@terra-money/terra.js"
+import { Proposal } from "@terra-money/feather.js"
 import { combineState } from "data/query"
 import { useProposals, useProposalStatusItem } from "data/queries/gov"
 import { useTerraAssets } from "data/Terra/TerraAssets"
@@ -31,7 +31,7 @@ const ProposalsByStatus = ({ status }: { status: Proposal.Status }) => {
   const state = combineState(whitelistState, proposalState)
 
   const render = () => {
-    if (!(data && whitelist)) return null
+    if (!(data && whitelistData)) return null
 
     const proposals =
       status === Proposal.Status.PROPOSAL_STATUS_VOTING_PERIOD && !showAll

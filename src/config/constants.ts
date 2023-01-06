@@ -11,10 +11,12 @@ export const OBSERVER = "wss://observer.terra.dev"
 /* website */
 export const STATION = "https://station.terra.money"
 export const FINDER = "https://terrascope.info"
+export const MINTSCAN = "https://www.mintscan.io"
 export const EXTENSION =
   "https://chrome.google.com/webstore/detail/aiifbnbfobpmeekipheeijimdpnlpgpp"
 export const TUTORIAL =
-  "https://docs.terra.money/Tutorials/Get-started/Terra-Station-desktop.html"
+  "https://docs.terra.money/learn/terra-station/Download/terra-station-desktop.html"
+export const SETUP = "https://setup-station.terra.money/"
 
 /* website: stake */
 export const TERRA_VALIDATORS =

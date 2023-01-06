@@ -4,7 +4,7 @@
   @include flex(center);
   flex-direction: column;
 
-  padding: 1.6rem;
+  padding: 1.8rem 1rem;
   padding-top: 2.6rem;
   height: fit-content;
   background-color: var(--card-bg);
@@ -48,9 +48,8 @@
 .actions {
   @include flex(space-between);
   background-color: var(--card-bg);
-  padding-top: 0.6rem;
+  padding: 1rem;
   gap: 0.6rem;
-  width: 100%;
 
   button {
     min-width: 0;

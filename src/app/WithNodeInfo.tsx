@@ -2,9 +2,12 @@ import { PropsWithChildren } from "react"
 import { useNodeInfo } from "data/queries/tendermint"
 import Overlay from "./components/Overlay"
 import NetworkError from "./NetworkError"
+import { useChainID } from "data/wallet"
 
 const WithNodeInfo = ({ children }: PropsWithChildren<{}>) => {
-  const { isLoading, isError } = useNodeInfo()
+  const chainID = useChainID()
+  // FIXME: remove or make sure chainID is available
+  const { isLoading, isError } = useNodeInfo(chainID)
 
   if (isError) {
     return (

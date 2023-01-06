@@ -4,7 +4,7 @@ import { last } from "ramda"
 import { sentenceCase } from "sentence-case"
 import { Proposal, Vote } from "@terra-money/feather.js"
 import { Color } from "types/components"
-import { Pagination, queryKey, RefetchOptions, useIsClassic } from "../query"
+import { Pagination, queryKey, RefetchOptions } from "../query"
 import { useInterchainLCDClient } from "./lcdClient"
 import { useNetwork } from "data/wallet"
 
@@ -40,11 +40,11 @@ export const useTallyParams = (chain: string) => {
 /* proposals */
 export const useProposals = (status: Proposal.Status) => {
   const lcd = useInterchainLCDClient()
-  const network = useNetwork()
+  const networks = useNetwork()
   return useQuery(
     [queryKey.gov.proposals, status],
     async () => {
-      const chainList = Object.keys(network)
+      const chainList = Object.keys(networks)
       // TODO: Pagination
       // Required when the number of results exceed 100
       // About 50 passed propsals from 2019 to 2021
@@ -159,7 +159,7 @@ export const useGetVoteOptionItem = () => {
     ({
       [Vote.Option.VOTE_OPTION_YES]: {
         label: t("Yes"),
-        color: "info" as Color,
+        color: "success" as Color,
       },
       [Vote.Option.VOTE_OPTION_NO]: {
         label: t("No"),
@@ -171,7 +171,7 @@ export const useGetVoteOptionItem = () => {
       },
       [Vote.Option.VOTE_OPTION_ABSTAIN]: {
         label: t("Abstain"),
-        color: "success" as Color,
+        color: "info" as Color,
       },
       [Vote.Option.VOTE_OPTION_UNSPECIFIED]: {
         label: "",
@@ -191,7 +191,6 @@ export const useGetVoteOptionItem = () => {
 
 /* helpers */
 export const useParseProposalType = (content: Proposal.Content) => {
-  const isClassic = useIsClassic()
-  const { "@type": type } = content.toData(isClassic)
+  const { "@type": type } = content.toData()
   return sentenceCase(last(type.split(".")) ?? "")
 }

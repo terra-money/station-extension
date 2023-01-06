@@ -7,7 +7,7 @@ import { ErrorBoundary, Wrong } from "components/feedback"
 import { useNav } from "./routes"
 
 /* banner */
-import NetworkName from "./sections/NetworkName"
+import UpdateExtension from "./sections/UpdateExtension"
 
 /* sidebar */
 import Nav from "./sections/Nav"
@@ -28,14 +28,17 @@ import DevTools from "./sections/DevTools"
 /* init */
 import InitBankBalance from "./InitBankBalance"
 import Wallet from "pages/wallet/Wallet"
+import WelcomeModal from "./sections/WelcomeModal"
 
 const App = () => {
   const { element: routes } = useNav()
 
+  const showWelcomeModal = localStorage.getItem("welcomeModal") === null
+
   return (
     <Layout>
       <Banner>
-        <NetworkName />
+        <UpdateExtension />
       </Banner>
 
       <Sidebar>
@@ -63,8 +66,9 @@ const App = () => {
         <ErrorBoundary fallback={fallback}>
           <InitBankBalance>
             <MainContainer>
-              <Page>{routes}</Page>
+              {routes}
               <Wallet />
+              {showWelcomeModal && <WelcomeModal />}
             </MainContainer>
           </InitBankBalance>
         </ErrorBoundary>

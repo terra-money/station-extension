@@ -5,8 +5,7 @@ import { ErrorBoundary } from "components/feedback"
 import { fallback } from "app/App"
 import InitBankBalance from "app/InitBankBalance"
 import LatestTx from "app/sections/LatestTx"
-import NetworkName from "app/sections/NetworkName"
-import SendTx from "txs/send/SendTx"
+import NetworkHeader from "app/sections/NetworkHeader"
 import SwapTx from "txs/swap/SwapTx"
 import SignMultisigTxPage from "pages/multisig/SignMultisigTxPage"
 import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
@@ -46,7 +45,6 @@ const App = () => {
     { path: "/auth/*", element: <Auth /> },
 
     /* default txs */
-    { path: "/send", element: <SendTx /> },
     { path: "/swap", element: <SwapTx /> },
     { path: "/multisig/sign", element: <SignMultisigTxPage /> },
     { path: "/multisig/post", element: <PostMultisigTxPage /> },
@@ -63,7 +61,7 @@ const App = () => {
             <ManageWallets />
             <Flex gap={5}>
               <LatestTx />
-              <NetworkName />
+              <NetworkHeader />
               <Settings />
             </Flex>
           </Header>

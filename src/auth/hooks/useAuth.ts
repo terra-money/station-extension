@@ -14,12 +14,12 @@ import { clearWallet, lockWallet } from "../scripts/keystore"
 import { getStoredWallet, getStoredWallets } from "../scripts/keystore"
 import encrypt from "../scripts/encrypt"
 import useAvailable from "./useAvailable"
-import { useNetwork } from "./useNetwork"
 import { addressFromWords, wordsFromAddress } from "utils/bech32"
+import { useNetwork } from "./useNetwork"
 import { createBleTransport } from "utils/ledger"
 
 export const walletState = atom({
-  key: "wallet",
+  key: "interchain-wallet",
   default: getWallet(),
 })
 
@@ -244,7 +244,6 @@ const useAuth = () => {
     getLedgerKey,
     connectedWallet,
     connect,
-    //connectPreconfigured,
     connectLedger,
     disconnect,
     lock,

@@ -19,11 +19,10 @@ import ValidatorDetails from "pages/stake/ValidatorDetails"
 import ProposalDetails from "pages/gov/ProposalDetails"
 
 /* txs */
-import SendTx from "txs/send/SendTx"
 import TransferCW721Tx from "txs/wasm/TransferCW721Tx"
 import SwapTx from "txs/swap/SwapTx"
 import StakeTx from "txs/stake/StakeTx"
-import WithdrawRewardsTx from "txs/stake/WithdrawRewardsTx"
+import WithdrawRewards from "txs/stake/WithdrawRewards"
 import WithdrawCommissionTx from "txs/stake/WithdrawCommissionTx"
 import SubmitProposalTx from "txs/gov/SubmitProposalTx"
 import DepositTx from "txs/gov/DepositTx"
@@ -38,8 +37,8 @@ import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
 
 /* auth */
 import Auth from "auth/modules/Auth"
-import ManageNetworksPage from "auth/networks/ManageNetworksPage"
-import AddNetworkPage from "auth/networks/AddNetworkPage"
+//import ManageNetworksPage from "auth/networks/ManageNetworksPage"
+//import AddNetworkPage from "auth/networks/AddNetworkPage"
 
 /* settings */
 import Settings from "pages/Settings"
@@ -116,10 +115,9 @@ export const useNav = () => {
     { path: "/multisig/post", element: <PostMultisigTxPage /> },
 
     /* txs */
-    { path: "/send", element: <SendTx /> },
     { path: "/nft/transfer", element: <TransferCW721Tx /> },
     { path: "/stake/:address", element: <StakeTx /> },
-    { path: "/rewards", element: <WithdrawRewardsTx /> },
+    { path: "/rewards", element: <WithdrawRewards /> },
     { path: "/commission", element: <WithdrawCommissionTx /> },
     { path: "/proposal/new", element: <SubmitProposalTx /> },
     { path: "/proposal/:chain/:id/deposit", element: <DepositTx /> },
@@ -136,8 +134,8 @@ export const useNav = () => {
 
     /* auth */
     { path: "/auth/*", element: <Auth /> },
-    { path: "/networks", element: <ManageNetworksPage /> },
-    { path: "/network/new", element: <AddNetworkPage /> },
+    //{ path: "/networks", element: <ManageNetworksPage /> },
+    //{ path: "/network/new", element: <AddNetworkPage /> },
     { path: "/settings", element: <Settings /> },
 
     /* dev */

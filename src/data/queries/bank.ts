@@ -1,49 +1,24 @@
 import { useQuery } from "react-query"
-import axios from "axios"
 import createContext from "utils/createContext"
 import { queryKey, RefetchOptions } from "../query"
-import { useChainID, useNetwork } from "../wallet"
 import { useInterchainLCDClient } from "./lcdClient"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useCustomTokensCW20 } from "data/settings/CustomTokens"
-
-export const useSupply = () => {
-  const network = useNetwork()
-  const chainID = useChainID()
-
-  return useQuery(
-    [queryKey.bank.supply],
-    async () => {
-      // FIXME: Import from terra.js
-      const { data } = await axios.get<{ supply: CoinData[] }>(
-        "cosmos/bank/v1beta1/supply",
-        {
-          baseURL: network[chainID].lcd,
-          params: {
-            "pagination.reverse": "true",
-          },
-        }
-      )
-
-      return data.supply
-    },
-    { ...RefetchOptions.INFINITY }
-  )
-}
+import { useNetwork } from "data/wallet"
 
 export const useInitialTokenBalance = () => {
   const addresses = useInterchainAddresses()
-  const network = useNetwork()
+  const networks = useNetwork()
   const lcd = useInterchainLCDClient()
   const { list: cw20 } = useCustomTokensCW20()
 
   return useQuery(
-    [queryKey.bank.balances, addresses, cw20, network],
+    [queryKey.bank.balances, addresses, cw20, networks],
     async () => {
       return (await Promise.all(
         cw20.map(async ({ token }) => {
           const chainID =
-            Object.values(network).find(({ prefix }) =>
+            Object.values(networks).find(({ prefix }) =>
               token.startsWith(prefix)
             )?.chainID ?? ""
 
@@ -81,7 +56,10 @@ export const useInitialBankBalance = () => {
   return useQuery(
     [queryKey.bank.balances, addresses],
     async () => {
-      if (!addresses) return [] as CoinBalance[]
+      if (!addresses)
+        return [
+          { denom: "uluna", amount: "0", chain: "phoenix-1" },
+        ] as CoinBalance[]
       const chains = Object.keys(addresses)
 
       // TODO: Pagination
@@ -102,6 +80,10 @@ export const useInitialBankBalance = () => {
           })
         )
       })
+
+      if (!result.find(({ denom }) => denom === "uluna")) {
+        result.push({ denom: "uluna", amount: "0", chain: "phoenix-1" })
+      }
 
       return result
     },

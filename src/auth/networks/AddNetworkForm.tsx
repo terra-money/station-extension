@@ -8,7 +8,7 @@ import { Form, FormItem, Submit, Input, Checkbox } from "components/form"
 const AddNetwork = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  //const { networks: { mainnet } } = useNetworks()
+  //const { mainnet } = useNetworks()
   const mainnet = {
     name: "mainnet",
     chainID: "phoenix-1",

@@ -11,7 +11,6 @@ type StoredWallet =
 type ResultStoredWallet = LegacyStoredWallet | MultisigWallet | StoredWallet
 
 // interchain types
-
 interface SingleWallet {
   words: {
     "330": string
@@ -20,7 +19,6 @@ interface SingleWallet {
   name: string
   lock?: boolean
 }
-
 interface LedgerWallet {
   words: {
     "330": string

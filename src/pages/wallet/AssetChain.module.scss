@@ -8,6 +8,10 @@
   position: relative; // to loading indicator
   transition: 300ms;
   height: fit-content;
+
+  &:hover {
+    background-color: var(--card-bg);
+  }
 }
 
 .details {

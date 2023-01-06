@@ -1,6 +1,7 @@
 import { atom, useRecoilState, useRecoilValue } from "recoil"
 import { useNetworks } from "app/InitNetworks"
 import { getStoredNetwork, storeNetwork } from "../scripts/network"
+import { useWallet, WalletStatus } from "@terra-money/wallet-provider"
 import { walletState } from "./useAuth"
 import is from "../scripts/is"
 
@@ -10,14 +11,16 @@ const networkState = atom({
 })
 
 export const useNetworkState = () => {
-  const [network, setNetwork] = useRecoilState(networkState)
+  const [storedNetwork, setNetwork] = useRecoilState(networkState)
 
   const changeNetwork = (network: NetworkName) => {
-    setNetwork(network)
-    storeNetwork(network)
+    if (network !== storedNetwork) {
+      setNetwork(network)
+      storeNetwork(network)
+    }
   }
 
-  return [network, changeNetwork] as const
+  return [storedNetwork, changeNetwork] as const
 }
 
 /* helpers */
@@ -30,22 +33,33 @@ export const useNetworkOptions = () => {
 
 export const useNetwork = (): Record<ChainID, InterchainNetwork> => {
   const { networks, filterEnabledNetworks } = useNetworks()
-  const network = useRecoilValue(networkState)
+  const [network, setNetwork] = useNetworkState()
   const wallet = useRecoilValue(walletState)
+  const connectedWallet = useWallet()
+
+  // check connected wallet
+  if (connectedWallet.status === WalletStatus.WALLET_CONNECTED) {
+    if (network !== "mainnet" && "phoenix-1" in connectedWallet.network) {
+      setNetwork("mainnet")
+    } else if (network !== "testnet" && "pisco-1" in connectedWallet.network) {
+      setNetwork("testnet")
+    }
+
+    return filterEnabledNetworks(
+      connectedWallet.network as Record<ChainID, InterchainNetwork>
+    )
+  }
 
   // multisig wallet are supported only on terra
   if (is.multisig(wallet)) {
     const terra = Object.values(
-      filterEnabledNetworks(networks[network as NetworkName]) as Record<
-        ChainID,
-        InterchainNetwork
-      >
+      networks[network as NetworkName] as Record<ChainID, InterchainNetwork>
     ).find(({ prefix }) => prefix === "terra")
     if (!terra) return {}
-    return { [terra.chainID]: terra }
+    return filterEnabledNetworks({ [terra.chainID]: terra })
   }
 
-  if (!wallet?.words?.["118"]) {
+  if (wallet && !wallet?.words?.["118"]) {
     const chains330 = Object.values(
       networks[network as NetworkName] as Record<ChainID, InterchainNetwork>
     ).filter(({ coinType }) => coinType === "330")
@@ -62,10 +76,11 @@ export const useNetwork = (): Record<ChainID, InterchainNetwork> => {
 }
 
 export const useNetworkName = () => {
-  return useRecoilValue(networkState)
+  const network = useRecoilValue(networkState)
+  return network
 }
 
 export const useChainID = () => {
-  const name = useRecoilValue(networkState)
-  return name === "mainnet" ? "phoenix-1" : "pisco-1"
+  const network = useRecoilValue(networkState)
+  return network === "mainnet" ? "phoenix-1" : "pisco-1"
 }

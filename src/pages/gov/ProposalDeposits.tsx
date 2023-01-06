@@ -20,7 +20,7 @@ interface Props {
 
 const ProposalDeposits = ({ id, chain, card }: Props) => {
   const { t } = useTranslation()
-  const network = useNetwork()
+  const networks = useNetwork()
   const { data: proposal, ...proposalState } = useProposal(id, chain)
   const { data: deposits, ...depositsState } = useDeposits(id, chain)
   const { data: depositParams, ...depositParamsState } = useDepositParams(chain)
@@ -33,15 +33,13 @@ const ProposalDeposits = ({ id, chain, card }: Props) => {
       const deposited = deposits.reduce(
         (acc, { amount }) =>
           new BigNumber(acc)
-            // @ts-expect-error
-            .plus(getAmount(amount, network[chain].baseAsset))
+            .plus(getAmount(amount, networks[chain].baseAsset))
             .toString(),
         "0"
       )
       const minimum = getAmount(
-        // @ts-expect-error
         depositParams.min_deposit,
-        network[chain].baseAsset
+        networks[chain].baseAsset
       )
       const ratio = Number(deposited) / Number(minimum)
       return { deposited, ratio }
@@ -53,7 +51,7 @@ const ProposalDeposits = ({ id, chain, card }: Props) => {
     const contents = [
       {
         title: t("Deposited"),
-        content: <Read amount={deposited} denom={network[chain].baseAsset} />,
+        content: <Read amount={deposited} denom={networks[chain].baseAsset} />,
       },
       {
         title: t("Deposit end time"),

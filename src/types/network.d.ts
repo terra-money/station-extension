@@ -1,4 +1,4 @@
-type NetworkName = "mainnet" | "testnet" | string
+type NetworkName = string
 type ChainID = string
 type InterchainNetworks = Record<
   NetworkName,

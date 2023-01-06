@@ -30,8 +30,14 @@
   margin-top: 20px;
 }
 
+.invisible {
+  padding: unset;
+  width: auto;
+}
+
 .header {
   @include flex(space-between);
+  margin-right: 24px;
 
   @include desktop {
     --font-size-page-title: 36px;

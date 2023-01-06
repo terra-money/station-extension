@@ -44,9 +44,6 @@
     --accordion-width: 350px;
   }
   @media (max-width: 450px) {
-    --accordion-width: 335px;
-  }
-  @media (max-width: 390px) {
     --accordion-width: 285px;
   }
 }
@@ -220,7 +217,7 @@
 
 @media (max-width: 590px) {
   .modal {
-    padding: 20px;
+    padding: 28px 20px 20px;
     min-height: unset;
   }
 
@@ -234,9 +231,6 @@
     .accordion {
       .top {
         padding: 14px;
-      }
-      .content ul {
-        margin-left: 10px;
       }
     }
     .lessImportantAccordion {

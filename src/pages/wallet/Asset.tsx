@@ -22,7 +22,6 @@ export interface Props extends TokenItem, QueryState {
 
 const Asset = (props: Props) => {
   const { token, icon, symbol, balance, denom, decimals, ...state } = props
-
   const { t } = useTranslation()
   const currency = useCurrency()
   const network = useNetwork()

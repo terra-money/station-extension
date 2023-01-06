@@ -10,7 +10,7 @@ import { useNetwork } from "data/wallet"
 
 const ProposalDepositors = ({ id, chain }: { id: number; chain: string }) => {
   const { t } = useTranslation()
-  const network = useNetwork()
+  const networks = useNetwork()
   const { data: deposits, ...state } = useDeposits(id, chain)
 
   return (
@@ -30,8 +30,8 @@ const ProposalDepositors = ({ id, chain }: { id: number; chain: string }) => {
               dataIndex: "amount",
               render: (amount) => (
                 <Read
-                  amount={getAmount(amount, network[chain].baseAsset)}
-                  denom={network[chain].baseAsset}
+                  amount={getAmount(amount, networks[chain].baseAsset)}
+                  denom={networks[chain].baseAsset}
                 />
               ),
               align: "right",

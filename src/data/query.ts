@@ -1,10 +1,5 @@
 import { LAZY_LIMIT } from "config/constants"
 
-// TODO: remove
-export const useIsClassic = () => {
-  return false
-}
-
 /* refetch */
 export const RefetchOptions = {
   DEFAULT: /* onMount, onFocus */ {},
@@ -70,6 +65,7 @@ export const queryKey = mirror({
   },
   tendermint: { nodeInfo: "" },
   staking: {
+    params: "",
     validators: "",
     validator: "",
     delegations: "",
@@ -79,7 +75,13 @@ export const queryKey = mirror({
   },
   tx: { txInfo: "", create: "" },
   wasm: { contractInfo: "", contractQuery: "" },
-
+  interchain: {
+    staking: {
+      validators: "",
+      delegations: "",
+      unbondings: "",
+    },
+  },
   /* external */
   Anchor: { TotalDeposit: "", APY: "", MarketEpochState: "" },
   TNS: "",

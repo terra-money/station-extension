@@ -23,11 +23,13 @@
   justify-content: stretch;
   text-align: left;
 
+  color: inherit;
   font-weight: normal;
   transition: border-color var(--transition);
 
   &:hover {
     border-color: var(--button-primary-bg);
+    text-decoration: none;
   }
 }
 
@@ -106,6 +108,10 @@
 
 .bg .header {
   background: var(--bg);
+}
+
+.muted {
+  background: var(--card-bg-muted);
 }
 
 .error .main {

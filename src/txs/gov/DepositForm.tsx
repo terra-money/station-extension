@@ -9,8 +9,7 @@ import { Form, FormItem, Input } from "components/form"
 import useProposalId from "pages/gov/useProposalId"
 import { getPlaceholder, toInput } from "../utils"
 import validate from "../validate"
-import { getInitialGasDenom } from "../Tx"
-import InterchainTx from "../InterchainTx"
+import Tx from "../Tx"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useNetwork } from "data/wallet"
 
@@ -22,14 +21,12 @@ const DepositForm = () => {
   const { t } = useTranslation()
   const { id, chain } = useProposalId()
   const addresses = useInterchainAddresses()
-  const network = useNetwork()
+  const networks = useNetwork()
 
   const bankBalance = useBankBalance()
   const balance =
-    bankBalance.find((b) => b.denom === network[chain].baseAsset)?.amount ?? "0"
-
-  /* tx context */
-  const initialGasDenom = getInitialGasDenom()
+    bankBalance.find((b) => b.denom === networks[chain].baseAsset)?.amount ??
+    "0"
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange" })
@@ -44,11 +41,15 @@ const DepositForm = () => {
       if (!addresses) return
       const amount = toAmount(input)
       const msgs = [
-        new MsgDeposit(id, addresses[chain], amount + network[chain].baseAsset),
+        new MsgDeposit(
+          id,
+          addresses[chain],
+          amount + networks[chain].baseAsset
+        ),
       ]
       return { msgs, chainID: chain }
     },
-    [addresses, id, chain, network]
+    [addresses, id, chain, networks]
   )
 
   /* fee */
@@ -66,10 +67,9 @@ const DepositForm = () => {
   )
 
   const tx = {
-    token: network[chain].baseAsset,
+    token: networks[chain].baseAsset,
     amount,
     balance,
-    initialGasDenom,
     estimationTxValues,
     createTx,
     onChangeMax,
@@ -82,7 +82,7 @@ const DepositForm = () => {
   }
 
   return (
-    <InterchainTx {...tx}>
+    <Tx {...tx}>
       {({ max, fee, submit }) => (
         <Form onSubmit={handleSubmit(submit.fn)}>
           <FormItem
@@ -95,7 +95,7 @@ const DepositForm = () => {
                 valueAsNumber: true,
                 validate: validate.input(toInput(max.amount)),
               })}
-              token={network[chain].baseAsset}
+              token={networks[chain].baseAsset}
               onFocus={max.reset}
               inputMode="decimal"
               placeholder={getPlaceholder()}
@@ -107,7 +107,7 @@ const DepositForm = () => {
           {submit.button}
         </Form>
       )}
-    </InterchainTx>
+    </Tx>
   )
 }
 

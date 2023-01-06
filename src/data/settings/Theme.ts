@@ -5,6 +5,9 @@ import { always } from "ramda"
 import themes, { Theme } from "styles/themes/themes"
 import { DefaultTheme, SettingKey } from "utils/localStorage"
 import { getLocalSetting, setLocalSetting } from "utils/localStorage"
+import { debug } from "utils/env"
+import { useAddress, useChainID, useNetworkName } from "data/wallet"
+import { calcDelegationsTotal, useDelegations } from "../queries/staking"
 
 export const themeNameState = atom({
   key: "themeName",
@@ -28,11 +31,6 @@ export const useTheme = () => {
 export const useThemeFavicon = () => {
   const { favicon } = useTheme()
   return favicon
-}
-
-export const useThemeFront = () => {
-  const { front } = useTheme()
-  return front
 }
 
 export const useThemeAnimation = () => {
@@ -69,7 +67,19 @@ export const validateTheme = (staked: string, theme?: Theme) => {
 }
 
 export const useValidateTheme = () => {
-  return always(true)
+  const networkName = useNetworkName()
+  const chainID = useChainID()
+  const address = useAddress()
+  const { data: delegations } = useDelegations(chainID)
+  if (debug.theme || networkName !== "mainnet") return always(true)
+  if (!address || !delegations) return always(true)
+  const staked = calcDelegationsTotal(delegations)
+  return (theme: Theme) => validateTheme(staked, theme)
+}
+
+export const useThemeFront = () => {
+  const { front } = useTheme()
+  return front
 }
 
 /* favicon */

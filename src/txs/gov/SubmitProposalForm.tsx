@@ -26,12 +26,12 @@ import { Input, TextArea, Select } from "components/form"
 import { TooltipIcon } from "components/display"
 import { getCoins, getPlaceholder, toInput } from "../utils"
 import validate from "../validate"
-import { getInitialGasDenom } from "../Tx"
-import InterchainTx from "txs/InterchainTx"
+import Tx from "../Tx"
 import { useCommunityPool } from "data/queries/distribution"
 import { useDepositParams } from "data/queries/gov"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useNetwork } from "data/wallet"
+import { useNativeDenoms } from "data/token"
 
 enum ProposalType {
   TEXT = "Text proposal",
@@ -80,23 +80,23 @@ const DEFAULT_PAREMETER_CHANGE = { subspace: "", key: "", value: "" }
 const SubmitProposalForm = ({ chain }: { chain: string }) => {
   const { t } = useTranslation()
   const addresses = useInterchainAddresses()
-  const network = useNetwork()
+  const networks = useNetwork()
+  const readNetiveDenom = useNativeDenoms()
 
   const bankBalance = useBankBalance()
   const balance =
-    bankBalance.find((b) => b.denom === network[chain].baseAsset)?.amount ?? "0"
+    bankBalance.find((b) => b.denom === networks[chain].baseAsset)?.amount ??
+    "0"
 
   /* tx context */
-  const initialGasDenom = getInitialGasDenom()
-  const defaultCoinItem = { denom: initialGasDenom }
+  const defaultCoinItem = { denom: networks[chain].baseAsset }
 
   const { data: communityPool, ...communityPoolState } = useCommunityPool(chain)
   const { data: depositParams, ...depositParamsState } = useDepositParams(chain)
   const state = combineState(communityPoolState, depositParamsState)
   //if(!depositParams || communityPool) return null
   const minDeposit = depositParams
-    ? // @ts-expect-error
-      getAmount(depositParams.min_deposit, network[chain].baseAsset)
+    ? getAmount(depositParams.min_deposit, networks[chain].baseAsset)
     : 0
 
   /* form */
@@ -131,7 +131,7 @@ const SubmitProposalForm = ({ chain }: { chain: string }) => {
       if (!addresses) return
       const amount = toAmount(input)
       const deposit = has(amount)
-        ? new Coins({ [network[chain].baseAsset]: amount })
+        ? new Coins({ [networks[chain].baseAsset]: amount })
         : []
 
       const getContent = () => {
@@ -161,7 +161,6 @@ const SubmitProposalForm = ({ chain }: { chain: string }) => {
             runAs,
             contractAddress,
             execute_msg,
-            // @ts-expect-error
             coins
           )
         }
@@ -174,7 +173,7 @@ const SubmitProposalForm = ({ chain }: { chain: string }) => {
       ]
       return { msgs, chainID: chain ?? "" }
     },
-    [addresses, chain, network]
+    [addresses, chain, networks]
   )
 
   /* fee */
@@ -197,10 +196,9 @@ const SubmitProposalForm = ({ chain }: { chain: string }) => {
   )
 
   const tx = {
-    token: network[chain].baseAsset,
+    token: networks[chain].baseAsset,
     amount,
     balance,
-    initialGasDenom,
     estimationTxValues,
     createTx,
     onChangeMax,
@@ -244,7 +242,7 @@ const SubmitProposalForm = ({ chain }: { chain: string }) => {
               placeholder={placeholder}
               selectBefore={
                 <Select {...register("spend.denom")} before>
-                  {[network[chain].baseAsset].map((denom) => (
+                  {[networks[chain].baseAsset].map((denom) => (
                     <option value={denom} key={denom}>
                       {readDenom(denom)}
                     </option>
@@ -394,16 +392,18 @@ const SubmitProposalForm = ({ chain }: { chain: string }) => {
 
   return (
     <Card {...state} inputCard>
-      <InterchainTx {...tx}>
+      <Tx {...tx}>
         {({ max, fee, submit }) => (
           <Form onSubmit={handleSubmit(submit.fn)}>
             <Grid gap={4}>
-              <FormHelp>
-                Upload proposal only after forum discussion on{" "}
-                <ExternalLink href="https://agora.terra.money">
-                  agora.terra.money
-                </ExternalLink>
-              </FormHelp>
+              {networks[chain].prefix === "terra" && (
+                <FormHelp>
+                  Upload proposal only after forum discussion on{" "}
+                  <ExternalLink href="https://agora.terra.money">
+                    agora.terra.money
+                  </ExternalLink>
+                </FormHelp>
+              )}
               <FormWarning>
                 {t(
                   "Proposal deposits will not be refunded if the proposal fails to reach the quorum or the result is NO_WITH_VETO"
@@ -443,14 +443,27 @@ const SubmitProposalForm = ({ chain }: { chain: string }) => {
                   required: "Description is required",
                 })}
                 placeholder={t(
-                  "We're proposing to spend 100,000 LUNA from the Community Pool to fund the creation of public goods for the Terra ecosystem"
+                  `We're proposing to spend 100,000 ${
+                    readNetiveDenom(networks[chain].baseAsset).symbol
+                  } from the Community Pool to fund the creation of public goods for the ${
+                    networks[chain].name
+                  } ecosystem`
                 )}
               />
             </FormItem>
 
             <FormItem
               label={
-                <TooltipIcon content="To help push the proposal to the voting period, consider depositing more LUNA to reach the minimum 512 LUNA (optional).">
+                <TooltipIcon
+                  content={`To help push the proposal to the voting period, consider depositing more ${
+                    readNetiveDenom(networks[chain].baseAsset).symbol
+                  } to reach the minimum ${
+                    Number(minDeposit) /
+                    10 ** readNetiveDenom(networks[chain].baseAsset).decimals
+                  } ${
+                    readNetiveDenom(networks[chain].baseAsset).symbol
+                  } (optional).`}
+                >
                   {t("Initial deposit")} ({t("optional")})
                 </TooltipIcon>
               }
@@ -467,7 +480,7 @@ const SubmitProposalForm = ({ chain }: { chain: string }) => {
                     true
                   ),
                 })}
-                token={network[chain].baseAsset}
+                token={networks[chain].baseAsset}
                 onFocus={max.reset}
                 inputMode="decimal"
                 placeholder={getPlaceholder()}
@@ -479,7 +492,7 @@ const SubmitProposalForm = ({ chain }: { chain: string }) => {
             {submit.button}
           </Form>
         )}
-      </InterchainTx>
+      </Tx>
     </Card>
   )
 }

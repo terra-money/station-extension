@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
-import { AccAddress, SignatureV2 } from "@terra-money/terra.js"
+import { AccAddress, SignatureV2 } from "@terra-money/feather.js"
 import { SAMPLE_ADDRESS } from "config/constants"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { Pre } from "components/general"
@@ -51,7 +51,6 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
       const decoded = lcd.tx.decode(tx.trim())
       if (!decoded) throw new Error("Invalid tx")
       const signature = await createSignature(decoded, address, password)
-      // @ts-expect-error
       setSignature(signature)
     } catch (error) {
       if (error instanceof PasswordError) setIncorrect(error.message)

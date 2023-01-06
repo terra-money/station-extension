@@ -16,7 +16,7 @@ const ProposalHeader = ({
   const { id, content, status, submit_time } = proposal
   const { title } = content
 
-  const network = useNetwork()
+  const networks = useNetwork()
   const { t } = useTranslation()
   const type = useParseProposalType(content)
   const { color, label } = useProposalStatusItem(status)
@@ -25,7 +25,9 @@ const ProposalHeader = ({
     <header className={styles.header}>
       <section className={styles.meta}>
         <aside>
-          {chain && <img src={network[chain].icon} alt={network[chain].name} />}
+          {chain && (
+            <img src={networks[chain].icon} alt={networks[chain].name} />
+          )}
           {id} | {type}
         </aside>
         <strong className={color}>{label}</strong>
