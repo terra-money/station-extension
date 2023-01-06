@@ -1,10 +1,5 @@
 import { LAZY_LIMIT } from "config/constants"
 
-// TODO: remove
-export const useIsClassic = () => {
-  return false
-}
-
 /* refetch */
 export const RefetchOptions = {
   DEFAULT: /* onMount, onFocus */ {},
