@@ -9,6 +9,7 @@ import AddTokens from "./AddTokens"
 import Asset from "./Asset"
 import styles from "./AssetList.module.scss"
 import AddIcon from "@mui/icons-material/Add"
+import CoinGeckoLink from "components/coingecko/CoinGeckoLink"
 
 const AssetList = () => {
   const { t } = useTranslation()
@@ -78,6 +79,7 @@ const AssetList = () => {
     <article className={styles.assetlist}>
       <div className={styles.assetlist__title}>
         <h3>Assets</h3>
+        <CoinGeckoLink />
       </div>
       <div className={styles.assetlist__list}>{render()}</div>
       <div className={styles.assetlist__add}>
