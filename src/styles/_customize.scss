@@ -55,3 +55,11 @@
     padding: 24px;
   }
 }
+
+.recharts-tooltip-wrapper:focus-visible {
+  outline: none;
+}
+
+.recharts-legend-wrapper {
+  max-width: 45%;
+}
