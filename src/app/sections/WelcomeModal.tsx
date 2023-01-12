@@ -24,7 +24,7 @@ const accordions = [
   {
     title: "From a Ledger",
     content: [
-      `Go to the You can find a guide <a href="https://docs.terra.money/learn/station/migration/" target="_blank" rel="noopener noreferrer">Station Web App</a> home page and select <span class=${styles.highlighted}>access with ledger</span>.`,
+      `Go to the <a href="https://station.terra.money/" target="_blank" rel="noopener noreferrer">Station Web App</a> home page and select <span class=${styles.highlighted}>access with ledger</span>.`,
     ],
   },
 ]
