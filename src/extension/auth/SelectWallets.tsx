@@ -103,7 +103,6 @@ export default function ManageWallets() {
           <ExpandMoreIcon style={{ fontSize: 18 }} />
         </button>
       )}
-      modalKey={address}
       maxHeight
     >
       {path !== Path.select && (
