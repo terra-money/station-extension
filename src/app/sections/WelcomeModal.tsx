@@ -18,13 +18,13 @@ const accordions = [
   {
     title: "From a Non-Station Wallet",
     content: [
-      `Use the  <span class=${styles.highlighted}>Recover Wallet</span> flow in the extension to import your wallet. You can find a guide <a href="https://docs.terra.money/learn/station/migration/" target="_blank" rel="noopener noreferrer">here</a>`,
+      `Use the <span class=${styles.highlighted}>Recover Wallet</span> flow in the extension to import your wallet. You can find a guide <a href="https://docs.terra.money/learn/station/migration/" target="_blank" rel="noopener noreferrer">here</a>`,
     ],
   },
   {
     title: "From a Ledger",
     content: [
-      `Go to the <a href="https://station.terra.money/" target="_blank" rel="noopener noreferrer">Station Web App</a> home page and select <span class=${styles.highlighted}>access with ledger</span>.`,
+      `Go to <span class=${styles.highlighted}>Add Wallet</span> menu in the extension or the <a href="https://station.terra.money/" target="_blank" rel="noopener noreferrer">Station Web App</a> home page and select <span class=${styles.highlighted}>access with ledger</span>.`,
     ],
   },
 ]
