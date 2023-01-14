@@ -1,6 +1,6 @@
 @mixin border {
-  background: var(--input-bg);
-  border: solid 1px var(--input-border);
+  background: var(--card-bg);
+  border: var(--border-width) solid var(--card-border);
   border-radius: var(--border-radius);
   overflow: hidden;
 }

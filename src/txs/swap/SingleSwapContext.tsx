@@ -2,15 +2,15 @@ import { PropsWithChildren, useMemo } from "react"
 import { flatten, uniq, zipObj } from "ramda"
 import BigNumber from "bignumber.js"
 import { isDenomIBC, toAmount } from "@terra.kitchen/utils"
-import { AccAddress } from "@terra-money/terra.js"
+import { AccAddress } from "@terra-money/feather.js"
 import { getAmount, sortDenoms } from "utils/coin"
 import { toPrice } from "utils/num"
 import createContext from "utils/createContext"
 import { useCurrency } from "data/settings/Currency"
-import { combineState, useIsClassic } from "data/query"
+import { combineState } from "data/query"
 import { useBankBalance } from "data/queries/bank"
 import { useTokenBalances } from "data/queries/wasm"
-import { readIBCDenom, readNativeDenom } from "data/token"
+import { readIBCDenom, useNativeDenoms } from "data/token"
 import { useIBCWhitelist } from "data/Terra/TerraAssets"
 import { useCW20Whitelist } from "data/Terra/TerraAssets"
 import { useCustomTokensCW20 } from "data/settings/CustomTokens"
@@ -46,10 +46,10 @@ export const [useSingleSwap, SingleSwapProvider] =
 
 const SingleSwapContext = ({ children }: PropsWithChildren<{}>) => {
   const currency = useCurrency()
-  const isClassic = useIsClassic()
   const bankBalance = useBankBalance()
   const { activeDenoms, pairs } = useSwap()
   const { list } = useCustomTokensCW20()
+  const readNativeDenom = useNativeDenoms()
   const customTokens = list.map(({ token }) => token)
 
   /* contracts */
@@ -71,7 +71,7 @@ const SingleSwapContext = ({ children }: PropsWithChildren<{}>) => {
       .filter((denom) => ibcWhitelist[denom.replace("ibc/", "")])
 
     const cw20 = terraswapAvailableList
-      .filter(AccAddress.validate)
+      .filter((addr) => AccAddress.validate(addr))
       .filter((token) => cw20Whitelist[token])
 
     return { ibc, cw20 }
@@ -102,9 +102,9 @@ const SingleSwapContext = ({ children }: PropsWithChildren<{}>) => {
     if (!(terraswapAvailableList && ibcWhitelist && cw20Whitelist)) return
     if (!cw20TokensBalances) return
 
-    const coins = sortDenoms(activeDenoms, currency).map((denom) => {
+    const coins = sortDenoms(activeDenoms, currency.id).map((denom) => {
       const balance = getAmount(bankBalance, denom)
-      return { ...readNativeDenom(denom, isClassic), balance }
+      return { ...readNativeDenom(denom), balance }
     })
 
     const ibc = terraswapAvailableList.ibc.map((denom) => {
@@ -165,7 +165,7 @@ const SingleSwapContext = ({ children }: PropsWithChildren<{}>) => {
     cw20Whitelist,
     terraswapAvailableList,
     cw20TokensBalances,
-    isClassic,
+    readNativeDenom,
   ])
 
   const state = combineState(

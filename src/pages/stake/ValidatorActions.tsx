@@ -1,10 +1,10 @@
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
-import { ValAddress } from "@terra-money/terra.js"
+import { ValAddress } from "@terra-money/feather.js"
 import { has } from "utils/num"
 import { combineState } from "data/query"
 import { useCurrency } from "data/settings/Currency"
-import { useMemoizedCalcValue } from "data/queries/oracle"
+import { useMemoizedCalcValue } from "data/queries/coingecko"
 import { useDelegations, useDelegation } from "data/queries/staking"
 import { getAvailableStakeActions } from "data/queries/staking"
 import { calcRewardsValues, useRewards } from "data/queries/distribution"
@@ -13,12 +13,20 @@ import { Col, Card, ExtraActions, Grid } from "components/layout"
 import { Read } from "components/token"
 import { StakeAction } from "txs/stake/StakeForm"
 import styles from "./ValidatorActions.module.scss"
+import { useNetwork } from "data/wallet"
 
 const ValidatorActions = ({ destination }: { destination: ValAddress }) => {
   const { t } = useTranslation()
   const currency = useCurrency()
+  const networks = useNetwork()
+  const chain = useMemo(() => {
+    const prefix = ValAddress.getPrefix(destination)
+    return Object.values(networks).find(({ prefix: p }) => p === prefix)
+  }, [networks, destination])
   const { data: delegation, ...delegationState } = useDelegation(destination)
-  const { data: delegations, ...delegationsState } = useDelegations()
+  const { data: delegations, ...delegationsState } = useDelegations(
+    chain?.chainID ?? ""
+  )
   const { data: rewards, ...rewardsState } = useRewards()
   const state = combineState(delegationState, delegationsState)
   const calcValue = useMemoizedCalcValue()
@@ -37,7 +45,12 @@ const ValidatorActions = ({ destination }: { destination: ValAddress }) => {
 
     return (
       <section>
-        <Read amount={amount} denom="uluna" className={styles.total} block />
+        <Read
+          amount={amount}
+          denom={chain?.baseAsset}
+          className={styles.total}
+          block
+        />
       </section>
     )
   }
@@ -67,18 +80,23 @@ const ValidatorActions = ({ destination }: { destination: ValAddress }) => {
   const rewardsValues = useMemo(() => {
     const defaultValues = { address: destination, sum: "0", list: [] }
     if (!rewards) return defaultValues
-    const { byValidator } = calcRewardsValues(rewards, currency, calcValue)
+    const { byValidator } = calcRewardsValues(rewards, currency.id, calcValue)
     const values = byValidator.find(({ address }) => address === destination)
     return values ?? defaultValues
   }, [calcValue, currency, destination, rewards])
 
   const renderRewardsValue = () => {
     const { list } = rewardsValues
-    const amount = list.find(({ denom }) => denom === "uluna")?.amount ?? "0"
+    const amount =
+      list.find(({ denom }) => denom === chain?.baseAsset)?.amount ?? "0"
 
     return (
       <section>
-        <Read amount={amount} denom="uluna" className={styles.total} />{" "}
+        <Read
+          amount={amount}
+          denom={chain?.baseAsset}
+          className={styles.total}
+        />{" "}
         <span className={styles.small}>
           {list.length > 1 &&
             `+${t("{{length}} coins", { length: list.length - 1 })}`}

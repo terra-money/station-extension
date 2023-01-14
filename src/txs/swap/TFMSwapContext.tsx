@@ -1,13 +1,13 @@
 import { PropsWithChildren, useMemo } from "react"
 import { zipObj } from "ramda"
 import { isDenomIBC } from "@terra.kitchen/utils"
-import { AccAddress } from "@terra-money/terra.js"
+import { AccAddress } from "@terra-money/feather.js"
 import { getAmount } from "utils/coin"
 import createContext from "utils/createContext"
-import { combineState, useIsClassic } from "data/query"
+import { combineState } from "data/query"
 import { useBankBalance } from "data/queries/bank"
 import { useTokenBalances } from "data/queries/wasm"
-import { readIBCDenom, readNativeDenom } from "data/token"
+import { readIBCDenom, useNativeDenoms } from "data/token"
 import { useIBCWhitelist } from "data/Terra/TerraAssets"
 import { useCW20Whitelist } from "data/Terra/TerraAssets"
 import { useCustomTokensCW20 } from "data/settings/CustomTokens"
@@ -41,9 +41,9 @@ export const [useTFMSwap, TFMSwapProvider] =
   createContext<TFMSwap>("useTFMSwap")
 
 const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
-  const isClassic = useIsClassic()
   const bankBalance = useBankBalance()
   const { list } = useCustomTokensCW20()
+  const readNativeDenom = useNativeDenoms()
   const customTokens = list.map(({ token }) => token)
 
   /* contracts */
@@ -64,7 +64,7 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
       .filter((denom) => ibcWhitelist[denom.replace("ibc/", "")])
 
     const cw20 = tokens
-      .filter(AccAddress.validate)
+      .filter((addr) => AccAddress.validate(addr))
       .filter((token) => cw20Whitelist[token])
 
     return { ibc, cw20 }
@@ -95,7 +95,7 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
 
     const coins = [
       {
-        ...readNativeDenom("uluna", isClassic),
+        ...readNativeDenom("uluna"),
         balance: getAmount(bankBalance, "uluna"),
       },
     ]
@@ -131,7 +131,7 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
     cw20Whitelist,
     availableList,
     cw20TokensBalances,
-    isClassic,
+    readNativeDenom,
   ])
 
   const state = combineState(

@@ -2,13 +2,12 @@ import { useMemo } from "react"
 import { useQuery } from "react-query"
 import axios, { AxiosError } from "axios"
 import BigNumber from "bignumber.js"
-import { OracleParams, ValAddress } from "@terra-money/terra.js"
+import { ValAddress, Validator } from "@terra-money/feather.js"
 import { TerraValidator } from "types/validator"
 import { TerraProposalItem } from "types/proposal"
-import { useNetwork } from "data/wallet"
-import { useOracleParams } from "data/queries/oracle"
-import { useNetworks } from "app/InitNetworks"
+import { useNetwork, useNetworkName } from "data/wallet"
 import { queryKey, RefetchOptions } from "../query"
+import { useValidators } from "data/queries/staking"
 
 export enum Aggregate {
   PERIODIC = "periodic",
@@ -26,10 +25,11 @@ export enum AggregateWallets {
   ACTIVE = "active",
 }
 
-export const useTerraAPIURL = (mainnet?: true) => {
-  const network = useNetwork()
-  const networks = useNetworks()
-  return mainnet ? networks["mainnet"].api : network.api
+export const useTerraAPIURL = () => {
+  const network = useNetworkName()
+  return network !== "mainnet"
+    ? "https://pisco-api.terra.dev"
+    : "https://phoenix-api.terra.dev"
 }
 
 export const useIsTerraAPIAvailable = () => {
@@ -58,8 +58,7 @@ export type GasPrices = Record<Denom, Amount>
 
 export const useGasPrices = () => {
   const current = useTerraAPIURL()
-  const mainnet = useTerraAPIURL(true)
-  const baseURL = current ?? mainnet
+  const baseURL = current
   const path = "/gas-prices"
 
   return useQuery(
@@ -120,19 +119,25 @@ export const useTerraProposal = (id: number) => {
 }
 
 /* helpers */
-export const getCalcVotingPowerRate = (TerraValidators: TerraValidator[]) => {
+export const getCalcVotingPowerRate = (validators: Validator[]) => {
   const total = BigNumber.sum(
-    ...TerraValidators.map(({ voting_power = 0 }) => voting_power)
+    ...validators
+      .filter(
+        ({ status }) => (status as unknown as string) === "BOND_STATUS_BONDED"
+      )
+      .map(({ tokens }) => tokens.toString())
   ).toNumber()
 
   return (address: ValAddress) => {
-    const validator = TerraValidators.find(
+    const validator = validators.find(
       ({ operator_address }) => operator_address === address
     )
 
     if (!validator) return
-    const { voting_power } = validator
-    return voting_power ? Number(validator.voting_power) / total : undefined
+    const { tokens, status } = validator
+    return (status as unknown as string) === "BOND_STATUS_BONDED"
+      ? Number(tokens ?? 0) / total
+      : 0
   }
 }
 
@@ -142,41 +147,23 @@ export const calcSelfDelegation = (validator?: TerraValidator) => {
   return self ? Number(self) / Number(tokens) : undefined
 }
 
-export const getCalcUptime = ({ slash_window }: OracleParams) => {
-  return (validator?: TerraValidator) => {
-    if (!validator) return
-    const { miss_counter } = validator
-    return miss_counter ? 1 - Number(miss_counter) / slash_window : undefined
-  }
-}
-
 export const useVotingPowerRate = (address: ValAddress) => {
-  const { data: TerraValidators, ...state } = useTerraValidators()
+  const networks = useNetwork()
+  const prefix = ValAddress.getPrefix(address)
+  const chainID = Object.values(networks).find(
+    ({ prefix: p }) => p === prefix
+  )?.chainID
+
+  const { data: validators, ...state } = useValidators(chainID ?? "")
   const calcRate = useMemo(() => {
-    if (!TerraValidators) return
-    return getCalcVotingPowerRate(TerraValidators)
-  }, [TerraValidators])
+    if (!validators) return
+    return getCalcVotingPowerRate(validators)
+  }, [validators])
 
   const data = useMemo(() => {
     if (!calcRate) return
     return calcRate(address)
   }, [address, calcRate])
-
-  return { data, ...state }
-}
-
-export const useUptime = (validator: TerraValidator) => {
-  const { data: oracleParams, ...state } = useOracleParams()
-
-  const calc = useMemo(() => {
-    if (!oracleParams) return
-    return getCalcUptime(oracleParams)
-  }, [oracleParams])
-
-  const data = useMemo(() => {
-    if (!calc) return
-    return calc(validator)
-  }, [calc, validator])
 
   return { data, ...state }
 }

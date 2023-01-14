@@ -1,5 +1,4 @@
 import { Col } from "components/layout"
-import TxContext from "txs/TxContext"
 import { useAuth } from "auth"
 import ExtensionPage from "../components/ExtensionPage"
 import SwitchWallet from "../auth/SwitchWallet"
@@ -7,13 +6,16 @@ import AddWallet from "../auth/AddWallet"
 import { useRequest } from "../RequestContainer"
 import ConfirmConnect from "./ConfirmConnect"
 import ConfirmTx from "./ConfirmTx"
-import Assets from "./Assets"
 import Welcome from "./Welcome"
+import Wallet from "pages/wallet/Wallet"
+import WelcomeModal from "app/sections/WelcomeModal"
 
 const Front = () => {
   const { wallet, wallets } = useAuth()
   const { requests } = useRequest()
   const { connect, tx } = requests
+
+  const showWelcomeModal = localStorage.getItem("welcomeModal") === null
 
   if (!wallet) {
     return (
@@ -22,6 +24,7 @@ const Front = () => {
           {wallets.length ? <SwitchWallet /> : <Welcome />}
           <AddWallet />
         </Col>
+        {showWelcomeModal && <WelcomeModal />}
       </ExtensionPage>
     )
   }
@@ -31,14 +34,10 @@ const Front = () => {
   }
 
   if (tx) {
-    return (
-      <TxContext>
-        <ConfirmTx {...tx} />
-      </TxContext>
-    )
+    return <ConfirmTx {...tx} />
   }
 
-  return <Assets />
+  return <Wallet />
 }
 
 export default Front

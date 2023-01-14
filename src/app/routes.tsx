@@ -2,34 +2,27 @@ import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate, useRoutes } from "react-router-dom"
 
-import { ReactComponent as WalletIcon } from "styles/images/menu/Wallet.svg"
-import { ReactComponent as NFTIcon } from "styles/images/menu/NFT.svg"
 import { ReactComponent as HistoryIcon } from "styles/images/menu/History.svg"
 import { ReactComponent as SwapIcon } from "styles/images/menu/Swap.svg"
 import { ReactComponent as StakeIcon } from "styles/images/menu/Stake.svg"
 import { ReactComponent as GovernanceIcon } from "styles/images/menu/Governance.svg"
-import { ReactComponent as ContractIcon } from "styles/images/menu/Contract.svg"
+//import { ReactComponent as ContractIcon } from "styles/images/menu/Contract.svg"
 
 /* menu */
-import Dashboard from "pages/dashboard/Dashboard"
-import Wallet from "pages/wallet/Wallet"
-import NFT from "pages/nft/NFT"
 import History from "pages/history/History"
 import Stake from "pages/stake/Stake"
 import Governance from "pages/gov/Governance"
-import Contract from "pages/contract/Contract"
+//import Contract from "pages/contract/Contract"
 
 /* details */
 import ValidatorDetails from "pages/stake/ValidatorDetails"
 import ProposalDetails from "pages/gov/ProposalDetails"
 
 /* txs */
-import SendTx from "txs/send/SendTx"
 import TransferCW721Tx from "txs/wasm/TransferCW721Tx"
 import SwapTx from "txs/swap/SwapTx"
-import SwapMultipleTx from "txs/swap/SwapMultipleTx"
 import StakeTx from "txs/stake/StakeTx"
-import WithdrawRewardsTx from "txs/stake/WithdrawRewardsTx"
+import WithdrawRewards from "txs/stake/WithdrawRewards"
 import WithdrawCommissionTx from "txs/stake/WithdrawCommissionTx"
 import SubmitProposalTx from "txs/gov/SubmitProposalTx"
 import DepositTx from "txs/gov/DepositTx"
@@ -39,14 +32,13 @@ import InstantiateContractTx from "txs/wasm/InstantiateContractTx"
 import ExecuteContractTx from "txs/wasm/ExecuteContractTx"
 import MigrateContractTx from "txs/wasm/MigrateContractTx"
 import UpdateAdminContractTx from "txs/wasm/UpdateAdminContractTx"
-import AnchorEarnTx from "txs/earn/AnchorEarnTx"
 import SignMultisigTxPage from "pages/multisig/SignMultisigTxPage"
 import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
 
 /* auth */
 import Auth from "auth/modules/Auth"
-import ManageNetworksPage from "auth/networks/ManageNetworksPage"
-import AddNetworkPage from "auth/networks/AddNetworkPage"
+//import ManageNetworksPage from "auth/networks/ManageNetworksPage"
+//import AddNetworkPage from "auth/networks/AddNetworkPage"
 
 /* settings */
 import Settings from "pages/Settings"
@@ -64,23 +56,25 @@ export const useNav = () => {
   const { t } = useTranslation()
 
   const menu = [
+    /*
     {
-      path: "/wallet",
-      element: <Wallet />,
-      title: t("Wallet"),
+      path: "/",
+      element: <Dashboard />,
+      title: t("Dashboard"),
       icon: <WalletIcon {...ICON_SIZE} />,
+    },
+    */
+    {
+      path: "/",
+      element: <SwapTx />,
+      title: t("Swap"),
+      icon: <SwapIcon {...ICON_SIZE} />,
     },
     {
       path: "/history",
       element: <History />,
       title: t("History"),
       icon: <HistoryIcon {...ICON_SIZE} />,
-    },
-    {
-      path: "/swap",
-      element: <SwapTx />,
-      title: t("Swap"),
-      icon: <SwapIcon {...ICON_SIZE} />,
     },
     {
       path: "/stake",
@@ -94,6 +88,7 @@ export const useNav = () => {
       title: t("Governance"),
       icon: <GovernanceIcon {...ICON_SIZE} />,
     },
+    /*
     {
       path: "/nft",
       element: <NFT />,
@@ -106,30 +101,27 @@ export const useNav = () => {
       title: t("Contract"),
       icon: <ContractIcon {...ICON_SIZE} />,
     },
+    */
   ]
 
   const routes = [
-    { path: "/", element: <Dashboard /> },
-
     /* pages */
     ...menu,
     { path: "/validator/:address", element: <ValidatorDetails /> },
-    { path: "/proposal/:id", element: <ProposalDetails /> },
+    { path: "/proposal/:chain/:id", element: <ProposalDetails /> },
 
     /* multisig */
     { path: "/multisig/sign", element: <SignMultisigTxPage /> },
     { path: "/multisig/post", element: <PostMultisigTxPage /> },
 
     /* txs */
-    { path: "/send", element: <SendTx /> },
     { path: "/nft/transfer", element: <TransferCW721Tx /> },
-    { path: "/swap/multiple", element: <SwapMultipleTx /> },
     { path: "/stake/:address", element: <StakeTx /> },
-    { path: "/rewards", element: <WithdrawRewardsTx /> },
+    { path: "/rewards", element: <WithdrawRewards /> },
     { path: "/commission", element: <WithdrawCommissionTx /> },
     { path: "/proposal/new", element: <SubmitProposalTx /> },
-    { path: "/proposal/:id/deposit", element: <DepositTx /> },
-    { path: "/proposal/:id/vote", element: <VoteTx /> },
+    { path: "/proposal/:chain/:id/deposit", element: <DepositTx /> },
+    { path: "/proposal/:chain/:id/vote", element: <VoteTx /> },
     { path: "/contract/instantiate", element: <InstantiateContractTx /> },
     { path: "/contract/store", element: <StoreCodeTx /> },
     { path: "/contract/execute/:contract", element: <ExecuteContractTx /> },
@@ -138,13 +130,12 @@ export const useNav = () => {
       path: "/contract/updateadmin/:contract",
       element: <UpdateAdminContractTx />,
     },
-    { path: "/earn", element: <AnchorEarnTx /> },
     { path: "/donate", element: <DonateAllVestingTokensTx /> },
 
     /* auth */
     { path: "/auth/*", element: <Auth /> },
-    { path: "/networks", element: <ManageNetworksPage /> },
-    { path: "/network/new", element: <AddNetworkPage /> },
+    //{ path: "/networks", element: <ManageNetworksPage /> },
+    //{ path: "/network/new", element: <AddNetworkPage /> },
     { path: "/settings", element: <Settings /> },
 
     /* dev */

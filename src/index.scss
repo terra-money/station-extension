@@ -5,9 +5,10 @@
 @import "customize";
 
 #station {
-  min-width: 480px;
+  min-width: 400px;
   min-height: 600px; // Chrome extension maximum height
   height: 100vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  background-color: var(--bg);
 }

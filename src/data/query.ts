@@ -1,10 +1,4 @@
-import { useChainID } from "auth/hooks/useNetwork"
 import { LAZY_LIMIT } from "config/constants"
-
-export const useIsClassic = () => {
-  const networkName = useChainID()
-  return networkName === "columbus-5" // TODO
-}
 
 /* refetch */
 export const RefetchOptions = {
@@ -63,9 +57,15 @@ export const queryKey = mirror({
   },
   ibc: { denomTrace: "" },
   market: { params: "" },
-  oracle: { activeDenoms: "", exchangeRates: "", params: "" },
+  coingecko: {
+    activeDenoms: "",
+    exchangeRates: "",
+    params: "",
+    supportedFiat: "",
+  },
   tendermint: { nodeInfo: "" },
   staking: {
+    params: "",
     validators: "",
     validator: "",
     delegations: "",
@@ -73,10 +73,16 @@ export const queryKey = mirror({
     unbondings: "",
     pool: "",
   },
-  treasury: { taxRate: "", taxCap: "" },
   tx: { txInfo: "", create: "" },
   wasm: { contractInfo: "", contractQuery: "" },
-
+  interchain: {
+    staking: {
+      validators: "",
+      delegations: "",
+      unbondings: "",
+    },
+  },
+  treasury: { taxRate: "", taxCap: "", taxProceeds: "" },
   /* external */
   Anchor: { TotalDeposit: "", APY: "", MarketEpochState: "" },
   TNS: "",

@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
 import classNames from "classnames/bind"
 import BigNumber from "bignumber.js"
-import { StakingPool, Tally, TallyParams, Vote } from "@terra-money/terra.js"
+import { StakingPool, Tally, TallyParams, Vote } from "@terra-money/feather.js"
 import { readAmount, readPercent } from "@terra.kitchen/utils"
 import { has } from "utils/num"
 import { combineState } from "data/query"
@@ -22,14 +22,22 @@ export const options = [
   Vote.Option.VOTE_OPTION_NO_WITH_VETO,
 ]
 
-const ProposalVotes = ({ id, card }: { id: number; card?: boolean }) => {
+const ProposalVotes = ({
+  id,
+  chain,
+  card,
+}: {
+  id: number
+  chain: string
+  card?: boolean
+}) => {
   const { t } = useTranslation()
   const getVoteOptionItem = useGetVoteOptionItem()
 
-  const { data: proposal, ...proposalState } = useProposal(id)
-  const { data: tally, ...tallyState } = useTally(id)
-  const { data: tallyParams, ...tallyParamsState } = useTallyParams()
-  const { data: pool, ...poolState } = useStakingPool()
+  const { data: proposal, ...proposalState } = useProposal(id, chain)
+  const { data: tally, ...tallyState } = useTally(id, chain)
+  const { data: tallyParams, ...tallyParamsState } = useTallyParams(chain)
+  const { data: pool, ...poolState } = useStakingPool(chain)
 
   const state = combineState(
     proposalState,

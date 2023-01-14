@@ -1,27 +1,20 @@
 import { useTranslation } from "react-i18next"
-import { useIsClassic } from "data/query"
 import { useNetworkName } from "data/wallet"
-import { Card, Page } from "components/layout"
+import { Card, ChainFilter, Page } from "components/layout"
 import { Wrong } from "components/feedback"
-import TxContext from "../TxContext"
-import SwapContext from "./SwapContext"
-import SingleSwapContext from "./SingleSwapContext"
-import SwapForm from "./SwapForm"
 import TFMSwapContext from "./TFMSwapContext"
 import TFMSwapForm from "./TFMSwapForm"
 import TFMPoweredBy from "./TFMPoweredBy"
 
 // The sequence below is required before rendering the Swap form:
-// 1. `TxContext` - Fetch gas prices through, like other forms.
-// 2. `SwapContext` - Complete the network request related to swap.
-// 3. `SwapSingleContext` - Complete the network request not related to multiple swap
+// 1. `SwapContext` - Complete the network request related to swap.
+// 2. `SwapSingleContext` - Complete the network request not related to multiple swap
 
 const SwapTx = () => {
   const { t } = useTranslation()
   const networkName = useNetworkName()
-  const isClassic = useIsClassic()
 
-  if (networkName === "testnet") {
+  if (networkName !== "mainnet") {
     return (
       <Page title={t("Swap")} small>
         <Card>
@@ -31,26 +24,13 @@ const SwapTx = () => {
     )
   }
 
-  if (!isClassic)
-    return (
-      <Page title={t("Swap")} small extra={<TFMPoweredBy />}>
-        <TxContext>
-          <TFMSwapContext>
-            <TFMSwapForm />
-          </TFMSwapContext>
-        </TxContext>
-      </Page>
-    )
-
   return (
-    <Page title={t("Swap")} small>
-      <TxContext>
-        <SwapContext>
-          <SingleSwapContext>
-            <SwapForm />
-          </SingleSwapContext>
-        </SwapContext>
-      </TxContext>
+    <Page title={t("Swap")} small extra={<TFMPoweredBy />}>
+      <TFMSwapContext>
+        <ChainFilter outside title={"Select a chain to perform swaps on"} swap>
+          {(chainID) => <TFMSwapForm chainID={chainID ?? ""} />}
+        </ChainFilter>
+      </TFMSwapContext>
     </Page>
   )
 }

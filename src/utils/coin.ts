@@ -1,9 +1,17 @@
-import { Coins } from "@terra-money/terra.js"
+import { Coins } from "@terra-money/feather.js"
 import { isDenom, isDenomIBC } from "@terra.kitchen/utils"
 
 /* coin */
-export const getAmount = (coins: Coins, denom: Denom, fallback = "0") => {
-  return coins.get(denom)?.amount.toString() ?? fallback
+export const getAmount = (
+  coins: { denom: string; amount: string }[] | Coins,
+  denom: Denom,
+  fallback = "0"
+) => {
+  return (
+    (Array.isArray(coins)
+      ? coins.find((c) => c.denom === denom)?.amount
+      : coins.get(denom)?.amount.toString()) ?? fallback
+  )
 }
 
 /* coins */

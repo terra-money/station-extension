@@ -2,30 +2,33 @@ import { useEffect } from "react"
 import { NavLink, useLocation } from "react-router-dom"
 import { useRecoilState, useSetRecoilState } from "recoil"
 import classNames from "classnames/bind"
-import MenuIcon from "@mui/icons-material/Menu"
 import CloseIcon from "@mui/icons-material/Close"
 import { mobileIsMenuOpenState } from "components/layout"
 import { useNav } from "../routes"
 import styles from "./Nav.module.scss"
+import { useThemeFavicon } from "data/settings/Theme"
 
 const cx = classNames.bind(styles)
 
 const Nav = () => {
   useCloseMenuOnNavigate()
   const { menu } = useNav()
+  const icon = useThemeFavicon()
   const [isOpen, setIsOpen] = useRecoilState(mobileIsMenuOpenState)
-  const toggle = () => setIsOpen(!isOpen)
+  const close = () => setIsOpen(false)
 
   return (
     <nav>
       <header className={styles.header}>
-        <NavLink to="/" className={classNames(styles.item, styles.logo)}>
-          <strong>Terra</strong> Station
-        </NavLink>
-
-        <button className={styles.toggle} onClick={toggle}>
-          {isOpen ? <CloseIcon /> : <MenuIcon />}
-        </button>
+        <div className={classNames(styles.item, styles.logo)}>
+          <img src={icon} alt="Station" />{" "}
+          <strong className={styles.title}>Station</strong>
+        </div>
+        {isOpen && (
+          <button className={styles.toggle} onClick={close}>
+            <CloseIcon />
+          </button>
+        )}
       </header>
 
       {menu.map(({ path, title, icon }) => (
@@ -53,5 +56,5 @@ const useCloseMenuOnNavigate = () => {
 
   useEffect(() => {
     setIsOpen(false)
-  }, [pathname, setIsOpen])
+  }, [pathname, setIsOpen]) // eslint-disable-line react-hooks/exhaustive-deps
 }

@@ -1,6 +1,6 @@
 import { HTMLAttributes, useState } from "react"
 import classNames from "classnames/bind"
-import { AccAddress } from "@terra-money/terra.js"
+import { AccAddress } from "@terra-money/feather.js"
 import { isDenomIBC } from "@terra.kitchen/utils"
 import { getIcon } from "data/token"
 import styles from "./TokenIcon.module.scss"
@@ -24,7 +24,13 @@ const TokenIcon = ({ token, icon, size, ...rest }: Props) => {
 
   const src = !icon || isError ? defaultIcon : icon
   const sizes =
-    size === "inherit" ? undefined : { width: size ?? 24, height: size ?? 24 }
+    size === "inherit"
+      ? undefined
+      : {
+          width: size ?? 34,
+          height: size ?? 34,
+          style: { padding: (size ?? 34) / 3.5 },
+        }
 
   const attrs = { ...rest, ...sizes, src, className: cx(styles.icon, size) }
   return <img {...attrs} onError={() => setIsError(true)} alt="" />

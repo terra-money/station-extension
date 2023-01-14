@@ -2,50 +2,71 @@ import { useTranslation } from "react-i18next"
 import { useQuery } from "react-query"
 import { last } from "ramda"
 import { sentenceCase } from "sentence-case"
-import { Proposal, Vote } from "@terra-money/terra.js"
+import { Proposal, Vote } from "@terra-money/feather.js"
 import { Color } from "types/components"
-import { Pagination, queryKey, RefetchOptions, useIsClassic } from "../query"
-import { useLCDClient } from "./lcdClient"
+import { Pagination, queryKey, RefetchOptions } from "../query"
+import { useInterchainLCDClient } from "./lcdClient"
+import { useNetwork } from "data/wallet"
 
-export const useVotingParams = () => {
-  const lcd = useLCDClient()
+export const useVotingParams = (chain: string) => {
+  const lcd = useInterchainLCDClient()
   return useQuery(
-    [queryKey.gov.votingParams],
-    () => lcd.gov.votingParameters(),
+    [queryKey.gov.votingParams, chain],
+    () => lcd.gov.votingParameters(chain),
     { ...RefetchOptions.INFINITY }
   )
 }
 
-export const useDepositParams = () => {
-  const lcd = useLCDClient()
+export const useDepositParams = (chain: string) => {
+  const lcd = useInterchainLCDClient()
   return useQuery(
-    [queryKey.gov.depositParams],
-    () => lcd.gov.depositParameters(),
+    [queryKey.gov.depositParams, chain],
+    () => lcd.gov.depositParameters(chain),
     { ...RefetchOptions.INFINITY }
   )
 }
 
-export const useTallyParams = () => {
-  const lcd = useLCDClient()
-  return useQuery([queryKey.gov.tallyParams], () => lcd.gov.tallyParameters(), {
-    ...RefetchOptions.INFINITY,
-  })
+export const useTallyParams = (chain: string) => {
+  const lcd = useInterchainLCDClient()
+  return useQuery(
+    [queryKey.gov.tallyParams, chain],
+    () => lcd.gov.tallyParameters(chain),
+    {
+      ...RefetchOptions.INFINITY,
+    }
+  )
 }
 
 /* proposals */
 export const useProposals = (status: Proposal.Status) => {
-  const lcd = useLCDClient()
+  const lcd = useInterchainLCDClient()
+  const networks = useNetwork()
   return useQuery(
     [queryKey.gov.proposals, status],
     async () => {
+      const chainList = Object.keys(networks)
       // TODO: Pagination
       // Required when the number of results exceed 100
       // About 50 passed propsals from 2019 to 2021
-      const [proposals] = await lcd.gov.proposals({
-        proposal_status: status,
-        ...Pagination,
-      })
+      const proposals = await Promise.all(
+        chainList.map((chainID) =>
+          lcd.gov.proposals(chainID, {
+            proposal_status: status,
+            ...Pagination,
+          })
+        )
+      )
+
       return proposals
+        .reduce(
+          (acc, cur, i) => {
+            cur[0].map((prop) => acc.push({ prop, chain: chainList[i] }))
+            return acc
+          },
+          [] as { prop: Proposal; chain: string }[]
+          // remove proposals with unsupported protobuf content
+        )
+        .filter(({ prop }) => prop.content)
     },
     { ...RefetchOptions.DEFAULT }
   )
@@ -93,33 +114,41 @@ export const useProposalStatusItem = (status: Proposal.Status) => {
 }
 
 /* proposal */
-export const useProposal = (id: number) => {
-  const lcd = useLCDClient()
-  return useQuery([queryKey.gov.proposal, id], () => lcd.gov.proposal(id), {
-    ...RefetchOptions.INFINITY,
-  })
+export const useProposal = (id: number, chain: string) => {
+  const lcd = useInterchainLCDClient()
+  return useQuery(
+    [queryKey.gov.proposal, id, chain],
+    () => lcd.gov.proposal(id, chain),
+    {
+      ...RefetchOptions.INFINITY,
+    }
+  )
 }
 
 /* proposal: deposits */
-export const useDeposits = (id: number) => {
-  const lcd = useLCDClient()
+export const useDeposits = (id: number, chain: string) => {
+  const lcd = useInterchainLCDClient()
   return useQuery(
-    [queryKey.gov.deposits, id],
+    [queryKey.gov.deposits, id, chain],
     async () => {
       // TODO: Pagination
       // Required when the number of results exceed 100
-      const [deposits] = await lcd.gov.deposits(id)
+      const [deposits] = await lcd.gov.deposits(id, chain)
       return deposits
     },
     { ...RefetchOptions.DEFAULT }
   )
 }
 
-export const useTally = (id: number) => {
-  const lcd = useLCDClient()
-  return useQuery([queryKey.gov.tally, id], () => lcd.gov.tally(id), {
-    ...RefetchOptions.DEFAULT,
-  })
+export const useTally = (id: number, chain: string) => {
+  const lcd = useInterchainLCDClient()
+  return useQuery(
+    [queryKey.gov.tally, id, chain],
+    () => lcd.gov.tally(id, chain),
+    {
+      ...RefetchOptions.DEFAULT,
+    }
+  )
 }
 
 /* proposal: votes */
@@ -130,7 +159,7 @@ export const useGetVoteOptionItem = () => {
     ({
       [Vote.Option.VOTE_OPTION_YES]: {
         label: t("Yes"),
-        color: "info" as Color,
+        color: "success" as Color,
       },
       [Vote.Option.VOTE_OPTION_NO]: {
         label: t("No"),
@@ -142,7 +171,7 @@ export const useGetVoteOptionItem = () => {
       },
       [Vote.Option.VOTE_OPTION_ABSTAIN]: {
         label: t("Abstain"),
-        color: "success" as Color,
+        color: "info" as Color,
       },
       [Vote.Option.VOTE_OPTION_UNSPECIFIED]: {
         label: "",
@@ -162,7 +191,6 @@ export const useGetVoteOptionItem = () => {
 
 /* helpers */
 export const useParseProposalType = (content: Proposal.Content) => {
-  const isClassic = useIsClassic()
-  const { "@type": type } = content.toData(isClassic)
+  const { "@type": type } = content.toData()
   return sentenceCase(last(type.split(".")) ?? "")
 }

@@ -1,9 +1,6 @@
 @import "mixins";
 
 .list {
-  background: var(--card-bg);
-  border: var(--border-width) solid var(--card-border);
-  border-radius: var(--border-radius);
   overflow: hidden;
 }
 
@@ -13,15 +10,36 @@
   color: var(--text);
   padding: 16px 20px;
   text-align: left;
-  transition: background var(--transition);
+  transition: var(--transition);
   width: 100%;
+  margin-bottom: 12px;
 
-  &:not(:first-child) {
-    border-top: var(--border-width) solid var(--card-border);
-  }
+  border: var(--border-width) solid var(--card-border);
+  border-radius: var(--border-radius);
 
   &:hover {
-    background: var(--bg-muted);
+    background: var(--card-bg-muted);
+    text-decoration: none;
+  }
+}
+
+.item__active {
+  border: var(--border-width) solid var(--button-primary-bg);
+  background: hsl(
+    var(--button-primary-bg-h),
+    var(--button-primary-bg-s),
+    var(--button-primary-bg-l)
+  );
+  color: var(--button-primary-text);
+  transition: background var(--transition);
+
+  &:hover {
+    background: hsl(
+      var(--button-primary-bg-h),
+      var(--button-primary-bg-s),
+      calc(var(--button-primary-bg-l) - 5%)
+    );
+
     text-decoration: none;
   }
 }

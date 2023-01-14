@@ -1,30 +1,100 @@
-import { useIsAnchorAvailable } from "data/external/anchor"
-import { Auto, Page } from "components/layout"
-import Coins from "./Coins"
-import Tokens from "./Tokens"
-import Vesting from "./Vesting"
-import Rewards from "./Rewards"
-import AnchorEarn from "./AnchorEarn"
+import styles from "./Wallet.module.scss"
+import { ReactComponent as BackIcon } from "styles/images/icons/BackButton.svg"
+import NetWorth from "./NetWorth"
+import AssetList from "./AssetList"
+import { useState } from "react"
+import createContext from "utils/createContext"
+import AssetPage from "./AssetPage"
+import ReceivePage from "./ReceivePage"
+import SendPage from "./SendPage"
+
+enum Path {
+  wallet = "wallet",
+  coin = "coin",
+  receive = "receive",
+  send = "send",
+}
+
+type Route =
+  | {
+      path: Path.wallet
+    }
+  | {
+      path: Path.coin
+      denom: string
+      previusPage: Route
+    }
+  | {
+      path: Path.receive
+      previusPage: Route
+    }
+  | {
+      path: Path.send
+      denom?: string
+      previusPage: Route
+    }
+
+// Handle routing inside Wallet
+const [useWalletRoute, WalletRouter] = createContext<{
+  route: Route
+  setRoute: (route: Route) => void
+}>("useWalletRoute")
+
+export { useWalletRoute, Path }
 
 const Wallet = () => {
-  const isAnchorAvailable = useIsAnchorAvailable()
+  const [route, setRoute] = useState<Route>({ path: Path.wallet })
+
+  function BackButton() {
+    if (route.path === Path.wallet) return null
+
+    return (
+      <button
+        className={styles.back}
+        onClick={() => setRoute(route.previusPage)}
+      >
+        <BackIcon width={18} height={18} />
+      </button>
+    )
+  }
+
+  function render() {
+    switch (route.path) {
+      case Path.wallet:
+        return (
+          <>
+            <NetWorth />
+            <AssetList />
+          </>
+        )
+      case Path.coin:
+        return (
+          <>
+            <BackButton />
+            <AssetPage />
+          </>
+        )
+      case Path.receive:
+        return (
+          <>
+            <BackButton />
+            <ReceivePage />
+          </>
+        )
+      case Path.send:
+        return (
+          <>
+            <BackButton />
+            <SendPage />
+          </>
+        )
+    }
+  }
 
   return (
-    <Page title="Wallet">
-      <Auto
-        columns={[
-          <>
-            <Coins />
-            <Tokens />
-            <Vesting />
-          </>,
-          <>
-            <Rewards />
-            {isAnchorAvailable && <AnchorEarn />}
-          </>,
-        ]}
-      />
-    </Page>
+    <div className={styles.wallet}>
+      <WalletRouter value={{ route, setRoute }}>{render()}</WalletRouter>
+    </div>
   )
 }
 

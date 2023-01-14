@@ -1,5 +1,5 @@
 import { getErrorMessage } from "utils/error"
-import Layout, { Page } from "components/layout"
+import Layout, { MainContainer, Page } from "components/layout"
 import { Banner, Content, Header, Actions, Sidebar } from "components/layout"
 import { ErrorBoundary, Wrong } from "components/feedback"
 
@@ -7,14 +7,14 @@ import { ErrorBoundary, Wrong } from "components/feedback"
 import { useNav } from "./routes"
 
 /* banner */
-import NetworkName from "./sections/NetworkName"
+import UpdateExtension from "./sections/UpdateExtension"
 
 /* sidebar */
 import Nav from "./sections/Nav"
 import Aside from "./sections/Aside"
 
 /* header */
-import IsClassicNetwork from "./sections/IsClassicNetwork"
+import NetworkHeader from "./sections/NetworkHeader"
 import Refresh from "./sections/Refresh"
 import Preferences from "./sections/Preferences"
 import SelectTheme from "./sections/SelectTheme"
@@ -27,14 +27,19 @@ import DevTools from "./sections/DevTools"
 
 /* init */
 import InitBankBalance from "./InitBankBalance"
+import Wallet from "pages/wallet/Wallet"
+import WelcomeModal from "./sections/WelcomeModal"
+import NavButton from "./sections/NavButton"
 
 const App = () => {
   const { element: routes } = useNav()
 
+  const showWelcomeModal = localStorage.getItem("welcomeModal") === null
+
   return (
     <Layout>
       <Banner>
-        <NetworkName />
+        <UpdateExtension />
       </Banner>
 
       <Sidebar>
@@ -43,7 +48,7 @@ const App = () => {
       </Sidebar>
 
       <Header>
-        <IsClassicNetwork />
+        <NetworkHeader />
 
         <Actions>
           <DevTools />
@@ -54,13 +59,20 @@ const App = () => {
           </section>
           <ValidatorButton />
           <ConnectWallet />
+          <NavButton />
         </Actions>
         <LatestTx />
       </Header>
 
       <Content>
         <ErrorBoundary fallback={fallback}>
-          <InitBankBalance>{routes}</InitBankBalance>
+          <InitBankBalance>
+            <MainContainer>
+              {routes}
+              <Wallet />
+              {showWelcomeModal && <WelcomeModal />}
+            </MainContainer>
+          </InitBankBalance>
         </ErrorBoundary>
       </Content>
     </Layout>

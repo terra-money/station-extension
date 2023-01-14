@@ -1,85 +1,89 @@
-import { Fragment, useCallback } from "react"
-import { useTranslation } from "react-i18next"
-import { useInfiniteQuery } from "react-query"
+import { Fragment } from "react"
+import { useQuery } from "react-query"
 import axios from "axios"
 import { queryKey } from "data/query"
-import { useAddress } from "data/wallet"
-import { useTerraAPIURL } from "data/Terra/TerraAPI"
-import { Button } from "components/general"
+import { useNetwork } from "data/wallet"
 import { Card, Col, Page } from "components/layout"
 import { Empty } from "components/feedback"
 import HistoryItem from "./HistoryItem"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
 
-const HistoryList = () => {
-  const { t } = useTranslation()
-  const address = useAddress()
-  const baseURL = useTerraAPIURL()
+interface Props {
+  chainID: string
+}
+
+const HistoryList = ({ chainID }: Props) => {
+  const addresses = useInterchainAddresses()
+  const address = addresses?.[chainID]
+  const networks = useNetwork()
+
+  const LIMIT = 100
+  const EVENTS = [
+    // any tx signed by the user
+    "message.sender",
+    // any coin received
+    "transfer.recipient",
+    // any coin sent
+    "transfer.sender",
+  ]
 
   /* query */
-  const fetchAccountHistory = useCallback(
+  const { data: history, ...state } = useQuery(
+    [queryKey.History, networks, address, chainID],
     async ({ pageParam = 0 }) => {
-      const { data } = await axios.get<AccountHistory>(
-        `tx-history/station/${address}`,
-        { baseURL, params: { offset: pageParam || undefined } }
+      const result: any[] = []
+      const txhases: string[] = []
+
+      const requests = await Promise.all(
+        EVENTS.map((event) =>
+          axios.get<AccountHistory>(`/cosmos/tx/v1beta1/txs`, {
+            baseURL: networks[chainID].lcd,
+            params: {
+              events: `${event}='${address}'`,
+              //order_by: "ORDER_BY_DESC",
+              "pagination.offset": pageParam || undefined,
+              "pagination.reverse": true,
+              "pagination.limit": LIMIT,
+            },
+          })
+        )
       )
 
-      return data
-    },
-    [address, baseURL]
+      for (const { data } of requests) {
+        data.tx_responses.forEach((tx) => {
+          if (!txhases.includes(tx.txhash)) {
+            result.push(tx)
+            txhases.push(tx.txhash)
+          }
+        })
+      }
+
+      return result
+        .sort((a, b) => Number(b.height) - Number(a.height))
+        .slice(0, LIMIT)
+    }
   )
-
-  const { data, error, fetchNextPage, ...state } = useInfiniteQuery(
-    [queryKey.TerraAPI, "history", baseURL, address],
-    fetchAccountHistory,
-    { getNextPageParam: ({ next }) => next, enabled: !!(address && baseURL) }
-  )
-
-  const { hasNextPage, isFetchingNextPage } = state
-
-  const getPages = () => {
-    if (!data) return []
-    const { pages } = data
-    const [{ list }] = data.pages
-    return list.length ? pages : []
-  }
-
-  const pages = getPages()
 
   const render = () => {
-    if (address && !data) return null
+    if (address && !history) return null
 
-    return !pages.length ? (
+    return !history?.length ? (
       <Card>
         <Empty />
       </Card>
     ) : (
       <Col>
-        {pages.map(({ list }, i) => (
-          <Fragment key={i}>
-            {list.map((item) => (
-              <HistoryItem {...item} key={item.txhash} />
-            ))}
-          </Fragment>
-        ))}
-
-        <Button
-          onClick={() => fetchNextPage()}
-          disabled={!hasNextPage || isFetchingNextPage}
-          loading={isFetchingNextPage}
-          block
-        >
-          {isFetchingNextPage
-            ? t("Loading more...")
-            : hasNextPage
-            ? t("Load more")
-            : t("Nothing more to load")}
-        </Button>
+        <Fragment>
+          {history.map((item) => (
+            <HistoryItem {...item} chain={chainID} key={item.txhash} />
+          ))}
+        </Fragment>
       </Col>
     )
   }
 
   return (
-    <Page {...state} title={t("History")}>
+    <Page {...state} invisible>
       {render()}
     </Page>
   )

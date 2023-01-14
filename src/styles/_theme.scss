@@ -7,11 +7,13 @@
   --grid-gap: 20px;
   --card-padding: 28px;
   --card-padding-small: 20px;
-  --header-height: 64px;
+  --header-height: 60px;
   --max-width: 1080px;
   --max-width-small: 640px;
   --modal-width: 520px;
   --input-height: 45px;
+  --wallet-width: 380px;
+  --extension-width: min(100%, 600px);
 
   // fonts
   --font-family-monospace: "Source Code Pro", monospace;
@@ -27,7 +29,7 @@
   --transition: 100ms;
 
   @include desktop {
-    --main-padding-horizontal: 64px;
+    --main-padding-horizontal: 20px;
   }
 
   @include mobile {
@@ -64,47 +66,54 @@
   --button-default-text: hsl(226 71% 43%);
 
   --menu-bg: hsl(215 100% 33%);
-  --menu-border: hsl(0 0% 100% / 0.1);
+  --menu-border: hsla(0, 0%, 100%, 0.15);
   --menu-text: hsl(0 0% 91%);
 
-  --link: hsl(210 89% 61%);
+  --link: var(--button-primary-bg);
   --text: hsl(226 70% 42%);
-  --text-muted: hsl(227 51% 70%);
+  --text-muted: hsl(226deg 70% 42% / 85%);
   --chart: hsl(215 90% 57%);
 
-  --bg: hsl(230 100% 99%);
+  --bg: hsl(223, 47%, 97%);
   --bg-muted: hsl(229 73% 97%);
   --card-bg: hsl(0 0% 100%);
-  --card-border: hsl(222 48% 95%);
+  --card-bg-muted: hsl(223, 47%, 97%);
+  --card-border: hsl(213, 16%, 89%);
   --input-bg: var(--card-bg);
   --input-border: hsl(220 39% 86%);
 
-  --info: hsl(210 89% 61%);
-  --info-light: hsl(210 89% 61% / 0.1);
+  --info: hsl(221, 91%, 59%);
+  --info-light: hsl(224, 82%, 60% / 0.1);
   --warning: hsl(36 98% 50%);
   --warning-light: hsl(36 98% 50% / 0.1);
   --success: hsl(168 71% 39%);
   --success-light: hsl(168 71% 39% / 0.1);
-  --danger: hsl(356 100% 67%);
-  --danger-light: hsl(356 100% 67% / 0.1);
+  --danger: hsl(0, 83%, 60%);
+  --danger-light: hsl(0, 83%, 60% / 0.1);
 
-  --extension-bg: hsl(227 62% 11%);
-  --extension-text: hsl(210 89% 61%);
+  --extension-bg: var(--card-bg);
+  --extension-text: var(--text);
+
+  @include mobile {
+    --menu-bg: var(--card-bg);
+    --menu-border: var(--card-border);
+    --menu-text: var(--text);
+  }
 }
 
 .dark {
-  --button-primary-bg-h: 210;
-  --button-primary-bg-s: 89%;
-  --button-primary-bg-l: 61%;
+  --button-primary-bg-h: 221;
+  --button-primary-bg-s: 91%;
+  --button-primary-bg-l: 59%;
   --button-primary-bg: hsl(
     var(--button-primary-bg-h),
     var(--button-primary-bg-s),
     var(--button-primary-bg-l)
   );
   --button-primary-text: hsl(0 0% 95%);
-  --button-default-bg-h: 210;
-  --button-default-bg-s: 1%;
-  --button-default-bg-l: 30%;
+  --button-default-bg-h: 240;
+  --button-default-bg-s: 5%;
+  --button-default-bg-l: 22%;
   --button-default-bg: hsl(
     var(--button-default-bg-h),
     var(--button-default-bg-s),
@@ -112,24 +121,25 @@
   );
   --button-default-text: hsl(0 0% 87%);
 
-  --menu-bg: hsl(0 0% 13%);
-  --menu-border: hsl(0 0% 100% / 0.1);
-  --menu-text: hsl(0 0% 91%);
+  --menu-bg: hsl(239, 6%, 17%);
+  --menu-border: hsl(239, 5%, 22%);
+  --menu-text: hsl(239, 2%, 76%);
 
-  --link: hsl(210 89% 61%);
-  --text: hsl(0 0% 86%);
+  --link: var(--button-primary-bg);
+  --text: hsl(0, 0%, 95%);
   --text-muted: hsl(0 0% 55%);
   --chart: hsl(215 90% 57%);
 
-  --bg: hsl(0 0% 11%);
+  --bg: hsl(0, 0%, 10%);
   --bg-muted: hsl(0 0% 13%);
-  --card-bg: hsl(240 1% 15%);
+  --card-bg: hsl(239, 6%, 17%);
+  --card-bg-muted: hsl(240, 6%, 15%);
   --card-border: hsl(210 2% 21%);
   --input-bg: var(--card-bg);
   --input-border: hsl(0 0% 30%);
 
-  --extension-bg: hsl(240 1% 15%);
-  --extension-text: hsl(210 100% 77%);
+  --extension-bg: var(--card-bg);
+  --extension-text: var(--text);
 }
 
 .blossom {
@@ -164,6 +174,7 @@
   --bg: hsl(321 100% 96%);
   --bg-muted: hsl(321 100% 97%);
   --card-bg: hsl(300 100% 98%);
+  --card-bg-muted: var(--button-default-bg);
   --card-border: hsl(342 100% 94%);
   --input-bg: var(--card-bg);
   --input-border: hsl(344 100% 92%);
@@ -174,7 +185,7 @@
 
 .moon {
   --border-width: 0;
-  --border-radius: 16px;
+  --border-radius: 8px;
 
   --button-primary-bg-h: 47;
   --button-primary-bg-s: 93%;
@@ -205,8 +216,9 @@
 
   --bg: hsl(249 54% 3%);
   --bg-muted: hsl(248 55% 8%);
-  --card-bg: hsl(247 55% 6%);
-  --card-border: hsl(0 0% 100% / 0.1);
+  --card-bg: hsl(247, 55%, 9%);
+  --card-bg-muted: #130f32;
+  --card-border: hsl(240 5% 22%);
   --input-bg: var(--card-bg);
   --input-border: hsl(0 0% 100% / 0.1);
 
@@ -246,6 +258,7 @@
   --bg: hsl(0 0% 94%);
   --bg-muted: hsl(0 0% 91%);
   --card-bg: hsl(0 0% 100%);
+  --card-bg-muted: var(--button-default-bg);
   --card-border: hsl(0 0% 92%);
   --input-bg: var(--card-bg);
   --input-border: hsl(0 0% 91%);
@@ -289,6 +302,7 @@
   --bg: hsl(0 0% 8%);
   --bg-muted: hsl(260 62% 26% / 0.75);
   --card-bg: hsl(260 66% 37%);
+  --card-bg-muted: var(--button-default-bg);
   --card-border: hsl(261 66% 47%);
   --input-bg: var(--card-bg);
   --input-border: hsl(0 0% 100% / 0.3);

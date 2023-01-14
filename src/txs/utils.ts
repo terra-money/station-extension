@@ -1,10 +1,10 @@
 import BigNumber from "bignumber.js"
 import { readAmount, toAmount } from "@terra.kitchen/utils"
-import { Coin, Coins } from "@terra-money/terra.js"
+import { Coin, Coins } from "@terra-money/feather.js"
 import { has } from "utils/num"
+import { FindDecimals } from "./IBCHelperContext"
 import { getShouldTax } from "data/queries/treasury"
 import { calcMinimumTaxAmount } from "./Tx"
-import { FindDecimals } from "./IBCHelperContext"
 
 export const getPlaceholder = (decimals = 6) => "0.".padEnd(decimals + 2, "0")
 
@@ -32,12 +32,12 @@ export const getCoins = (coins: CoinInput[], findDecimals?: FindDecimals) => {
 
 export interface TaxParams {
   taxRate?: string
-  taxCaps?: Record<Denom, Amount>
+  taxCap?: string
 }
 
 export const calcTaxes = (
   coins: CoinInput[],
-  { taxRate = "0", taxCaps = {} }: TaxParams,
+  { taxRate = "0", taxCap = "0" }: TaxParams,
   isClassic: boolean
 ) => {
   return new Coins(
@@ -50,7 +50,7 @@ export const calcTaxes = (
         const amount = toAmount(input)
         const tax = calcMinimumTaxAmount(amount, {
           rate: taxRequired ? taxRate : "0",
-          cap: taxCaps[denom],
+          cap: taxCap,
         })
 
         if (!tax) throw new Error()

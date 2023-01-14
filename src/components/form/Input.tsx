@@ -10,11 +10,15 @@ const cx = classNames.bind(styles)
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   token?: Token
   selectBefore?: ReactNode
+  actionButton?: {
+    icon: ReactNode
+    onClick: () => void
+  }
 }
 
 const Input = forwardRef(
   (
-    { selectBefore, token, ...attrs }: Props,
+    { selectBefore, token, actionButton, ...attrs }: Props,
     ref: ForwardedRef<HTMLInputElement>
   ) => {
     return (
@@ -23,7 +27,10 @@ const Input = forwardRef(
 
         <input
           {...attrs}
-          className={cx(styles.input, { before: token, after: selectBefore })}
+          className={cx(styles.input, {
+            before: token || actionButton,
+            after: selectBefore,
+          })}
           autoComplete="off"
           ref={ref}
         />
@@ -37,6 +44,19 @@ const Input = forwardRef(
             )}
           </WithTokenItem>
         )}
+
+        {actionButton && (
+          <button
+            className={classNames(styles.symbol, styles.after)}
+            onClick={(e) => {
+              actionButton.onClick()
+              e.stopPropagation()
+              e.preventDefault()
+            }}
+          >
+            {actionButton.icon}
+          </button>
+        )}
       </div>
     )
   }
@@ -47,14 +67,27 @@ export default Input
 /* search */
 export const SearchInput = forwardRef(
   (
-    attrs: InputHTMLAttributes<HTMLInputElement>,
+    attrs: InputHTMLAttributes<HTMLInputElement> & {
+      padding?: boolean
+      small?: boolean
+    },
     ref: ForwardedRef<HTMLInputElement>
   ) => {
     return (
-      <div className={classNames(styles.wrapper, styles.search)}>
+      <div
+        className={classNames(
+          styles.wrapper,
+          styles.search,
+          attrs.small && styles.search__small
+        )}
+        style={attrs.padding ? {} : { margin: 0 }}
+      >
         <input
           {...attrs}
-          className={styles.input}
+          className={classNames(
+            styles.input,
+            attrs.small && styles.input__small
+          )}
           inputMode="search"
           autoComplete="off"
           ref={ref}

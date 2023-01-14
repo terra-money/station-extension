@@ -1,5 +1,5 @@
 import { getStoredWallet } from "./keystore"
-import wordlist from "./wordlist.json"
+import wordlist from "bip39/src/wordlists/english.json"
 
 const validate = {
   name: {
@@ -10,8 +10,8 @@ const validate = {
       "Enter 3-20 lowercase alphanumeric characters",
     exists: (name: string) => {
       try {
-        const { address } = getStoredWallet(name)
-        return `Already exists: ${address}`
+        getStoredWallet(name)
+        return `A wallet with this name already exists.`
       } catch {
         return true
       }

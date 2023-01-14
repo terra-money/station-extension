@@ -1,14 +1,22 @@
 import { useTranslation } from "react-i18next"
-import { Proposal } from "@terra-money/terra.js"
+import { Proposal } from "@terra-money/feather.js"
 import { useParseProposalType } from "data/queries/gov"
 import { useProposalStatusItem } from "data/queries/gov"
 import { ToNow } from "components/display"
 import styles from "./ProposalHeader.module.scss"
+import { useNetwork } from "data/wallet"
 
-const ProposalHeader = ({ proposal }: { proposal: Proposal }) => {
+const ProposalHeader = ({
+  proposal,
+  chain,
+}: {
+  proposal: Proposal
+  chain: string
+}) => {
   const { id, content, status, submit_time } = proposal
   const { title } = content
 
+  const networks = useNetwork()
   const { t } = useTranslation()
   const type = useParseProposalType(content)
   const { color, label } = useProposalStatusItem(status)
@@ -17,6 +25,9 @@ const ProposalHeader = ({ proposal }: { proposal: Proposal }) => {
     <header className={styles.header}>
       <section className={styles.meta}>
         <aside>
+          {chain && (
+            <img src={networks[chain].icon} alt={networks[chain].name} />
+          )}
           {id} | {type}
         </aside>
         <strong className={color}>{label}</strong>

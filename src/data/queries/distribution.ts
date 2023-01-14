@@ -1,55 +1,86 @@
 import { useQuery } from "react-query"
 import BigNumber from "bignumber.js"
-import { Coins, Rewards, ValAddress, Validator } from "@terra-money/terra.js"
+import {
+  AccAddress,
+  Coin,
+  Coins,
+  Rewards,
+  ValAddress,
+  Validator,
+} from "@terra-money/feather.js"
 import { has } from "utils/num"
 import { sortCoins } from "utils/coin"
 import { queryKey, RefetchOptions } from "../query"
 import { useAddress } from "../wallet"
-import { useLCDClient } from "./lcdClient"
-import { CalcValue } from "./oracle"
+import { useInterchainLCDClient } from "./lcdClient"
+import { CalcValue } from "./coingecko"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
 
-export const useRewards = () => {
-  const address = useAddress()
-  const lcd = useLCDClient()
+export const useRewards = (chainID?: string) => {
+  const addresses = useInterchainAddresses()
+  const lcd = useInterchainLCDClient()
 
   return useQuery(
-    [queryKey.distribution.rewards, address],
+    [queryKey.distribution.rewards, addresses, chainID],
     async () => {
-      if (!address) return { total: new Coins(), rewards: {} }
-      return await lcd.distribution.rewards(address)
+      if (!addresses) return { total: new Coins(), rewards: {} }
+
+      if (chainID) {
+        return await lcd.distribution.rewards(addresses[chainID])
+      } else {
+        const results = await Promise.all(
+          Object.values(addresses).map((address) =>
+            lcd.distribution.rewards(address as string)
+          )
+        )
+        let total: Coin.Data[] = []
+        let rewards = {}
+
+        results.forEach((result) => {
+          total = [...total, ...result.total.toData()]
+          rewards = { ...rewards, ...result.rewards }
+        })
+
+        return { total: Coins.fromData(total), rewards }
+      }
     },
     { ...RefetchOptions.DEFAULT }
   )
 }
 
-export const useCommunityPool = () => {
-  const lcd = useLCDClient()
+export const useCommunityPool = (chain: string) => {
+  const lcd = useInterchainLCDClient()
 
   return useQuery(
-    [queryKey.distribution.communityPool],
-    () => lcd.distribution.communityPool(),
+    [queryKey.distribution.communityPool, chain],
+    () => lcd.distribution.communityPool(chain),
     { ...RefetchOptions.INFINITY }
   )
 }
 
 /* commission */
+// TODO: make interchain
 export const useValidatorCommission = () => {
-  const lcd = useLCDClient()
+  const lcd = useInterchainLCDClient()
   const address = useAddress()
 
   return useQuery(
     [queryKey.distribution.validatorCommission],
     async () => {
       if (!address) return new Coins()
-      const validatorAddress = ValAddress.fromAccAddress(address)
+      const validatorAddress = ValAddress.fromAccAddress(
+        address,
+        AccAddress.getPrefix(address)
+      )
       return await lcd.distribution.validatorCommission(validatorAddress)
     },
     { ...RefetchOptions.DEFAULT }
   )
 }
 
+// TODO: make interchain
 export const useWithdrawAddress = () => {
-  const lcd = useLCDClient()
+  const lcd = useInterchainLCDClient()
   const address = useAddress()
 
   return useQuery(
@@ -69,7 +100,10 @@ export const getConnectedMoniker = (
 ) => {
   if (!(address && validators)) return
 
-  const validatorAddress = ValAddress.fromAccAddress(address)
+  const validatorAddress = ValAddress.fromAccAddress(
+    address,
+    AccAddress.getPrefix(address)
+  )
   const validator = validators.find(
     ({ operator_address }) => operator_address === validatorAddress
   )
@@ -90,7 +124,6 @@ export const calcRewardsValues = (
     const sum = BigNumber.sum(
       ...list.map((item) => calcValue(item) ?? 0)
     ).toString()
-
     return { sum, list }
   }
 

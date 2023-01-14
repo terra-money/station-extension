@@ -1,0 +1,33 @@
+@import "mixins";
+
+.assetlist {
+  background-color: var(--card-bg-muted);
+  padding-top: 1.6rem;
+  padding-inline: 10px;
+  grid-area: list;
+  display: grid;
+  grid-template-areas: "title" "list";
+  grid-template-rows: min-content auto;
+  overflow-y: hidden;
+}
+
+.assetlist__title {
+  @include flex(space-between);
+  padding-inline: 10px;
+  margin-bottom: 10px;
+  grid-area: title;
+}
+
+.assetlist__list {
+  overflow-y: auto;
+  grid-area: list;
+  padding-bottom: 1.6rem;
+}
+
+.assetlist__add {
+  padding: 0.6rem 0.4rem;
+  width: 100%;
+  button {
+    width: 100%;
+  }
+}

@@ -2,18 +2,19 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useFieldArray, useForm } from "react-hook-form"
 import { useSetRecoilState } from "recoil"
-import { AccAddress, isTxError } from "@terra-money/terra.js"
-import { LegacyAminoMultisigPublicKey } from "@terra-money/terra.js"
-import { SimplePublicKey } from "@terra-money/terra.js"
-import { SignatureV2, MultiSignature } from "@terra-money/terra.js"
+import { AccAddress, isTxError } from "@terra-money/feather.js"
+import { LegacyAminoMultisigPublicKey } from "@terra-money/feather.js"
+import { SimplePublicKey } from "@terra-money/feather.js"
+import { SignatureV2, MultiSignature } from "@terra-money/feather.js"
 import { SAMPLE_ADDRESS } from "config/constants"
-import { useLCDClient } from "data/queries/lcdClient"
+import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { latestTxState } from "data/queries/tx"
 import { Copy } from "components/general"
 import { Form, FormError, FormGroup, FormItem } from "components/form"
 import { Input, Submit, TextArea } from "components/form"
 import { SAMPLE_ENCODED_TX, SAMPLE_SIGNATURE } from "./utils/placeholder"
 import ReadTx from "./ReadTx"
+import { useChainID } from "data/wallet"
 
 interface Values {
   address: AccAddress
@@ -34,8 +35,10 @@ interface Props {
 }
 
 const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
+  // TODO: multisig is available only on terra, we need to handle it
   const { defaultValues } = props
   const { t } = useTranslation()
+  const chainID = useChainID()
 
   /* form */
   const form = useForm<Values>({ mode: "onChange", defaultValues })
@@ -47,7 +50,7 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
   const { fields } = fieldArray
 
   /* submit */
-  const lcd = useLCDClient()
+  const lcd = useInterchainLCDClient()
   const setLatestTx = useSetRecoilState(latestTxState)
 
   const [submitting, setSubmitting] = useState(false)
@@ -79,9 +82,9 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
       tx.appendSignatures([new SignatureV2(publicKey, descriptor, sequence)])
 
       // broadcast
-      const result = await lcd.tx.broadcastSync(tx)
+      const result = await lcd.tx.broadcastSync(tx, chainID)
       if (isTxError(result)) throw new Error(result.raw_log)
-      setLatestTx({ txhash: result.txhash })
+      setLatestTx({ txhash: result.txhash, chainID: "phoenix-1" })
     } catch (error) {
       setError(error as Error)
     }

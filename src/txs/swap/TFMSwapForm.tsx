@@ -5,28 +5,26 @@ import { useQuery } from "react-query"
 import { useForm } from "react-hook-form"
 import update from "immutability-helper"
 import BigNumber from "bignumber.js"
-import { AccAddress, Coin, Coins } from "@terra-money/terra.js"
-import { MsgExecuteContract } from "@terra-money/terra.js"
+import { AccAddress, Coin, Coins } from "@terra-money/feather.js"
+import { MsgExecuteContract } from "@terra-money/feather.js"
 import { isDenomTerra } from "@terra.kitchen/utils"
 import { toAmount } from "@terra.kitchen/utils"
 
 /* helpers */
 import { has } from "utils/num"
-import { getAmount, sortCoins } from "utils/coin"
 import { queryKey } from "data/query"
 import { useAddress } from "data/wallet"
-import { useBankBalance } from "data/queries/bank"
 import { queryTFMRoute, queryTFMSwap, TFM_ROUTER } from "data/external/tfm"
 
 /* components */
-import { Form, FormArrow, FormError } from "components/form"
+import { Form, FormArrow, FormError, FormWarning } from "components/form"
 import { Checkbox } from "components/form"
 import { Read } from "components/token"
 
 /* tx modules */
 import { getPlaceholder, toInput } from "../utils"
 import validate from "../validate"
-import Tx, { getInitialGasDenom } from "../Tx"
+import Tx from "../Tx"
 
 /* swap modules */
 import AssetFormItem from "./components/AssetFormItem"
@@ -46,21 +44,15 @@ interface TFMSwapParams extends SwapAssets {
 
 interface TxValues extends Partial<SlippageParams> {}
 
-const TFMSwapForm = () => {
+const TFMSwapForm = ({ chainID }: { chainID: string }) => {
   const { t } = useTranslation()
   const address = useAddress()
   const { state } = useLocation()
-  const bankBalance = useBankBalance()
 
   /* swap context */
   const { options, findTokenItem, findDecimals } = useTFMSwap()
 
-  const initialOfferAsset =
-    (state as Token) ??
-    (getAmount(bankBalance, "uluna")
-      ? "uluna"
-      : sortCoins(bankBalance)[0].denom)
-  const initialGasDenom = getInitialGasDenom(bankBalance)
+  const initialOfferAsset = (state as Token) ?? "uluna"
 
   /* options */
   const [showAll, setShowAll] = useState(false)
@@ -184,8 +176,9 @@ const TFMSwapForm = () => {
 
     return {
       msgs: [new MsgExecuteContract(address, contract, execute_msg, coins)],
+      chainID,
     }
-  }, [address, offerAsset, simulationResults])
+  }, [address, offerAsset, simulationResults, chainID])
 
   /* fee */
   const { data: estimationTxValues } = useQuery(
@@ -205,7 +198,6 @@ const TFMSwapForm = () => {
     decimals,
     amount,
     balance,
-    initialGasDenom,
     estimationTxValues,
     createTx,
     queryKeys: [offerAsset, askAsset]
@@ -215,6 +207,7 @@ const TFMSwapForm = () => {
         token,
         { balance: address },
       ]),
+    chain: chainID,
   }
 
   const disabled = isFetching ? t("Simulating...") : false
@@ -248,6 +241,9 @@ const TFMSwapForm = () => {
     <Tx {...tx} disabled={disabled}>
       {({ max, fee, submit }) => (
         <Form onSubmit={handleSubmit(submit.fn)}>
+          <FormWarning>
+            {t("Leave coins to pay fees for subsequent transactions")}
+          </FormWarning>
           <AssetFormItem
             label={t("From")}
             extra={max.render(async (value) => {

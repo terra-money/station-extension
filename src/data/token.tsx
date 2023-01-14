@@ -1,16 +1,16 @@
 import { ReactNode } from "react"
-import { isDenomIBC, isDenomTerra } from "@terra.kitchen/utils"
+import { isDenomIBC } from "@terra.kitchen/utils"
 import { readDenom, truncate } from "@terra.kitchen/utils"
-import { AccAddress } from "@terra-money/terra.js"
+import { AccAddress } from "@terra-money/feather.js"
 import { ASSETS } from "config/constants"
-import { useIsClassic } from "./query"
-import { useIBCBaseDenom } from "./queries/ibc"
 import { useTokenInfoCW20 } from "./queries/wasm"
 import { useCustomTokensCW20 } from "./settings/CustomTokens"
 import { useCW20Whitelist, useIBCWhitelist } from "./Terra/TerraAssets"
+import { useWhitelist } from "./queries/chains"
+import { useNetworkName } from "./wallet"
 
 export const useTokenItem = (token: Token): TokenItem | undefined => {
-  const isClassic = useIsClassic()
+  const readNativeDenom = useNativeDenoms()
 
   /* CW20 */
   const matchToken = (item: TokenItem) => item.token === token
@@ -32,12 +32,12 @@ export const useTokenItem = (token: Token): TokenItem | undefined => {
 
   /* IBC */
   // 1. Whitelist
-  const { data: ibcWhitelist = {}, ...ibcWhitelistState } = useIBCWhitelist()
+  const { data: ibcWhitelist = {} } = useIBCWhitelist()
   const listedIBCTokenItem = ibcWhitelist[token.replace("ibc/", "")]
 
   // 2. Query denom trace
-  const shouldQueryIBC = ibcWhitelistState.isSuccess && !listedIBCTokenItem
-  const { data: base_denom } = useIBCBaseDenom(token, shouldQueryIBC)
+  //const shouldQueryIBC = ibcWhitelistState.isSuccess && !listedIBCTokenItem
+  //const { data: base_denom } = useIBCBaseDenom(token, shouldQueryIBC)
 
   if (AccAddress.validate(token)) {
     return customTokenItem ?? listedCW20TokenItem ?? tokenInfoItem
@@ -47,13 +47,13 @@ export const useTokenItem = (token: Token): TokenItem | undefined => {
     const item = {
       ...listedIBCTokenItem,
       denom: token,
-      base_denom: listedIBCTokenItem?.base_denom ?? base_denom,
+      base_denom: listedIBCTokenItem?.base_denom,
     }
 
     return readIBCDenom(item)
   }
 
-  return readNativeDenom(token, isClassic)
+  return readNativeDenom(token)
 }
 
 interface Props {
@@ -62,36 +62,55 @@ interface Props {
 }
 
 export const WithTokenItem = ({ token, children }: Props) => {
-  const tokenItem = useTokenItem(token)
-  if (!tokenItem) return null
-  return <>{children(tokenItem)}</>
+  const readNativeDenom = useNativeDenoms()
+  return <>{children(readNativeDenom(token))}</>
 }
 
 /* helpers */
 export const getIcon = (path: string) => `${ASSETS}/icon/svg/${path}`
 
-export const readNativeDenom = (
-  denom: Denom,
-  isClassic?: boolean
-): TokenItem => {
-  const symbol = readDenom(denom)
-  const symbolClassic = denom === "uluna" ? "LUNC" : symbol + "C"
+export const useNativeDenoms = () => {
+  const { whitelist, ibcDenoms, legacyWhitelist } = useWhitelist()
+  const { list: cw20 } = useCustomTokensCW20()
+  const networkName = useNetworkName()
 
-  const path = isDenomTerra(denom)
-    ? `Terra/${symbol}.svg`
-    : isClassic
-    ? "LUNC.svg"
-    : "Luna.svg"
+  function readNativeDenom(denom: Denom): TokenItem {
+    const fixedDenom = denom.startsWith("ibc/")
+      ? `${readDenom(denom).substring(0, 5)}...`
+      : readDenom(denom)
 
-  return {
-    token: denom,
-    symbol: isClassic ? symbolClassic : symbol,
-    name: isDenomTerra(denom)
-      ? `Terra ${denom.slice(1).toUpperCase()}`
-      : undefined,
-    icon: getIcon(path),
-    decimals: 6,
+    // native token
+    if (whitelist[networkName]?.[denom]) return whitelist[networkName]?.[denom]
+
+    // ibc token
+    const ibcToken = ibcDenoms[networkName]?.[denom]?.token
+
+    if (ibcToken && whitelist[networkName][ibcToken]) {
+      return {
+        ...whitelist[networkName][ibcToken],
+        // @ts-expect-error
+        chains: [ibcDenoms[networkName][denom].chain],
+      }
+    }
+
+    return (
+      legacyWhitelist[denom] ??
+      cw20.find(({ token }) => denom === token) ??
+      // that's needed for axl tokens
+      Object.values(whitelist[networkName]).find((t) => t.token === denom) ?? {
+        // default token icon
+        token: denom,
+        symbol: fixedDenom,
+        name: fixedDenom,
+        icon: denom.startsWith("ibc/")
+          ? "https://assets.terra.money/icon/svg/IBC.svg"
+          : "https://assets.terra.money/icon/svg/Terra.svg",
+        decimals: 6,
+      }
+    )
   }
+
+  return readNativeDenom
 }
 
 export const readIBCDenom = (item: IBCTokenItem): TokenItem => {

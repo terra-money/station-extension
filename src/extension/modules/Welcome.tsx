@@ -10,7 +10,7 @@ const Welcome = () => {
   return (
     <FlexColumn gap={20} className={styles.component}>
       <img src={front} alt="Terra Station" width={105} height={120} />
-      <p className={styles.content}>{t("Connect to Terra blockchain")}</p>
+      <p className={styles.content}>{t("Connect to Station")}</p>
     </FlexColumn>
   )
 }

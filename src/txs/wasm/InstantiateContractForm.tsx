@@ -3,20 +3,18 @@ import { useTranslation } from "react-i18next"
 import { useFieldArray, useForm } from "react-hook-form"
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
-import { AccAddress } from "@terra-money/terra.js"
-import { MsgInstantiateContract } from "@terra-money/terra.js"
+import { AccAddress } from "@terra-money/feather.js"
+import { MsgInstantiateContract } from "@terra-money/feather.js"
 import { SAMPLE_ADDRESS } from "config/constants"
-import { sortCoins } from "utils/coin"
 import { parseJSON, validateMsg } from "utils/data"
-import { useAddress } from "data/wallet"
-import { useIsClassic } from "data/query"
+import { useAddress, useChainID, useNetwork } from "data/wallet"
 import { useBankBalance } from "data/queries/bank"
 import { WithTokenItem } from "data/token"
 import { Form, FormGroup, FormItem } from "components/form"
 import { Input, EditorInput, Select } from "components/form"
 import { getCoins, getPlaceholder } from "../utils"
 import validate from "../validate"
-import Tx, { getInitialGasDenom } from "../Tx"
+import Tx from "../Tx"
 import { useIBCHelper } from "../IBCHelperContext"
 
 interface TxValues {
@@ -27,15 +25,16 @@ interface TxValues {
   label?: string
 }
 
+// TODO: make this interchain
 const InstantiateContractForm = () => {
   const { t } = useTranslation()
   const address = useAddress()
+  const network = useNetwork()
   const bankBalance = useBankBalance()
-  const isClassic = useIsClassic()
+  const chainID = useChainID()
 
   /* tx context */
-  const initialGasDenom = getInitialGasDenom(bankBalance)
-  const defaultItem = { denom: initialGasDenom }
+  const defaultItem = { denom: network[chainID].baseAsset }
   const { findDecimals } = useIBCHelper()
 
   /* form */
@@ -71,21 +70,21 @@ const InstantiateContractForm = () => {
         ),
       ]
 
-      return { msgs }
+      return { msgs, chainID }
     },
-    [address, findDecimals]
+    [address, chainID, findDecimals]
   )
 
   /* fee */
   const estimationTxValues = useMemo(() => values, [values])
 
   const tx = {
-    initialGasDenom,
     estimationTxValues,
     coins,
     createTx,
     onSuccess: { label: t("Contract"), path: "/contract" },
     taxRequired: true,
+    chain: chainID,
   }
 
   const length = fields.length
@@ -160,7 +159,7 @@ const InstantiateContractForm = () => {
                     placeholder={getPlaceholder(decimals)}
                     selectBefore={
                       <Select {...register(`coins.${index}.denom`)} before>
-                        {sortCoins(bankBalance).map(({ denom }) => (
+                        {bankBalance.map(({ denom }) => (
                           <WithTokenItem token={denom} key={denom}>
                             {({ symbol }) => (
                               <option value={denom}>{symbol}</option>
@@ -175,11 +174,9 @@ const InstantiateContractForm = () => {
             })}
           </FormItem>
 
-          {!isClassic && (
-            <FormItem label={t("Label")} error={errors.label?.message}>
-              <Input {...register("label")} />
-            </FormItem>
-          )}
+          <FormItem label={t("Label")} error={errors.label?.message}>
+            <Input {...register("label")} />
+          </FormItem>
 
           {fee.render()}
           {submit.button}

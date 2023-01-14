@@ -1,8 +1,7 @@
 import { useTranslation } from "react-i18next"
-import { useIsClassic } from "data/query"
 import { isVestingAccount, useAccount } from "data/queries/vesting"
 import { parseVestingSchedule } from "data/queries/vesting"
-import { readNativeDenom } from "data/token"
+import { useNativeDenoms } from "data/token"
 import { Card } from "components/layout"
 import { Read } from "components/token"
 import Asset from "./Asset"
@@ -11,8 +10,8 @@ import styles from "./Vesting.module.scss"
 
 const Vesting = () => {
   const { t } = useTranslation()
-  const isClassic = useIsClassic()
   const { data, ...state } = useAccount()
+  const readNativeDenom = useNativeDenoms()
 
   if (!data) return null
   if (!isVestingAccount(data)) return null
@@ -22,7 +21,9 @@ const Vesting = () => {
   return (
     <Card {...state} title={t("Vesting")}>
       <Asset
-        {...readNativeDenom("uluna", isClassic)}
+        chains={["phoenix-1"]}
+        denom={"uluna"}
+        {...readNativeDenom("uluna")}
         balance={schedule.amount.total}
         hideActions
       />

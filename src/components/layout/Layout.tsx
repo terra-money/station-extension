@@ -1,7 +1,6 @@
 import { PropsWithChildren } from "react"
 import { atom, useRecoilValue } from "recoil"
 import classNames from "classnames/bind"
-import Container from "./Container"
 import styles from "./Layout.module.scss"
 
 const cx = classNames.bind(styles)
@@ -20,12 +19,18 @@ export const Sidebar = ({ children }: PropsWithChildren<{}>) => {
   return <div className={styles.sidebar}>{children}</div>
 }
 
+export const MainContainer = ({ children }: PropsWithChildren<{}>) => {
+  return <div className={styles.maincontainer}>{children}</div>
+}
+
+export const Page = ({ children }: PropsWithChildren<{}>) => {
+  return <div className={styles.page}>{children}</div>
+}
+
 export const Header = ({ children }: PropsWithChildren<{}>) => {
   return (
     <header className={styles.header}>
-      <Container className={styles.container}>
-        <div className={styles.wrapper}>{children}</div>
-      </Container>
+      <div className={styles.wrapper}>{children}</div>
     </header>
   )
 }

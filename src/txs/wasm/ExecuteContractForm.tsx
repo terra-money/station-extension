@@ -4,19 +4,20 @@ import { useParams } from "react-router-dom"
 import { useFieldArray, useForm } from "react-hook-form"
 import AddIcon from "@mui/icons-material/Add"
 import RemoveIcon from "@mui/icons-material/Remove"
-import { MsgExecuteContract } from "@terra-money/terra.js"
-import { sortCoins } from "utils/coin"
+import { MsgExecuteContract } from "@terra-money/feather.js"
 import { parseJSON, validateMsg } from "utils/data"
 import { queryKey } from "data/query"
-import { useAddress } from "data/wallet"
+import { useNetwork } from "data/wallet"
 import { useBankBalance } from "data/queries/bank"
 import { WithTokenItem } from "data/token"
 import { Form, FormGroup, FormItem } from "components/form"
 import { Input, Select, EditorInput } from "components/form"
 import { getCoins, getPlaceholder } from "../utils"
 import validate from "../validate"
-import Tx, { getInitialGasDenom } from "../Tx"
+import Tx from "../Tx"
 import { useIBCHelper } from "../IBCHelperContext"
+import { getChainIDFromAddress } from "utils/bech32"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
 
 interface TxValues {
   msg: string
@@ -26,15 +27,17 @@ interface TxValues {
 const ExecuteContractForm = () => {
   const { t } = useTranslation()
   const { contract } = useParams()
+  const network = useNetwork()
 
   if (!contract) throw new Error("Contract is not defined")
 
-  const address = useAddress()
+  const chainID = getChainIDFromAddress(contract, network) ?? ""
+  const addresses = useInterchainAddresses()
+  const address = addresses?.[chainID]
   const bankBalance = useBankBalance()
 
   /* tx context */
-  const initialGasDenom = getInitialGasDenom(bankBalance)
-  const defaultItem = { denom: initialGasDenom }
+  const defaultItem = { denom: network[chainID].baseAsset }
   const { findDecimals } = useIBCHelper()
 
   /* form */
@@ -60,15 +63,14 @@ const ExecuteContractForm = () => {
         new MsgExecuteContract(address, contract, execute_msg, coins),
       ]
 
-      return { msgs }
+      return { msgs, chainID }
     },
-    [address, contract, findDecimals]
+    [address, contract, chainID, findDecimals]
   )
 
   /* fee */
   const estimationTxValues = useMemo(() => values, [values])
   const tx = {
-    initialGasDenom,
     estimationTxValues,
     coins,
     createTx,
@@ -77,6 +79,7 @@ const ExecuteContractForm = () => {
     queryKeys: [
       [queryKey.wasm.contractQuery, contract, { tokens: { owner: address } }],
     ],
+    chain: chainID,
   }
 
   const length = fields.length
@@ -124,7 +127,7 @@ const ExecuteContractForm = () => {
                     placeholder={getPlaceholder(decimals)}
                     selectBefore={
                       <Select {...register(`coins.${index}.denom`)} before>
-                        {sortCoins(bankBalance).map(({ denom }) => (
+                        {bankBalance.map(({ denom }) => (
                           <WithTokenItem token={denom} key={denom}>
                             {({ symbol }) => (
                               <option value={denom}>{symbol}</option>

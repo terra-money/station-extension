@@ -1,24 +1,19 @@
 import { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
-import { MsgDonateAllVestingTokens } from "@terra-money/terra.js"
-import { useAddress } from "data/wallet"
-import { useBankBalance } from "data/queries/bank"
+import { MsgDonateAllVestingTokens } from "@terra-money/feather.js"
+import { useAddress, useChainID } from "data/wallet"
 import { Account, parseVestingSchedule } from "data/queries/vesting"
 import { Form, FormItem, Input } from "components/form"
 import { toInput } from "txs/utils"
-import Tx, { getInitialGasDenom } from "../Tx"
+import Tx from "../Tx"
 
 const DonateAllVestingTokensForm = ({ account }: { account: Account }) => {
   const { t } = useTranslation()
   const address = useAddress()
-  const bankBalance = useBankBalance()
-
+  const chainID = useChainID()
   const schedule = parseVestingSchedule(account)
   const balance = schedule.amount.total
-
-  /* tx context */
-  const initialGasDenom = getInitialGasDenom(bankBalance)
 
   /* form */
   const { handleSubmit } = useForm({ mode: "onChange" })
@@ -27,16 +22,16 @@ const DonateAllVestingTokensForm = ({ account }: { account: Account }) => {
   const createTx = useCallback(() => {
     if (!address) return
     const msgs = [new MsgDonateAllVestingTokens(address)]
-    return { msgs }
-  }, [address])
+    return { msgs, chainID }
+  }, [address, chainID])
 
   /* fee */
   const estimationTxValues = useMemo(() => ({}), [])
 
   const tx = {
-    initialGasDenom,
     estimationTxValues,
     createTx,
+    chain: chainID,
   }
 
   return (

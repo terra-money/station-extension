@@ -1,6 +1,7 @@
 import { PropsWithChildren, ReactNode } from "react"
 import { Link, To } from "react-router-dom"
 import classNames from "classnames/bind"
+import { ExternalLink } from "components/general"
 import { Flex } from "../layout"
 import { ErrorBoundary, WithFetching } from "../feedback"
 import styles from "./Card.module.scss"
@@ -15,9 +16,11 @@ export interface Props extends QueryState {
   size?: "small"
   bordered?: boolean
   bg?: boolean
+  muted?: boolean
 
   className?: string
   mainClassName?: string
+  inputCard?: boolean
 
   /* button */
   onClick?: () => void
@@ -25,11 +28,21 @@ export interface Props extends QueryState {
 
   /* link */
   to?: To
+  href?: string
 }
 
 const Card = (props: PropsWithChildren<Props>) => {
-  const { title, extra, children, onClick, to } = props
-  const { size, bordered, bg, disabled, className, mainClassName } = props
+  const { title, extra, children, onClick, to, href } = props
+  const {
+    size,
+    bordered,
+    bg,
+    disabled,
+    className,
+    mainClassName,
+    muted,
+    inputCard,
+  } = props
 
   return (
     <WithFetching {...props} height={2}>
@@ -37,9 +50,10 @@ const Card = (props: PropsWithChildren<Props>) => {
         const style = {
           bordered,
           bg,
+          muted,
           default: !bordered,
           grid: (title || extra) && (children || wrong),
-          link: to,
+          link: to || href,
           button: onClick,
           error: wrong,
         }
@@ -63,7 +77,11 @@ const Card = (props: PropsWithChildren<Props>) => {
           </>
         )
 
-        return to ? (
+        return href ? (
+          <ExternalLink href={href} className={cardClassName}>
+            {content}
+          </ExternalLink>
+        ) : to ? (
           <Link to={to} className={cardClassName}>
             {content}
           </Link>
@@ -76,7 +94,9 @@ const Card = (props: PropsWithChildren<Props>) => {
             {content}
           </button>
         ) : (
-          <article className={cardClassName}>{content}</article>
+          <article className={cx(cardClassName, { inputCard })}>
+            {content}
+          </article>
         )
       }}
     </WithFetching>

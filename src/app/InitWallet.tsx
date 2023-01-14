@@ -1,18 +1,23 @@
 import { PropsWithChildren, useEffect, useMemo } from "react"
 import { QueryClient, QueryClientProvider } from "react-query"
-import { useNetwork, useNetworkName } from "data/wallet"
+import { WalletStatus } from "@terra-money/wallet-types"
+import { useWallet } from "@terra-money/use-wallet"
+import { useNetworkName } from "data/wallet"
 import { isWallet, useAuth } from "auth"
 import Online from "./containers/Online"
-import WithNodeInfo from "./WithNodeInfo"
+import NetworkLoading from "./NetworkLoading"
 
 const InitWallet = ({ children }: PropsWithChildren<{}>) => {
   useOnNetworkChange()
+  const { status } = useWallet()
   const queryClient = useQueryClient()
   const networkName = useNetworkName()
 
-  return (
+  return status === WalletStatus.INITIALIZING ? (
+    <NetworkLoading title="Initializing your wallet..." />
+  ) : (
     <QueryClientProvider client={queryClient} key={networkName}>
-      <WithNodeInfo>{children}</WithNodeInfo>
+      {children}
       <Online />
     </QueryClientProvider>
   )
@@ -22,10 +27,9 @@ export default InitWallet
 
 /* hooks */
 const useOnNetworkChange = () => {
-  const { preconfigure } = useNetwork()
   const { wallet, disconnect } = useAuth()
   const isPreconfiguredWallet = isWallet.preconfigured(wallet)
-  const shouldDisconnect = !preconfigure && isPreconfiguredWallet
+  const shouldDisconnect = isPreconfiguredWallet
 
   useEffect(() => {
     if (shouldDisconnect) disconnect()

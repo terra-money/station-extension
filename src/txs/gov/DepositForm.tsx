@@ -1,17 +1,17 @@
 import { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
-import { MsgDeposit } from "@terra-money/terra.js"
+import { MsgDeposit } from "@terra-money/feather.js"
 import { toAmount } from "@terra.kitchen/utils"
-import { getAmount } from "utils/coin"
 import { queryKey } from "data/query"
-import { useAddress } from "data/wallet"
 import { useBankBalance } from "data/queries/bank"
 import { Form, FormItem, Input } from "components/form"
 import useProposalId from "pages/gov/useProposalId"
 import { getPlaceholder, toInput } from "../utils"
 import validate from "../validate"
-import Tx, { getInitialGasDenom } from "../Tx"
+import Tx from "../Tx"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { useNetwork } from "data/wallet"
 
 interface TxValues {
   input?: number
@@ -19,14 +19,14 @@ interface TxValues {
 
 const DepositForm = () => {
   const { t } = useTranslation()
-  const id = useProposalId()
-  const address = useAddress()
+  const { id, chain } = useProposalId()
+  const addresses = useInterchainAddresses()
+  const networks = useNetwork()
 
   const bankBalance = useBankBalance()
-  const balance = getAmount(bankBalance, "uluna")
-
-  /* tx context */
-  const initialGasDenom = getInitialGasDenom(bankBalance)
+  const balance =
+    bankBalance.find((b) => b.denom === networks[chain].baseAsset)?.amount ??
+    "0"
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange" })
@@ -38,12 +38,18 @@ const DepositForm = () => {
   /* tx */
   const createTx = useCallback(
     ({ input }: TxValues) => {
-      if (!address) return
+      if (!addresses) return
       const amount = toAmount(input)
-      const msgs = [new MsgDeposit(id, address, amount + "uluna")]
-      return { msgs }
+      const msgs = [
+        new MsgDeposit(
+          id,
+          addresses[chain],
+          amount + networks[chain].baseAsset
+        ),
+      ]
+      return { msgs, chainID: chain }
     },
-    [address, id]
+    [addresses, id, chain, networks]
   )
 
   /* fee */
@@ -60,12 +66,10 @@ const DepositForm = () => {
     [setValue, trigger]
   )
 
-  const token = "uluna"
   const tx = {
-    token,
+    token: networks[chain].baseAsset,
     amount,
     balance,
-    initialGasDenom,
     estimationTxValues,
     createTx,
     onChangeMax,
@@ -74,6 +78,7 @@ const DepositForm = () => {
       path: `/proposal/${id}`,
     },
     queryKeys: [[queryKey.gov.deposits, id]],
+    chain,
   }
 
   return (
@@ -90,7 +95,7 @@ const DepositForm = () => {
                 valueAsNumber: true,
                 validate: validate.input(toInput(max.amount)),
               })}
-              token="uluna"
+              token={networks[chain].baseAsset}
               onFocus={max.reset}
               inputMode="decimal"
               placeholder={getPlaceholder()}

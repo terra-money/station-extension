@@ -1,16 +1,18 @@
 import { combineState } from "data/query"
 import { useDelegations, useUnbondings } from "data/queries/staking"
 import { useRewards } from "data/queries/distribution"
-import { Col, Row } from "components/layout"
+import { Col } from "components/layout"
 import { Fetching } from "components/feedback"
 import DelegationsPromote from "app/containers/DelegationsPromote"
 import Delegations from "./Delegations"
 import Unbondings from "./Unbondings"
 import Rewards from "./Rewards"
+import { useChainID } from "data/wallet"
 
 const Staked = () => {
-  const { data: delegations, ...delegationsState } = useDelegations()
-  const { data: unbondings, ...unbondingsState } = useUnbondings()
+  const chainID = useChainID()
+  const { data: delegations, ...delegationsState } = useDelegations(chainID)
+  const { data: unbondings, ...unbondingsState } = useUnbondings(chainID)
   const { data: rewards, ...rewardsState } = useRewards()
   const state = combineState(delegationsState, unbondingsState, rewardsState)
 
@@ -23,19 +25,11 @@ const Staked = () => {
     if (!staked) return <DelegationsPromote horizontal />
 
     return (
-      <Row>
-        <Col>
-          <Delegations />
-        </Col>
-
-        <Col>
-          <Unbondings />
-        </Col>
-
-        <Col>
-          <Rewards />
-        </Col>
-      </Row>
+      <Col>
+        <Delegations />
+        <Unbondings />
+        <Rewards />
+      </Col>
     )
   }
 

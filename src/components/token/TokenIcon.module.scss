@@ -1,8 +1,9 @@
 .icon {
-  border-radius: 4px;
+  border-radius: 50%;
+  background-color: var(--button-default-bg);
 }
 
 .inherit {
   width: auto;
-  height: var(--font-size-page-title);
+  //height: var(--font-size-page-title);
 }

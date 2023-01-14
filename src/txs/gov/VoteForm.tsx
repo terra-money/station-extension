@@ -2,14 +2,13 @@ import { useCallback, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
 import classNames from "classnames/bind"
-import { MsgVote, Vote } from "@terra-money/terra.js"
-import { useAddress } from "data/wallet"
-import { useBankBalance } from "data/queries/bank"
+import { MsgVote, Vote } from "@terra-money/feather.js"
 import { useGetVoteOptionItem } from "data/queries/gov"
 import { Form } from "components/form"
 import useProposalId from "pages/gov/useProposalId"
-import Tx, { getInitialGasDenom } from "../Tx"
+import Tx from "../Tx"
 import styles from "./VoteForm.module.scss"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
 
 const cx = classNames.bind(styles)
 
@@ -27,15 +26,11 @@ const Options = [
 const VoteForm = () => {
   const { t } = useTranslation()
   const getVoteOptionItem = useGetVoteOptionItem()
-  const id = useProposalId()
+  const { id, chain } = useProposalId()
 
   if (!id) throw new Error("Proposal is not defined")
 
-  const address = useAddress()
-  const bankBalance = useBankBalance()
-
-  /* tx context */
-  const initialGasDenom = getInitialGasDenom(bankBalance)
+  const addresses = useInterchainAddresses()
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange" })
@@ -46,11 +41,11 @@ const VoteForm = () => {
   /* tx */
   const createTx = useCallback(
     ({ option }: TxValues) => {
-      if (!address) return
-      const msgs = [new MsgVote(id, address, Number(option))]
-      return { msgs }
+      if (!addresses) return
+      const msgs = [new MsgVote(id, addresses[chain], Number(option))]
+      return { msgs, chainID: chain }
     },
-    [address, id]
+    [addresses, id, chain]
   )
 
   /* fee */
@@ -60,13 +55,13 @@ const VoteForm = () => {
   )
 
   const tx = {
-    initialGasDenom,
     estimationTxValues,
     createTx,
     onSuccess: {
       label: [t("Proposal"), id].join(" "),
-      path: `/proposal/${id}`,
+      path: `/proposal/${chain}/${id}`,
     },
+    chain,
   }
 
   return (

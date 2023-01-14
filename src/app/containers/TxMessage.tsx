@@ -1,16 +1,21 @@
 import { ReactNode, useMemo } from "react"
 import { capitalize } from "@mui/material"
 import { isDenom, truncate } from "@terra.kitchen/utils"
-import { AccAddress, Coin, Coins, ValAddress } from "@terra-money/terra.js"
-import { useAddress } from "data/wallet"
+import { AccAddress, Coin, Coins, ValAddress } from "@terra-money/feather.js"
+import { useAddress, useNetwork } from "data/wallet"
 import { useValidators } from "data/queries/staking"
 import { WithTokenItem } from "data/token"
 import { useCW20Contracts, useCW20Whitelist } from "data/Terra/TerraAssets"
 import { FinderLink } from "components/general"
 import { Read } from "components/token"
+import styles from "./TxMessage.module.scss"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { getChainIDFromAddress } from "utils/bech32"
 
 const ValidatorAddress = ({ children: address }: { children: string }) => {
-  const { data: validators } = useValidators()
+  const networks = useNetwork()
+  const chainID = getChainIDFromAddress(address, networks)
+  const { data: validators } = useValidators(chainID ?? "")
   const moniker = validators?.find(
     ({ operator_address }) => operator_address === address
   )?.description.moniker
@@ -25,16 +30,17 @@ const ValidatorAddress = ({ children: address }: { children: string }) => {
 const TerraAddress = ({ children: address }: { children: string }) => {
   const { data: contracts } = useCW20Contracts()
   const { data: tokens } = useCW20Whitelist()
-  const connectedAddress = useAddress()
+  const addresses = useInterchainAddresses()
 
   const name = useMemo(() => {
-    if (address === connectedAddress) return "my wallet" // Do not translate this
+    if (addresses && Object.values(addresses).includes(address))
+      return "my wallet" // Do not translate this
     if (!(contracts && tokens)) return
     const contract = contracts[address] ?? tokens[address]
     if (!contract) return
     const { protocol, name } = contract
     return [protocol, name].join(" ")
-  }, [address, connectedAddress, contracts, tokens])
+  }, [address, addresses, contracts, tokens])
 
   return <FinderLink value={address}>{name ?? truncate(address)}</FinderLink>
 }
@@ -49,9 +55,13 @@ const Tokens = ({ children: coins }: { children: string }) => {
         : list.map((coin) => {
             const data = coin.toData()
             const { denom } = data
+            // TODO: remove this when getCanonicalMsgs() is updated
+            if (denom !== "uluna" && denom.endsWith("uluna")) {
+              data.denom = denom.slice(0, -5)
+            }
 
             return (
-              <WithTokenItem token={denom} key={denom}>
+              <WithTokenItem token={data.denom} key={denom}>
                 {({ decimals }) => <Read {...data} decimals={decimals} />}
               </WithTokenItem>
             )
@@ -74,11 +84,13 @@ const TxMessage = ({ children: sentence, className }: Props) => {
     if (word.endsWith(",")) return <>{parse(word.slice(0, -1), index)},</>
 
     return validateTokens(word) ? (
-      <Tokens>{word}</Tokens>
-    ) : AccAddress.validate(word) ? (
-      <TerraAddress>{word}</TerraAddress>
+      <span className={styles.textmain}>
+        <Tokens>{word}</Tokens>
+      </span>
     ) : ValAddress.validate(word) ? (
       <ValidatorAddress>{word}</ValidatorAddress>
+    ) : AccAddress.validate(word) ? (
+      <TerraAddress>{word}</TerraAddress>
     ) : !index ? (
       capitalize(word)
     ) : (
@@ -95,7 +107,7 @@ const TxMessage = ({ children: sentence, className }: Props) => {
           const parsed = parse(word, index)
 
           return !index ? (
-            <strong key={index}>{parsed}</strong>
+            <span key={index}>{parsed}</span>
           ) : (
             <span key={index}> {parsed}</span>
           )
