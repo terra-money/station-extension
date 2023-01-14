@@ -17,11 +17,12 @@ const SwitchWallet = ({ manage }: { manage?: () => void }) => {
       children: (
         <Flex gap={4} start>
           {isWallet.multisig(wallet) && <MultisigBadge />}
-          {isWallet.ledger(wallet) && wallet.bluetooth ? (
-            <BluetoothIcon fontSize="small" />
-          ) : (
-            <UsbIcon fontSize="small" />
-          )}
+          {isWallet.ledger(wallet) &&
+            (wallet.bluetooth ? (
+              <BluetoothIcon fontSize="small" />
+            ) : (
+              <UsbIcon fontSize="small" />
+            ))}
           {"name" in wallet ? wallet.name : "Ledger"}
         </Flex>
       ),
