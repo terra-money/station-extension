@@ -93,6 +93,12 @@
 
   --extension-bg: var(--card-bg);
   --extension-text: var(--text);
+
+  @include mobile {
+    --menu-bg: var(--card-bg);
+    --menu-border: var(--card-border);
+    --menu-text: var(--text);
+  }
 }
 
 .dark {
