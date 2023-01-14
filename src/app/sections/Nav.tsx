@@ -56,5 +56,5 @@ const useCloseMenuOnNavigate = () => {
 
   useEffect(() => {
     setIsOpen(false)
-  }, [pathname, setIsOpen])
+  }, [pathname, setIsOpen]) // eslint-disable-line react-hooks/exhaustive-deps
 }
