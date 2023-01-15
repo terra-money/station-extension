@@ -188,21 +188,11 @@ const useAuth = () => {
     if (is.ledger(wallet)) {
       const key = await getLedgerKey(networks[txOptions.chainID].coinType)
       const wallet = lcd.wallet(key)
-      const { account_number: accountNumber, sequence } =
-        await wallet.accountNumberAndSequence(txOptions.chainID)
       const signMode = SignatureV2.SignMode.SIGN_MODE_LEGACY_AMINO_JSON
-      const unsignedTx = await create(txOptions)
-      const options = {
-        chainID: txOptions.chainID,
-        accountNumber,
-        sequence,
+      return await wallet.createAndSignTx({
+        ...txOptions,
         signMode,
-      }
-      return await key.signTx(
-        unsignedTx,
-        options,
-        networks[txOptions.chainID].isClassic
-      )
+      })
     } /*else if (is.preconfigured(wallet)) {
       const key = new MnemonicKey({ mnemonic: wallet.mnemonic })
       return await lcd.wallet(key).createAndSignTx(txOptions)

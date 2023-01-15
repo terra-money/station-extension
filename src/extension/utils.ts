@@ -1,6 +1,6 @@
 import { useCallback } from "react"
 import { CreateTxOptions, Fee, Msg, Tx } from "@terra-money/feather.js"
-import { useChainID } from "data/wallet"
+import { useChainID, useNetwork } from "data/wallet"
 
 /* primitive */
 export interface PrimitiveDefaultRequest {
@@ -76,6 +76,7 @@ export const parseDefault = (
 export const useParseTx = () => {
   // for lecacy support
   const defaultChainID = useChainID()
+  const networks = useNetwork()
 
   return useCallback(
     (request: PrimitiveTxRequest): TxRequest["tx"] => {
@@ -83,13 +84,23 @@ export const useParseTx = () => {
       const isProto = "@type" in JSON.parse(msgs[0])
       return isProto
         ? {
-            msgs: msgs.map((msg) => Msg.fromData(JSON.parse(msg))),
+            msgs: msgs.map((msg) =>
+              Msg.fromData(
+                JSON.parse(msg),
+                networks[chainID ?? defaultChainID].isClassic
+              )
+            ),
             fee: fee ? Fee.fromData(JSON.parse(fee)) : undefined,
             memo,
             chainID: chainID ?? defaultChainID,
           }
         : {
-            msgs: msgs.map((msg) => Msg.fromAmino(JSON.parse(msg))),
+            msgs: msgs.map((msg) =>
+              Msg.fromAmino(
+                JSON.parse(msg),
+                networks[chainID ?? defaultChainID].isClassic
+              )
+            ),
             fee: fee ? Fee.fromAmino(JSON.parse(fee)) : undefined,
             memo,
             chainID: chainID ?? defaultChainID,
@@ -106,8 +117,8 @@ export const parseBytes = (
   return Buffer.from(bytes, "base64")
 }
 
-export const toData = (result: any) => {
-  return result instanceof Tx ? result.toData() : result
+export const toData = (result: any, isClassic?: boolean) => {
+  return result instanceof Tx ? result.toData(isClassic) : result
 }
 
 /* helpers */

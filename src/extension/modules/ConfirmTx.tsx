@@ -67,10 +67,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
 
     if ("tx" in props) {
       const { requestType, tx } = props
-      const txOptions = tx.fee
-        ? tx
-        : // TODO: do we need that?
-          { ...tx, gasPices: { uluna: 0.015 }, feeDenoms: ["uluna"] }
+      const txOptions = tx
 
       try {
         if (disabled) throw new Error(disabled)

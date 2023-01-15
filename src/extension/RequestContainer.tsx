@@ -8,6 +8,7 @@ import { ConnectRequest, RequestType, TxRequest } from "./utils"
 import { SignBytesRequest, TxResponse } from "./utils"
 import { isBytes, isSign } from "./utils"
 import { parseBytes, parseDefault, useParseTx, toData } from "./utils"
+import { useChainID, useNetwork } from "data/wallet"
 
 interface RequestContext {
   requests: {
@@ -33,6 +34,8 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
   const [connect, setConnect] = useState<ConnectRequest>()
   const [tx, setTx] = useState<TxRequest | SignBytesRequest>()
   const parseTx = useParseTx()
+  const networks = useNetwork()
+  const defaultChainID = useChainID()
 
   useEffect(() => {
     // Requests from storage
@@ -113,7 +116,10 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
         ({ id, origin }) => id === request.id && origin === request.origin
       )
 
-      const result = toData(response.result)
+      const result = toData(
+        response.result,
+        networks[defaultChainID]?.isClassic
+      )
       const next = update(index, { ...list[index], ...response, result }, list)
       extension.storage?.local.set({ [type]: next }, () => setTx(undefined))
     })
