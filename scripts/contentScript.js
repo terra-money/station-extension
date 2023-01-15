@@ -2,8 +2,8 @@ import extension from "extensionizer"
 import PortStream from "extension-port-stream"
 import LocalMessageDuplexStream from "post-message-stream"
 
+checkWebpage()
 if (shouldInjectProvider()) {
-  checkWebpage()
   injectScript()
   start()
 }
@@ -39,7 +39,7 @@ function checkWebpage() {
     // update every 10min
     if (
       !blacklist ||
-      blacklist.updatedAt > Date.now() - 1000 * 60 * 10
+      blacklist.updatedAt < Date.now() - 1000 * 60 * 10
     ) {
       const BLACKLIST_URL = "https://assets.terra.money/blacklist.json"
       const response = await fetch(BLACKLIST_URL)
