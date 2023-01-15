@@ -54,6 +54,12 @@ const SwitchWallet = ({ manage }: { manage?: () => void }) => {
         const children = (
           <Flex gap={4} start>
             {isWallet.multisig(wallet) && <MultisigBadge />}
+            {isWallet.ledger(wallet) &&
+              (wallet.bluetooth ? (
+                <BluetoothIcon fontSize="small" />
+              ) : (
+                <UsbIcon fontSize="small" />
+              ))}
             {name}
             {lock && <LockOutlinedIcon fontSize="inherit" className="muted" />}
           </Flex>

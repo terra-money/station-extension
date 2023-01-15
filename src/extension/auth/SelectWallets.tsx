@@ -99,7 +99,7 @@ export default function ManageWallets() {
           ) : (
             <AccountBalanceWalletIcon style={{ fontSize: 18 }} />
           )}{" "}
-          {isLedger ? "Ledger" : selectedWallet?.name}
+          {wallet && "name" in wallet ? wallet.name : "Ledger"}
           <ExpandMoreIcon style={{ fontSize: 18 }} />
         </button>
       )}
