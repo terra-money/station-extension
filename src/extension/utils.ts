@@ -106,7 +106,7 @@ export const useParseTx = () => {
             chainID: chainID ?? defaultChainID,
           }
     },
-    [defaultChainID]
+    [defaultChainID, networks]
   )
 }
 

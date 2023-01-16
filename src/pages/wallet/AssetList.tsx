@@ -5,15 +5,18 @@ import { useMemoizedPrices } from "data/queries/coingecko"
 import { useNativeDenoms } from "data/token"
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
-import AddTokens from "./AddTokens"
+import ManageTokens from "./ManageTokens"
 import Asset from "./Asset"
 import styles from "./AssetList.module.scss"
 import AddIcon from "@mui/icons-material/Add"
 import CoinGeckoLink from "components/coingecko/CoinGeckoLink"
+import { useTokenFilters } from "utils/localStorage"
+import { toInput } from "txs/utils"
 
 const AssetList = () => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
+  const { hideNoWhitelist, hideLowBal } = useTokenFilters()
 
   const coins = useBankBalance()
   const { data: prices } = useMemoizedPrices()
@@ -47,12 +50,17 @@ const AssetList = () => {
             }
           }, {} as Record<string, any>)
         ),
-      ].sort(
-        (a, b) => b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
-      ),
-    [coins, readNativeDenom, prices]
+      ]
+        .filter(
+          (a) => (hideNoWhitelist ? !a.symbol.endsWith("...") : a) // TODO: update and implement whitelist check
+        )
+        .filter((a) => (hideLowBal ? a.price * toInput(a.balance) >= 1 : a))
+        .sort(
+          (a, b) =>
+            b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
+        ),
+    [coins, readNativeDenom, hideNoWhitelist, hideLowBal, prices]
   )
-
   const render = () => {
     if (!coins) return
 
@@ -83,14 +91,14 @@ const AssetList = () => {
       </div>
       <div className={styles.assetlist__list}>{render()}</div>
       <div className={styles.assetlist__add}>
-        <AddTokens>
+        <ManageTokens>
           {(open) => (
             <Button onClick={open}>
               <AddIcon />
               {t("Add tokens")}
             </Button>
           )}
-        </AddTokens>
+        </ManageTokens>
       </div>
     </article>
   )

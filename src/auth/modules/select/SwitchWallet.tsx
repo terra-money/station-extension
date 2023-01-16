@@ -1,7 +1,6 @@
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import { truncate } from "@terra.kitchen/utils"
 import { Flex } from "components/layout"
-import { useAddress } from "data/wallet"
 import { addressFromWords } from "utils/bech32"
 import AuthButton from "../../components/AuthButton"
 import MultisigBadge from "../../components/MultisigBadge"
@@ -14,7 +13,6 @@ import styles from "./SwitchWallet.module.scss"
 
 const SwitchWallet = () => {
   const { wallet, wallets, connect, connectedWallet } = useAuth()
-  const address = useAddress()
 
   const localWallets = !!(wallets.length || wallet) && (
     <ul className={styles.list}>

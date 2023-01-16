@@ -7,7 +7,6 @@ import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import { useAuth } from "auth"
 import { ModalButton } from "components/feedback"
 import { Button } from "components/general"
-import { useAddress } from "data/wallet"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import AddWallet from "./AddWallet"
@@ -25,7 +24,6 @@ enum Path {
 
 export default function ManageWallets() {
   const { wallet, wallets } = useAuth()
-  const address = useAddress()
   const { t } = useTranslation()
   const [path, setPath] = useState(Path.select)
   const selectedWallet = wallets.find((w) => {
