@@ -1,7 +1,7 @@
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"
 import KeyboardBackspaceRoundedIcon from "@mui/icons-material/KeyboardBackspaceRounded"
 import AddIcon from "@mui/icons-material/Add"
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import MoreVertIcon from "@mui/icons-material/MoreVert"
 import UsbIcon from "@mui/icons-material/Usb"
 import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import { useAuth } from "auth"
@@ -100,7 +100,7 @@ export default function ManageWallets() {
             <AccountBalanceWalletIcon style={{ fontSize: 18 }} />
           )}{" "}
           {wallet && "name" in wallet ? wallet.name : "Ledger"}
-          <ExpandMoreIcon style={{ fontSize: 18 }} />
+          <MoreVertIcon style={{ marginLeft: "-6px", fontSize: "1.25rem" }} />
         </button>
       )}
       maxHeight
