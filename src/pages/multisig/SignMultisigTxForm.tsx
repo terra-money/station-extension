@@ -12,6 +12,7 @@ import { isWallet, useAuth } from "auth"
 import { PasswordError } from "auth/scripts/keystore"
 import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
 import ReadTx from "./ReadTx"
+import { useChainID } from "data/wallet"
 
 interface TxValues {
   address: AccAddress
@@ -26,6 +27,7 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
   const { t } = useTranslation()
   const { wallet, createSignature } = useAuth()
   const lcd = useInterchainLCDClient()
+  const chainID = useChainID()
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange", defaultValues })
@@ -50,7 +52,12 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
     try {
       const decoded = lcd.tx.decode(tx.trim())
       if (!decoded) throw new Error("Invalid tx")
-      const signature = await createSignature(decoded, address, password)
+      const signature = await createSignature(
+        decoded,
+        chainID,
+        address,
+        password
+      )
       setSignature(signature)
     } catch (error) {
       if (error instanceof PasswordError) setIncorrect(error.message)
