@@ -2,8 +2,8 @@ import extension from "extensionizer"
 import PortStream from "extension-port-stream"
 import LocalMessageDuplexStream from "post-message-stream"
 
-checkWebpage()
 if (shouldInjectProvider()) {
+  checkWebpage()
   injectScript()
   start()
 }
