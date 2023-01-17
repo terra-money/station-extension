@@ -3,6 +3,10 @@ import axios from "axios"
 import { STATION_ASSETS } from "config/constants"
 import createContext from "utils/createContext"
 import NetworkLoading from "./NetworkLoading"
+import extension from "extensionizer"
+import { ExtensionStorage } from "../extension/utils"
+import { isBytes, isSign } from "../extension/utils"
+import { isNil } from "ramda"
 
 export const [useNetworks, NetworksProvider] = createContext<{
   networks: InterchainNetworks
@@ -37,6 +41,12 @@ const InitNetworks = ({ children }: PropsWithChildren<{}>) => {
         //...networks.localterra,
       }
 
+      // skip network check if there is an incoming request
+      if (await incomingRequest()) {
+        setEnabledNetworks(Object.keys(testBase))
+        return
+      }
+
       const stored = localStorage.getItem("enabledNetworks")
       const cached = stored && JSON.parse(stored)
 
@@ -65,13 +75,6 @@ const InitNetworks = ({ children }: PropsWithChildren<{}>) => {
         })
       )
 
-      localStorage.setItem(
-        "enabledNetworks",
-        JSON.stringify({
-          time: Date.now(),
-          networks: result.filter((r) => typeof r === "string") as string[],
-        })
-      )
       setEnabledNetworks(
         result.filter((r) => typeof r === "string") as string[]
       )
@@ -99,6 +102,29 @@ const InitNetworks = ({ children }: PropsWithChildren<{}>) => {
       {children}
     </NetworksProvider>
   )
+}
+
+async function incomingRequest() {
+  // Requests from storage
+  // except for that is already success or failure
+  return new Promise<boolean>((resolve) => {
+    extension.storage?.local.get(
+      ["connect", "post", "sign"],
+      (storage: ExtensionStorage) => {
+        const { connect = { allowed: [], request: [] } } = storage
+        const { sign = [], post = [] } = storage
+        const [connectRequest] = connect.request
+        const signRequests = sign.filter(({ success }) => isNil(success))
+        const postRequest = post.find(({ success }) => isNil(success))
+        const signRequest = signRequests.find(isSign)
+        const bytesRequest = signRequests.find(isBytes)
+
+        return resolve(
+          !!(connectRequest || postRequest || signRequest || bytesRequest)
+        )
+      }
+    )
+  })
 }
 
 export default InitNetworks

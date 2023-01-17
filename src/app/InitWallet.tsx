@@ -1,21 +1,15 @@
 import { PropsWithChildren, useEffect, useMemo } from "react"
 import { QueryClient, QueryClientProvider } from "react-query"
-import { WalletStatus } from "@terra-money/wallet-types"
-import { useWallet } from "@terra-money/use-wallet"
 import { useNetworkName } from "data/wallet"
 import { isWallet, useAuth } from "auth"
 import Online from "./containers/Online"
-import NetworkLoading from "./NetworkLoading"
 
 const InitWallet = ({ children }: PropsWithChildren<{}>) => {
   useOnNetworkChange()
-  const { status } = useWallet()
   const queryClient = useQueryClient()
   const networkName = useNetworkName()
 
-  return status === WalletStatus.INITIALIZING ? (
-    <NetworkLoading title="Initializing your wallet..." />
-  ) : (
+  return (
     <QueryClientProvider client={queryClient} key={networkName}>
       {children}
       <Online />
