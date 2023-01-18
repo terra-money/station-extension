@@ -164,7 +164,8 @@ const SendPage = () => {
       getIBCChannel({
         from: chain,
         to: destinationChain,
-        ics: AccAddress.validate(token?.denom ?? ""),
+        tokenAddress: token?.denom ?? "",
+        icsChannel: ibcDenoms[networkName][token?.denom ?? ""]?.icsChannel,
       })
     ) {
       return (
@@ -223,13 +224,8 @@ const SendPage = () => {
         const channel = getIBCChannel({
           from: chain,
           to: destinationChain,
-          ics:
-            AccAddress.validate(token?.denom ?? "") ||
-            (!!ibcDenoms[networkName][token?.denom ?? ""]?.icsChannel &&
-              (ibcDenoms[networkName][token?.denom ?? ""]?.icsChannel ===
-                networks[destinationChain]?.ibc?.ics?.fromTerra ||
-                ibcDenoms[networkName][token?.denom ?? ""]?.icsChannel ===
-                  networks[destinationChain]?.ibc?.ics?.toTerra)),
+          tokenAddress: token?.denom ?? "",
+          icsChannel: ibcDenoms[networkName][token?.denom ?? ""]?.icsChannel,
         })
         if (!channel) throw new Error("No IBC channel found")
 
@@ -314,6 +310,11 @@ const SendPage = () => {
     onSuccess: { label: t("Wallet"), path: "/wallet" },
     taxRequired: true,
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
+    gasAdjustment:
+      getChainIDFromAddress(addresses?.[chain ?? ""], networks) !== chain &&
+      AccAddress.validate(token?.denom ?? "")
+        ? 1.5
+        : 1,
   }
 
   return (
