@@ -6,6 +6,7 @@ import { Form, FormItem, FormWarning, Submit, Value } from "components/form"
 import { Checkbox, Input } from "components/form"
 import validate from "../../scripts/validate"
 import { useCreateWallet, Values as DefaultValues } from "./CreateWalletWizard"
+import { TooltipIcon } from "components/display"
 
 interface Values extends DefaultValues {
   confirm: string
@@ -72,6 +73,11 @@ const CreateWalletForm = () => {
         <FormItem /* do not translate this */
           label="Index"
           error={errors.index?.message}
+          extra={
+            <TooltipIcon
+              content={t("BIP 44 index number. For advanced users only")}
+            />
+          }
         >
           <Input
             {...register("index", {
