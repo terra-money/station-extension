@@ -4,6 +4,8 @@ import { STATION_ASSETS } from "config/constants"
 import createContext from "utils/createContext"
 import NetworkLoading from "./NetworkLoading"
 import { incomingRequest } from "extension/utils"
+import { useAllInterchainAddresses } from "auth/hooks/useAddress"
+import { addressFromWords } from "utils/bech32"
 
 export const [useNetworks, NetworksProvider] = createContext<{
   networks: InterchainNetworks
@@ -58,15 +60,16 @@ const InitNetworks = ({ children }: PropsWithChildren<{}>) => {
           if (network.prefix === "terra") return network.chainID
           try {
             const { data } = await axios.get(
-              "cosmos/base/tendermint/v1beta1/node_info",
+              `/cosmos/bank/v1beta1/balances/${addressFromWords(
+                "0000000000000000000000000000000000000000000000000000000000000000",
+                network.prefix
+              )}`,
               {
                 baseURL: network.lcd,
                 timeout: 5_000,
               }
             )
-            return "default_node_info" in data
-              ? (data.default_node_info.network as string)
-              : (data.node_info.network as string)
+            return Array.isArray(data.balances) && network.chainID
           } catch (e) {
             return null
           }
