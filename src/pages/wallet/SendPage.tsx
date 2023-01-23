@@ -157,16 +157,17 @@ const SendPage = () => {
 
     const destinationChain = getChainIDFromAddress(destinationAddress, networks)
 
-    if (!destinationChain) return null
+    if (!destinationChain || !token) return null
 
     if (
       chain === destinationChain ||
-      getIBCChannel({
+      (getIBCChannel({
         from: chain,
         to: destinationChain,
-        tokenAddress: token?.denom ?? "",
-        icsChannel: ibcDenoms[networkName][token?.denom ?? ""]?.icsChannel,
-      })
+        tokenAddress: token.denom,
+        icsChannel: ibcDenoms[networkName][token.denom]?.icsChannel,
+      }) &&
+        !readNativeDenom(token.denom).isAxelar)
     ) {
       return (
         <span className={styles.destination}>
@@ -200,7 +201,7 @@ const SendPage = () => {
 
       const destinationChain = getChainIDFromAddress(address, networks)
 
-      if (!chain || !destinationChain) return
+      if (!chain || !destinationChain || !token) return
 
       if (destinationChain === chain) {
         const msgs = isDenom(token?.denom)
@@ -224,7 +225,7 @@ const SendPage = () => {
         const channel = getIBCChannel({
           from: chain,
           to: destinationChain,
-          tokenAddress: token?.denom ?? "",
+          tokenAddress: token.denom,
           icsChannel: ibcDenoms[networkName][token?.denom ?? ""]?.icsChannel,
         })
         if (!channel) throw new Error("No IBC channel found")
@@ -365,7 +366,8 @@ const SendPage = () => {
                             networks,
                             chain ?? "",
                             token?.denom ?? "",
-                            getIBCChannel
+                            getIBCChannel,
+                            readNativeDenom(token?.denom ?? "").isAxelar
                           ),
                         },
                       })}
