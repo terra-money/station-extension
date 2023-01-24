@@ -67,6 +67,7 @@ const AssetPage = () => {
       </section>
       <section className={styles.actions}>
         <Button
+          color="primary"
           onClick={() =>
             setRoute({
               path: Path.send,
@@ -76,6 +77,17 @@ const AssetPage = () => {
           }
         >
           {t("Send")}
+        </Button>
+        <Button
+          onClick={() =>
+            setRoute({
+              path: Path.transfer,
+              denom,
+              previusPage: route,
+            })
+          }
+        >
+          {capitalize(t("transfer"))}
         </Button>
         <Button
           onClick={() =>
