@@ -20,6 +20,7 @@ import Front from "./modules/Front"
 import ManageWallets from "./auth/SelectWallets"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { Flex } from "components/layout"
+import NetworkStatus from "components/display/NetworkStatus"
 
 const App = () => {
   const network = useNetwork()
@@ -62,6 +63,7 @@ const App = () => {
             <Flex gap={5}>
               <LatestTx />
               <NetworkHeader />
+              <NetworkStatus />
               <Settings />
             </Flex>
           </Header>
