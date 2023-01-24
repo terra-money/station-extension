@@ -1,6 +1,8 @@
 import { useCallback } from "react"
 import { CreateTxOptions, Fee, Msg, Tx } from "@terra-money/feather.js"
 import { useChainID, useNetwork } from "data/wallet"
+import { isNil } from "ramda"
+import extension from "extensionizer"
 
 /* primitive */
 export interface PrimitiveDefaultRequest {
@@ -136,3 +138,26 @@ export const getIsDangerousTx = ({ msgs }: CreateTxOptions) =>
     const data = msg.toData()
     return data["@type"] === "/cosmos.authz.v1beta1.MsgGrant"
   })
+
+export async function incomingRequest() {
+  // Requests from storage
+  // except for that is already success or failure
+  return new Promise<boolean>((resolve) => {
+    extension.storage?.local.get(
+      ["connect", "post", "sign"],
+      (storage: ExtensionStorage) => {
+        const { connect = { allowed: [], request: [] } } = storage
+        const { sign = [], post = [] } = storage
+        const [connectRequest] = connect.request
+        const signRequests = sign.filter(({ success }) => isNil(success))
+        const postRequest = post.find(({ success }) => isNil(success))
+        const signRequest = signRequests.find(isSign)
+        const bytesRequest = signRequests.find(isBytes)
+
+        return resolve(
+          !!(connectRequest || postRequest || signRequest || bytesRequest)
+        )
+      }
+    )
+  })
+}
