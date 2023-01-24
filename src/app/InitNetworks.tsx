@@ -3,9 +3,8 @@ import axios from "axios"
 import { STATION_ASSETS } from "config/constants"
 import createContext from "utils/createContext"
 import NetworkLoading from "./NetworkLoading"
-import { incomingRequest } from "extension/utils"
-import { useAllInterchainAddresses } from "auth/hooks/useAddress"
 import { addressFromWords } from "utils/bech32"
+import { incomingRequest } from "extension/utils"
 
 export const [useNetworks, NetworksProvider] = createContext<{
   networks: InterchainNetworks
