@@ -34,6 +34,10 @@ const DeleteWalletForm = () => {
     setDone(true)
   }
 
+  if (!name) {
+    navigate("/")
+  }
+
   return (
     <>
       {done && (
