@@ -95,7 +95,7 @@ const AssetList = () => {
           {(open) => (
             <Button onClick={open}>
               <AddIcon />
-              {t("Add tokens")}
+              {t("Manage tokens")}
             </Button>
           )}
         </ManageTokens>
