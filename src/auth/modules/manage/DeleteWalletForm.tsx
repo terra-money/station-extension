@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import DoneAllIcon from "@mui/icons-material/DoneAll"
 import { Form, FormItem, FormWarning, Input, Submit } from "components/form"
-import { Wrong } from "components/feedback"
 import { isWallet } from "auth"
 import { deleteWallet } from "../../scripts/keystore"
 import useAuth from "../../hooks/useAuth"
@@ -18,7 +17,8 @@ const DeleteWalletForm = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { wallet, disconnect } = useAuth()
-  const name = isWallet.local(wallet) ? wallet.name : undefined
+  const walletName = isWallet.local(wallet) ? wallet.name : undefined
+  const [name, setName] = useState(walletName)
 
   /* form */
   const form = useForm<Values>({ mode: "onChange" })
@@ -26,27 +26,22 @@ const DeleteWalletForm = () => {
   const { isValid } = formState
 
   /* submit */
-  const [done, setDone] = useState(false)
   const submit = (values: Values) => {
     if (values.name !== name) return
     disconnect()
     deleteWallet(name)
-    setDone(true)
+    setName(undefined)
   }
 
   return (
     <>
-      {done && (
+      {!name ? (
         <ConfirmModal
           icon={<DoneAllIcon className="success" fontSize="inherit" />}
           onRequestClose={() => navigate("/", { replace: true })}
         >
           {t("Wallet deleted successfully")}
         </ConfirmModal>
-      )}
-
-      {!name ? (
-        <Wrong>{t("Wallet is not connected")}</Wrong>
       ) : (
         <Form onSubmit={handleSubmit(submit)}>
           <FormItem>
