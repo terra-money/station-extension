@@ -7,6 +7,7 @@ import { Checkbox, Input } from "components/form"
 import validate from "../../scripts/validate"
 import { TooltipIcon } from "components/display"
 import { useCreateWallet, Values as DefaultValues } from "./CreateWalletWizard"
+import { TooltipIcon } from "components/display"
 
 interface Values extends DefaultValues {
   confirm: string
