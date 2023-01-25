@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import DoneAllIcon from "@mui/icons-material/DoneAll"
 import { Form, FormItem, FormWarning, Input, Submit } from "components/form"
-import { Wrong } from "components/feedback"
 import { isWallet } from "auth"
 import { deleteWallet } from "../../scripts/keystore"
 import useAuth from "../../hooks/useAuth"
@@ -34,23 +33,15 @@ const DeleteWalletForm = () => {
     setDone(true)
   }
 
-  if (!name) {
-    navigate("/")
-  }
-
   return (
     <>
-      {done && (
+      {!name || done ? (
         <ConfirmModal
           icon={<DoneAllIcon className="success" fontSize="inherit" />}
           onRequestClose={() => navigate("/", { replace: true })}
         >
           {t("Wallet deleted successfully")}
         </ConfirmModal>
-      )}
-
-      {!name ? (
-        <Wrong>{t("Wallet is not connected")}</Wrong>
       ) : (
         <Form onSubmit={handleSubmit(submit)}>
           <FormItem>
