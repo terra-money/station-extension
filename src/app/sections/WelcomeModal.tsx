@@ -6,29 +6,9 @@ import styles from "./WelcomeModal.module.scss"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 
 const cx = classNames.bind(styles)
-
 const accordions = [
   {
-    title: "From an Existing Station Wallet",
-    content: [
-      [
-        "Open the extension and enter your seed phrase through the recovery process. You can find a guide ",
-        <a
-          href="https://docs.terra.money/learn/station/migration/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          here
-        </a>,
-        ".",
-      ],
-      [
-        "If you choose not to re-add your wallet you will not be able to access non-Terra chains. However, you will still have access to the private key and funds associated with that wallet.",
-      ],
-    ],
-  },
-  {
-    title: "From a Non-Station Wallet",
+    title: "Existing Wallet",
     content: [
       [
         "Use the ",
@@ -44,10 +24,30 @@ const accordions = [
           here
         </a>,
       ],
+      [
+        "If you choose not to re-add your wallet you will not be able to access non-Terra chains. However, you will still have access to the private key and funds associated with that wallet.",
+      ],
     ],
   },
   {
-    title: "From a Ledger",
+    title: "New Wallet",
+    content: [
+      [
+        "Use the ",
+        <span className={styles.highlighted}>New Wallet</span>,
+        " flow in the Station extension or desktop application. You can find a guide ",
+        <a
+          href="https://docs.terra.money/learn/station/wallet#create-a-wallet"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          here
+        </a>,
+      ],
+    ],
+  },
+  {
+    title: "Ledger",
     content: [
       [
         "Go to ",
