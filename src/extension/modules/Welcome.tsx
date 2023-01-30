@@ -9,8 +9,8 @@ const Welcome = () => {
 
   return (
     <FlexColumn gap={20} className={styles.component}>
-      <img src={front} alt="Terra Station" width={105} height={120} />
-      <p className={styles.content}>{t("Connect to Station")}</p>
+      <img src={front} alt="Station" width={105} height={120} />
+      <p className={styles.content}>{t("Connect wallet to application")}</p>
     </FlexColumn>
   )
 }

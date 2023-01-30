@@ -9,10 +9,12 @@ const cx = classNames.bind(styles)
 
 const accordions = [
   {
-    title: "From an Existing Station Wallet",
+    title: "Existing Wallet",
     content: [
       [
-        "Open the extension and enter your seed phrase through the recovery process. You can find a guide ",
+        "Use the ",
+        <span className={styles.highlighted}>Import from seed phrase</span>,
+        " flow in the Station extension. You can find a guide ",
         <a
           href="https://docs.terra.money/learn/station/migration/"
           target="_blank"
@@ -20,7 +22,6 @@ const accordions = [
         >
           here
         </a>,
-        ".",
       ],
       [
         "If you choose not to re-add your wallet you will not be able to access non-Terra chains. However, you will still have access to the private key and funds associated with that wallet.",
@@ -28,27 +29,20 @@ const accordions = [
     ],
   },
   {
-    title: "From a Non-Station Wallet",
+    title: "New Wallet",
     content: [
       [
         "Use the ",
-        <span className={styles.highlighted}>Recover Wallet</span>,
-        " flow in the extension to import your wallet. You can find a guide ",
-        <a
-          href="https://docs.terra.money/learn/station/migration/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          here
-        </a>,
+        <span className={styles.highlighted}>New Wallet</span>,
+        " flow on the following screen.",
       ],
     ],
   },
   {
-    title: "From a Ledger",
+    title: "Ledger",
     content: [
       [
-        "Go to ",
+        "Go to the",
         <span className={styles.highlighted}>Add Wallet</span>,
         " menu in the extension or the ",
         <a
@@ -90,7 +84,7 @@ const WelcomeModal = () => {
     >
       <h1 className={styles.title}>{t("Welcome to the Station Extension")}</h1>
       <h3 className={styles.subtitle}>
-        To enable interchain features complete the following.
+        Crypto wallet for the interchain and beyond
       </h3>
 
       <div className={styles.accordions}>
