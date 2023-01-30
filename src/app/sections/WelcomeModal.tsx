@@ -14,7 +14,9 @@ const accordions = [
       [
         "Use the ",
         <span className={styles.highlighted}>Import from seed phrase</span>,
-        " flow in the Station extension. You can find a guide ",
+        " or the ",
+        <span className={styles.highlighted}>Import from private key</span>,
+        " procedure. This private key is exported from a previous Station wallet. You can find a guide ",
         <a
           href="https://docs.terra.money/learn/station/migration/"
           target="_blank"
@@ -34,7 +36,7 @@ const accordions = [
       [
         "Use the ",
         <span className={styles.highlighted}>New Wallet</span>,
-        " flow on the following screen.",
+        " procedure on the following screen.",
       ],
     ],
   },
