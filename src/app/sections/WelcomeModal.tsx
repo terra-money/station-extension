@@ -13,8 +13,8 @@ const accordions = [
     content: [
       [
         "Use the ",
-        <span className={styles.highlighted}>Recover Wallet</span>,
-        " flow in the Station extension to import your wallet. You can find a guide ",
+        <span className={styles.highlighted}>Import from seed phrase</span>,
+        " flow in the Station extension. You can find a guide ",
         <a
           href="https://docs.terra.money/learn/station/migration/"
           target="_blank"
