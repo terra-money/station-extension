@@ -11,7 +11,6 @@ import styles from "./AssetList.module.scss"
 import AddIcon from "@mui/icons-material/Add"
 import { useTokenFilters } from "utils/localStorage"
 import { toInput } from "txs/utils"
-import TFMLink from "components/tfm/TFMLink"
 
 const AssetList = () => {
   const { t } = useTranslation()
@@ -87,7 +86,6 @@ const AssetList = () => {
     <article className={styles.assetlist}>
       <div className={styles.assetlist__title}>
         <h3>Assets</h3>
-        <TFMLink />
       </div>
       <div className={styles.assetlist__list}>{render()}</div>
       <div className={styles.assetlist__add}>
