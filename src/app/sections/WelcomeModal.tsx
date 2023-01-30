@@ -32,8 +32,10 @@ const accordions = [
     content: [
       [
         "Use the ",
-        <span className={styles.highlighted}>Recover Wallet</span>,
-        " flow in the extension to import your wallet. You can find a guide ",
+        <span className={styles.highlighted}>Import from seed phrase</span>,
+        " or the ",
+        <span className={styles.highlighted}>Import from private key</span>,
+        " procedure in the extension. This private key is exported from a previous Station wallet. You can find a guide ",
         <a
           href="https://docs.terra.money/learn/station/migration/"
           target="_blank"
