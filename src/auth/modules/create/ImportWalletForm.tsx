@@ -65,7 +65,7 @@ const ImportWalletForm = () => {
       <Grid gap={4}>
         <FormHelp>
           {t(
-            "This form only accepts private keys exported from another Station wallet. Your new wallet will have the same name as the wallet you import."
+            "This form only accepts private keys exported from Station. Your new wallet will have the same name as the wallet you import."
           )}
         </FormHelp>
       </Grid>
