@@ -4,6 +4,7 @@ import ReactModal from "react-modal"
 import classNames from "classnames/bind"
 import styles from "./WelcomeModal.module.scss"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
+import { ExternalLink } from "components/general"
 
 const cx = classNames.bind(styles)
 
@@ -19,13 +20,14 @@ const accordions = [
       ],
       [
         " You can find a guide ",
-        <a
+        <ExternalLink
           href="https://docs.terra.money/learn/station/migration/"
           target="_blank"
           rel="noopener noreferrer"
         >
-          here.
-        </a>,
+          here
+        </ExternalLink>,
+        ".",
       ],
     ],
   },
@@ -34,7 +36,8 @@ const accordions = [
     content: [
       [
         "Click confirm and select ",
-        <span className={styles.highlighted}>New wallet.</span>,
+        <span className={styles.highlighted}>New wallet</span>,
+        ".",
       ],
     ],
   },
@@ -43,7 +46,8 @@ const accordions = [
     content: [
       [
         "Click confirm and select ",
-        <span className={styles.highlighted}>access with ledger.</span>,
+        <span className={styles.highlighted}>access with ledger</span>,
+        ".",
       ],
     ],
   },
