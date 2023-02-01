@@ -12,10 +12,10 @@ const accordions = [
     title: "Existing Wallet",
     content: [
       [
-        "If you have a seed phrase from Station or another wallet use the ",
-        <span className={styles.highlighted}>Import from seed phrase</span>,
-        " flow. If you have a private key from a previous Station wallet use ",
-        <span className={styles.highlighted}>Import from private key</span>,
+        "If you have a seed phrase from Station or another wallet select ",
+        <span className={styles.highlighted}>Import from seed phrase.</span>,
+        " If you have a private key from a previous Station wallet select ",
+        <span className={styles.highlighted}>Import from private key.</span>,
         " You can find a guide ",
         <a
           href="https://docs.terra.money/learn/station/migration/"
