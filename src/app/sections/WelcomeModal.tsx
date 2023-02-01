@@ -4,6 +4,7 @@ import ReactModal from "react-modal"
 import classNames from "classnames/bind"
 import styles from "./WelcomeModal.module.scss"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
+import { ExternalLink } from "components/general"
 
 const cx = classNames.bind(styles)
 const accordions = [
@@ -19,13 +20,14 @@ const accordions = [
       ],
       [
         "You can find a guide ",
-        <a
+        <ExternalLink
           href="https://docs.terra.money/learn/station/migration/"
           target="_blank"
           rel="noopener noreferrer"
         >
           here
-        </a>,
+        </ExternalLink>,
+        ".",
       ],
       [
         "If you choose not to re-add your wallet you will not be able to access non-Terra chains. However, you will still have access to the private key and funds associated with that wallet.",
@@ -39,13 +41,14 @@ const accordions = [
         "Use the ",
         <span className={styles.highlighted}>New wallet</span>,
         " flow in the Station extension or desktop application. You can find a guide ",
-        <a
+        <ExternalLink
           href="https://docs.terra.money/learn/station/wallet#create-a-wallet"
           target="_blank"
           rel="noopener noreferrer"
         >
-          here.
-        </a>,
+          here
+        </ExternalLink>,
+        ".",
       ],
     ],
   },
@@ -56,13 +59,13 @@ const accordions = [
         "Select ",
         <span className={styles.highlighted}>Access with ledger</span>,
         " in the extension or the ",
-        <a
+        <ExternalLink
           href="https://station.terra.money/"
           target="_blank"
           rel="noopener noreferrer"
         >
           Station Web App
-        </a>,
+        </ExternalLink>,
         ".",
       ],
     ],
