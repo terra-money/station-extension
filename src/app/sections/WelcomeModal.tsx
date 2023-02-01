@@ -10,13 +10,24 @@ const cx = classNames.bind(styles)
 
 const accordions = [
   {
+    title: "New Wallet",
+    content: [
+      [
+        "Click confirm and select ",
+        <span className={styles.highlighted}>New wallet</span>,
+        ".",
+      ],
+    ],
+  },
+  {
     title: "Existing Wallet",
     content: [
       [
         "Select ",
-        <span className={styles.highlighted}>Import from seed phrase.</span>,
-        " Or, if you have a private key from a previous Station wallet select ",
-        <span className={styles.highlighted}>Import from private key.</span>,
+        <span className={styles.highlighted}>Import from seed phrase</span>,
+        ". Or, if you have a private key from a previous Station wallet select ",
+        <span className={styles.highlighted}>Import from private key</span>,
+        ".",
       ],
       [
         " You can find a guide ",
@@ -31,16 +42,7 @@ const accordions = [
       ],
     ],
   },
-  {
-    title: "New Wallet",
-    content: [
-      [
-        "Click confirm and select ",
-        <span className={styles.highlighted}>New wallet</span>,
-        ".",
-      ],
-    ],
-  },
+
   {
     title: "Ledger",
     content: [
@@ -77,7 +79,7 @@ const WelcomeModal = () => {
     >
       <h1 className={styles.title}>{t("Get Started with Station")}</h1>
       <h3 className={styles.subtitle}>
-        Crypto wallet for the interchain and beyond
+        The crypto wallet for the interchain and beyond
       </h3>
 
       <div className={styles.accordions}>
