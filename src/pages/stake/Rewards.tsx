@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next"
 import { useCurrency } from "data/settings/Currency"
 import { combineState } from "data/query"
 import { calcRewardsValues, useRewards } from "data/queries/distribution"
-import { useExchangeRates, useMemoizedPrices } from "data/queries/coingecko"
+import { useExchangeRates } from "data/queries/coingecko"
 import { useMemoizedCalcValue } from "data/queries/coingecko"
 import { useNativeDenoms, WithTokenItem } from "data/token"
 import { ModalButton } from "components/feedback"
@@ -16,7 +16,7 @@ const Rewards = () => {
   const currency = useCurrency()
   const calcValue = useMemoizedCalcValue()
   const readNativeDenom = useNativeDenoms()
-  const { data: prices, ...pricesState } = useMemoizedPrices()
+  const { data: prices, ...pricesState } = useExchangeRates()
 
   const { data: rewards, ...rewardsState } = useRewards()
   const { data: exchangeRates, ...exchangeRatesState } = useExchangeRates()

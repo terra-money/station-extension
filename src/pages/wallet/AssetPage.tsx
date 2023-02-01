@@ -3,17 +3,18 @@ import { useWalletRoute, Path } from "./Wallet"
 import styles from "./AssetPage.module.scss"
 import { Read, TokenIcon } from "components/token"
 import { useCurrency } from "data/settings/Currency"
-import { useMemoizedPrices, useAllMemoizedPrices } from "data/queries/coingecko"
+import { useExchangeRates } from "data/queries/coingecko"
 import { useBankBalance } from "data/queries/bank"
 import AssetChain from "./AssetChain"
 import { Button } from "components/general"
 import { useTranslation } from "react-i18next"
 import { capitalize } from "@mui/material"
+import { isTerraChain } from "utils/chain"
+import Vesting from "./Vesting"
 
 const AssetPage = () => {
   const currency = useCurrency()
-  const { data: prices } = useMemoizedPrices()
-  const { data: pricesFromAll } = useAllMemoizedPrices()
+  const { data: prices } = useExchangeRates()
   const balances = useBankBalance()
   const readNativeDenom = useNativeDenoms()
   const { t } = useTranslation()
@@ -28,7 +29,7 @@ const AssetPage = () => {
     (acc, b) => acc + parseInt(b.amount),
     0
   )
-  const price = prices?.[denom]?.price || pricesFromAll?.[denom]?.usd || 0
+  const price = symbol.endsWith("...") ? 0 : prices?.[token]?.price ?? 0
 
   return (
     <>
@@ -53,15 +54,17 @@ const AssetPage = () => {
         <div className={styles.chainlist__list}>
           {filteredBalances
             .sort((a, b) => parseInt(b.amount) - parseInt(a.amount))
-            .map((b) => (
-              <AssetChain
-                key={b.chain}
-                symbol={symbol}
-                balance={b.amount}
-                chain={b.chain}
-                token={token}
-                decimals={decimals}
-              />
+            .map((b, i) => (
+              <div key={i}>
+                <AssetChain
+                  symbol={symbol}
+                  balance={b.amount}
+                  chain={b.chain}
+                  token={token}
+                  decimals={decimals}
+                />
+                {token === "uluna" && isTerraChain(b.chain) && <Vesting />}
+              </div>
             ))}
         </div>
       </section>
