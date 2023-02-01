@@ -110,7 +110,7 @@ const WelcomeModal = () => {
             <div className={styles.content}>
               <ul>
                 {acc.content.map((content, i) => (
-                  <li className={styles.accContent}>{content}</li>
+                  <li>{content}</li>
                 ))}
               </ul>
             </div>
