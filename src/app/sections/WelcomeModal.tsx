@@ -12,21 +12,18 @@ const accordions = [
     title: "Existing Wallet",
     content: [
       [
-        "Use the ",
+        "If you have a seed phrase from Station or another wallet use the ",
         <span className={styles.highlighted}>Import from seed phrase</span>,
-        " or the ",
+        " flow. If you have a private key from a previous Station wallet use ",
         <span className={styles.highlighted}>Import from private key</span>,
-        " procedure. This private key is exported from a previous Station wallet. You can find a guide ",
+        " You can find a guide ",
         <a
           href="https://docs.terra.money/learn/station/migration/"
           target="_blank"
           rel="noopener noreferrer"
         >
-          here
+          here.
         </a>,
-      ],
-      [
-        "If you choose not to re-add your wallet you will not be able to access non-Terra chains. However, you will still have access to the private key and funds associated with that wallet.",
       ],
     ],
   },
@@ -35,7 +32,7 @@ const accordions = [
     content: [
       [
         "Use the ",
-        <span className={styles.highlighted}>New Wallet</span>,
+        <span className={styles.highlighted}>New wallet</span>,
         " procedure on the following screen.",
       ],
     ],
@@ -44,8 +41,8 @@ const accordions = [
     title: "Ledger",
     content: [
       [
-        "Go to the",
-        <span className={styles.highlighted}>Add Wallet</span>,
+        "Go to the ",
+        <span className={styles.highlighted}>Add wallet</span>,
         " menu in the extension or the ",
         <a
           href="https://station.terra.money/"
@@ -55,8 +52,7 @@ const accordions = [
           Station Web App
         </a>,
         " home page and select ",
-        <span className={styles.highlighted}>access with ledger</span>,
-        ".",
+        <span className={styles.highlighted}>access with ledger.</span>,
       ],
     ],
   },
@@ -103,7 +99,7 @@ const WelcomeModal = () => {
             <div className={styles.content}>
               <ul>
                 {acc.content.map((content, i) => (
-                  <li>{content}</li>
+                  <li className={styles.accContent}>{content}</li>
                 ))}
               </ul>
             </div>

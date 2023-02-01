@@ -63,14 +63,9 @@ const ImportWalletForm = () => {
   return (
     <Form onSubmit={handleSubmit(submit)}>
       <Grid gap={4}>
-        <FormWarning>
-          {t(
-            "Use the Import from seed phrase wallet feature if you'd like to use a seed phrase."
-          )}
-        </FormWarning>
         <FormHelp>
           {t(
-            "This wallet will have the same name as the wallet you're importing."
+            "This form only accepts private keys exported from another Station wallet. Your new wallet will have the same name as the wallet you import."
           )}
         </FormHelp>
       </Grid>
