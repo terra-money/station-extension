@@ -59,7 +59,6 @@ const WelcomeModal = () => {
   const { t } = useTranslation()
 
   const [openAcc, setOpenAcc] = useState(0)
-  const [openWhy, setOpenWhy] = useState(true)
   const [forceClose, setForceClose] = useState(false)
 
   const handleClick = (index: any) => {
@@ -102,26 +101,6 @@ const WelcomeModal = () => {
             </div>
           </section>
         ))}
-
-        <section
-          className={cx(styles.lessImportantAccordion, openWhy && "opened")}
-          onClick={() => setOpenWhy(!openWhy)}
-        >
-          <div className={styles.top}>
-            <h5 className={styles.title}>Why do I need to do this?</h5>
-            <KeyboardArrowDownIcon className={styles.icon} />
-          </div>
-          <div className={styles.content}>
-            <p>
-              Station needs to derive your wallet address for each chain from
-              the same seed phrase. Other wallet providers may generate this
-              address using a different derivation path. Station can detect 330,
-              and 118 derivation paths, but must re-load the seed phrase in
-              order to detect tokens held in wallets that were created via the
-              118 path.
-            </p>
-          </div>
-        </section>
       </div>
       <button className={styles.confirm} onClick={submitButton}>
         Confirm
