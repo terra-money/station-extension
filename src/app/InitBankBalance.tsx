@@ -22,8 +22,7 @@ const InitBankBalance = ({ children }: PropsWithChildren<{}>) => {
   }, [])
 
   // If the balance doesn't exist, nothing is worth rendering.
-  if (!bankBalance && !shouldSkip)
-    return <NetworkLoading title="Fetching balances..." />
+  if (!bankBalance && !shouldSkip) return <NetworkLoading />
   return (
     <BankBalanceProvider
       value={[...(bankBalance ?? []), ...(tokenBalance ?? [])]}

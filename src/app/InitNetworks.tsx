@@ -81,8 +81,7 @@ const InitNetworks = ({ children }: PropsWithChildren<{}>) => {
     testChains()
   }, [networks])
 
-  if (!networks || !enabledNetworks.length)
-    return <NetworkLoading title="Connecting to available networks..." />
+  if (!networks || !enabledNetworks.length) return <NetworkLoading />
 
   return (
     <NetworksProvider
