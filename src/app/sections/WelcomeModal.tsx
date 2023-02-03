@@ -5,99 +5,25 @@ import classNames from "classnames/bind"
 import styles from "./WelcomeModal.module.scss"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import { ExternalLink } from "components/general"
-import { sandbox as isDesktop } from "auth/scripts/env"
 
 const cx = classNames.bind(styles)
 
-const webAccordions = [
+const accordions = [
   {
     title: "New Wallet",
     content: [
       [
-        "Use the ",
+        "Click confirm and select ",
         <span className={styles.highlighted}>New wallet</span>,
-        " flow in the Station extension or desktop application. You can find a guide ",
-        <ExternalLink
-          href="https://docs.terra.money/learn/station/wallet#create-a-wallet"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          here
-        </ExternalLink>,
         ".",
       ],
     ],
   },
   {
     title: "Existing Wallet",
-    content: [
-      [
-        "Use the ",
-        <span className={styles.highlighted}>Import from seed phrase</span>,
-        " flow in the Station extension. Or use the ",
-        <span className={styles.highlighted}>Import from private key</span>,
-        " flow if you have a private key from a previous Station wallet.",
-      ],
-      [
-        "You can find a guide ",
-        <ExternalLink
-          href="https://docs.terra.money/learn/station/migration/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          here
-        </ExternalLink>,
-        ".",
-      ],
-      [
-        "If you choose not to re-add your wallet you will not be able to access non-Terra chains. However, you will still have access to the private key and funds associated with that wallet.",
-      ],
-    ],
-  },
-  {
-    title: "Ledger",
     content: [
       [
         "Select ",
-        <span className={styles.highlighted}>Access with ledger</span>,
-        " in the Station extension or ",
-        <ExternalLink
-          href="https://station.terra.money/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          web app
-        </ExternalLink>,
-        ".",
-      ],
-    ],
-  },
-]
-
-const desktopAccordions = [
-  {
-    title: "New Wallet",
-    content: [
-      [
-        "Click connect and then select ",
-        <span className={styles.highlighted}>New wallet</span>,
-        ". You can find a guide ",
-        <ExternalLink
-          href="https://docs.terra.money/learn/station/wallet#create-a-wallet"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          here
-        </ExternalLink>,
-        ".",
-      ],
-    ],
-  },
-  {
-    title: "Existing Wallet",
-    content: [
-      [
-        "Click connect and then select ",
         <span className={styles.highlighted}>Import from seed phrase</span>,
         ". Or, if you have a private key from a previous Station wallet select ",
         <span className={styles.highlighted}>Import from private key</span>,
@@ -116,20 +42,13 @@ const desktopAccordions = [
       ],
     ],
   },
+
   {
     title: "Ledger",
     content: [
       [
-        "Select ",
-        <span className={styles.highlighted}>Access with ledger</span>,
-        " in the Station extension or ",
-        <ExternalLink
-          href="https://station.terra.money/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          web app
-        </ExternalLink>,
+        "Click confirm and select ",
+        <span className={styles.highlighted}>access with ledger</span>,
         ".",
       ],
     ],
@@ -145,8 +64,6 @@ const WelcomeModal = () => {
   const handleClick = (index: any) => {
     setOpenAcc(index === openAcc ? 0 : index)
   }
-
-  const accordions = isDesktop ? desktopAccordions : webAccordions
 
   const submitButton = () => {
     localStorage.setItem("welcomeModal", "true")
