@@ -12,16 +12,16 @@
 
 .send {
   background-color: var(--card-bg);
-  margin-top: 3rem;
+  margin-top: 0.2rem;
   padding-inline: 20px;
   padding-bottom: 40px;
   max-width: var(--extension-width);
   box-sizing: border-box;
   grid-area: sendlist;
   background-color: var(--card-bg-muted);
-  overflow-y: auto;
   height: 100%;
   h1 {
+    margin-top: 1.3rem;
     font-size: 18pt;
   }
 }
@@ -50,6 +50,9 @@
 .form__container {
   div + div {
     margin-top: 1.2rem;
+  }
+  h1 {
+    margin-left: 2rem;
   }
 }
 

@@ -2,15 +2,15 @@
 
 .receive {
   background-color: var(--card-bg-muted);
-  padding-inline: 20px;
-  padding-top: 4rem;
+  padding: 20px;
+  padding-top: 1.5rem;
   grid-area: list;
   box-sizing: border-box;
-  overflow-y: auto;
 
   h1 {
     font-size: 18pt;
     margin-bottom: 1rem;
+    margin-left: 2rem;
   }
 
   p {
