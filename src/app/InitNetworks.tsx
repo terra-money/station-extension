@@ -5,6 +5,7 @@ import createContext from "utils/createContext"
 import NetworkLoading from "./NetworkLoading"
 import { incomingRequest } from "extension/utils"
 import { randomAddress } from "utils/bech32"
+import { useCustomLCDs } from "utils/localStorage"
 
 export const [useNetworks, NetworksProvider] = createContext<{
   networks: InterchainNetworks
@@ -15,6 +16,7 @@ export const [useNetworks, NetworksProvider] = createContext<{
 const InitNetworks = ({ children }: PropsWithChildren<{}>) => {
   const [networks, setNetworks] = useState<InterchainNetworks>()
   const [enabledNetworks, setEnabledNetworks] = useState<string[]>([])
+  const { customLCDs } = useCustomLCDs()
 
   useEffect(() => {
     const fetchChains = async () => {
@@ -24,6 +26,7 @@ const InitNetworks = ({ children }: PropsWithChildren<{}>) => {
           baseURL: STATION_ASSETS,
         }
       )
+
       setNetworks(chains)
     }
 
@@ -61,7 +64,7 @@ const InitNetworks = ({ children }: PropsWithChildren<{}>) => {
             const { data } = await axios.get(
               `/cosmos/bank/v1beta1/balances/${randomAddress(network.prefix)}`,
               {
-                baseURL: network.lcd,
+                baseURL: customLCDs[network.chainID] || network.lcd,
                 timeout: 3_000,
               }
             )
@@ -79,7 +82,7 @@ const InitNetworks = ({ children }: PropsWithChildren<{}>) => {
     }
 
     testChains()
-  }, [networks])
+  }, [networks]) // eslint-disable-line
 
   if (!networks || !enabledNetworks.length) return <NetworkLoading />
 

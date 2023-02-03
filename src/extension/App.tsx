@@ -21,6 +21,7 @@ import ManageWallets from "./auth/SelectWallets"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { Flex } from "components/layout"
 import NetworkStatus from "components/display/NetworkStatus"
+import Preferences from "app/sections/Preferences"
 
 const App = () => {
   const network = useNetwork()
@@ -64,7 +65,7 @@ const App = () => {
               <LatestTx />
               <NetworkHeader />
               <NetworkStatus />
-              <Settings />
+              <Preferences />
             </Flex>
           </Header>
 

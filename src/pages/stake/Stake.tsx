@@ -51,7 +51,7 @@ const Stake = () => {
           <Staked />
         )}
 
-        <Tabs tabs={tabs} type="page" />
+        <Tabs tabs={tabs} type="page" state />
       </Col>
     </Page>
   )
