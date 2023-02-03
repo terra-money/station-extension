@@ -12,14 +12,13 @@
 
 .send {
   background-color: var(--card-bg);
-  margin-top: 3rem;
+  margin-top: 1.5rem;
   padding-inline: 20px;
   padding-bottom: 40px;
   max-width: var(--extension-width);
   box-sizing: border-box;
   grid-area: sendlist;
   background-color: var(--card-bg-muted);
-  overflow-y: auto;
   height: 100%;
   h1 {
     font-size: 18pt;
