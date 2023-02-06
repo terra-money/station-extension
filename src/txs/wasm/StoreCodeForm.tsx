@@ -46,7 +46,6 @@ const StoreCodeForm = () => {
   const tx = {
     estimationTxValues,
     createTx,
-    onSuccess: { label: t("Instantiate"), path: "/contract/instantiate" },
     chain: chainID,
   }
 

@@ -37,7 +37,7 @@ const TxIndicator = ({ txhash }: { txhash: string }) => {
   const [latestTx, setLatestTx] = useRecoilState(latestTxState)
   const [minimized, setMinimized] = useState(false)
   const initLatestTx = () => setLatestTx({ txhash: "", chainID: "" })
-  const { redirectAfterTx, chainID } = latestTx
+  const { redirectAfterTx, chainID, onSuccess } = latestTx
 
   /* polling */
   const { data, isSuccess } = useTxInfo(latestTx)
@@ -52,7 +52,9 @@ const TxIndicator = ({ txhash }: { txhash: string }) => {
     ? Status.FAILURE
     : Status.SUCCESS
 
-  useEffect(() => {}, [status])
+  useEffect(() => {
+    if (status === Status.SUCCESS) onSuccess?.()
+  }, [status, onSuccess])
 
   /* render component */
   const icon = {

@@ -309,7 +309,7 @@ const SendPage = () => {
     createTx,
     disabled: false,
     onChangeMax,
-    onPost: () => {
+    onSuccess: () => {
       setRoute({ path: Path.wallet })
     },
     taxRequired: true,

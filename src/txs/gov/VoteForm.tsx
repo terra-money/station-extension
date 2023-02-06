@@ -57,10 +57,6 @@ const VoteForm = () => {
   const tx = {
     estimationTxValues,
     createTx,
-    onSuccess: {
-      label: [t("Proposal"), id].join(" "),
-      path: `/proposal/${chain}/${id}`,
-    },
     chain,
   }
 
