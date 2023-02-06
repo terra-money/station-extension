@@ -52,6 +52,8 @@ const TxIndicator = ({ txhash }: { txhash: string }) => {
     ? Status.FAILURE
     : Status.SUCCESS
 
+  useEffect(() => {}, [status])
+
   /* render component */
   const icon = {
     [Status.LOADING]: <LoadingCircular size={36} thickness={2} />,
