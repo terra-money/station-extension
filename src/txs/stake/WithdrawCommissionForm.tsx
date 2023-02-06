@@ -39,7 +39,6 @@ const WithdrawCommissionForm = () => {
   const tx = {
     estimationTxValues,
     createTx,
-    onSuccess: { label: t("Stake"), path: "/stake" },
     chain: chainID,
   }
 
