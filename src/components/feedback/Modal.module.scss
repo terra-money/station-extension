@@ -29,7 +29,7 @@
   width: var(--modal-width);
 
   @media (max-width: 600px) {
-    padding: 20px;
+    padding: 48px 20px;
     width: calc(100% - 40px);
   }
 }
