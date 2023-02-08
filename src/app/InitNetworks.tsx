@@ -76,6 +76,13 @@ const InitNetworks = ({ children }: PropsWithChildren<{}>) => {
         })
       )
 
+      localStorage.setItem(
+        "enabledNetworks",
+        JSON.stringify({
+          time: Date.now(),
+          networks: result.filter((r) => typeof r === "string") as string[],
+        })
+      )
       setEnabledNetworks(
         result.filter((r) => typeof r === "string") as string[]
       )
