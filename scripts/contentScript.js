@@ -37,10 +37,7 @@ function checkWebpage() {
     }
 
     // update every 10min
-    if (
-      !blacklist ||
-      blacklist.updatedAt < Date.now() - 1000 * 60 * 10
-    ) {
+    if (!blacklist || blacklist.updatedAt < Date.now() - 1000 * 60 * 10) {
       const BLACKLIST_URL = "https://assets.terra.money/blacklist.json"
       const response = await fetch(BLACKLIST_URL)
       const list = await response.json()
@@ -155,6 +152,26 @@ async function setupStreams() {
 
   extensionStream.pipe(pageStream)
   pageStream.pipe(extensionStream)
+
+  extensionPort.onDisconnect.addListener((port) => {
+    reconnectStream(pageStream)
+  })
+}
+
+async function reconnectStream(pageStream) {
+
+  const extensionPort = extension.runtime.connect({
+    name: "TerraStationExtension",
+  })
+
+  const extensionStream = new PortStream(extensionPort)
+
+  extensionStream.pipe(pageStream)
+  pageStream.pipe(extensionStream)
+
+  extensionPort.onDisconnect.addListener((port) => {
+    reconnectStream(pageStream)
+  })
 }
 
 /**
