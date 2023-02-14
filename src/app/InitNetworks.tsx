@@ -9,6 +9,7 @@ import { combineState } from "data/query"
 
 export const [useNetworks, NetworksProvider] = createContext<{
   networks: InterchainNetworks
+  networksLoading: boolean
   filterEnabledNetworks: <T>(network: Record<string, T>) => Record<string, T>
   filterDisabledNetworks: <T>(network: Record<string, T>) => Record<string, T>
 }>("useNetworks")
@@ -58,6 +59,7 @@ const InitNetworks = ({ children }: PropsWithChildren<{}>) => {
         <NetworksProvider
           value={{
             networks,
+            networksLoading: validationState.isLoading,
             filterEnabledNetworks: (networks) =>
               Object.fromEntries(
                 Object.entries(networks).filter(
