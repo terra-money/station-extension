@@ -50,6 +50,7 @@ const STAKED_TOKENS: Record<string, string> = {
   terra15rqy5xh7sclu3yltuz8ndl8lzudcqcv3laldxxsxaph085v6mdpqdjrucv: "sATR",
   terra14y9aa87v4mjvpf0vu8xm7nvldvjvk4h3wly2240u0586j4l6qm2q7ngp7t: "sHAR",
 }
+console.log("🚀 ~ file: coingecko.ts:53 ~ STAKED_TOKENS", STAKED_TOKENS)
 
 export const useExchangeRates = () => {
   const currency = useCurrency()
