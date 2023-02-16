@@ -385,6 +385,7 @@ const SendPage = () => {
                       autoFocus
                     />
                   )}
+                  maxHeight
                 >
                   <AddressBookList
                     onClick={async ({ recipient, memo }) => {
