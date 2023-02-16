@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useState } from "react"
+import { PropsWithChildren } from "react"
 import {
   CoinBalance,
   useInitialBankBalance,
