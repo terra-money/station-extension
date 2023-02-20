@@ -26,7 +26,7 @@ const ProposalHeader = ({
       <section className={styles.meta}>
         <aside>
           {chain && (
-            <img src={networks[chain].icon} alt={networks[chain].name} />
+            <img src={networks[chain].icon} alt={networks[chain]?.name} />
           )}
           {id} | {type}
         </aside>
