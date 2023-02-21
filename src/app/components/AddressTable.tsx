@@ -87,7 +87,9 @@ const AddressTable = (props: Props) => {
             {
               hidden: finderLink,
               dataIndex: "address",
-              render: (address: AccAddress) => <AddressBox address={address} />,
+              render: (address: AccAddress) => (
+                <AddressBox address={truncate(address)} />
+              ),
             },
           ]}
         />
