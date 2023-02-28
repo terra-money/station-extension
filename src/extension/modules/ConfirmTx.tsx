@@ -18,6 +18,8 @@ import ExtensionPage from "../components/ExtensionPage"
 import WalletCard from "../components/WalletCard"
 import ConfirmButtons from "../components/ConfirmButtons"
 import TxDetails from "./TxDetails"
+import { useChainID, useNetwork } from "data/wallet"
+import { useNetworks } from "app/InitNetworks"
 
 interface Values {
   password: string
@@ -29,6 +31,11 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const { wallet, ...auth } = useAuth()
   const { actions } = useRequest()
   const passwordRequired = isWallet.single(wallet)
+
+  // networks
+  const network = useNetwork()
+  const defaultChainID = useChainID()
+  const { networksLoading } = useNetworks()
 
   /* form */
   const form = useForm<Values>({
@@ -138,6 +145,29 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
 
   const SIZE = { width: 100, height: 100 }
   const label = props.requestType === "post" ? t("Post") : t("Sign")
+
+  if (
+    networksLoading &&
+    "tx" in props &&
+    !network[props.tx.chainID ?? defaultChainID]
+  ) {
+    return (
+      <Overlay>
+        <FlexColumn gap={20}>
+          <img {...SIZE} src={animation} alt={t("Loading...")} />
+        </FlexColumn>
+      </Overlay>
+    )
+  } else if (
+    !networksLoading &&
+    "tx" in props &&
+    !network[props.tx.chainID ?? defaultChainID]
+  ) {
+    const { requestType } = props
+    const message = t("The requested chain is not available")
+    const response = { success: false, error: { code: 1, message } }
+    actions.tx(requestType, props, response, nextPassword)
+  }
 
   return submitting ? (
     <Overlay>

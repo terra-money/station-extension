@@ -203,7 +203,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
     if (process.env.NODE_ENV === "development" && failed) {
       console.groupCollapsed("Fee estimation failed")
       console.info(
-        simulationTx?.msgs.map((msg) => msg.toData(networks[chain].isClassic))
+        simulationTx?.msgs.map((msg) => msg.toData(networks[chain]?.isClassic))
       )
       console.info(failed)
       console.groupEnd()

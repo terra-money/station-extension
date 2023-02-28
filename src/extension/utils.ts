@@ -89,7 +89,7 @@ export const useParseTx = () => {
             msgs: msgs.map((msg) =>
               Msg.fromData(
                 JSON.parse(msg),
-                networks[chainID ?? defaultChainID].isClassic
+                networks[chainID ?? defaultChainID]?.isClassic
               )
             ),
             fee: fee ? Fee.fromData(JSON.parse(fee)) : undefined,
@@ -100,7 +100,7 @@ export const useParseTx = () => {
             msgs: msgs.map((msg) =>
               Msg.fromAmino(
                 JSON.parse(msg),
-                networks[chainID ?? defaultChainID].isClassic
+                networks[chainID ?? defaultChainID]?.isClassic
               )
             ),
             fee: fee ? Fee.fromAmino(JSON.parse(fee)) : undefined,
