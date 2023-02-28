@@ -24,3 +24,8 @@
   grid-area: after;
   padding-left: 10px;
 }
+
+.btnWrapper {
+  @include flex;
+  gap: 8px;
+}
