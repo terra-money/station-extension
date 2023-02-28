@@ -11,7 +11,9 @@ const cx = classNames.bind(styles)
 const Message = ({ msg, warn }: { msg: Msg; warn: boolean }) => {
   // @ts-expect-error
   const summary = readMsg(msg)
-  const { "@type": type } = msg.toData()
+  const { "@type": msgType } = msg.toData()
+  const isCustom = msgType === "MsgCustomAmino"
+  const type = isCustom ? msg.toAmino().type : msgType
 
   const [collapsed, setCollapsed] = useState(true)
   const toggle = () => setCollapsed(!collapsed)
@@ -29,13 +31,16 @@ const Message = ({ msg, warn }: { msg: Msg; warn: boolean }) => {
   return (
     <article className={cx(styles.component, { warn })}>
       <button className={styles.header} onClick={toggle}>
-        <TxMessage>{summary}</TxMessage>
+        <TxMessage>{isCustom ? "Unknown message" : summary}</TxMessage>
         <KeyboardArrowDownIcon style={{ fontSize: 16 }} />
       </button>
 
       {!collapsed && (
         <section>
-          {[["type", type], ...Object.entries(msg)].map(([key, value]) => {
+          {[
+            ["type", type],
+            ...Object.entries(isCustom ? msg.toAmino().value : msg),
+          ].map(([key, value]) => {
             return (
               <article className={styles.detail} key={key}>
                 <h1>{key}</h1>

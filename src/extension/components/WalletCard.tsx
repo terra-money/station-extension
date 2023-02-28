@@ -7,14 +7,17 @@ import MultisigBadge from "auth/components/MultisigBadge"
 import Copy from "./Copy"
 import styles from "./WalletCard.module.scss"
 import { useAddress } from "data/wallet"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
 
 interface Props {
   extra?: ReactNode
+  chainId?: string
 }
 
-const WalletCard = ({ extra }: Props) => {
+const WalletCard = ({ extra, chainId }: Props) => {
   const { wallet } = useAuth()
   const address = useAddress()
+  const addresses = useInterchainAddresses()
 
   if (!wallet || !address) return null
   const name = isWallet.local(wallet) ? wallet.name : undefined
@@ -30,8 +33,10 @@ const WalletCard = ({ extra }: Props) => {
         )}
 
         <Flex gap={4} className={styles.address}>
-          <p>{address}</p>
-          <Copy text={address}></Copy>
+          <p>{chainId ? addresses?.[chainId] ?? address : address}</p>
+          <Copy
+            text={chainId ? addresses?.[chainId] ?? address : address}
+          ></Copy>
           <WalletQR
             renderButton={(open) => (
               <button onClick={open}>

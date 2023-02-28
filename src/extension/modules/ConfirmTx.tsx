@@ -147,7 +147,11 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
       </FlexColumn>
     </Overlay>
   ) : (
-    <ExtensionPage header={<WalletCard />}>
+    <ExtensionPage
+      header={
+        <WalletCard chainId={"tx" in props ? props.tx.chainID : undefined} />
+      }
+    >
       <Grid gap={20}>
         {"tx" in props && <TxDetails {...props} />}
 
