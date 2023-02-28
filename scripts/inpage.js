@@ -1,7 +1,10 @@
+import { Extension } from "@terra-money/feather.js"
+
 // legacy terra webapps
 window.isTerraExtensionAvailable = true
 // new inetchain webapps
 window.isStationExtensionAvailable = true
+window.station = new Extension()
 
 // ---------------------------------------------
 // for multiple extension support

@@ -2,9 +2,7 @@ import extension from "extensionizer"
 import PortStream from "extension-port-stream"
 
 const connectRemote = (remotePort) => {
-  if (remotePort.name !== "TerraStationExtension") {
-    return
-  }
+  if (remotePort.name !== "TerraStationExtension") return
 
   const origin = remotePort.sender.origin || remotePort.sender.url
 
@@ -16,7 +14,6 @@ const connectRemote = (remotePort) => {
   }
 
   portStream.on("data", (data) => {
-    console.log("Station(background): portStream.on", data)
     const { type, ...payload } = data
 
     /* handle sign & post */
@@ -171,12 +168,11 @@ extension.tabs.onRemoved.addListener(() => (tabId = undefined))
 const POPUP_WIDTH = 480
 const POPUP_HEIGHT = 600 // Chrome extension maximum height
 
-const getCenter = (window) => {
-  return {
-    top: Math.floor(window.height / 2 - POPUP_HEIGHT / 2),
+const getCenter = (window) => (
+  { top: Math.floor(window.height / 2 - POPUP_HEIGHT / 2),
     left: Math.floor(window.width / 2 - POPUP_WIDTH / 2),
   }
-}
+)
 
 const openPopup = () => {
   const popup = {

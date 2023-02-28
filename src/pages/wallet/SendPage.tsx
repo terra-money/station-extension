@@ -61,7 +61,9 @@ const SendPage = () => {
   const balances = useBankBalance()
   const { data: prices } = useExchangeRates()
   const readNativeDenom = useNativeDenoms()
-  const { route } = useWalletRoute() as unknown as { route: { denom?: string } }
+  const { route } = useWalletRoute() as unknown as {
+    route: { denom?: string }
+  }
   const { setRoute } = useWalletRoute()
   const availableAssets = useMemo(
     () =>
@@ -115,8 +117,8 @@ const SendPage = () => {
       availableAssets
         .find(({ denom }) => denom === (asset ?? defaultAsset))
         ?.chains.sort((a, b) => {
-          if (networks[a].prefix === "terra") return -1
-          if (networks[b].prefix === "terra") return 1
+          if (networks[a]?.prefix === "terra") return -1
+          if (networks[b]?.prefix === "terra") return 1
           return 0
         }),
     [asset, availableAssets, defaultAsset, networks]

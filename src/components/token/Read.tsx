@@ -45,7 +45,7 @@ const Read = forwardRef(
 
     const renderDecimal = () => {
       return (
-        <span className={cx({ small: !props.prefix })}>
+        <span className={cx({ small: !props?.prefix })}>
           {lessThanFixed
             ? `.${lessThanFloor.toString().split(".")[1]}`
             : `.${decimal || (0).toFixed(fixed || 2).split(".")[1]}`}
