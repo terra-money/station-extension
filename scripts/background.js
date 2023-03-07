@@ -97,7 +97,7 @@ const connectRemote = (remotePort) => {
         const handleChangeConnect = (changes, namespace) => {
           // It is recursive.
           // After referring to a specific value in the storage, perform the function listed below again.
-          if (namespace === "local") {
+          if (namespace === "local" && changes.connect) {
             const { newValue, oldValue } = changes.connect
 
             const denied =
