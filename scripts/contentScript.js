@@ -5,6 +5,7 @@ import LocalMessageDuplexStream from "post-message-stream"
 if (shouldInjectProvider()) {
   checkWebpage()
   injectScript()
+  setupEvents()
   start()
 }
 
@@ -68,6 +69,54 @@ function injectScript() {
   } catch (e) {
     console.error("MsgDemo provider injection failed.", e)
   }
+}
+
+function setupEvents() {
+  const createEvent = (changes, namespace) => {
+    if (namespace === "local") {
+      if (
+        changes.wallet &&
+        changes.wallet.newValue.address !== changes.wallet.oldValue.address
+      ) {
+        const event = new CustomEvent("station_wallet_change", {
+          detail: changes.wallet.newValue,
+        })
+        window.dispatchEvent(event)
+      } else if (
+        changes.networks &&
+        Object.values(changes.networks.oldValue).find(
+          ({ prefix }) => prefix === "terra"
+        ).chainID !==
+          Object.values(changes.networks.newValue).find(
+            ({ prefix }) => prefix === "terra"
+          ).chainID
+      ) {
+        const event = new CustomEvent("station_network_change", {
+          detail: changes.networks.newValue,
+        })
+        window.dispatchEvent(event)
+      }
+    }
+  }
+
+  extension.storage.local.get(["connect"], ({ connect }) => {
+    const isAllowed = connect.allowed.includes(window.location.origin)
+
+    if (isAllowed) {
+      extension.storage.onChanged.addListener(createEvent)
+    } else {
+      extension.storage.onChanged.addListener(function reset(
+        changes,
+        namespace
+      ) {
+        if (namespace === "local" && changes.connect) {
+          extension.storage.onChanged.removeListener(reset)
+          extension.storage.onChanged.removeListener(createEvent)
+          setupEvents()
+        }
+      })
+    }
+  })
 }
 
 /**
@@ -159,7 +208,6 @@ async function setupStreams() {
 }
 
 async function reconnectStream(pageStream) {
-
   const extensionPort = extension.runtime.connect({
     name: "TerraStationExtension",
   })
