@@ -29,6 +29,7 @@ export interface ExtensionStorage {
   connect?: { allowed: string[]; request: string[] }
   sign?: (PrimitiveTxRequest | PrimitiveSignBytesRequest)[]
   post?: PrimitiveTxRequest[]
+  pubkey?: string // hostname
 }
 
 /* app */

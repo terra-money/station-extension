@@ -147,6 +147,52 @@ const connectRemote = (remotePort) => {
 
         break
 
+      case "get-pubkey":
+        const handleChangePubkey = (changes, namespace) => {
+          // It is recursive.
+          // After referring to a specific value in the storage, perform the function listed below again.
+          if (namespace === "local" && changes.wallet) {
+            const { newValue } = changes.wallet
+
+            const hasPubKey = newValue.pubKey
+
+            if (hasPubKey)
+              extension.storage.local.get(
+                ["connect", "wallet"],
+                handleGetPubkey
+              )
+          }
+        }
+
+        const handleGetPubkey = ({
+          connect = { request: [], allowed: [] },
+          wallet = {},
+        }) => {
+          // 1. If the address is authorized and the wallet exists
+          //    - send back the response and close the popup.
+          // 2. If not,
+          //    - store the address on the storage and open the popup to request it (only if it is not the requested address).
+          const isAllowed = connect.allowed.includes(origin)
+          const hasPubKey = wallet.pubKey
+
+          if (isAllowed && hasPubKey) {
+            sendResponse("onGetPubkey", wallet)
+            closePopup()
+            extension.storage.onChanged.removeListener(handleChangePubkey)
+          } else {
+            extension.storage.local.set({
+              pubkey: origin,
+            })
+
+            openPopup()
+            extension.storage.onChanged.addListener(handleChangePubkey)
+          }
+        }
+
+        extension.storage.local.get(["connect", "wallet"], handleGetPubkey)
+
+        break
+
       case "sign":
         handleRequest("sign")
         break

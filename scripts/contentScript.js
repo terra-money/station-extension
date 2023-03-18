@@ -76,20 +76,20 @@ function setupEvents() {
     if (namespace === "local") {
       if (
         changes.wallet &&
-        changes.wallet.newValue.address !== changes.wallet.oldValue.address
+        (Object.values(changes.wallet.oldValue?.addresses).join(",") !==
+          Object.values(changes.wallet.newValue?.addresses).join(",") ||
+          Object.values(changes.wallet.oldValue?.pubkey).join(",") !==
+            Object.values(changes.wallet.newValue?.pubkey).join(","))
       ) {
         const event = new CustomEvent("station_wallet_change", {
           detail: changes.wallet.newValue,
         })
         window.dispatchEvent(event)
-      } else if (
+      }
+      if (
         changes.networks &&
-        Object.values(changes.networks.oldValue).find(
-          ({ prefix }) => prefix === "terra"
-        ).chainID !==
-          Object.values(changes.networks.newValue).find(
-            ({ prefix }) => prefix === "terra"
-          ).chainID
+        Object.keys(changes.networks.oldValue).join(",") !==
+          Object.keys(changes.networks.newValue).join(",")
       ) {
         const event = new CustomEvent("station_network_change", {
           detail: changes.networks.newValue,

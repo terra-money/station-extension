@@ -188,6 +188,21 @@ const useAuth = () => {
     }
   }
 
+  const getPubkey = async (coinType: "330" | "118", password = "") => {
+    if (!wallet) throw new Error("Wallet is not defined")
+
+    if (is.ledger(wallet)) {
+      const key = await getLedgerKey(coinType)
+      return await key.publicKey
+    } else {
+      const pk = getKey(password)
+      if (!pk || !pk[coinType]) throw new PasswordError("Incorrect password")
+      const key = new RawKey(Buffer.from(pk[coinType] ?? "", "hex"))
+      // @ts-expect-error
+      return await key.publicKey.key
+    }
+  }
+
   const sign = async (txOptions: CreateTxOptions, password = "") => {
     if (!wallet) throw new Error("Wallet is not defined")
 
@@ -259,6 +274,7 @@ const useAuth = () => {
     signBytes,
     sign,
     post,
+    getPubkey,
   }
 }
 
