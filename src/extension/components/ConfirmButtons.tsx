@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes } from "react"
 import { Button } from "components/general"
-import { Flex } from "components/layout"
+import { Container, Flex } from "components/layout"
 import styles from "./ConfirmButtons.module.scss"
 
 type ButtonAttrs = ButtonHTMLAttributes<HTMLButtonElement>
@@ -16,7 +16,7 @@ const ConfirmButtons = ({ buttons }: Props) => {
   const [deny, approve] = buttons
 
   return (
-    <Flex gap={10}>
+    <Flex gap={10} className={styles.container}>
       <Button {...deny} className={styles.button} color="danger" />
       <Button {...approve} className={styles.button} color="primary" />
     </Flex>

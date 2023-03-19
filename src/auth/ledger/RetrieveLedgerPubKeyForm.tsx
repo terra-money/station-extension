@@ -9,6 +9,7 @@ import { wordsFromAddress } from "utils/bech32"
 import Lottie from "lottie-react"
 import connectAnimation from "./assets/connect.json"
 import openApp from "./assets/openApp.json"
+import DoneAllIcon from "@mui/icons-material/DoneAll"
 
 import { Grid } from "components/layout"
 import { isWallet } from "auth"
@@ -193,7 +194,8 @@ const RetrieveLedgerPubKeyForm = () => {
         return (
           <>
             <section className="center">
-              <h2>Done</h2>
+              <DoneAllIcon className="success" style={{ fontSize: 56 }} />
+              <h1>{t("Public key retrieved successfully")}</h1>
             </section>
             <BottomCard>
               <ConfirmButtons

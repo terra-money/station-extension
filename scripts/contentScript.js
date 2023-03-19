@@ -76,10 +76,10 @@ function setupEvents() {
     if (namespace === "local") {
       if (
         changes.wallet &&
-        (Object.values(changes.wallet.oldValue?.addresses).join(",") !==
-          Object.values(changes.wallet.newValue?.addresses).join(",") ||
-          Object.values(changes.wallet.oldValue?.pubkey).join(",") !==
-            Object.values(changes.wallet.newValue?.pubkey).join(","))
+        (Object.values(changes.wallet.oldValue.addresses).join(",") !==
+          Object.values(changes.wallet.newValue.addresses).join(",") ||
+          Object.values(changes.wallet.oldValue.pubkey).join(",") !==
+            Object.values(changes.wallet.newValue.pubkey).join(","))
       ) {
         const event = new CustomEvent("station_wallet_change", {
           detail: changes.wallet.newValue,

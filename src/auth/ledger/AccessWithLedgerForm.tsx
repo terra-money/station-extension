@@ -50,6 +50,9 @@ const AccessWithLedgerForm = () => {
   const [error, setError] = useState<Error>()
   const [page, setPage] = useState(Pages.form)
   const [words, setWords] = useState<{ 330: string; 118?: string }>({ 330: "" })
+  const [pubkey, setPubkey] = useState<{ 330: string; 118?: string }>({
+    330: "",
+  })
 
   /* check bluetooth availability */
   const [bleAvailable, setBleAvailable] = useState(false)
@@ -70,7 +73,7 @@ const AccessWithLedgerForm = () => {
   const submit = async ({ index, bluetooth, name }: Values) => {
     setError(undefined)
 
-    connectLedger(words, index, bluetooth, name)
+    connectLedger(words, pubkey, index, bluetooth, name)
     navigate("/", { replace: true })
   }
 
@@ -86,6 +89,8 @@ const AccessWithLedgerForm = () => {
         onConnect: () => setPage(Pages.openTerra),
       })
       setWords({ "330": wordsFromAddress(key330.accAddress("terra")) })
+      // @ts-expect-error
+      setPubkey({ "330": key330.publicKey.key })
       setPage(Pages.askCosmos)
     } catch (error) {
       setError(error as Error)
@@ -109,6 +114,8 @@ const AccessWithLedgerForm = () => {
         ...w,
         "118": wordsFromAddress(key118.accAddress("terra")),
       }))
+      // @ts-expect-error
+      setPubkey((p) => ({ ...p, "118": key118.publicKey.key }))
       setPage(Pages.complete)
     } catch (error) {
       setError(error as Error)

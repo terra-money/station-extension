@@ -63,12 +63,14 @@ const useAuth = () => {
   const connectLedger = useCallback(
     (
       words: { "330": string; "118"?: string },
+      pubkey: { "330": string; "118"?: string },
       index = 0,
       bluetooth = false,
       name = "Ledger"
     ) => {
       const wallet = {
         words,
+        pubkey,
         ledger: true as const,
         index,
         bluetooth,
