@@ -14,6 +14,7 @@ interface RequestContext {
   requests: {
     connect?: ConnectRequest
     tx?: TxRequest | SignBytesRequest
+    pubkey?: string
   }
   actions: {
     connect: (origin: string, allow: boolean) => void
@@ -24,6 +25,7 @@ interface RequestContext {
       password?: string
     ) => void
     multisigTx: (request: PrimitiveDefaultRequest) => void
+    pubkey: () => void
   }
 }
 
@@ -32,6 +34,7 @@ export const [useRequest, RequestProvider] =
 
 const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
   const [connect, setConnect] = useState<ConnectRequest>()
+  const [pubkey, setPubkey] = useState<string>()
   const [tx, setTx] = useState<TxRequest | SignBytesRequest>()
   const parseTx = useParseTx()
   const networks = useNetwork()
@@ -41,7 +44,7 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
     // Requests from storage
     // except for that is already success or failure
     extension.storage?.local.get(
-      ["connect", "post", "sign"],
+      ["connect", "pubkey", "post", "sign"],
       (storage: ExtensionStorage) => {
         const { connect = { allowed: [], request: [] } } = storage
         const { sign = [], post = [] } = storage
@@ -53,6 +56,8 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
 
         if (connectRequest) {
           setConnect({ origin: connectRequest })
+        } else if (storage.pubkey) {
+          setPubkey(storage.pubkey)
         } else if (postRequest) {
           setTx({
             ...parseDefault(postRequest),
@@ -92,6 +97,18 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
         },
         () => setConnect(undefined)
       )
+    )
+  }
+
+  /* pubkey */
+  const handlePubkey = () => {
+    // Store allowed origin list
+    // Delete on reject
+    extension.storage?.local.set(
+      {
+        pubkey: false,
+      },
+      () => setPubkey(undefined)
     )
   }
 
@@ -139,11 +156,12 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
   }
 
   /* context */
-  const requests = { connect, tx }
+  const requests = { connect, pubkey, tx }
   const actions = {
     connect: handleConnect,
     tx: handleTx,
     multisigTx: handleMultisigTx,
+    pubkey: handlePubkey,
   }
 
   return (

@@ -11,6 +11,7 @@ import decrypt from "../../scripts/decrypt"
 import { addWallet, PasswordError } from "../../scripts/keystore"
 import useAuth from "../../hooks/useAuth"
 import { wordsFromAddress } from "utils/bech32"
+import { RawKey } from "@terra-money/feather.js"
 
 interface Values {
   key: string
@@ -44,11 +45,20 @@ const ImportWalletForm = () => {
 
       if (!pk) throw new PasswordError(t("Incorrect password"))
 
+      const decryptedKey = new RawKey(Buffer.from(pk, "hex"))
+
+      if (decryptedKey.accAddress("terra") !== address)
+        throw new Error("Invalid private key")
+
       addWallet({
         name,
         password,
         words: {
           "330": wordsFromAddress(address),
+        },
+        pubkey: {
+          // @ts-expect-error
+          "330": decryptedKey.publicKey.key,
         },
         key: { "330": Buffer.from(pk, "hex") },
       })

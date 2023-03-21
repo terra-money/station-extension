@@ -1,5 +1,7 @@
 .page {
   overflow: hidden;
+  background-color: var(--card-bg-muted);
+  height: calc(100% - var(--header-height));
   // padding here to position progress bar
 }
 

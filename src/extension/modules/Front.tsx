@@ -8,11 +8,12 @@ import ConfirmConnect from "./ConfirmConnect"
 import ConfirmTx from "./ConfirmTx"
 import Welcome from "./Welcome"
 import Wallet from "pages/wallet/Wallet"
+import ConfirmPubkey from "./ConfirmPubkey"
 
 const Front = () => {
   const { wallet, wallets } = useAuth()
   const { requests } = useRequest()
-  const { connect, tx } = requests
+  const { connect, tx, pubkey } = requests
 
   if (!wallet) {
     return (
@@ -27,6 +28,10 @@ const Front = () => {
 
   if (connect) {
     return <ConfirmConnect {...connect} />
+  }
+
+  if (pubkey) {
+    return <ConfirmPubkey origin={pubkey} />
   }
 
   if (tx) {

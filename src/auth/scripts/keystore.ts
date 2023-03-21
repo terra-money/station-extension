@@ -98,6 +98,7 @@ type AddWalletParams =
       password: string
       key: { "330": Buffer; "118"?: Buffer }
       name: string
+      pubkey: { "330": string; "118"?: string }
     }
   | LedgerWallet
   | MultisigWallet
@@ -117,12 +118,12 @@ export const addWallet = (params: AddWalletParams) => {
   if (is.multisig(params) || is.ledger(params)) {
     storeWallets([...next, params])
   } else {
-    const { name, password, words, key } = params
+    const { name, password, words, key, pubkey } = params
     const encrypted = {
       "330": encrypt(key["330"].toString("hex"), password),
       "118": key["118"] && encrypt(key["118"].toString("hex"), password),
     }
-    storeWallets([...next, { name, words, encrypted }])
+    storeWallets([...next, { name, words, encrypted, pubkey }])
   }
 }
 
@@ -156,6 +157,45 @@ export const changePassword = (params: ChangePasswordParams) => {
       } else {
         const { words } = wallet
         return { name, words, encrypted }
+      }
+    }
+    return wallet
+  })
+
+  storeWallets(next)
+}
+
+interface StorePubKeyParams {
+  name: string
+  pubkey: {
+    "330": string
+    "118"?: string
+  }
+}
+
+export const storePubKey = (params: StorePubKeyParams) => {
+  const { name, pubkey } = params
+  const wallets = getStoredWallets()
+  const next = wallets.map((wallet) => {
+    if (wallet.name === name) {
+      if ("address" in wallet) {
+        if (!("encrypted" in wallet)) return wallet
+
+        const { address, encrypted } = wallet
+        return {
+          name,
+          words: {
+            "330": wordsFromAddress(address),
+          },
+          encrypted: {
+            "330": encrypted,
+          },
+          pubkey: {
+            "330": pubkey["330"],
+          },
+        }
+      } else {
+        return { ...wallet, pubkey }
       }
     }
     return wallet
