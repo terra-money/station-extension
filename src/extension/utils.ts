@@ -10,6 +10,37 @@ export interface PrimitiveDefaultRequest {
   origin: string
 }
 
+interface Token {
+  token: string
+  symbol: string
+  name: string
+  icon: string
+  decimals: number
+}
+
+export interface SuggestChainRequest extends PrimitiveDefaultRequest {
+  network: "mainnet" | "testnet"
+  chain: {
+    chainID: string
+    lcd: string
+    gasAdjustment: number
+    gasPrices: Record<string, number>
+    prefix: string
+    coinType: "118" | "330"
+    baseAsset: string
+    name: string
+    icon: string
+    explorer?: {
+      address: string
+      tx: string
+      validator: string
+      block: string
+    }
+    tokens: Token[]
+  }
+  success?: boolean
+}
+
 export interface PrimitiveTxRequest
   extends Partial<TxResponse>,
     PrimitiveDefaultRequest {
@@ -30,6 +61,7 @@ export interface ExtensionStorage {
   sign?: (PrimitiveTxRequest | PrimitiveSignBytesRequest)[]
   post?: PrimitiveTxRequest[]
   pubkey?: string // hostname
+  suggestChain?: SuggestChainRequest[]
 }
 
 /* app */

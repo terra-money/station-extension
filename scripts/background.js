@@ -201,6 +201,10 @@ const connectRemote = (remotePort) => {
 
         break
 
+      case "suggestChain":
+        handleRequest("suggestChain")
+        break
+
       case "sign":
         handleRequest("sign")
         break
