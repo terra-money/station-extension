@@ -60,12 +60,18 @@ const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
       "330": wordsFromAddress(mk330.accAddress("terra")),
       "118": wordsFromAddress(mk118.accAddress("terra")),
     }
+    const pubkey = {
+      // @ts-expect-error
+      "330": mk330.publicKey.key,
+      // @ts-expect-error
+      "118": mk118.publicKey.key,
+    }
     const key = {
       "330": mk330.privateKey,
       "118": mk118.privateKey,
     }
-    addWallet({ name, password, words, key })
-    setCreatedWallet({ name, words })
+    addWallet({ name, password, words, key, pubkey })
+    setCreatedWallet({ name, words, pubkey })
     setStep(3)
   }
 

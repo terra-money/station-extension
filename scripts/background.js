@@ -147,6 +147,60 @@ const connectRemote = (remotePort) => {
 
         break
 
+      case "get-pubkey":
+        const handleChangePubkey = (changes, namespace) => {
+          // It is recursive.
+          // After referring to a specific value in the storage, perform the function listed below again.
+          if (namespace === "local" && (changes.wallet || changes.pubkey)) {
+            const hasPubKey = changes.wallet && changes.wallet.newValue.pubkey
+
+            if (hasPubKey) {
+              extension.storage.local.get(
+                ["connect", "wallet"],
+                handleGetPubkey
+              )
+            } else {
+              extension.storage.local.get(["pubkey"], ({ pubkey }) => {
+                // pubkey terminated
+                if (!pubkey) {
+                  sendResponse("onGetPubkey", null)
+                  closePopup()
+                  extension.storage.onChanged.removeListener(handleChangePubkey)
+                }
+              })
+            }
+          }
+        }
+
+        const handleGetPubkey = ({
+          connect = { request: [], allowed: [] },
+          wallet = {},
+        }) => {
+          // 1. If the address is authorized and the wallet exists
+          //    - send back the response and close the popup.
+          // 2. If not,
+          //    - store the address on the storage and open the popup to request it (only if it is not the requested address).
+          const isAllowed = connect.allowed.includes(origin)
+          const hasPubKey = wallet.pubkey
+
+          if (isAllowed && hasPubKey) {
+            sendResponse("onGetPubkey", wallet)
+            closePopup()
+            extension.storage.onChanged.removeListener(handleChangePubkey)
+          } else {
+            extension.storage.local.set({
+              pubkey: origin,
+            })
+
+            openPopup()
+            extension.storage.onChanged.addListener(handleChangePubkey)
+          }
+        }
+
+        extension.storage.local.get(["connect", "wallet"], handleGetPubkey)
+
+        break
+
       case "sign":
         handleRequest("sign")
         break

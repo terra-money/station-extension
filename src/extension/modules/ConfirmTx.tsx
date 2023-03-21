@@ -15,9 +15,9 @@ import { getOpenURL, getStoredPassword } from "../storage"
 import { getIsDangerousTx, SignBytesRequest, TxRequest } from "../utils"
 import { useRequest } from "../RequestContainer"
 import ExtensionPage from "../components/ExtensionPage"
-import WalletCard from "../components/WalletCard"
 import ConfirmButtons from "../components/ConfirmButtons"
 import TxDetails from "./TxDetails"
+import OriginCard from "extension/components/OriginCard"
 
 interface Values {
   password: string
@@ -147,7 +147,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
       </FlexColumn>
     </Overlay>
   ) : (
-    <ExtensionPage header={<WalletCard />}>
+    <ExtensionPage header={<OriginCard hostname={origin} />}>
       <Grid gap={20}>
         {"tx" in props && <TxDetails {...props} />}
 

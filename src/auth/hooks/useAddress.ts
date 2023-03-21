@@ -45,4 +45,9 @@ export const useInterchainAddresses = () => {
   return addresses
 }
 
+export const usePubkey = () => {
+  const { wallet } = useAuth()
+  return wallet?.pubkey
+}
+
 export default useAddress

@@ -17,12 +17,20 @@ interface SingleWallet {
     "330": string
     "118"?: string
   }
+  pubkey?: {
+    "330": string
+    "118"?: string
+  }
   name: string
   lock?: boolean
 }
 interface LedgerWallet {
   name: string
   words: {
+    "330": string
+    "118"?: string
+  }
+  pubkey?: {
     "330": string
     "118"?: string
   }
