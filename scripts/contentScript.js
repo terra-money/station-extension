@@ -76,10 +76,10 @@ function setupEvents() {
     if (namespace === "local") {
       if (
         changes.wallet &&
-        (Object.values(changes.wallet.oldValue.addresses).join(",") !==
-          Object.values(changes.wallet.newValue.addresses).join(",") ||
-          Object.values(changes.wallet.oldValue.pubkey).join(",") !==
-            Object.values(changes.wallet.newValue.pubkey).join(","))
+        (Object.values(changes.wallet.oldValue.addresses || {}).join(",") !==
+          Object.values(changes.wallet.newValue.addresses || {}).join(",") ||
+          Object.values(changes.wallet.oldValue.pubkey || {}).join(",") !==
+            Object.values(changes.wallet.newValue.pubkey || {}).join(","))
       ) {
         const event = new CustomEvent("station_wallet_change", {
           detail: changes.wallet.newValue,
@@ -88,8 +88,8 @@ function setupEvents() {
       }
       if (
         changes.networks &&
-        Object.keys(changes.networks.oldValue).join(",") !==
-          Object.keys(changes.networks.newValue).join(",")
+        Object.keys(changes.networks.oldValue || {}).join(",") !==
+          Object.keys(changes.networks.newValue || {}).join(",")
       ) {
         const event = new CustomEvent("station_network_change", {
           detail: changes.networks.newValue,
