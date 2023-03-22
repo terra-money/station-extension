@@ -8,4 +8,5 @@ test("isDenomTerra", () => {
 test("isDenom", () => {
   expect(isDenom("uusd")).toBeTruthy()
   expect(isDenom("uluna")).toBeTruthy()
+  expect(isDenom("ncheq")).toBeTruthy()
 })

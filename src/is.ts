@@ -9,8 +9,12 @@ export const isDenomTerra = (string = "") =>
 
 export const isDenomIBC = (string = "") => string.startsWith("ibc/")
 
+// The cheqd blockchain uses the "n" prefix for the minimal 
+// denomination instead of the standard "u" prefix.
+const isDenomCheq = (string = "") => 'ncheq' === string
+
 export const isDenomTerraNative = (string = "") =>
   isDenomLuna(string) || isDenomTerra(string)
 
 export const isDenom = (string = "") =>
-  string.startsWith("u") || isDenomIBC(string)
+  string.startsWith("u") || isDenomCheq(string) || isDenomIBC(string)
