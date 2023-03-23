@@ -22,16 +22,16 @@ type Route =
   | {
       path: Path.coin
       denom: string
-      previusPage: Route
+      previousPage: Route
     }
   | {
       path: Path.receive
-      previusPage: Route
+      previousPage: Route
     }
   | {
       path: Path.send
       denom?: string
-      previusPage: Route
+      previousPage: Route
     }
 
 // Handle routing inside Wallet
@@ -51,7 +51,7 @@ const Wallet = () => {
     return (
       <button
         className={styles.back}
-        onClick={() => setRoute(route.previusPage)}
+        onClick={() => setRoute(route.previousPage)}
       >
         <BackIcon width={18} height={18} />
       </button>

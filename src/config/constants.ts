@@ -21,10 +21,13 @@ export const SETUP = "https://setup-station.terra.money/"
 export const MARS_TEST_EXPLORER = "https://testnet-explorer.marsprotocol.io"
 export const MARS_EXPLORER = "https://explorer.marsprotocol.io"
 
+/* website: fiat ramp */
+export const FIAT_RAMP = "https://app.kado.money/"
+export const KADO_API_KEY = "c22391a1-594f-4354-a742-187adb1b91bf"
+
 /* website: stake */
 export const TERRA_VALIDATORS =
   "https://github.com/terra-money/validator-profiles/tree/master/validators/"
-
 export const STAKE_ID = "https://stake.id/#/validator/"
 
 /* ledger */

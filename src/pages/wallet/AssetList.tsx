@@ -1,5 +1,5 @@
 import { FormError } from "components/form"
-import { Button } from "components/general"
+import { InternalButton } from "components/general"
 import { useBankBalance, useIsWalletEmpty } from "data/queries/bank"
 import { useExchangeRates } from "data/queries/coingecko"
 import { useNativeDenoms } from "data/token"
@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next"
 import ManageTokens from "./ManageTokens"
 import Asset from "./Asset"
 import styles from "./AssetList.module.scss"
-import AddIcon from "@mui/icons-material/Add"
 import { useTokenFilters } from "utils/localStorage"
 import { toInput } from "txs/utils"
 import {
@@ -113,18 +112,13 @@ const AssetList = () => {
     <article className={styles.assetlist}>
       <div className={styles.assetlist__title}>
         <h3>Assets</h3>
-      </div>
-      <div className={styles.assetlist__list}>{render()}</div>
-      <div className={styles.assetlist__add}>
         <ManageTokens>
           {(open) => (
-            <Button onClick={open}>
-              <AddIcon />
-              {t("Manage tokens")}
-            </Button>
+            <InternalButton onClick={open}>{t("Manage tokens")}</InternalButton>
           )}
         </ManageTokens>
       </div>
+      <div className={styles.assetlist__list}>{render()}</div>
     </article>
   )
 }
