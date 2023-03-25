@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes } from "react"
 import { Button } from "components/general"
-import { Container, Flex } from "components/layout"
+import { Flex } from "components/layout"
 import styles from "./ConfirmButtons.module.scss"
 
 type ButtonAttrs = ButtonHTMLAttributes<HTMLButtonElement>

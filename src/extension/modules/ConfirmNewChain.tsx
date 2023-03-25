@@ -12,7 +12,7 @@ import { Dl } from "components/display"
 import { Fragment } from "react"
 import { ExternalLink } from "components/general"
 import { useValidateLCD } from "data/queries/tendermint"
-import { FormError, FormWarning } from "components/form"
+import { FormError } from "components/form"
 import { useCustomChains } from "utils/localStorage"
 
 const ConfirmNewChain = (request: SuggestChainRequest) => {

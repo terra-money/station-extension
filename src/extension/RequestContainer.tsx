@@ -185,7 +185,7 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
   }
 
   /* context */
-  const requests = { connect, pubkey, tx }
+  const requests = { connect, pubkey, tx, chain }
   const actions = {
     connect: handleConnect,
     tx: handleTx,
