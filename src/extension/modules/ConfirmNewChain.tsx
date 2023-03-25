@@ -13,19 +13,21 @@ import { Fragment } from "react"
 import { ExternalLink } from "components/general"
 import { useValidateLCD } from "data/queries/tendermint"
 import { FormError, FormWarning } from "components/form"
+import { useCustomChains } from "utils/localStorage"
 
 const ConfirmNewChain = (request: SuggestChainRequest) => {
   const { origin, chain, network } = request
   const { t } = useTranslation()
   const { actions } = useRequest()
   const networkName = useNetworkName()
+  const { customChains, setCustomChains } = useCustomChains()
   const { hostname } = new URL(origin)
   const { data: errorMessage, isLoading } = useValidateLCD(
     chain.lcd,
     chain.chainID
   )
 
-  if (networkName !== network) {
+  if (networkName !== network || !["mainnet", "testnet"].includes(network)) {
     actions.chain(request, false)
     return null
   }
@@ -119,7 +121,16 @@ const ConfirmNewChain = (request: SuggestChainRequest) => {
                 children: t("Cancel"),
               },
               {
-                onClick: () => actions.chain(request, true),
+                onClick: () => {
+                  setCustomChains({
+                    ...customChains,
+                    [network]: {
+                      ...customChains[network],
+                      [chain.chainID]: { ...chain, isCustom: true },
+                    },
+                  })
+                  actions.chain(request, true)
+                },
                 children: t("Confirm"),
                 disabled: !isLoading && !!errorMessage,
               },
