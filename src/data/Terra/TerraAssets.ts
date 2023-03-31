@@ -47,6 +47,13 @@ export const useCW20Contracts = () => {
   return useTerraAssetsByNetwork<CW20Contracts>("cw20/contracts.json")
 }
 
+export const useMsgGrantAuthorization = (disabled = false) => {
+  return useTerraAssetsByNetwork<MsgGrantAuthorizations>(
+    "msgs/MsgGrantAuthorization.json",
+    disabled
+  )
+}
+
 export const useCW20Whitelist = (disabled = false) => {
   return useTerraAssetsByNetwork<CW20Whitelist>(
     "cw20/tokens.json",

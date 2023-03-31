@@ -12,7 +12,7 @@ import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
 import { isWallet, useAuth } from "auth"
 import { PasswordError } from "auth/scripts/keystore"
 import { getOpenURL, getStoredPassword } from "../storage"
-import { getIsDangerousTx, SignBytesRequest, TxRequest } from "../utils"
+import { useIsDangerousTx, SignBytesRequest, TxRequest } from "../utils"
 import { useRequest } from "../RequestContainer"
 import ExtensionPage from "../components/ExtensionPage"
 import ConfirmButtons from "../components/ConfirmButtons"
@@ -53,12 +53,13 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const [incorrect, setIncorrect] = useState<string>()
   const [submitting, setSubmitting] = useState(false)
 
-  const disabled =
-    "tx" in props && getIsDangerousTx(props.tx)
-      ? t("Dangerous tx")
-      : passwordRequired && !password
-      ? t("Enter password")
-      : ""
+  let isDangerousTx = useIsDangerousTx("tx" in props ? props.tx.msgs : [])
+
+  const disabled = isDangerousTx
+    ? t("Dangerous tx")
+    : passwordRequired && !password
+    ? t("Enter password")
+    : ""
 
   const navigate = useNavigate()
   const toPostMultisigTx = useToPostMultisigTx()

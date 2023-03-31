@@ -95,6 +95,14 @@ interface NativeTokenItem {
   token: CoinDenom
 }
 
+/* msgs: MsgGrantAuthorization */
+type MsgGrantAuthorizations = Record<TerraAddress, MsgGrantAuthorizationItem>
+interface MsgGrantAuthorizationItem {
+  url: string
+  types: string[]
+  msgs: string[]
+}
+
 /* cw20: pair */
 type CW20Pairs = Record<TerraAddress, PairDetails>
 type Dex = "terraswap" | "astroport"

@@ -1,8 +1,16 @@
-import { useCallback } from "react"
-import { CreateTxOptions, Fee, Msg, Tx } from "@terra-money/feather.js"
+import { useCallback, useEffect } from "react"
+import {
+  CreateTxOptions,
+  Fee,
+  GenericAuthorization,
+  Msg,
+  MsgGrantAuthorization,
+  Tx,
+} from "@terra-money/feather.js"
 import { useChainID, useNetwork } from "data/wallet"
 import { isNil } from "ramda"
 import extension from "extensionizer"
+import { useMsgGrantAuthorization } from "data/Terra/TerraAssets"
 
 /* primitive */
 export interface PrimitiveDefaultRequest {
@@ -134,11 +142,54 @@ export const getIsNativeMsgFromExternal = (origin: string) => {
   }
 }
 
-export const getIsDangerousTx = ({ msgs }: CreateTxOptions) =>
-  msgs.some((msg) => {
+export const useIsDangerousTx = (msgs: Msg[]) => {
+  let msgGrantType = "/cosmos.authz.v1beta1.MsgGrant"
+  let hasDangerous = msgs.some((msg) => {
     const data = msg.toData()
-    return data["@type"] === "/cosmos.authz.v1beta1.MsgGrant"
+    return data["@type"] === msgGrantType
   })
+
+  // only conditionally load the grant authorization when it has a dangerous tx
+  const { data: allowedGrants = {} } = useMsgGrantAuthorization(!hasDangerous)
+
+  if (hasDangerous) {
+    let genericAuthorizationType = "/cosmos.authz.v1beta1.GenericAuthorization"
+    hasDangerous = msgs.some((msg) => {
+      let data = msg.toData()
+      if (data["@type"] === msgGrantType) {
+        let msgGrant = data as MsgGrantAuthorization.Data
+        let allowedGrant =
+          allowedGrants[msgGrant.grantee] ?? allowedGrants[msgGrant.granter]
+
+        if (allowedGrant) {
+          let authorization = msgGrant.grant.authorization
+          let authorizationType = authorization["@type"]
+
+          if (!allowedGrant.types.includes(authorizationType)) {
+            return true
+          }
+
+          if (authorizationType === genericAuthorizationType) {
+            let genericAuth = authorization as GenericAuthorization.Data
+
+            if (!allowedGrant.msgs.includes(genericAuth.msg)) {
+              // if the msg is not whitelisted -> isDangerous
+              // example msgs: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward", "/cosmwasm.wasm.v1.MsgExecuteContract"
+              return true
+            }
+          }
+        } else {
+          // not whitelisted grant -> isDangerous
+          return true
+        }
+      }
+
+      return false
+    })
+  }
+
+  return hasDangerous
+}
 
 export async function incomingRequest() {
   // Requests from storage
