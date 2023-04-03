@@ -96,7 +96,14 @@ type AddWalletParams =
   | {
       words: { "330": string; "118"?: string }
       password: string
-      key: { "330": Buffer; "118"?: Buffer }
+      seed: Buffer
+      name: string
+      pubkey: { "330": string; "118"?: string }
+    }
+  | {
+      words: { "330": string; "118"?: string }
+      password: string
+      key: { "330": Buffer }
       name: string
       pubkey: { "330": string; "118"?: string }
     }
@@ -118,12 +125,15 @@ export const addWallet = (params: AddWalletParams) => {
   if (is.multisig(params) || is.ledger(params)) {
     storeWallets([...next, params])
   } else {
-    const { name, password, words, key, pubkey } = params
-    const encrypted = {
-      "330": encrypt(key["330"].toString("hex"), password),
-      "118": key["118"] && encrypt(key["118"].toString("hex"), password),
+    if ("seed" in params) {
+      const { name, password, words, seed, pubkey } = params
+      const encryptedSeed = encrypt(seed.toString("hex"), password)
+      storeWallets([...next, { name, words, encryptedSeed, pubkey }])
+    } else {
+      const { name, password, words, key, pubkey } = params
+      const encrypted = { "330": encrypt(key["330"].toString("hex"), password) }
+      storeWallets([...next, { name, words, encrypted, pubkey }])
     }
-    storeWallets([...next, { name, words, encrypted, pubkey }])
   }
 }
 
