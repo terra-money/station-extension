@@ -16,7 +16,8 @@ import { FIAT_RAMP, KADO_API_KEY } from "config/constants"
 import { Add as AddIcon, Send as SendIcon } from "@mui/icons-material"
 import classNames from "classnames"
 import qs from "qs"
-import { useAddress } from "data/wallet"
+import { useAddress, useNetwork } from "data/wallet"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
 
 const cx = classNames.bind(styles)
 
@@ -27,7 +28,8 @@ const NetWorth = () => {
   const { data: prices } = useExchangeRates()
   const readNativeDenom = useNativeDenoms()
   const { setRoute, route } = useWalletRoute()
-  const address = useAddress()
+  const addresses = useInterchainAddresses()
+  const network = useNetwork()
 
   // TODO: show CW20 balances and staked tokens
   const coinsValue = coins?.reduce((acc, { amount, denom }) => {
@@ -40,9 +42,10 @@ const NetWorth = () => {
     )
   }, 0)
 
+  if (!addresses) return
+
   const rampParams = {
     network: "Terra",
-    onToAddress: address,
     apiKey: KADO_API_KEY,
     product: "BUY",
     onRevCurrency: "USDC",
@@ -51,11 +54,15 @@ const NetWorth = () => {
     cryptoList: ["USDC"].join(","),
   }
 
+  const onToAddressMulti = Object.keys(addresses).map(
+    (key) => `${network[key].name}:${addresses[key]}`
+  )
+
   const kadoUrlParams = qs.stringify(rampParams)
 
   const openKadoWindow = () => {
     window.open(
-      `${FIAT_RAMP}?${kadoUrlParams}`,
+      `${FIAT_RAMP}?${kadoUrlParams}&onToAddressMulti=${onToAddressMulti}`,
       "_blank",
       "toolbar=yes,scrollbars=yes,resizable=yes,top=0,left=0,width=420,height=680"
     )
