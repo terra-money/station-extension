@@ -48,10 +48,12 @@ interface Params {
   password: string
 }
 
-interface Key {
-  "330": string
-  "118"?: string
-}
+type Key =
+  | {
+      "330": string
+      "118"?: string
+    }
+  | { seed: string }
 
 export const getDecryptedKey = ({
   name,
@@ -78,8 +80,8 @@ export const getDecryptedKey = ({
       // legacy
       const { privateKey: key } = JSON.parse(decrypt(wallet.wallet, password))
       return { "330": key as string }
-    } else {
-      return
+    } else if ("encryptedSeed" in wallet) {
+      return { seed: decrypt(wallet.encryptedSeed, password) }
     }
   } catch {
     throw new PasswordError("Incorrect password")
@@ -148,31 +150,44 @@ export const changePassword = (params: ChangePasswordParams) => {
   testPassword({ name, password: oldPassword })
   const key = getDecryptedKey({ name, password: oldPassword })
   if (!key) throw new Error("Key does not exist, cannot change password")
-  const encrypted = {
-    "330": encrypt(key["330"], newPassword),
-    "118": key["118"] && encrypt(key["118"], newPassword),
-  }
-  const wallets = getStoredWallets()
-  const next = wallets.map((wallet) => {
-    if (wallet.name === name) {
-      if ("address" in wallet) {
-        const { address } = wallet
-        return {
-          name,
-          words: {
-            "330": wordsFromAddress(address),
-          },
-          encrypted,
-        }
-      } else {
-        const { words } = wallet
-        return { name, words, encrypted }
-      }
-    }
-    return wallet
-  })
+  if ("seed" in key) {
+    const encryptedSeed = encrypt(key.seed, newPassword)
 
-  storeWallets(next)
+    const wallets = getStoredWallets()
+    const next = wallets.map((wallet) => {
+      if (wallet.name === name && "encryptedSeed" in wallet) {
+        const { words } = wallet
+        return { name, words, encryptedSeed }
+      }
+      return wallet
+    })
+    storeWallets(next)
+  } else {
+    const encrypted = {
+      "330": encrypt(key["330"], newPassword),
+      "118": key["118"] && encrypt(key["118"], newPassword),
+    }
+    const wallets = getStoredWallets()
+    const next = wallets.map((wallet) => {
+      if (wallet.name === name) {
+        if ("address" in wallet) {
+          const { address } = wallet
+          return {
+            name,
+            words: {
+              "330": wordsFromAddress(address),
+            },
+            encrypted,
+          }
+        } else {
+          const { words } = wallet
+          return { name, words, encrypted }
+        }
+      }
+      return wallet
+    })
+    storeWallets(next)
+  }
 }
 
 interface StorePubKeyParams {

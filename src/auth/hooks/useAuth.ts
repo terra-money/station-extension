@@ -127,6 +127,9 @@ const useAuth = () => {
     const { name, words } = getConnectedWallet()
     const key = getKey(password)
     if (!key) throw new PasswordError("Key do not exist")
+    // TODO: update key export
+    if ("seed" in key) throw new PasswordError("This key cannot be exported")
+
     const data = {
       name,
       address: addressFromWords(words["330"], "terra"),
