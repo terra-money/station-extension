@@ -11,6 +11,7 @@ export enum SettingKey {
   Theme = "Theme",
   Currency = "FiatCurrency",
   CustomNetworks = "CustomNetworks",
+  CustomChains = "CustomChains",
   GasAdjustment = "GasAdjustment", // Tx
   ClassicGasAdjustment = "ClassicGasAdjustment",
   AddressBook = "AddressBook", // Send
@@ -49,6 +50,11 @@ export const DefaultSettings = {
     symbol: "$",
   },
   [SettingKey.CustomNetworks]: [] as CustomNetwork[],
+  [SettingKey.CustomChains]: {
+    mainnet: {},
+    testnet: {},
+    classic: {},
+  } as Record<string, Record<string, InterchainNetwork>>,
   [SettingKey.GasAdjustment]: DEFAULT_GAS_ADJUSTMENT,
   [SettingKey.ClassicGasAdjustment]: CLASSIC_DEFAULT_GAS_ADJUSTMENT,
   [SettingKey.AddressBook]: [] as AddressBook[],
@@ -102,6 +108,13 @@ export const customLCDState = atom({
   ),
 })
 
+export const customChainsState = atom({
+  key: "customChains",
+  default: getLocalSetting<Record<string, Record<string, InterchainNetwork>>>(
+    SettingKey.CustomChains
+  ),
+})
+
 export const useShowWelcomeModal = () => {
   const { status } = useWallet()
   return (
@@ -130,6 +143,31 @@ export const useCustomLCDs = () => {
     setCustomLCDs(newLCDs)
   }
   return { customLCDs, changeCustomLCDs }
+}
+
+export const useCustomChains = () => {
+  const [customChains, setCustomChains] = useRecoilState(customChainsState)
+  return {
+    customChains,
+    setCustomChains: (
+      chains: Record<string, Record<string, InterchainNetwork>>
+    ) => {
+      setLocalSetting(SettingKey.CustomChains, chains)
+      setCustomChains(chains)
+    },
+    deleteCustomChain: (chainID: string) => {
+      const newChains = Object.fromEntries(
+        Object.entries(customChains).map(([key, value]) => [
+          key,
+          Object.fromEntries(
+            Object.entries(value).filter(([key]) => key !== chainID)
+          ),
+        ])
+      )
+      setLocalSetting(SettingKey.CustomChains, newChains)
+      setCustomChains(newChains)
+    },
+  }
 }
 
 export const useTokenFilters = () => {

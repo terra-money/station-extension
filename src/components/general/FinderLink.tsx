@@ -1,7 +1,7 @@
 import { ForwardedRef, HTMLAttributes, PropsWithChildren, useMemo } from "react"
 import { forwardRef } from "react"
 import classNames from "classnames"
-import { truncate } from "@terra.kitchen/utils"
+import { truncate } from "@terra-money/terra-utils"
 import {
   FINDER,
   MINTSCAN,

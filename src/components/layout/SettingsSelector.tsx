@@ -6,6 +6,8 @@ import { Tooltip } from "components/display"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import Flex from "./Flex"
 import styles from "./SettingsSelector.module.scss"
+import CloseIcon from "@mui/icons-material/Close"
+import { useCustomChains } from "utils/localStorage"
 
 const cx = classNames.bind(styles)
 interface Props {
@@ -17,6 +19,7 @@ interface Props {
 
 const SettingsSelector = ({ value, options, onChange, withSearch }: Props) => {
   const { t } = useTranslation()
+  const { deleteCustomChain } = useCustomChains()
 
   const selected = value
   const [openAcc, setOpenAcc] = useState(0)
@@ -26,7 +29,7 @@ const SettingsSelector = ({ value, options, onChange, withSearch }: Props) => {
     setOpenAcc(index === openAcc ? 0 : index)
   }
 
-  const { networks }: { networks: any } = useNetworks()
+  const { networks } = useNetworks()
 
   return (
     <div className={styles.wrapper}>
@@ -84,6 +87,17 @@ const SettingsSelector = ({ value, options, onChange, withSearch }: Props) => {
                           alt={networksOnSelection[network].name}
                         />
                         {networksOnSelection[network].name}
+                        {networksOnSelection[network].isCustom && (
+                          <button
+                            onClick={() =>
+                              deleteCustomChain(
+                                networksOnSelection[network].chainID
+                              )
+                            }
+                          >
+                            <CloseIcon style={{ width: 16 }} />
+                          </button>
+                        )}
                       </div>
                     )
                   })}
