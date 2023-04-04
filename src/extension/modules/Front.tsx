@@ -9,11 +9,12 @@ import ConfirmTx from "./ConfirmTx"
 import Welcome from "./Welcome"
 import Wallet from "pages/wallet/Wallet"
 import ConfirmPubkey from "./ConfirmPubkey"
+import ConfirmNewChain from "./ConfirmNewChain"
 
 const Front = () => {
   const { wallet, wallets } = useAuth()
   const { requests } = useRequest()
-  const { connect, tx, pubkey } = requests
+  const { connect, tx, pubkey, chain } = requests
 
   if (!wallet) {
     return (
@@ -34,6 +35,10 @@ const Front = () => {
     return <ConfirmPubkey origin={pubkey} />
   }
 
+  if (chain) {
+    return <ConfirmNewChain {...chain} />
+  }
+  
   if (tx) {
     return <ConfirmTx {...tx} />
   }

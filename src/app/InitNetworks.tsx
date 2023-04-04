@@ -2,7 +2,7 @@ import { PropsWithChildren, useEffect, useState } from "react"
 import axios from "axios"
 import { STATION_ASSETS } from "config/constants"
 import createContext from "utils/createContext"
-import { useCustomLCDs } from "utils/localStorage"
+import { useCustomChains, useCustomLCDs } from "utils/localStorage"
 import { useValidNetworks } from "data/queries/tendermint"
 import { WithFetching } from "components/feedback"
 import { combineState } from "data/query"
@@ -15,8 +15,27 @@ export const [useNetworks, NetworksProvider] = createContext<{
 }>("useNetworks")
 
 const InitNetworks = ({ children }: PropsWithChildren<{}>) => {
-  const [networks, setNetworks] = useState<InterchainNetworks>()
+  const [defaultNetworks, setNetworks] = useState<InterchainNetworks>()
   const { customLCDs } = useCustomLCDs()
+  const { customChains } = useCustomChains()
+
+  const networks = {
+    mainnet: {
+      ...customChains?.mainnet,
+      ...defaultNetworks?.mainnet,
+    },
+    testnet: {
+      ...customChains?.testnet,
+      ...defaultNetworks?.testnet,
+    },
+    classic: {
+      ...customChains?.classic,
+      ...defaultNetworks?.classic,
+    },
+    localterra: {
+      ...defaultNetworks?.localterra,
+    },
+  }
 
   useEffect(() => {
     const fetchChains = async () => {

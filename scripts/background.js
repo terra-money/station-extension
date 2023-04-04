@@ -200,6 +200,10 @@ const connectRemote = (remotePort) => {
         extension.storage.local.get(["connect", "wallet"], handleGetPubkey)
 
         break
+        
+      case "suggestChain":
+        handleRequest("suggestChain")
+        break
 
       case "sign":
         handleRequest("sign")
