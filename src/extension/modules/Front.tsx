@@ -38,7 +38,7 @@ const Front = () => {
   if (chain) {
     return <ConfirmNewChain {...chain} />
   }
-
+  
   if (tx) {
     return <ConfirmTx {...tx} />
   }

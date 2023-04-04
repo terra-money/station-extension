@@ -5,7 +5,7 @@ import {
   MsgSend,
   MsgTransfer,
 } from "@terra-money/feather.js"
-import { isDenom, toAmount } from "@terra.kitchen/utils"
+import { isDenom, toAmount } from "@terra-money/terra-utils"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { Form, FormItem, FormWarning, Input, Select } from "components/form"
 import ChainSelector from "components/form/ChainSelector"
@@ -61,7 +61,9 @@ const SendPage = () => {
   const balances = useBankBalance()
   const { data: prices } = useExchangeRates()
   const readNativeDenom = useNativeDenoms()
-  const { route } = useWalletRoute() as unknown as { route: { denom?: string } }
+  const { route } = useWalletRoute() as unknown as {
+    route: { denom?: string }
+  }
   const { setRoute } = useWalletRoute()
   const availableAssets = useMemo(
     () =>
@@ -104,12 +106,14 @@ const SendPage = () => {
     recipient,
     input,
     memo,
-    decimals,
     chain,
     address: destinationAddress,
     asset,
   } = watch()
-  const amount = toAmount(input, { decimals: decimals ?? 6 })
+
+  const decimals = asset ? readNativeDenom(asset).decimals : 6
+
+  const amount = toAmount(input, { decimals })
   const availableChains = useMemo(
     () =>
       availableAssets
