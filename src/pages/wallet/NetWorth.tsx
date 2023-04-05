@@ -10,13 +10,11 @@ import styles from "./NetWorth.module.scss"
 import { useWalletRoute, Path } from "./Wallet"
 import { capitalize } from "@mui/material"
 import NetWorthTooltip from "./NetWorthTooltip"
-import { ModalButton } from "components/feedback"
-import FiatRampModal from "./FiatRampModal"
 import { FIAT_RAMP, KADO_API_KEY } from "config/constants"
 import { Add as AddIcon, Send as SendIcon } from "@mui/icons-material"
 import classNames from "classnames"
 import qs from "qs"
-import { useAddress, useNetwork } from "data/wallet"
+import { useNetwork } from "data/wallet"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 
 const cx = classNames.bind(styles)
@@ -41,8 +39,11 @@ const NetWorth = () => {
         10 ** decimals
     )
   }, 0)
-
-  if (!addresses) return
+  const onToAddressMulti =
+    addresses &&
+    Object.keys(addresses)
+      .map((key) => `${network[key].name}:${addresses[key]}`)
+      .join(",")
 
   const rampParams = {
     network: "Terra",
@@ -52,17 +53,14 @@ const NetWorth = () => {
     networkList: ["TERRA", "OSMOSIS", "KUJIRA", "JUNO"].join(","),
     productList: ["BUY", "SELL"].join(","),
     cryptoList: ["USDC"].join(","),
+    onToAddressMulti,
   }
-
-  const onToAddressMulti = Object.keys(addresses).map(
-    (key) => `${network[key].name}:${addresses[key]}`
-  )
 
   const kadoUrlParams = qs.stringify(rampParams)
 
   const openKadoWindow = () => {
     window.open(
-      `${FIAT_RAMP}?${kadoUrlParams}&onToAddressMulti=${onToAddressMulti}`,
+      `${FIAT_RAMP}?${kadoUrlParams}`,
       "_blank",
       "toolbar=yes,scrollbars=yes,resizable=yes,top=0,left=0,width=420,height=680"
     )
