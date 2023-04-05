@@ -30,6 +30,7 @@ interface InterchainNetwork {
     }
   }
   isClassic?: boolean
+  isCustom?: boolean
 }
 
 interface TerraNetwork {

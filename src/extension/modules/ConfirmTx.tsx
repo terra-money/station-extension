@@ -147,7 +147,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
       </FlexColumn>
     </Overlay>
   ) : (
-    <ExtensionPage header={<OriginCard hostname={origin} />}>
+    <ExtensionPage header={<OriginCard hostname={props.origin} />}>
       <Grid gap={20}>
         {"tx" in props && <TxDetails {...props} />}
 
