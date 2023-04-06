@@ -1,5 +1,11 @@
 import { useCallback } from "react"
-import { CreateTxOptions, Fee, Msg, Tx } from "@terra-money/feather.js"
+import {
+  CreateTxOptions,
+  Fee,
+  Msg,
+  SignatureV2,
+  Tx,
+} from "@terra-money/feather.js"
 import { useChainID, useNetwork } from "data/wallet"
 import { isNil } from "ramda"
 import extension from "extensionizer"
@@ -48,6 +54,7 @@ export interface PrimitiveTxRequest
   chainID?: string
   fee?: string
   memo?: string
+  signMode?: SignatureV2.SignMode
 }
 
 export interface PrimitiveSignBytesRequest
@@ -78,6 +85,7 @@ export type RequestType = "sign" | "post" | "signBytes"
 export interface TxRequest extends DefaultRequest {
   tx: CreateTxOptions
   requestType: "sign" | "post"
+  signMode?: SignatureV2.SignMode
 }
 
 export interface SignBytesRequest extends DefaultRequest {
