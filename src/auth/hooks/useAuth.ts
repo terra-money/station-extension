@@ -205,16 +205,19 @@ const useAuth = () => {
     }
   }
 
-  const sign = async (txOptions: CreateTxOptions, password = "") => {
+  const sign = async (
+    txOptions: CreateTxOptions,
+    password = "",
+    signMode?: SignatureV2.SignMode
+  ) => {
     if (!wallet) throw new Error("Wallet is not defined")
 
     if (is.ledger(wallet)) {
       const key = await getLedgerKey(networks[txOptions.chainID].coinType)
       const wallet = lcd.wallet(key)
-      const signMode = SignatureV2.SignMode.SIGN_MODE_LEGACY_AMINO_JSON
       return await wallet.createAndSignTx({
         ...txOptions,
-        signMode,
+        signMode: SignatureV2.SignMode.SIGN_MODE_LEGACY_AMINO_JSON,
       })
     } /*else if (is.preconfigured(wallet)) {
       const key = new MnemonicKey({ mnemonic: wallet.mnemonic })
@@ -227,7 +230,7 @@ const useAuth = () => {
         Buffer.from(pk[networks[txOptions.chainID].coinType] ?? "", "hex")
       )
       const wallet = lcd.wallet(key)
-      return await wallet.createAndSignTx(txOptions)
+      return await wallet.createAndSignTx({ ...txOptions, signMode })
     }
   }
 
@@ -250,9 +253,13 @@ const useAuth = () => {
     }
   }
 
-  const post = async (txOptions: CreateTxOptions, password = "") => {
+  const post = async (
+    txOptions: CreateTxOptions,
+    password = "",
+    signMode?: SignatureV2.SignMode
+  ) => {
     if (!wallet) throw new Error("Wallet is not defined")
-    const signedTx = await sign(txOptions, password)
+    const signedTx = await sign(txOptions, password, signMode)
     const result = await lcd.tx.broadcastSync(signedTx, txOptions.chainID)
     if (isTxError(result)) throw new Error(result.raw_log)
     return result
