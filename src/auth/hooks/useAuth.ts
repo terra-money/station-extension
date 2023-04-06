@@ -213,8 +213,8 @@ const useAuth = () => {
       const wallet = lcd.wallet(key)
       const signMode = SignatureV2.SignMode.SIGN_MODE_LEGACY_AMINO_JSON
       return await wallet.createAndSignTx({
-        ...txOptions,
         signMode,
+        ...txOptions,
       })
     } /*else if (is.preconfigured(wallet)) {
       const key = new MnemonicKey({ mnemonic: wallet.mnemonic })
