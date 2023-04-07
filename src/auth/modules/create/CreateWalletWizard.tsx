@@ -69,7 +69,7 @@ const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
       "118": mk118.publicKey.key,
     }
 
-    addWallet({ name, password, words, seed, pubkey })
+    addWallet({ name, password, words, seed, pubkey, index })
     setCreatedWallet({ name, words, pubkey })
     setStep(3)
   }

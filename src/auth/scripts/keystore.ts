@@ -100,6 +100,7 @@ type AddWalletParams =
       password: string
       seed: Buffer
       name: string
+      index: number
       pubkey: { "330": string; "118"?: string }
     }
   | {
@@ -128,9 +129,9 @@ export const addWallet = (params: AddWalletParams) => {
     storeWallets([...next, params])
   } else {
     if ("seed" in params) {
-      const { name, password, words, seed, pubkey } = params
+      const { name, password, words, seed, pubkey, index } = params
       const encryptedSeed = encrypt(seed.toString("hex"), password)
-      storeWallets([...next, { name, words, encryptedSeed, pubkey }])
+      storeWallets([...next, { name, words, encryptedSeed, pubkey, index }])
     } else {
       const { name, password, words, key, pubkey } = params
       const encrypted = { "330": encrypt(key["330"].toString("hex"), password) }
@@ -156,8 +157,8 @@ export const changePassword = (params: ChangePasswordParams) => {
     const wallets = getStoredWallets()
     const next = wallets.map((wallet) => {
       if (wallet.name === name && "encryptedSeed" in wallet) {
-        const { words } = wallet
-        return { name, words, encryptedSeed }
+        const { words, index } = wallet
+        return { name, words, encryptedSeed, index }
       }
       return wallet
     })

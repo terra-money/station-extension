@@ -58,6 +58,7 @@ interface InterchainStoredWallet extends SingleWallet {
 
 interface SeedStoredWallet extends SingleWallet {
   encryptedSeed: string
+  index: number
 }
 
 // legacy types (pre-interchain)
