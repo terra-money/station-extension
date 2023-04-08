@@ -27,6 +27,7 @@ const SelectAddress = () => {
 
   /* query */
   const { data: results } = useQuery(
+    // FIXME: remove mnemonic from this array
     ["mnemonic", seed, index],
     async () => {
       const results = await Promise.allSettled(

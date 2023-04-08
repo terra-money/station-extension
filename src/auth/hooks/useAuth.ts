@@ -194,8 +194,8 @@ const useAuth = () => {
       if ("seed" in pk) {
         const key = new SeedKey({
           seed: Buffer.from(pk.seed, "hex"),
-          coinType: parseInt(networks[chainID].coinType),
-          index: ("index" in wallet && wallet.index) || 0,
+          coinType: pk.legacy ? 118 : parseInt(networks[chainID].coinType),
+          index: pk.index || 0,
         })
         return await key.createSignatureAmino(doc)
       } else {
@@ -222,8 +222,8 @@ const useAuth = () => {
       if ("seed" in pk) {
         const key = new SeedKey({
           seed: Buffer.from(pk.seed, "hex"),
-          coinType: parseInt(coinType),
-          index: ("index" in wallet && wallet.index) || 0,
+          coinType: pk.legacy ? 118 : parseInt(coinType),
+          index: pk.index || 0,
         })
         // @ts-expect-error
         return await key.publicKey.key
@@ -254,8 +254,10 @@ const useAuth = () => {
       if ("seed" in pk) {
         const key = new SeedKey({
           seed: Buffer.from(pk.seed, "hex"),
-          coinType: parseInt(networks[txOptions.chainID].coinType),
-          index: ("index" in wallet && wallet.index) || 0,
+          coinType: pk.legacy
+            ? 118
+            : parseInt(networks[txOptions.chainID].coinType),
+          index: pk.index || 0,
         })
         const w = lcd.wallet(key)
         return await w.createAndSignTx(txOptions)
@@ -283,8 +285,8 @@ const useAuth = () => {
       if ("seed" in pk) {
         const key = new SeedKey({
           seed: Buffer.from(pk.seed, "hex"),
-          coinType: 330,
-          index: ("index" in wallet && wallet.index) || 0,
+          coinType: pk.legacy ? 118 : 330,
+          index: pk.index || 0,
         })
         const { signature, recid } = key.ecdsaSign(bytes)
         if (!signature) throw new Error("Signature is undefined")

@@ -53,7 +53,7 @@ type Key =
       "330": string
       "118"?: string
     }
-  | { seed: string }
+  | { seed: string; index: number; legacy: boolean }
 
 export const getDecryptedKey = ({
   name,
@@ -81,7 +81,11 @@ export const getDecryptedKey = ({
       const { privateKey: key } = JSON.parse(decrypt(wallet.wallet, password))
       return { "330": key as string }
     } else if ("encryptedSeed" in wallet) {
-      return { seed: decrypt(wallet.encryptedSeed, password) }
+      return {
+        seed: decrypt(wallet.encryptedSeed, password),
+        index: wallet.index,
+        legacy: wallet.legacy,
+      }
     }
   } catch {
     throw new PasswordError("Incorrect password")
@@ -101,6 +105,7 @@ type AddWalletParams =
       seed: Buffer
       name: string
       index: number
+      legacy: boolean
       pubkey: { "330": string; "118"?: string }
     }
   | {
@@ -129,9 +134,12 @@ export const addWallet = (params: AddWalletParams) => {
     storeWallets([...next, params])
   } else {
     if ("seed" in params) {
-      const { name, password, words, seed, pubkey, index } = params
+      const { name, password, words, seed, pubkey, index, legacy } = params
       const encryptedSeed = encrypt(seed.toString("hex"), password)
-      storeWallets([...next, { name, words, encryptedSeed, pubkey, index }])
+      storeWallets([
+        ...next,
+        { name, words, encryptedSeed, pubkey, index, legacy },
+      ])
     } else {
       const { name, password, words, key, pubkey } = params
       const encrypted = { "330": encrypt(key["330"].toString("hex"), password) }
@@ -157,8 +165,8 @@ export const changePassword = (params: ChangePasswordParams) => {
     const wallets = getStoredWallets()
     const next = wallets.map((wallet) => {
       if (wallet.name === name && "encryptedSeed" in wallet) {
-        const { words, index } = wallet
-        return { name, words, encryptedSeed, index }
+        const { words, index, legacy } = wallet
+        return { name, words, encryptedSeed, index, legacy }
       }
       return wallet
     })
