@@ -9,7 +9,12 @@ type StoredWallet =
   | StoredWalletLegacy
   | MultisigWallet
   | LedgerWallet
-type ResultStoredWallet = LegacyStoredWallet | MultisigWallet | StoredWallet
+  | SeedStoredWallet
+type ResultStoredWallet =
+  | LegacyStoredWallet
+  | MultisigWallet
+  | StoredWallet
+  | SeedStoredWallet
 
 // interchain types
 interface SingleWallet {
@@ -49,6 +54,12 @@ interface InterchainStoredWallet extends SingleWallet {
     "330": string
     "118"?: string
   }
+}
+
+interface SeedStoredWallet extends SingleWallet {
+  encryptedSeed: string
+  index: number
+  legacy: boolean
 }
 
 // legacy types (pre-interchain)
