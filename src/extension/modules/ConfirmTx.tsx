@@ -66,7 +66,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
     setSubmitting(true)
 
     if ("tx" in props) {
-      const { requestType, tx } = props
+      const { requestType, tx, signMode } = props
       const txOptions = tx
 
       try {
@@ -80,7 +80,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
           if (openURL) openURL()
           else navigate({ pathname, search })
         } else {
-          const result = await auth[requestType](txOptions, password)
+          const result = await auth[requestType](txOptions, password, signMode)
           const response = { result, success: true }
           actions.tx(requestType, props, response, nextPassword)
         }

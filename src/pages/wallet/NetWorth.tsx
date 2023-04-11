@@ -10,6 +10,14 @@ import styles from "./NetWorth.module.scss"
 import { useWalletRoute, Path } from "./Wallet"
 import { capitalize } from "@mui/material"
 import NetWorthTooltip from "./NetWorthTooltip"
+import { FIAT_RAMP, KADO_API_KEY } from "config/constants"
+import { Add as AddIcon, Send as SendIcon } from "@mui/icons-material"
+import classNames from "classnames"
+import qs from "qs"
+import { useNetwork } from "data/wallet"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
+
+const cx = classNames.bind(styles)
 
 const NetWorth = () => {
   const { t } = useTranslation()
@@ -18,6 +26,8 @@ const NetWorth = () => {
   const { data: prices } = useExchangeRates()
   const readNativeDenom = useNativeDenoms()
   const { setRoute, route } = useWalletRoute()
+  const addresses = useInterchainAddresses()
+  const network = useNetwork()
 
   // TODO: show CW20 balances and staked tokens
   const coinsValue = coins?.reduce((acc, { amount, denom }) => {
@@ -29,6 +39,32 @@ const NetWorth = () => {
         10 ** decimals
     )
   }, 0)
+  const onToAddressMulti =
+    addresses &&
+    Object.keys(addresses)
+      .map((key) => `${network[key].name}:${addresses[key]}`)
+      .join(",")
+
+  const rampParams = {
+    network: "Terra",
+    apiKey: KADO_API_KEY,
+    product: "BUY",
+    onRevCurrency: "USDC",
+    networkList: ["TERRA", "OSMOSIS", "KUJIRA", "JUNO"].join(","),
+    productList: ["BUY", "SELL"].join(","),
+    cryptoList: ["USDC"].join(","),
+    onToAddressMulti,
+  }
+
+  const kadoUrlParams = qs.stringify(rampParams)
+
+  const openKadoWindow = () => {
+    window.open(
+      `${FIAT_RAMP}?${kadoUrlParams}`,
+      "_blank",
+      "toolbar=yes,scrollbars=yes,resizable=yes,top=0,left=0,width=420,height=680"
+    )
+  }
 
   return (
     <article className={styles.networth}>
@@ -40,27 +76,39 @@ const NetWorth = () => {
         <Read amount={coinsValue} decimals={0} fixed={2} denom="" token="" />
       </h1>
       <div className={styles.networth__buttons}>
-        <Button
-          color="primary"
-          onClick={() =>
-            setRoute({
-              path: Path.send,
-              previusPage: route,
-            })
-          }
-        >
-          {capitalize(t("Send"))}
-        </Button>
-        <Button
-          onClick={() =>
-            setRoute({
-              path: Path.receive,
-              previusPage: route,
-            })
-          }
-        >
-          {capitalize(t("receive"))}
-        </Button>
+        <div className={styles.button__wrapper}>
+          <Button
+            color="primary"
+            onClick={() =>
+              setRoute({
+                path: Path.send,
+                previousPage: route,
+              })
+            }
+          >
+            <SendIcon className={cx(styles.icon, styles.send)} />
+          </Button>
+          <h3>{capitalize(t("send"))}</h3>
+        </div>
+        <div className={styles.button__wrapper}>
+          <Button
+            onClick={() =>
+              setRoute({
+                path: Path.receive,
+                previousPage: route,
+              })
+            }
+          >
+            <SendIcon className={cx(styles.icon, styles.receive)} />
+          </Button>
+          <h3>{capitalize(t("receive"))}</h3>
+        </div>
+        <div className={styles.button__wrapper}>
+          <Button onClick={openKadoWindow}>
+            <AddIcon className={styles.icon} />
+          </Button>
+          <h2>{t(capitalize("buy"))}</h2>
+        </div>
       </div>
     </article>
   )

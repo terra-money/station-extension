@@ -75,12 +75,14 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
             ...parseDefault(postRequest),
             tx: parseTx(postRequest),
             requestType: "post",
+            signMode: postRequest.signMode,
           })
         } else if (signRequest) {
           setTx({
             ...parseDefault(signRequest),
             tx: parseTx(signRequest),
             requestType: "sign",
+            signMode: signRequest.signMode,
           })
         } else if (bytesRequest) {
           setTx({
