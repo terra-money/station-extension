@@ -214,7 +214,8 @@ const useAuth = () => {
 
     if (is.ledger(wallet)) {
       const key = await getLedgerKey(coinType)
-      return await key.publicKey
+      // @ts-expect-error
+      return key.publicKey.key
     } else {
       const pk = getKey(password)
       if (!pk) throw new PasswordError("Incorrect password")
@@ -226,12 +227,12 @@ const useAuth = () => {
           index: pk.index || 0,
         })
         // @ts-expect-error
-        return await key.publicKey.key
+        return key.publicKey.key
       } else {
         if (!pk[coinType]) throw new PasswordError("Incorrect password")
         const key = new RawKey(Buffer.from(pk[coinType] ?? "", "hex"))
         // @ts-expect-error
-        return await key.publicKey.key
+        return key.publicKey.key
       }
     }
   }
