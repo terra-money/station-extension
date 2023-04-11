@@ -64,9 +64,9 @@ const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
     }
     const pubkey = {
       // @ts-expect-error
-      "330": mk330.publicKey.key,
+      "330": key330.publicKey.key,
       // @ts-expect-error
-      "118": mk118.publicKey.key,
+      "118": key118.publicKey.key,
     }
 
     addWallet({
