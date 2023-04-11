@@ -3,7 +3,11 @@ import extension from "extensionizer"
 import { isNil, uniq, update } from "ramda"
 import createContext from "utils/createContext"
 import encrypt from "auth/scripts/encrypt"
-import { ExtensionStorage, PrimitiveDefaultRequest } from "./utils"
+import {
+  ExtensionStorage,
+  PrimitiveDefaultRequest,
+  SuggestChainRequest,
+} from "./utils"
 import { ConnectRequest, RequestType, TxRequest } from "./utils"
 import { SignBytesRequest, TxResponse } from "./utils"
 import { isBytes, isSign } from "./utils"
@@ -15,6 +19,7 @@ interface RequestContext {
     connect?: ConnectRequest
     tx?: TxRequest | SignBytesRequest
     pubkey?: string
+    chain?: SuggestChainRequest
   }
   actions: {
     connect: (origin: string, allow: boolean) => void
@@ -26,6 +31,7 @@ interface RequestContext {
     ) => void
     multisigTx: (request: PrimitiveDefaultRequest) => void
     pubkey: () => void
+    chain: (request: SuggestChainRequest, success: boolean) => void
   }
 }
 
@@ -35,6 +41,7 @@ export const [useRequest, RequestProvider] =
 const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
   const [connect, setConnect] = useState<ConnectRequest>()
   const [pubkey, setPubkey] = useState<string>()
+  const [chain, setChain] = useState<SuggestChainRequest>()
   const [tx, setTx] = useState<TxRequest | SignBytesRequest>()
   const parseTx = useParseTx()
   const networks = useNetwork()
@@ -44,7 +51,7 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
     // Requests from storage
     // except for that is already success or failure
     extension.storage?.local.get(
-      ["connect", "pubkey", "post", "sign"],
+      ["connect", "pubkey", "post", "sign", "suggestChain"],
       (storage: ExtensionStorage) => {
         const { connect = { allowed: [], request: [] } } = storage
         const { sign = [], post = [] } = storage
@@ -53,11 +60,16 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
         const postRequest = post.find(({ success }) => isNil(success))
         const signRequest = signRequests.find(isSign)
         const bytesRequest = signRequests.find(isBytes)
+        const suggestChainRequest = storage.suggestChain?.filter(
+          ({ success }) => isNil(success)
+        )[0]
 
         if (connectRequest) {
           setConnect({ origin: connectRequest })
         } else if (storage.pubkey) {
           setPubkey(storage.pubkey)
+        } else if (suggestChainRequest) {
+          setChain(suggestChainRequest)
         } else if (postRequest) {
           setTx({
             ...parseDefault(postRequest),
@@ -112,6 +124,23 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
     )
   }
 
+  /* suggestChain */
+  const handleSuggestChain: RequestContext["actions"]["chain"] = (
+    request,
+    success
+  ) => {
+    // Store response on storage
+    const type = "suggestChain"
+    extension.storage?.local.get([type], (storage: ExtensionStorage) => {
+      const list = storage[type] || []
+      const index = list.findIndex(
+        ({ id, origin }) => id === request.id && origin === request.origin
+      )
+      const next = update(index, { ...list[index], success }, list)
+      extension.storage?.local.set({ [type]: next }, () => setChain(undefined))
+    })
+  }
+
   /* post | sign */
   const handleTx: RequestContext["actions"]["tx"] = (
     requestType,
@@ -156,12 +185,13 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
   }
 
   /* context */
-  const requests = { connect, pubkey, tx }
+  const requests = { connect, pubkey, tx, chain }
   const actions = {
     connect: handleConnect,
     tx: handleTx,
     multisigTx: handleMultisigTx,
     pubkey: handlePubkey,
+    chain: handleSuggestChain,
   }
 
   return (

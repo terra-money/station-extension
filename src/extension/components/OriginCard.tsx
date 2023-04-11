@@ -61,6 +61,7 @@ const OriginCard = ({ hostname }: Props) => {
           src={metadata.faviconUrl}
           alt={metadata.title ?? hostname}
           className={styles.icon}
+          onError={() => setMetadata((m) => ({ ...m, faviconUrl: undefined }))}
         />
       )}
       <div className={styles.details}>
