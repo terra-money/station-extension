@@ -125,12 +125,24 @@ export const useParseTx = () => {
     (request: PrimitiveTxRequest): TxRequest["tx"] => {
       const { msgs, fee, memo, chainID } = request
       const isProto = "@type" in JSON.parse(msgs[0])
+      const shouldOverrideClassic =
+        isProto &&
+        msgs.some((msg) => {
+          const parsed = JSON.parse(msg)
+          return (
+            parsed["@type"] === "/cosmwasm.wasm.v1.MsgExecuteContract" &&
+            parsed.msg
+          )
+        })
+
       return isProto
         ? {
             msgs: msgs.map((msg) =>
               Msg.fromData(
                 JSON.parse(msg),
-                networks[chainID ?? defaultChainID].isClassic
+                shouldOverrideClassic
+                  ? false
+                  : networks[chainID ?? defaultChainID].isClassic
               )
             ),
             fee: fee ? Fee.fromData(JSON.parse(fee)) : undefined,
