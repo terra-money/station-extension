@@ -100,7 +100,7 @@ function setupEvents() {
   }
 
   extension.storage.local.get(["connect"], ({ connect }) => {
-    const isAllowed = connect.allowed.includes(window.location.origin)
+    const isAllowed = ((connect && connect.allowed) || []).includes(window.location.origin)
 
     if (isAllowed) {
       extension.storage.onChanged.addListener(createEvent)
