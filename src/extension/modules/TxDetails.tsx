@@ -16,7 +16,7 @@ const TxDetails = ({ origin, timestamp, tx }: TxRequest) => {
 
   const fees = fee?.amount.toData()
   const contents = [
-    { title: t("Network"), content: `${network[chainID]?.name} (${chainID})` },
+    { title: t("Network"), content: `${network[chainID].name} (${chainID})` },
     { title: t("Origin"), content: origin },
     { title: t("Timestamp"), content: <ToNow update>{timestamp}</ToNow> },
     { title: t("Fee"), content: fees && <ReadMultiple list={fees} /> },
