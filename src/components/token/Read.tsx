@@ -100,10 +100,10 @@ export const ReadPercent = forwardRef(
 
     return (
       <span className={styles.component} ref={ref}>
-        {integer.replace(/\B(?=(\d{3})+(?!\d))/g, "'")}
+        {(integer ?? "0").replace(/\B(?=(\d{3})+(?!\d))/g, "'")}
         {decimal && (
           <>
-            <span className={cx({ small: Number(integer) })}>
+            <span className={cx({ small: Number(integer ?? "0") })}>
               {decimal && `.${decimal}`}
             </span>
             <span className={styles.small}>%</span>
