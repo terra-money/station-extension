@@ -12,10 +12,12 @@ interface ManifestResult {
 }
 
 async function getIconAndTitle(hostname: string): Promise<ManifestResult> {
+  const baseUrl =
+    hostname.startsWith("https://") || hostname.startsWith("http://")
+      ? hostname
+      : `https://${hostname}`
   try {
-    const { data: manifest } = await axios.get(
-      `https://${hostname}/manifest.json`
-    )
+    const { data: manifest } = await axios.get(`${baseUrl}/manifest.json`)
 
     const title = manifest.name ?? manifest.short_name
     let faviconUrl
@@ -27,8 +29,8 @@ async function getIconAndTitle(hostname: string): Promise<ManifestResult> {
 
       // If the URL is relative, make it absolute
       if (!faviconUrl.startsWith("http")) {
-        const baseUrl = new URL(`https://${hostname}`)
-        faviconUrl = new URL(faviconUrl, baseUrl).href
+        const url = new URL(baseUrl)
+        faviconUrl = new URL(faviconUrl, url).href
       }
     }
 
