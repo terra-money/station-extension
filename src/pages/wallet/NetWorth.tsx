@@ -16,6 +16,7 @@ import classNames from "classnames"
 import qs from "qs"
 import { useNetwork } from "data/wallet"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { useNetworkName } from "data/wallet"
 
 const cx = classNames.bind(styles)
 
@@ -28,6 +29,7 @@ const NetWorth = () => {
   const { setRoute, route } = useWalletRoute()
   const addresses = useInterchainAddresses()
   const network = useNetwork()
+  const networkName = useNetworkName()
 
   // TODO: show CW20 balances and staked tokens
   const coinsValue = coins?.reduce((acc, { amount, denom }) => {
@@ -103,12 +105,14 @@ const NetWorth = () => {
           </Button>
           <h3>{capitalize(t("receive"))}</h3>
         </div>
-        <div className={styles.button__wrapper}>
-          <Button onClick={openKadoWindow}>
-            <AddIcon className={styles.icon} />
-          </Button>
-          <h2>{t(capitalize("buy"))}</h2>
-        </div>
+        {networkName === "mainnet" && (
+          <div className={styles.button__wrapper}>
+            <Button onClick={openKadoWindow}>
+              <AddIcon className={styles.icon} />
+            </Button>
+            <h2>{t(capitalize("buy"))}</h2>
+          </div>
+        )}
       </div>
     </article>
   )
