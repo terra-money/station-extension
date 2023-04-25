@@ -28,7 +28,10 @@ async function getIconAndTitle(hostname: string): Promise<ManifestResult> {
       faviconUrl = icon.src
 
       // If the URL is relative, make it absolute
-      if (!faviconUrl.startsWith("http")) {
+      if (
+        !faviconUrl.startsWith("https://") &&
+        !faviconUrl.startsWith("http://")
+      ) {
         const url = new URL(baseUrl)
         faviconUrl = new URL(faviconUrl, url).href
       }
