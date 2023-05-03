@@ -45,6 +45,7 @@ const CreateWalletForm = () => {
       <FormItem label={t("Password")} error={errors.password?.message}>
         <Input
           {...register("password", { validate: validate.password })}
+          onChange={() => form.trigger("confirm")}
           type="password"
         />
       </FormItem>
