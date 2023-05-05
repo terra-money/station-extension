@@ -21,13 +21,13 @@
 .details {
   h2 {
     font-size: 16pt;
-    font-weight: 500;
+    font-weight: var(--bold);
     color: var(--text);
   }
 
   p {
     font-size: 11pt;
-    font-weight: 500;
+    font-weight: var(--bold);
     color: var(--button-primary-bg);
   }
 }
