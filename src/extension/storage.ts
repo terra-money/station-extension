@@ -14,9 +14,12 @@ export const storeNetwork = (
 export const storeWalletAddress = (
   address: AccAddress,
   addresses: Record<ChainID, AccAddress>,
+  ledger?: boolean,
   pubkey?: { "330": string; "118"?: string }
 ) => {
-  extension.storage?.local.set({ wallet: { address, addresses, pubkey } })
+  extension.storage?.local.set({
+    wallet: { address, addresses, ledger, pubkey },
+  })
 }
 
 export const clearWalletAddress = () => {
