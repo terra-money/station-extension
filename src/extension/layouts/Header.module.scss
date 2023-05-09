@@ -2,8 +2,8 @@
 
 .header {
   @include flex(space-between);
-  background: var(--extension-bg);
-  color: var(--extension-text);
+  background: var(--menu-bg);
+  color: var(--text);
   border-bottom: var(--border-width) solid var(--card-border);
   padding: 10px;
   height: var(--header-height);

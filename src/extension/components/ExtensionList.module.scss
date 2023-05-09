@@ -8,17 +8,18 @@
   @include flex(space-between);
 
   color: var(--text);
-  padding: 16px 20px;
+  padding: 14px 16px;
   text-align: left;
   transition: var(--transition);
   width: 100%;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 
   border: var(--border-width) solid var(--card-border);
   border-radius: var(--border-radius);
+  background-color: var(--card-bg);
 
   &:hover {
-    background: var(--card-bg-muted);
+    background: var(--bg-muted);
     text-decoration: none;
   }
 }
