@@ -325,6 +325,12 @@ const SendPage = () => {
         : 1,
   }
 
+  useEffect(() => {
+    if (chain && recipient) {
+      trigger("recipient")
+    }
+  }, [chain, trigger, recipient])
+
   return (
     // @ts-expect-error
     <Tx {...tx}>
