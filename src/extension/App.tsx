@@ -21,6 +21,8 @@ import { useInterchainAddresses, usePubkey } from "auth/hooks/useAddress"
 import { Flex } from "components/layout"
 import NetworkStatus from "components/display/NetworkStatus"
 import Preferences from "app/sections/Preferences"
+import { useAuth } from "auth"
+import is from "auth/scripts/is"
 
 const App = () => {
   const network = useNetwork()
@@ -29,15 +31,17 @@ const App = () => {
   const address = useAddress()
   const pubkey = usePubkey()
   const addresses = useInterchainAddresses()
+  const { wallet } = useAuth()
 
   useEffect(() => {
     storeNetwork({ ...network[chainID], name }, network)
   }, [network, chainID, name])
 
   useEffect(() => {
-    if (address) storeWalletAddress(address, addresses ?? {}, pubkey)
+    if (address)
+      storeWalletAddress(address, addresses ?? {}, is.ledger(wallet), pubkey)
     else clearWalletAddress()
-  }, [address, addresses, pubkey])
+  }, [address, addresses, pubkey, wallet])
 
   const routes = useRoutes([
     { path: "/networks", element: <ManageNetworks /> },
