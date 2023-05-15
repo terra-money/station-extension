@@ -87,6 +87,15 @@ function setupEvents() {
         window.dispatchEvent(event)
       }
       if (
+        changes.wallet &&
+        changes.wallet.oldValue.theme !== changes.wallet.newValue.theme
+      ) {
+        const event = new CustomEvent("station_theme_change", {
+          detail: changes.wallet.newValue.theme,
+        })
+        window.dispatchEvent(event)
+      }
+      if (
         changes.networkName &&
         changes.networkName.oldValue !== changes.networkName.newValue
       ) {

@@ -24,6 +24,7 @@ import Preferences from "app/sections/Preferences"
 import { useAuth } from "auth"
 import is from "auth/scripts/is"
 import { useNetworks } from "app/InitNetworks"
+import { useTheme } from "data/settings/Theme"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -32,6 +33,7 @@ const App = () => {
   const address = useAddress()
   const pubkey = usePubkey()
   const addresses = useAllInterchainAddresses()
+  const { name: theme } = useTheme()
   const { wallet } = useAuth()
 
   useEffect(() => {
@@ -40,13 +42,15 @@ const App = () => {
 
   useEffect(() => {
     if (address)
-      storeWalletAddress(
+      storeWalletAddress({
         address,
-        addresses ?? {},
-        wallet?.name,
-        is.ledger(wallet),
-        pubkey
-      )
+        addresses: addresses ?? {},
+        name: wallet?.name,
+        ledger: is.ledger(wallet),
+        pubkey,
+        network: name,
+        theme,
+      })
     else clearWalletAddress()
   }, [address, addresses, pubkey, wallet])
 
