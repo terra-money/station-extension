@@ -16,6 +16,16 @@
   background: var(--card-bg-muted);
 }
 
+.twoTone {
+  .header {
+    border-bottom: var(--border-width) solid var(--card-border);
+  }
+
+  .main {
+    background-color: var(--card-bg-muted);
+  }
+}
+
 // as a button
 .link,
 .button {
