@@ -18,6 +18,13 @@ import ExtensionPage from "../components/ExtensionPage"
 import ConfirmButtons from "../components/ConfirmButtons"
 import TxDetails from "./TxDetails"
 import OriginCard from "extension/components/OriginCard"
+import { RefetchOptions, queryKey } from "data/query"
+import { useQuery } from "react-query"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { useNetwork } from "data/wallet"
+import { useInterchainLCDClient } from "data/queries/lcdClient"
+import { Fee } from "@terra-money/feather.js"
+import { es } from "date-fns/locale"
 
 interface Values {
   password: string
@@ -29,6 +36,9 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const { wallet, ...auth } = useAuth()
   const { actions } = useRequest()
   const passwordRequired = isWallet.single(wallet)
+  const addresses = useInterchainAddresses()
+  const network = useNetwork()
+  const lcd = useInterchainLCDClient()
 
   /* form */
   const form = useForm<Values>({
@@ -60,6 +70,44 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
       ? t("Enter password")
       : ""
 
+  const { data: estimatedGas, ...estimatedGasState } = useQuery(
+    [queryKey.tx.create, props],
+    async () => {
+      if (!("tx" in props)) return 0
+      const { tx } = props
+
+      try {
+        if (!addresses || !addresses[tx.chainID] || !network[tx.chainID])
+          return 0
+        const { baseAsset, gasPrices } = network[tx.chainID]
+
+        const feeDenom =
+          baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices)[0]
+
+        const unsignedTx = await lcd.tx.create(
+          [{ address: addresses[tx.chainID] }],
+          {
+            ...tx,
+            feeDenoms: [feeDenom],
+          }
+        )
+
+        return unsignedTx.auth_info.fee.gas_limit
+      } catch (error) {
+        console.error(error)
+        return 200_000
+      }
+    },
+    {
+      ...RefetchOptions.INFINITY,
+      // To handle sequence mismatch
+      retry: 3,
+      retryDelay: 1000,
+      refetchOnWindowFocus: false,
+      enabled: "tx" in props && !props.tx.fee?.gas_limit,
+    }
+  )
+
   const navigate = useNavigate()
   const toPostMultisigTx = useToPostMultisigTx()
   const submit = async ({ password }: Values) => {
@@ -69,6 +117,15 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
       const { requestType, tx, signMode } = props
       const txOptions = tx
 
+      if (!txOptions.fee?.gas_limit && network[tx.chainID]) {
+        const { baseAsset, gasPrices, gasAdjustment } = network[tx.chainID]
+        const gas = (estimatedGas ?? 0) * gasAdjustment
+
+        const feeDenom =
+          baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices)[0]
+
+        txOptions.fee = new Fee(gas, { [feeDenom]: gasPrices[feeDenom] * gas })
+      }
       try {
         if (disabled) throw new Error(disabled)
 
@@ -138,6 +195,17 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
 
   const SIZE = { width: 100, height: 100 }
   const label = props.requestType === "post" ? t("Post") : t("Sign")
+
+  if (estimatedGasState.isLoading) {
+    return (
+      <Overlay>
+        <FlexColumn gap={20}>
+          <img {...SIZE} src={animation} alt={t("Estimating fees...")} />
+          <p>{t("Estimating fees...")}</p>
+        </FlexColumn>
+      </Overlay>
+    )
+  }
 
   return submitting ? (
     <Overlay>
