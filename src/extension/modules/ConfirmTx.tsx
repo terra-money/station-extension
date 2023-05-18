@@ -24,7 +24,6 @@ import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useChainID, useNetwork } from "data/wallet"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { Fee } from "@terra-money/feather.js"
-import { es } from "date-fns/locale"
 
 interface Values {
   password: string
