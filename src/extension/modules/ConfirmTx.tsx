@@ -21,7 +21,7 @@ import OriginCard from "extension/components/OriginCard"
 import { RefetchOptions, queryKey } from "data/query"
 import { useQuery } from "react-query"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { useNetwork } from "data/wallet"
+import { useChainID, useNetwork } from "data/wallet"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { Fee } from "@terra-money/feather.js"
 import { es } from "date-fns/locale"
@@ -39,6 +39,9 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const addresses = useInterchainAddresses()
   const network = useNetwork()
   const lcd = useInterchainLCDClient()
+  const terraChainID = useChainID()
+  const chainID =
+    "tx" in props ? props.tx.chainID ?? terraChainID : terraChainID
 
   /* form */
   const form = useForm<Values>({
@@ -71,7 +74,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
       : ""
 
   const { data: estimatedGas, ...estimatedGasState } = useQuery(
-    [queryKey.tx.create, props],
+    [queryKey.tx.create, props, addresses?.[chainID], network[chainID]],
     async () => {
       if (!("tx" in props)) return 0
       const { tx } = props
@@ -104,9 +107,26 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
       retry: 3,
       retryDelay: 1000,
       refetchOnWindowFocus: false,
-      enabled: "tx" in props && !props.tx.fee?.gas_limit,
+      enabled:
+        "tx" in props && !props.tx.fee?.gas_limit && !!addresses?.[chainID],
     }
   )
+
+  let fee: Fee | undefined
+
+  if ("tx" in props && network[props.tx.chainID]) {
+    const { tx } = props
+    fee = tx.fee
+    if (!tx.fee?.gas_limit) {
+      const { baseAsset, gasPrices, gasAdjustment } = network[tx.chainID]
+      const gas = (estimatedGas ?? 0) * gasAdjustment
+
+      const feeDenom =
+        baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices)[0]
+
+      fee = new Fee(gas, { [feeDenom]: gasPrices[feeDenom] * gas })
+    }
+  }
 
   const navigate = useNavigate()
   const toPostMultisigTx = useToPostMultisigTx()
@@ -115,17 +135,8 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
 
     if ("tx" in props) {
       const { requestType, tx, signMode } = props
-      const txOptions = tx
+      const txOptions = { ...tx, fee }
 
-      if (!txOptions.fee?.gas_limit && network[tx.chainID]) {
-        const { baseAsset, gasPrices, gasAdjustment } = network[tx.chainID]
-        const gas = (estimatedGas ?? 0) * gasAdjustment
-
-        const feeDenom =
-          baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices)[0]
-
-        txOptions.fee = new Fee(gas, { [feeDenom]: gasPrices[feeDenom] * gas })
-      }
       try {
         if (disabled) throw new Error(disabled)
 
@@ -217,7 +228,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   ) : (
     <ExtensionPage header={<OriginCard hostname={props.origin} />}>
       <Grid gap={20}>
-        {"tx" in props && <TxDetails {...props} />}
+        {"tx" in props && <TxDetails {...props} tx={{ ...props.tx, fee }} />}
 
         {warning && <FormWarning>{warning}</FormWarning>}
         {error && <FormError>{error}</FormError>}
