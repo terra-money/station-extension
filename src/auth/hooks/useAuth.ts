@@ -132,8 +132,20 @@ const useAuth = () => {
     const { name, words } = getConnectedWallet()
     const key = getKey(password)
     if (!key) throw new PasswordError("Key do not exist")
-    // TODO: update key export
-    if ("seed" in key) throw new PasswordError("This key cannot be exported")
+    if ("seed" in key) {
+      const seed = new SeedKey({
+        seed: Buffer.from(key.seed, "hex"),
+        coinType: key.legacy ? 118 : 330,
+        index: key.index || 0,
+      })
+
+      const data = {
+        name,
+        address: seed.accAddress("terra"),
+        encrypted_key: encrypt(seed.privateKey.toString("hex"), password),
+      }
+      return encode(JSON.stringify(data))
+    }
 
     const data = {
       name,
