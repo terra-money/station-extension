@@ -26,8 +26,8 @@ export enum SettingKey {
   NetworkCacheTime = "NetworkCacheTime",
 }
 
-const isSystemDarkMode =
-  window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+//const isSystemDarkMode =
+//  window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
 
 export const DefaultTheme = themes[1]
 

@@ -14,6 +14,7 @@ import {
   useCustomTokensCW20,
   useCustomTokensNative,
 } from "data/settings/CustomTokens"
+import { useIBCBaseDenoms } from "data/queries/ibc"
 
 const AssetList = () => {
   const { t } = useTranslation()
@@ -34,12 +35,27 @@ const AssetList = () => {
     [cw20.list, native.list]
   )
 
+  const unknownIBCDenomsData = useIBCBaseDenoms(
+    coins
+      .map(({ denom, chain }) => ({ denom, chainID: chain }))
+      .filter(({ denom }) => {
+        const data = readNativeDenom(denom)
+        return denom.startsWith("ibc/") && data.symbol.endsWith("...")
+      })
+  )
+  const unknownIBCDenoms = unknownIBCDenomsData.reduce(
+    (acc, { data }) =>
+      data ? { ...acc, [data.ibcDenom]: data.baseDenom } : acc,
+    {} as Record<string, string>
+  )
+
   const list = useMemo(
     () =>
       [
         ...Object.values(
           coins.reduce((acc, { denom, amount, chain }) => {
-            const data = readNativeDenom(denom)
+            const data = readNativeDenom(unknownIBCDenoms[denom] ?? denom)
+
             if (acc[data.token]) {
               acc[data.token].balance = `${
                 parseInt(acc[data.token].balance) + parseInt(amount)
@@ -47,16 +63,15 @@ const AssetList = () => {
               acc[data.token].chains.push(chain)
               return acc
             } else {
-              const isWhitelisted = !denom.endsWith("...")
               return {
                 ...acc,
                 [data.token]: {
-                  denom,
+                  denom: data.token,
                   balance: amount,
                   icon: data.icon,
                   symbol: data.symbol,
-                  price: isWhitelisted ? prices?.[data.token]?.price ?? 0 : 0,
-                  change: isWhitelisted ? prices?.[data.token]?.change ?? 0 : 0,
+                  price: prices?.[data.token]?.price ?? 0,
+                  change: prices?.[data.token]?.change ?? 0,
                   chains: [chain],
                 },
               }
@@ -83,6 +98,7 @@ const AssetList = () => {
       hideNoWhitelist,
       hideLowBal,
       alwaysVisibleDenoms,
+      unknownIBCDenoms,
     ]
   )
 
@@ -98,7 +114,7 @@ const AssetList = () => {
           {list.map(({ denom, ...item }) => (
             <Asset
               denom={denom}
-              {...readNativeDenom(denom)}
+              {...readNativeDenom(unknownIBCDenoms[denom] ?? denom)}
               {...item}
               key={denom}
             />
