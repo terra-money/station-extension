@@ -4,8 +4,8 @@ const keySize = 256
 const iterations = 100
 
 const decrypt = (transitmessage: string, pass: string) => {
-  const salt = CryptoJS.enc.Hex.parse(transitmessage.substr(0, 32))
-  const iv = CryptoJS.enc.Hex.parse(transitmessage.substr(32, 32))
+  const salt = CryptoJS.enc.Hex.parse(transitmessage.substring(0, 32))
+  const iv = CryptoJS.enc.Hex.parse(transitmessage.substring(32, 64))
   const encrypted = transitmessage.substring(64)
 
   const key = CryptoJS.PBKDF2(pass, salt, {
@@ -19,11 +19,11 @@ const decrypt = (transitmessage: string, pass: string) => {
     mode: CryptoJS.mode.CBC,
   })
 
-  if (decrypted.sigBytes < 128) throw new Error("Incorrect password")
-
   const decoded = decrypted.toString(CryptoJS.enc.Utf8)
 
-  if (!decoded) throw new Error("Incorrect password")
+  if (!decoded || decrypted.sigBytes < 128)
+    throw new Error("Incorrect password")
+
   return decoded
 }
 
