@@ -17,10 +17,14 @@ const decrypt = (transitmessage: string, pass: string) => {
     iv: iv,
     padding: CryptoJS.pad.Pkcs7,
     mode: CryptoJS.mode.CBC,
-  }).toString(CryptoJS.enc.Utf8)
+  })
 
-  if (!decrypted) throw new Error("Incorrect password")
-  return decrypted
+  if (decrypted.sigBytes < 128) throw new Error("Incorrect password")
+
+  const decoded = decrypted.toString(CryptoJS.enc.Utf8)
+
+  if (!decoded) throw new Error("Incorrect password")
+  return decoded
 }
 
 export default decrypt
