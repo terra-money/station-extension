@@ -76,8 +76,8 @@ function setupEvents() {
     if (namespace === "local") {
       if (
         changes.wallet &&
-        (Object.values(changes.wallet.oldValue.addresses).join(",") !==
-          Object.values(changes.wallet.newValue.addresses).join(",") ||
+        (changes.wallet.oldValue.address !== changes.wallet.newValue.address ||
+          changes.wallet.oldValue.name !== changes.wallet.newValue.name ||
           Object.values(changes.wallet.oldValue.pubkey).join(",") !==
             Object.values(changes.wallet.newValue.pubkey).join(","))
       ) {
@@ -87,9 +87,17 @@ function setupEvents() {
         window.dispatchEvent(event)
       }
       if (
-        changes.networks &&
-        Object.keys(changes.networks.oldValue).join(",") !==
-          Object.keys(changes.networks.newValue).join(",")
+        changes.wallet &&
+        changes.wallet.oldValue.theme !== changes.wallet.newValue.theme
+      ) {
+        const event = new CustomEvent("station_theme_change", {
+          detail: changes.wallet.newValue.theme,
+        })
+        window.dispatchEvent(event)
+      }
+      if (
+        changes.networkName &&
+        changes.networkName.oldValue !== changes.networkName.newValue
       ) {
         const event = new CustomEvent("station_network_change", {
           detail: changes.networks.newValue,
@@ -100,7 +108,9 @@ function setupEvents() {
   }
 
   extension.storage.local.get(["connect"], ({ connect }) => {
-    const isAllowed = ((connect && connect.allowed) || []).includes(window.location.origin)
+    const isAllowed = ((connect && connect.allowed) || []).includes(
+      window.location.origin
+    )
 
     if (isAllowed) {
       extension.storage.onChanged.addListener(createEvent)

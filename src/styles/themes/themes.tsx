@@ -62,7 +62,7 @@ export const themes: Theme[] = [
   },
   {
     name: "blossom",
-    unlock: toAmount("1"),
+    unlock: toAmount("0"),
     animation: AnimationBlossom,
     favicon: FaviconBlossom,
     front: FrontBlossom,
@@ -70,7 +70,7 @@ export const themes: Theme[] = [
   },
   {
     name: "moon",
-    unlock: toAmount("10"),
+    unlock: toAmount("0"),
     animation: AnimationMoon,
     favicon: FaviconMoon,
     front: FrontMoon,
@@ -78,7 +78,7 @@ export const themes: Theme[] = [
   },
   {
     name: "whale",
-    unlock: toAmount("100"),
+    unlock: toAmount("0"),
     animation: AnimationWhale,
     favicon: FaviconWhale,
     front: FrontWhale,
@@ -86,7 +86,7 @@ export const themes: Theme[] = [
   },
   {
     name: "madness",
-    unlock: toAmount("1000"),
+    unlock: toAmount("0"),
     animation: AnimationMadness,
     favicon: FaviconMadness,
     front: FrontMadness,
