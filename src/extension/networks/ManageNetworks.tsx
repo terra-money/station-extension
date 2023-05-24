@@ -8,7 +8,7 @@ const ManageNetworksPage = () => {
   const { t } = useTranslation()
 
   return (
-    <ExtensionPage title={t("Manage networks")}>
+    <ExtensionPage title={t("Manage networks")} backButtonPath="/">
       <Grid gap={20}>
         <ManageNetworksForm />
         <LinkButton to="/network/new" block>

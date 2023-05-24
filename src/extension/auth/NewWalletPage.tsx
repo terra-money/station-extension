@@ -6,7 +6,7 @@ const NewWallet = () => {
   const { t } = useTranslation()
 
   return (
-    <ExtensionPage title={t("New wallet")}>
+    <ExtensionPage title={t("New wallet")} backButtonPath="/">
       <NewWalletForm />
     </ExtensionPage>
   )

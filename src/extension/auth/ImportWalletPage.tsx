@@ -6,7 +6,7 @@ const ImportWalletPage = () => {
   const { t } = useTranslation()
 
   return (
-    <ExtensionPage title={t("Import from private key")}>
+    <ExtensionPage title={t("Import from private key")} backButtonPath="/">
       <ImportWalletForm />
     </ExtensionPage>
   )

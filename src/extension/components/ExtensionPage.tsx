@@ -3,14 +3,18 @@ import { Card } from "components/layout"
 import { ErrorBoundary, WithFetching } from "components/feedback"
 import Container from "../layouts/Container"
 import styles from "./ExtensionPage.module.scss"
+import { ArrowBack } from "@mui/icons-material"
+import { useNavigate } from "react-router-dom"
 
 interface Props extends QueryState {
   header?: ReactNode
   title?: string
+  backButtonPath?: string
 }
 
 const ExtensionPage = (props: PropsWithChildren<Props>) => {
-  const { header, title, children } = props
+  const navigate = useNavigate()
+  const { header, title, children, backButtonPath } = props
 
   return (
     <WithFetching {...props}>
@@ -27,9 +31,13 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
 
             {title && (
               <header className={styles.header}>
-                <h1 className={styles.title}>
-                  <Container className={styles.container}>{title}</Container>
-                </h1>
+                <div className={styles.titleWrapper}>
+                  {backButtonPath && (
+                    <ArrowBack onClick={() => navigate(backButtonPath)} />
+                  )}
+                  <h1 className={styles.title}>{title}</h1>
+                </div>
+                <Container className={styles.container}></Container>
               </header>
             )}
 

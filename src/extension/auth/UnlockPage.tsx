@@ -6,7 +6,7 @@ const UnlockPage = () => {
   const { t } = useTranslation()
 
   return (
-    <ExtensionPage title={t("Unlock wallet")}>
+    <ExtensionPage title={t("Unlock wallet")} backButtonPath="/">
       <UnlockForm />
     </ExtensionPage>
   )
