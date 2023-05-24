@@ -29,13 +29,12 @@ export const useAllInterchainAddresses = () => {
   const words = wallet?.words
   if (!words) return
 
-  const addresses = Object.values(networks[networkName]).reduce(
-    (acc, { prefix, coinType, chainID }) => {
+  const addresses = Object.values(networks[networkName])
+    .filter(({ coinType }) => !!words[coinType])
+    .reduce((acc, { prefix, coinType, chainID }) => {
       acc[chainID] = addressFromWords(words[coinType] as string, prefix)
       return acc
-    },
-    {} as Record<string, string>
-  )
+    }, {} as Record<string, string>)
   return addresses
 }
 

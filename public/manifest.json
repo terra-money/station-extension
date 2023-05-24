@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Station Wallet",
-  "version": "7.2.6",
+  "version": "7.2.6.1",
   "background": {
     "service_worker": "background.js",
     "type": "module"
