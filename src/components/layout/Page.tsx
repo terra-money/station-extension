@@ -43,7 +43,7 @@ const Page = (props: PropsWithChildren<Props>) => {
               {title && (
                 <header className={styles.header}>
                   <div className={styles.titleWrapper}>
-                    {backButton && <ArrowBack onClick={() => navigate(-1)} />}
+                    {backButton && <ArrowBack onClick={() => navigate("/")} />}
                     <h1 className={styles.title}>{title}</h1>
                   </div>
                   {extra}
