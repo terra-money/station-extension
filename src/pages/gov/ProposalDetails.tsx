@@ -22,11 +22,10 @@ const ProposalDetails = () => {
 
   useGoBackOnError(state)
 
+  if (!proposal) return null
+  const { status } = proposal
+
   const render = () => {
-    if (!proposal) return null
-
-    const { status } = proposal
-
     return (
       <Col>
         <Row>
@@ -71,7 +70,7 @@ const ProposalDetails = () => {
       {...state}
       title={t("Proposal details")}
       extra={proposal && <ProposalActions proposal={proposal} />}
-      backButton
+      backButtonPath={`/gov#${status}`}
     >
       {render()}
     </Page>
