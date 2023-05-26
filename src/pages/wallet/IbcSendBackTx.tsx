@@ -156,7 +156,7 @@ function IbcSendBackTx({ token, chainID }: Props) {
     return () => {
       maxIterations = 0
     }
-  }, [waitUntil])
+  }, [waitUntil]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const IBCdenom = useMemo(
     () =>
@@ -180,6 +180,7 @@ function IbcSendBackTx({ token, chainID }: Props) {
     () => ibcDetails?.chainIDs.slice().reverse() ?? [],
     [ibcDetails]
   )
+  const decimals = readNativeDenom(ibcDetails?.baseDenom ?? "").decimals
 
   const createTx = useCallback(
     ({ input }: TxValues) => {
@@ -199,7 +200,7 @@ function IbcSendBackTx({ token, chainID }: Props) {
 
       return { msgs, chainID: chains[step] }
     },
-    [ibcDetails, addresses, step, IBCdenom, chains]
+    [ibcDetails, addresses, step, IBCdenom, chains, decimals]
   )
 
   const onChangeMax = useCallback(
@@ -211,7 +212,6 @@ function IbcSendBackTx({ token, chainID }: Props) {
   )
 
   const coins = [{ input, denom: IBCdenom }] as CoinInput[]
-  const decimals = readNativeDenom(ibcDetails?.baseDenom ?? "").decimals
   const amount = toAmount(input, { decimals })
   const balance =
     balances.find(
