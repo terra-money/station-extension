@@ -20,8 +20,24 @@ const AssetPage = () => {
   const readNativeDenom = useNativeDenoms()
   const { t } = useTranslation()
   const { setRoute, route } = useWalletRoute()
-  const denom = route.path === Path.coin ? route.denom : "uluna"
-  const { token, symbol, icon, decimals } = readNativeDenom(denom)
+  const routeDenom = route.path === Path.coin ? route.denom ?? "uluna" : "uluna"
+  const [chain, denom] = routeDenom.includes(":")
+    ? routeDenom.split(":")
+    : [undefined, routeDenom]
+  // @ts-expect-error
+  const { token, symbol, icon, decimals, chainID } = readNativeDenom(
+    denom,
+    chain
+  )
+
+  const filteredBalances = balances.filter(
+    (b) => readNativeDenom(b.denom).token === token
+  )
+  const totalBalance = filteredBalances.reduce(
+    (acc, b) => acc + parseInt(b.amount),
+    0
+  )
+  const price = symbol?.endsWith("...") ? 0 : prices?.[token]?.price ?? 0
 
   const unknownIBCDenomsData = useIBCBaseDenoms(
     balances
@@ -31,25 +47,24 @@ const AssetPage = () => {
         return denom.startsWith("ibc/") && data.symbol.endsWith("...")
       })
   )
+
   const unknownIBCDenoms = unknownIBCDenomsData.reduce(
-    (acc, { data }) => (data ? { ...acc, [data.ibcDenom]: data } : acc),
-    {} as Record<string, { baseDenom: string; chainIDs: string[] }>
+    (acc, { data }) =>
+      data
+        ? {
+            ...acc,
+            [data.ibcDenom]: {
+              baseDenom: data.baseDenom,
+              chains: data.chainIDs,
+            },
+          }
+        : acc,
+    {} as Record<string, { baseDenom: string; chains: string[] }>
   )
 
-  const filteredBalances = balances.filter(
-    ({ denom }) =>
-      readNativeDenom(unknownIBCDenoms[denom]?.baseDenom ?? denom).token ===
-      token
+  const filteredUnsupportedBalances = balances.filter(
+    (b) => unknownIBCDenoms[b.denom]?.baseDenom === token
   )
-  const totalBalance = filteredBalances.reduce(
-    (acc, { amount }) => acc + parseInt(amount),
-    0
-  )
-  const price = symbol?.endsWith("...") ? 0 : prices?.[token]?.price ?? 0
-
-  const availableChains = filteredBalances.filter(
-    ({ denom }) => !unknownIBCDenoms[denom]
-  ).length
 
   return (
     <>
@@ -70,55 +85,51 @@ const AssetPage = () => {
         </p>
       </section>
       <section className={styles.chainlist}>
-        <div>
-          {!!availableChains && (
-            <>
-              <h3>{t("Chains")}</h3>
-              <div className={styles.chainlist__list}>
-                {filteredBalances
-                  .sort((a, b) => parseInt(b.amount) - parseInt(a.amount))
-                  .filter(({ denom }) => !unknownIBCDenoms[denom])
-                  .map((b, i) => (
-                    <div key={i}>
-                      <AssetChain
-                        symbol={symbol}
-                        balance={b.amount}
-                        chain={b.chain}
-                        token={token}
-                        decimals={decimals}
-                      />
-                      {token === "uluna" && isTerraChain(b.chain) && (
-                        <Vesting />
-                      )}
-                    </div>
-                  ))}
-              </div>
-            </>
-          )}
-          {availableChains !== filteredBalances.length && (
-            <>
-              <h3>{t("Unsupported IBC denoms")}</h3>
-              <div className={styles.chainlist__list}>
-                {filteredBalances
-                  .sort((a, b) => parseInt(b.amount) - parseInt(a.amount))
-                  .filter(({ denom }) => !!unknownIBCDenoms[denom])
-                  .map((b, i) => (
-                    <div key={i}>
-                      <AssetChain
-                        symbol={symbol}
-                        balance={b.amount}
-                        chain={b.chain}
-                        token={token}
-                        decimals={decimals}
-                        path={unknownIBCDenoms[b.denom].chainIDs}
-                      />
-                    </div>
-                  ))}
-              </div>
-            </>
-          )}
-        </div>
+        {filteredBalances.length > 0 && (
+          <div>
+            <h3>{t("Chains")}</h3>
+            <div className={styles.chainlist__list}>
+              {filteredBalances
+                .sort((a, b) => parseInt(b.amount) - parseInt(a.amount))
+                .map((b, i) => (
+                  <div key={i}>
+                    <AssetChain
+                      symbol={symbol}
+                      balance={b.amount}
+                      chain={b.chain}
+                      token={token}
+                      decimals={decimals}
+                    />
+                    {token === "uluna" && isTerraChain(b.chain) && <Vesting />}
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+        {filteredUnsupportedBalances.length > 0 && (
+          <div>
+            <h3>{t("Chains")}</h3>
+            <div className={styles.chainlist__list}>
+              {filteredUnsupportedBalances
+                .sort((a, b) => parseInt(b.amount) - parseInt(a.amount))
+                .map((b, i) => (
+                  <div key={i}>
+                    <AssetChain
+                      symbol={symbol}
+                      balance={b.amount}
+                      chain={b.chain}
+                      token={token}
+                      decimals={decimals}
+                      path={unknownIBCDenoms[b.denom]?.chains}
+                      ibcDenom={b.denom}
+                    />
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
       </section>
+
       <section className={styles.actions}>
         <Button
           color="primary"
@@ -129,7 +140,6 @@ const AssetPage = () => {
               previousPage: route,
             })
           }
-          disabled={!availableChains}
         >
           {t("Send")}
         </Button>
@@ -140,7 +150,6 @@ const AssetPage = () => {
               previousPage: route,
             })
           }
-          disabled={!availableChains}
         >
           {capitalize(t("receive"))}
         </Button>

@@ -1,10 +1,13 @@
+import { useNetworks } from "app/InitNetworks"
 import { WithFetching } from "components/feedback"
 import { Read, TokenIcon } from "components/token"
 import { useExchangeRates } from "data/queries/coingecko"
 import { useCurrency } from "data/settings/Currency"
-import { useNetwork } from "data/wallet"
+import { useNetwork, useNetworkName } from "data/wallet"
 import { useTranslation } from "react-i18next"
 import styles from "./AssetChain.module.scss"
+import IbcSendBack from "./IbcSendBack"
+import { InternalButton } from "components/general"
 
 export interface Props {
   chain: string
@@ -13,10 +16,11 @@ export interface Props {
   decimals: number
   token: string
   path?: string[]
+  ibcDenom?: string
 }
 
 const AssetChain = (props: Props) => {
-  const { chain, symbol, balance, decimals, token, path } = props
+  const { chain, symbol, balance, decimals, token, path, ibcDenom } = props
   const currency = useCurrency()
   const { data: prices, ...pricesState } = useExchangeRates()
   const { t } = useTranslation()
@@ -30,14 +34,28 @@ const AssetChain = (props: Props) => {
 
       <section className={styles.details}>
         <h1 className={styles.name}>
-          <span>{name}</span>
-          {path && (
-            <p>
-              {path
-                .map((chainID) => networks[chainID]?.name ?? chainID)
-                .join(" → ")}
-            </p>
-          )}
+          <h4>
+            {name}{" "}
+            {ibcDenom && path && (
+              <IbcSendBack
+                chainID={chain}
+                token={ibcDenom}
+                title={`Send ${symbol} back to ${
+                  networks[path[path.length - 1]]?.name ?? path[path.length - 1]
+                }`}
+              >
+                {(open) => (
+                  <InternalButton
+                    onClick={open}
+                    className={styles.send__back__button}
+                  >
+                    {t("Send back")}
+                  </InternalButton>
+                )}
+              </IbcSendBack>
+            )}
+          </h4>
+          {path && <p>{path.map((c) => networks[c]?.name ?? c).join(" → ")}</p>}
         </h1>
         <h1 className={styles.price}>
           {currency.symbol}{" "}

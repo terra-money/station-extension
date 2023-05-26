@@ -9,7 +9,10 @@ import { useCW20Whitelist, useIBCWhitelist } from "./Terra/TerraAssets"
 import { useWhitelist } from "./queries/chains"
 import { useNetworkName } from "./wallet"
 
-export const useTokenItem = (token: Token): TokenItem | undefined => {
+export const useTokenItem = (
+  token: Token,
+  chainID?: string
+): TokenItem | undefined => {
   const readNativeDenom = useNativeDenoms()
 
   /* CW20 */
@@ -53,17 +56,18 @@ export const useTokenItem = (token: Token): TokenItem | undefined => {
     return readIBCDenom(item)
   }
 
-  return readNativeDenom(token)
+  return readNativeDenom(token, chainID)
 }
 
 interface Props {
   token: Token
+  chainID?: string
   children: (token: TokenItem) => ReactNode
 }
 
-export const WithTokenItem = ({ token, children }: Props) => {
+export const WithTokenItem = ({ token, chainID, children }: Props) => {
   const readNativeDenom = useNativeDenoms()
-  return <>{children(readNativeDenom(token))}</>
+  return <>{children(readNativeDenom(token, chainID))}</>
 }
 
 /* helpers */
@@ -74,13 +78,23 @@ export const useNativeDenoms = () => {
   const { list: cw20 } = useCustomTokensCW20()
   const networkName = useNetworkName()
 
-  function readNativeDenom(denom: Denom): TokenItem {
+  function readNativeDenom(denom: Denom, chainID?: string): TokenItem {
     const fixedDenom = denom.startsWith("ibc/")
       ? `${readDenom(denom).substring(0, 5)}...`
       : readDenom(denom)
 
     // native token
-    if (whitelist[networkName]?.[denom]) return whitelist[networkName]?.[denom]
+    if (chainID) {
+      const tokenID = `${chainID}:${denom}`
+
+      if (whitelist[networkName]?.[tokenID])
+        return whitelist[networkName]?.[tokenID]
+    } else {
+      const tokenDetails = Object.values(whitelist[networkName] ?? {}).find(
+        ({ token }) => token === denom
+      )
+      if (tokenDetails) return tokenDetails
+    }
 
     // ibc token
     const ibcToken = ibcDenoms[networkName]?.[denom]?.token

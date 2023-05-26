@@ -4,6 +4,7 @@ import { queryKey, RefetchOptions } from "../query"
 import { useInterchainLCDClient } from "./lcdClient"
 import { useNetwork } from "data/wallet"
 import axios from "axios"
+import crypto from "crypto"
 
 export const useIBCBaseDenom = (
   denom: Denom,
@@ -21,21 +22,33 @@ export const useIBCBaseDenom = (
         chainID
       )
 
-      // TODO: handle multi hops channels
-      const [portID, channelID] = path.split("/")
+      const paths = path.split("/")
+      const chains = [chainID]
+      const channels = []
 
-      const { data } = await axios.get(
-        `/ibc/core/channel/v1/channels/${channelID}/ports/${portID}/client_state`,
-        { baseURL: network[chainID].lcd }
-      )
+      for (let i = 0; i < paths.length; i += 2) {
+        const chain = chains[chains.length - 1]
 
-      const chain = data.identified_client_state.client_state.chain_id
+        if (!network[chain]?.lcd) return
+
+        const [port, channel] = [paths[i], paths[i + 1]]
+        channels.unshift({ port, channel })
+
+        const { data } = await axios.get(
+          `/ibc/core/channel/v1/channels/${channel}/ports/${port}/client_state`,
+          { baseURL: network[chain].lcd }
+        )
+
+        chains.unshift(data.identified_client_state.client_state.chain_id)
+      }
 
       return {
+        ibcDenom: denom,
         baseDenom: base_denom.startsWith("cw20:")
           ? base_denom.replace("cw20:", "")
           : base_denom,
-        chainID: chain,
+        chainIDs: chains,
+        channels,
       }
     },
     {
@@ -93,4 +106,11 @@ export const useIBCBaseDenoms = (data: { denom: Denom; chainID: string }[]) => {
       }
     })
   )
+}
+
+export function calculateIBCDenom(baseDenom: string, path: string) {
+  const assetString = [path, baseDenom].join("/")
+  const hash = crypto.createHash("sha256")
+  hash.update(assetString)
+  return `ibc/${hash.digest("hex").toUpperCase()}`
 }

@@ -45,8 +45,16 @@ const AssetList = () => {
   )
   const unknownIBCDenoms = unknownIBCDenomsData.reduce(
     (acc, { data }) =>
-      data ? { ...acc, [data.ibcDenom]: data.baseDenom } : acc,
-    {} as Record<string, string>
+      data
+        ? {
+            ...acc,
+            [data.ibcDenom]: {
+              baseDenom: data.baseDenom,
+              chainID: data.chainIDs[0],
+            },
+          }
+        : acc,
+    {} as Record<string, { baseDenom: string; chainID: string }>
   )
 
   const list = useMemo(
@@ -54,18 +62,27 @@ const AssetList = () => {
       [
         ...Object.values(
           coins.reduce((acc, { denom, amount, chain }) => {
-            const data = readNativeDenom(unknownIBCDenoms[denom] ?? denom)
+            const data = readNativeDenom(
+              unknownIBCDenoms[denom]?.baseDenom ?? denom,
+              unknownIBCDenoms[denom]?.chainID ?? chain
+            )
 
-            if (acc[data.token]) {
-              acc[data.token].balance = `${
-                parseInt(acc[data.token].balance) + parseInt(amount)
+            const key = [
+              // @ts-expect-error
+              unknownIBCDenoms[denom]?.chainID ?? data.chainID ?? chain,
+              data.token,
+            ].join(":")
+
+            if (acc[key]) {
+              acc[key].balance = `${
+                parseInt(acc[key].balance) + parseInt(amount)
               }`
-              acc[data.token].chains.push(chain)
+              acc[key].chains.push(chain)
               return acc
             } else {
               return {
                 ...acc,
-                [data.token]: {
+                [key]: {
                   denom: data.token,
                   balance: amount,
                   icon: data.icon,
@@ -73,6 +90,7 @@ const AssetList = () => {
                   price: prices?.[data.token]?.price ?? 0,
                   change: prices?.[data.token]?.change ?? 0,
                   chains: [chain],
+                  id: key,
                 },
               }
             }
@@ -111,12 +129,16 @@ const AssetList = () => {
           <FormError>{t("Coins required to post transactions")}</FormError>
         )}
         <section>
-          {list.map(({ denom, ...item }) => (
+          {list.map(({ denom, chainID, id, ...item }, i) => (
             <Asset
               denom={denom}
-              {...readNativeDenom(unknownIBCDenoms[denom] ?? denom)}
+              {...readNativeDenom(
+                unknownIBCDenoms[denom]?.baseDenom ?? denom,
+                unknownIBCDenoms[denom]?.chainID ?? chainID
+              )}
+              id={id}
               {...item}
-              key={denom}
+              key={i}
             />
           ))}
         </section>
