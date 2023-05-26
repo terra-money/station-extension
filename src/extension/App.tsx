@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useRoutes } from "react-router-dom"
-import { useAddress, useChainID, useNetwork, useNetworkName } from "data/wallet"
+import { useAddress, useChainID, useNetworkName } from "data/wallet"
 import { ErrorBoundary } from "components/feedback"
 import { fallback } from "app/App"
 import InitBankBalance from "app/InitBankBalance"
@@ -52,7 +52,7 @@ const App = () => {
         theme,
       })
     else clearWalletAddress()
-  }, [address, addresses, pubkey, wallet])
+  }, [address, addresses, pubkey, wallet, name, theme])
 
   const routes = useRoutes([
     { path: "/networks", element: <ManageNetworks /> },
