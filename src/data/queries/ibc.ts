@@ -109,6 +109,8 @@ export const useIBCBaseDenoms = (data: { denom: Denom; chainID: string }[]) => {
 }
 
 export function calculateIBCDenom(baseDenom: string, path: string) {
+  if (!path) return baseDenom
+
   const assetString = [path, baseDenom].join("/")
   const hash = crypto.createHash("sha256")
   hash.update(assetString)

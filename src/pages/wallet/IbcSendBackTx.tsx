@@ -1,4 +1,4 @@
-import { Coin, MsgTransfer } from "@terra-money/feather.js"
+import { AccAddress, Coin, MsgTransfer } from "@terra-money/feather.js"
 import { toAmount } from "@terra-money/terra-utils"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { Form, FormItem, Input } from "components/form"
@@ -6,7 +6,7 @@ import { useBankBalance } from "data/queries/bank"
 import { calculateIBCDenom, useIBCBaseDenom } from "data/queries/ibc"
 import { queryKey } from "data/query"
 import { useNativeDenoms } from "data/token"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import Tx from "txs/Tx"
@@ -18,6 +18,9 @@ import { FlexColumn } from "components/layout"
 import { useThemeAnimation } from "data/settings/Theme"
 import DoneAllIcon from "@mui/icons-material/DoneAll"
 import { LinearProgress } from "@mui/material"
+import { useInterchainLCDClient } from "data/queries/lcdClient"
+import { useQueryClient } from "react-query"
+import ReportIcon from "@mui/icons-material/Report"
 
 interface Props {
   token: string
@@ -80,6 +83,7 @@ function Steps({
 
 function IbcSendBackTx({ token, chainID }: Props) {
   const balances = useBankBalance()
+  const lcd = useInterchainLCDClient()
   const readNativeDenom = useNativeDenoms()
   const animation = useThemeAnimation()
   const { t } = useTranslation()
@@ -89,9 +93,70 @@ function IbcSendBackTx({ token, chainID }: Props) {
   const { register, trigger, watch, setValue, handleSubmit, formState } = form
   const { errors } = formState
   const { input } = watch()
+  const queryClient = useQueryClient()
 
   const [step, setStep] = useState<number>(0)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string | undefined>(undefined)
+  const [waitUntil, setWaitUntil] = useState<
+    undefined | { chainID: string; denom: string; balance: number }
+  >(undefined)
+
+  async function getBalance(denom: string, chainID: string) {
+    if (!addresses) return 0
+
+    if (AccAddress.validate(denom)) {
+      const { balance } = await lcd.wasm.contractQuery<{ balance: Amount }>(
+        denom,
+        { balance: { address: addresses[chainID] } }
+      )
+
+      return Number(balance ?? 0)
+    } else {
+      const [balances] = await lcd.bank.balance(addresses[chainID])
+
+      const tokenBalance =
+        balances.toData().find(({ denom: d }) => denom === d)?.amount ?? "0"
+
+      return Number(tokenBalance)
+    }
+  }
+
+  useEffect(() => {
+    // around 3 minutes with a 10 seconds interval
+    let maxIterations = 18
+
+    if (waitUntil) {
+      ;(async () => {
+        while (maxIterations--) {
+          console.log(waitUntil)
+          const tokenBalance = await getBalance(
+            waitUntil.denom,
+            waitUntil.chainID
+          )
+          console.log(tokenBalance)
+
+          if (Number(tokenBalance) > waitUntil.balance) {
+            setWaitUntil(undefined)
+            setIsLoading(false)
+            // refetch all balances for the next form
+            queryClient.invalidateQueries(queryKey.bank.balances)
+            return
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 10_000))
+        }
+
+        // if this get's executed, it means that the transaction failed
+        setWaitUntil(undefined)
+        setError("Transaction failed.")
+      })()
+    }
+
+    return () => {
+      maxIterations = 0
+    }
+  }, [waitUntil])
 
   const IBCdenom = useMemo(
     () =>
@@ -124,7 +189,7 @@ function IbcSendBackTx({ token, chainID }: Props) {
         new MsgTransfer(
           ibcDetails.channels[step].port,
           ibcDetails.channels[step].channel,
-          new Coin(IBCdenom, input),
+          new Coin(IBCdenom, input * 10 ** decimals),
           addresses[chains[step]],
           addresses[chains[step + 1]],
           undefined,
@@ -166,6 +231,24 @@ function IbcSendBackTx({ token, chainID }: Props) {
     createTx,
     onChangeMax,
     onPost: () => {
+      const nextDenom = calculateIBCDenom(
+        ibcDetails?.baseDenom ?? "",
+        (ibcDetails?.channels ?? [])
+          .slice(step + 1)
+          .reduce(
+            (acc, cur) =>
+              acc
+                ? [cur.port, cur.channel, acc].join("/")
+                : [cur.port, cur.channel].join("/"),
+            ""
+          )
+      )
+
+      // wait until balance on the other chain is increased
+      getBalance(nextDenom, chains[step + 1]).then((balance) =>
+        setWaitUntil({ chainID: chains[step + 1], denom: nextDenom, balance })
+      )
+
       setStep((step) => step + 1)
       setIsLoading(true)
     },
@@ -213,25 +296,50 @@ function IbcSendBackTx({ token, chainID }: Props) {
   return (
     <article>
       <Steps step={step} chains={chains} isLoading={isLoading} />
-      {state.isLoading || isLoading ? (
-        <FlexColumn gap={20}>
-          <img width={120} height={120} src={animation} alt={t("Loading...")} />
-          {state.isLoading && <p>{t("Loading...")}</p>}
-          {isLoading && (
-            <>
-              <p>{t("Waiting fo on-chain confirmation...")}</p>
-              <p>{t("This may take a few minutes")}</p>
-            </>
-          )}
-        </FlexColumn>
-      ) : step === chains.length - 1 ? (
-        <FlexColumn gap={20}>
-          <DoneAllIcon className={styles.success} style={{ fontSize: 40 }} />
-          <p>{t("Success!")}</p>
-        </FlexColumn>
-      ) : (
-        renderForm()
-      )}
+      {(() => {
+        if (error) {
+          return (
+            <FlexColumn gap={20}>
+              <ReportIcon className={styles.danger} style={{ fontSize: 40 }} />
+              <p>{error}</p>
+            </FlexColumn>
+          )
+        }
+
+        if (state.isLoading || isLoading) {
+          return (
+            <FlexColumn gap={20}>
+              <img
+                width={120}
+                height={120}
+                src={animation}
+                alt={t("Loading...")}
+              />
+              {state.isLoading && <p>{t("Loading...")}</p>}
+              {isLoading && (
+                <>
+                  <p>{t("Waiting fo on-chain confirmation...")}</p>
+                  <p>{t("This may take a few minutes")}</p>
+                </>
+              )}
+            </FlexColumn>
+          )
+        }
+
+        if (step === chains.length - 1) {
+          return (
+            <FlexColumn gap={20}>
+              <DoneAllIcon
+                className={styles.success}
+                style={{ fontSize: 40 }}
+              />
+              <p>{t("Success!")}</p>
+            </FlexColumn>
+          )
+        }
+
+        return renderForm()
+      })()}
     </article>
   )
 }
