@@ -24,11 +24,7 @@ const AssetPage = () => {
   const [chain, denom] = routeDenom.includes(":")
     ? routeDenom.split(":")
     : [undefined, routeDenom]
-  // @ts-expect-error
-  const { token, symbol, icon, decimals, chainID } = readNativeDenom(
-    denom,
-    chain
-  )
+  const { token, symbol, icon, decimals } = readNativeDenom(denom, chain)
 
   const filteredBalances = balances.filter(
     (b) => readNativeDenom(b.denom).token === token
