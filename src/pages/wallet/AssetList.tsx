@@ -15,11 +15,13 @@ import {
   useCustomTokensNative,
 } from "data/settings/CustomTokens"
 import { useIBCBaseDenoms } from "data/queries/ibc"
+import { useNetwork } from "data/wallet"
 
 const AssetList = () => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
   const { hideNoWhitelist, hideLowBal } = useTokenFilters()
+  const networks = useNetwork()
 
   const coins = useBankBalance()
   const { data: prices } = useExchangeRates()
@@ -51,10 +53,14 @@ const AssetList = () => {
             [data.ibcDenom]: {
               baseDenom: data.baseDenom,
               chainID: data.chainIDs[0],
+              chainIDs: data.chainIDs,
             },
           }
         : acc,
-    {} as Record<string, { baseDenom: string; chainID: string }>
+    {} as Record<
+      string,
+      { baseDenom: string; chainID: string; chainIDs: string[] }
+    >
   )
 
   const list = useMemo(
@@ -91,6 +97,10 @@ const AssetList = () => {
                   change: prices?.[data.token]?.change ?? 0,
                   chains: [chain],
                   id: key,
+                  whitelisted: !(
+                    data.symbol.endsWith("...") ||
+                    unknownIBCDenoms[denom]?.chainIDs.find((c) => !networks[c])
+                  ),
                 },
               }
             }
@@ -98,10 +108,11 @@ const AssetList = () => {
         ),
       ]
         .filter(
-          (a) => (hideNoWhitelist ? !a.symbol.endsWith("...") : true) // TODO: update and implement whitelist check
+          (a) => (hideNoWhitelist ? a.whitelisted : true) // TODO: update and implement whitelist check
         )
         .filter((a) => {
-          if (!hideLowBal || a.price === 0 || alwaysVisibleDenoms.has(a.denom))
+          if (!hideLowBal || alwaysVisibleDenoms.has(a.denom))
+            // || a.price === 0
             return true
           return a.price * toInput(a.balance) >= 1
         })
@@ -117,6 +128,7 @@ const AssetList = () => {
       hideLowBal,
       alwaysVisibleDenoms,
       unknownIBCDenoms,
+      networks,
     ]
   )
 
