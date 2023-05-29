@@ -111,8 +111,7 @@ const AssetList = () => {
           (a) => (hideNoWhitelist ? a.whitelisted : true) // TODO: update and implement whitelist check
         )
         .filter((a) => {
-          if (!hideLowBal || alwaysVisibleDenoms.has(a.denom))
-            // || a.price === 0
+          if (!hideLowBal || a.price === 0 || alwaysVisibleDenoms.has(a.denom))
             return true
           return a.price * toInput(a.balance) >= 1
         })
