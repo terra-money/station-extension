@@ -104,7 +104,7 @@ const AssetPage = () => {
         )}
         {filteredUnsupportedBalances.length > 0 && (
           <div>
-            <h3>{t("Chains")}</h3>
+            <h3>{t("Unsupported Chains")}</h3>
             <div className={styles.chainlist__list}>
               {filteredUnsupportedBalances
                 .sort((a, b) => parseInt(b.amount) - parseInt(a.amount))
