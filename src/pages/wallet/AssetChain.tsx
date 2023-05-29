@@ -39,7 +39,7 @@ const AssetChain = (props: Props) => {
         <h1 className={styles.name}>
           <h4>
             {name}
-            {ibcDenom && path && (
+            {ibcDenom && path && isSendBackDisabled && (
               <IbcSendBack
                 chainID={chain}
                 token={ibcDenom}

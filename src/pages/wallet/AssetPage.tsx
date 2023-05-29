@@ -136,6 +136,7 @@ const AssetPage = () => {
               previousPage: route,
             })
           }
+          disabled={filteredBalances.length === 0}
         >
           {t("Send")}
         </Button>
