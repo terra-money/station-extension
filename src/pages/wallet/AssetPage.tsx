@@ -29,10 +29,7 @@ const AssetPage = () => {
   const filteredBalances = balances.filter(
     (b) => readNativeDenom(b.denom).token === token
   )
-  const totalBalance = filteredBalances.reduce(
-    (acc, b) => acc + parseInt(b.amount),
-    0
-  )
+
   const price = symbol?.endsWith("...") ? 0 : prices?.[token]?.price ?? 0
 
   const unknownIBCDenomsData = useIBCBaseDenoms(
@@ -61,6 +58,11 @@ const AssetPage = () => {
   const filteredUnsupportedBalances = balances.filter(
     (b) => unknownIBCDenoms[b.denom]?.baseDenom === token
   )
+
+  const totalBalance = [
+    ...filteredBalances,
+    ...filteredUnsupportedBalances,
+  ].reduce((acc, b) => acc + parseInt(b.amount), 0)
 
   return (
     <>
