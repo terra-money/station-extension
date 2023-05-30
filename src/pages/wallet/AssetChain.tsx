@@ -48,7 +48,7 @@ const AssetChain = (props: Props) => {
                     <article>
                       <p>
                         {t(
-                          "This asset is coming from an unsupported chain. You can't send it back."
+                          "This asset originates from an unsupported chain and cannot be sent back."
                         )}
                       </p>
                     </article>
