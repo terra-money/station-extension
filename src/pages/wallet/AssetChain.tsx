@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next"
 import styles from "./AssetChain.module.scss"
 import IbcSendBack from "./IbcSendBack"
 import { InternalButton } from "components/general"
+import { Tooltip } from "components/display"
 
 export interface Props {
   chain: string
@@ -39,25 +40,43 @@ const AssetChain = (props: Props) => {
         <h1 className={styles.name}>
           <h4>
             {name}
-            {ibcDenom && path && !isSendBackDisabled && (
-              <IbcSendBack
-                chainID={chain}
-                token={ibcDenom}
-                title={`Send ${symbol} back to ${
-                  networks[path[0]]?.name ?? path[0]
-                }`}
-              >
-                {(open) => (
-                  <InternalButton
-                    onClick={() => !isSendBackDisabled && open()}
-                    className={styles.send__back__button}
-                    disabled={isSendBackDisabled}
-                  >
+            {ibcDenom &&
+              path &&
+              (isSendBackDisabled ? (
+                <Tooltip
+                  content={
+                    <article>
+                      <p>
+                        {t(
+                          "This asset is coming from an unsupported chain. You can't send it back."
+                        )}
+                      </p>
+                    </article>
+                  }
+                >
+                  <p className={styles.send__back__button__disabled}>
                     {t("Send back")}
-                  </InternalButton>
-                )}
-              </IbcSendBack>
-            )}
+                  </p>
+                </Tooltip>
+              ) : (
+                <IbcSendBack
+                  chainID={chain}
+                  token={ibcDenom}
+                  title={`Send ${symbol} back to ${
+                    networks[path[0]]?.name ?? path[0]
+                  }`}
+                >
+                  {(open) => (
+                    <InternalButton
+                      onClick={() => !isSendBackDisabled && open()}
+                      className={styles.send__back__button}
+                      disabled={isSendBackDisabled}
+                    >
+                      {t("Send back")}
+                    </InternalButton>
+                  )}
+                </IbcSendBack>
+              ))}
           </h4>
           {path && <p>{path.map((c) => networks[c]?.name ?? c).join(" → ")}</p>}
         </h1>

@@ -46,6 +46,14 @@
         text-decoration: underline;
       }
     }
+
+    .send__back__button__disabled {
+      color: var(--warning);
+      opacity: 0.6;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
 }
 
