@@ -5,9 +5,17 @@ import { AccAddress } from "@terra-money/feather.js"
 import { ASSETS } from "config/constants"
 import { useTokenInfoCW20 } from "./queries/wasm"
 import { useCustomTokensCW20 } from "./settings/CustomTokens"
+import {
+  useGammTokens,
+  GAMM_TOKEN_DECIMALS,
+  OSMO_ICON,
+} from "./external/osmosis"
 import { useCW20Whitelist, useIBCWhitelist } from "./Terra/TerraAssets"
 import { useWhitelist } from "./queries/chains"
-import { useNetworkName } from "./wallet"
+import { useNetworkName, useNetwork } from "./wallet"
+import { getChainIDFromAddress } from "utils/bech32"
+
+const DEFAULT_NATIVE_DECIMALS = 6
 
 export const useTokenItem = (
   token: Token,
@@ -77,11 +85,55 @@ export const useNativeDenoms = () => {
   const { whitelist, ibcDenoms, legacyWhitelist } = useWhitelist()
   const { list: cw20 } = useCustomTokensCW20()
   const networkName = useNetworkName()
+  const networks = useNetwork()
+  const gammTokens = useGammTokens()
+
+  let decimals = DEFAULT_NATIVE_DECIMALS
 
   function readNativeDenom(denom: Denom, chainID?: string): TokenItem {
-    const fixedDenom = denom.startsWith("ibc/")
-      ? `${readDenom(denom).substring(0, 5)}...`
-      : readDenom(denom)
+    let fixedDenom = ""
+    let tokenType = ""
+
+    if (denom.startsWith("ibc/")) {
+      tokenType = "ibc"
+    } else if (denom.startsWith("factory/")) {
+      tokenType = "factory"
+    } else if (denom.startsWith("gamm/")) {
+      tokenType = "gamm"
+      decimals = GAMM_TOKEN_DECIMALS
+    }
+
+    switch (tokenType) {
+      case "ibc":
+        fixedDenom = `${readDenom(denom).substring(0, 5)}...`
+        break
+
+      case "gamm":
+        fixedDenom = gammTokens.get(denom) ?? readDenom(denom)
+        break
+
+      case "factory": {
+        // TODO - lookup whitelist for factory tokens.
+        fixedDenom = "..."
+        break
+      }
+
+      default:
+        fixedDenom = readDenom(denom)
+    }
+
+    let factoryIcon
+    if (tokenType === "factory") {
+      const tokenAddress = denom.split(/[/:]/)[1]
+      const chainID = getChainIDFromAddress(tokenAddress, networks)
+      if (chainID) {
+        factoryIcon = networks[chainID].icon
+      }
+    }
+
+    if (tokenType === "gamm") {
+      factoryIcon = OSMO_ICON
+    }
 
     // native token
     if (chainID) {
@@ -116,10 +168,13 @@ export const useNativeDenoms = () => {
         token: denom,
         symbol: fixedDenom,
         name: fixedDenom,
-        icon: denom.startsWith("ibc/")
-          ? "https://assets.terra.money/icon/svg/IBC.svg"
-          : "https://assets.terra.money/icon/svg/Terra.svg",
-        decimals: 6,
+        icon:
+          tokenType === "ibc"
+            ? "https://assets.terra.money/icon/svg/IBC.svg"
+            : tokenType === "factory" || tokenType === "gamm"
+            ? factoryIcon
+            : "https://assets.terra.money/icon/svg/Terra.svg",
+        decimals,
       }
     )
   }
