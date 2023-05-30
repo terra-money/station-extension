@@ -7,18 +7,21 @@ export const storeNetwork = (
   network: TerraNetwork,
   networks: Record<ChainID, InterchainNetwork>
 ) => {
-  extension.storage?.local.set({ network, networks })
+  extension.storage?.local.set({ network, networks, networkName: network.name })
 }
 
 /* wallet */
-export const storeWalletAddress = (
-  address: AccAddress,
-  addresses: Record<ChainID, AccAddress>,
-  ledger?: boolean,
+export const storeWalletAddress = (wallet: {
+  address: AccAddress
+  addresses: Record<ChainID, AccAddress>
+  name?: string
+  ledger?: boolean
   pubkey?: { "330": string; "118"?: string }
-) => {
+  network: string
+  theme: string
+}) => {
   extension.storage?.local.set({
-    wallet: { address, addresses, ledger, pubkey },
+    wallet,
   })
 }
 

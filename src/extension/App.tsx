@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useRoutes } from "react-router-dom"
-import { useAddress, useChainID, useNetwork, useNetworkName } from "data/wallet"
+import { useAddress, useChainID, useNetworkName } from "data/wallet"
 import { ErrorBoundary } from "components/feedback"
 import { fallback } from "app/App"
 import InitBankBalance from "app/InitBankBalance"
@@ -17,31 +17,42 @@ import Auth from "./auth/Auth"
 import Header from "./layouts/Header"
 import Front from "./modules/Front"
 import ManageWallets from "./auth/SelectWallets"
-import { useInterchainAddresses, usePubkey } from "auth/hooks/useAddress"
+import { useAllInterchainAddresses, usePubkey } from "auth/hooks/useAddress"
 import { Flex } from "components/layout"
 import NetworkStatus from "components/display/NetworkStatus"
 import Preferences from "app/sections/Preferences"
 import { useAuth } from "auth"
 import is from "auth/scripts/is"
+import { useNetworks } from "app/InitNetworks"
+import { useTheme } from "data/settings/Theme"
 
 const App = () => {
-  const network = useNetwork()
+  const { networks } = useNetworks()
   const name = useNetworkName()
   const chainID = useChainID()
   const address = useAddress()
   const pubkey = usePubkey()
-  const addresses = useInterchainAddresses()
+  const addresses = useAllInterchainAddresses()
+  const { name: theme } = useTheme()
   const { wallet } = useAuth()
 
   useEffect(() => {
-    storeNetwork({ ...network[chainID], name }, network)
-  }, [network, chainID, name])
+    storeNetwork({ ...networks[name][chainID], name }, networks[name])
+  }, [networks, chainID, name])
 
   useEffect(() => {
     if (address)
-      storeWalletAddress(address, addresses ?? {}, is.ledger(wallet), pubkey)
+      storeWalletAddress({
+        address,
+        addresses: addresses ?? {},
+        name: wallet?.name,
+        ledger: is.ledger(wallet),
+        pubkey,
+        network: name,
+        theme,
+      })
     else clearWalletAddress()
-  }, [address, addresses, pubkey, wallet])
+  }, [address, addresses, pubkey, wallet, name, theme])
 
   const routes = useRoutes([
     { path: "/networks", element: <ManageNetworks /> },
