@@ -2,7 +2,14 @@ import BigNumber from "bignumber.js"
 import numeral from "numeral"
 import { isNil, pickBy } from "ramda"
 import { warn } from "./utils"
-import { isDenom, isDenomIBC, isDenomLuna, isDenomTerra } from "./is"
+import {
+  isDenom,
+  isDenomIBC,
+  isDenomGamm,
+  isDenomLuna,
+  isDenomTerra,
+  isDenomFactory
+} from "./is"
 
 const ROUNDING_MODE = BigNumber.ROUND_DOWN
 
@@ -85,16 +92,25 @@ export const toAmount = (
 }
 
 /* denom */
-export const readDenom = (denom: string) =>
-  !isDenom(denom)
-    ? ""
-    : isDenomLuna(denom)
-    ? "Luna"
-    : isDenomTerra(denom)
-    ? `${denom.slice(1, 3).toUpperCase()}T`
-    : isDenomIBC(denom)
-    ? denom.replace("ibc/", "")
-    : denom.slice(1).toUpperCase()
+export const readDenom = (denom: string) => {
+  if (!isDenom(denom)) {
+    return ""
+  } else {
+    if (isDenomLuna(denom)) {
+      return "Luna"
+    } else if (isDenomTerra(denom)) {
+      return `${denom.slice(1, 3).toUpperCase()}T`
+    } else if (isDenomIBC(denom)) {
+      return denom.replace("ibc/", "")
+    } else if (isDenomGamm(denom)) {
+      return denom.replace("gamm/", "")
+    } else if (isDenomFactory(denom)) {
+      return denom.replace("factory/", "")
+    } else {
+      return denom.slice(1).toUpperCase()
+    }
+  }
+}
 
 /* percent */
 export const formatPercent = (
