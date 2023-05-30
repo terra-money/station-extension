@@ -1,16 +1,20 @@
-import { PropsWithChildren, ReactNode } from "react"
-import { Card } from "components/layout"
 import { ErrorBoundary, WithFetching } from "components/feedback"
-import Container from "../layouts/Container"
+import { PropsWithChildren, ReactNode } from "react"
 import styles from "./ExtensionPage.module.scss"
+import { ArrowBack } from "@mui/icons-material"
+import { useNavigate } from "react-router-dom"
+import Container from "../layouts/Container"
+import { Card } from "components/layout"
 
 interface Props extends QueryState {
   header?: ReactNode
   title?: string
+  backButtonPath?: string
 }
 
 const ExtensionPage = (props: PropsWithChildren<Props>) => {
-  const { header, title, children } = props
+  const navigate = useNavigate()
+  const { header, title, backButtonPath, children } = props
 
   return (
     <WithFetching {...props}>
@@ -28,6 +32,9 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
             {title && (
               <header className={styles.header}>
                 <h1 className={styles.title}>
+                  {backButtonPath && (
+                    <ArrowBack onClick={() => navigate(backButtonPath)} />
+                  )}
                   <Container className={styles.container}>{title}</Container>
                 </h1>
               </header>
