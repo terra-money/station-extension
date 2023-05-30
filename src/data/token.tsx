@@ -86,7 +86,8 @@ export const useNativeDenoms = () => {
 
   let decimals = DEFAULT_NATIVE_DECIMALS
 
-  function readNativeDenom(denom: Denom): TokenItem {
+  function readNativeDenom(denom: Denom, chainID?: string): TokenItem {
+    let fixedDenom = ""
     let tokenType = ""
 
     if (denom.startsWith("ibc/")) {
@@ -97,8 +98,6 @@ export const useNativeDenoms = () => {
       tokenType = "gamm"
       decimals = GAMM_TOKEN_DECIMALS
     }
-
-    let fixedDenom = ""
 
     switch (tokenType) {
       case "ibc":
