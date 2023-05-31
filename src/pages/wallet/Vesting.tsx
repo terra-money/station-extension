@@ -23,7 +23,8 @@ const Vesting = () => {
       <Asset
         chains={["phoenix-1"]}
         denom={"uluna"}
-        {...readNativeDenom("uluna")}
+        {...readNativeDenom("uluna", "phoenix-1")}
+        id={"phoenix-1:uluna"}
         balance={schedule.amount.total}
         hideActions
       />
