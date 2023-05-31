@@ -3,7 +3,7 @@ import update from "immutability-helper"
 import { DefaultCustomTokensItem } from "utils/localStorage"
 import { getLocalSetting, setLocalSetting } from "utils/localStorage"
 import { SettingKey } from "utils/localStorage"
-import { useNetworkName } from "../wallet"
+import { useChainID, useNetworkName } from "../wallet"
 
 const customTokensState = atom({
   key: "customTokens",
@@ -18,13 +18,17 @@ interface Params<T> {
 const useCustomTokens = <T extends CustomToken>({ type, key }: Params<T>) => {
   const [customTokens, setCustomTokens] = useRecoilState(customTokensState)
   const networkName = useNetworkName()
+  const chainID = useChainID()
   const list = (customTokens[networkName]?.[type] ?? []) as T[]
 
   const getIsAdded = (param: T) =>
     !!list.find((item) => item[key] === param[key])
 
   const updateList = (list: T[]) => {
-    const prev = { [networkName]: DefaultCustomTokensItem, ...customTokens }
+    const prev = {
+      [networkName]: DefaultCustomTokensItem(chainID),
+      ...customTokens,
+    }
     const next = update(prev, { [networkName]: { [type]: { $set: list } } })
     setCustomTokens(next)
     setLocalSetting(SettingKey.CustomTokens, next)
@@ -46,7 +50,7 @@ export const useCustomTokensCW20 = () => {
 }
 
 export const useCustomTokensNative = () => {
-  return useCustomTokens<NativeTokenBasicInfo>({ type: "native", key: "denom" })
+  return useCustomTokens<NativeTokenBasicInfo>({ type: "native", key: "id" })
 }
 
 export const useCustomTokensCW721 = () => {
