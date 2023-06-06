@@ -18,12 +18,6 @@ import ExtensionPage from "../components/ExtensionPage"
 import ConfirmButtons from "../components/ConfirmButtons"
 import TxDetails from "./TxDetails"
 import OriginCard from "extension/components/OriginCard"
-import { RefetchOptions, queryKey } from "data/query"
-import { useQuery } from "react-query"
-import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { useChainID, useNetwork } from "data/wallet"
-import { useInterchainLCDClient } from "data/queries/lcdClient"
-import { Fee } from "@terra-money/feather.js"
 
 interface Values {
   password: string
@@ -35,12 +29,6 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const { wallet, ...auth } = useAuth()
   const { actions } = useRequest()
   const passwordRequired = isWallet.single(wallet)
-  const addresses = useInterchainAddresses()
-  const network = useNetwork()
-  const lcd = useInterchainLCDClient()
-  const terraChainID = useChainID()
-  const chainID =
-    "tx" in props ? props.tx.chainID ?? terraChainID : terraChainID
 
   /* form */
   const form = useForm<Values>({
@@ -72,61 +60,6 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
       ? t("Enter password")
       : ""
 
-  const { data: estimatedGas, ...estimatedGasState } = useQuery(
-    [queryKey.tx.create, props, addresses?.[chainID], network[chainID]],
-    async () => {
-      if (!("tx" in props)) return 0
-      const { tx } = props
-
-      try {
-        if (!addresses || !addresses[tx.chainID] || !network[tx.chainID])
-          return 0
-        const { baseAsset, gasPrices } = network[tx.chainID]
-
-        const feeDenom =
-          baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices)[0]
-
-        const unsignedTx = await lcd.tx.create(
-          [{ address: addresses[tx.chainID] }],
-          {
-            ...tx,
-            feeDenoms: [feeDenom],
-          }
-        )
-
-        return unsignedTx.auth_info.fee.gas_limit
-      } catch (error) {
-        console.error(error)
-        return 200_000
-      }
-    },
-    {
-      ...RefetchOptions.INFINITY,
-      // To handle sequence mismatch
-      retry: 3,
-      retryDelay: 1000,
-      refetchOnWindowFocus: false,
-      enabled:
-        "tx" in props && !props.tx.fee?.gas_limit && !!addresses?.[chainID],
-    }
-  )
-
-  let fee: Fee | undefined
-
-  if ("tx" in props && network[props.tx.chainID]) {
-    const { tx } = props
-    fee = tx.fee
-    if (!tx.fee?.gas_limit) {
-      const { baseAsset, gasPrices, gasAdjustment } = network[tx.chainID]
-      const gas = (estimatedGas ?? 0) * gasAdjustment
-
-      const feeDenom =
-        baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices)[0]
-
-      fee = new Fee(gas, { [feeDenom]: gasPrices[feeDenom] * gas })
-    }
-  }
-
   const navigate = useNavigate()
   const toPostMultisigTx = useToPostMultisigTx()
   const submit = async ({ password }: Values) => {
@@ -134,7 +67,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
 
     if ("tx" in props) {
       const { requestType, tx, signMode } = props
-      const txOptions = { ...tx, fee }
+      const txOptions = tx
 
       try {
         if (disabled) throw new Error(disabled)
@@ -206,17 +139,6 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const SIZE = { width: 100, height: 100 }
   const label = props.requestType === "post" ? t("Post") : t("Sign")
 
-  if (estimatedGasState.isLoading) {
-    return (
-      <Overlay>
-        <FlexColumn gap={20}>
-          <img {...SIZE} src={animation} alt={t("Estimating fees...")} />
-          <p>{t("Estimating fees...")}</p>
-        </FlexColumn>
-      </Overlay>
-    )
-  }
-
   return submitting ? (
     <Overlay>
       <FlexColumn gap={20}>
@@ -227,7 +149,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   ) : (
     <ExtensionPage header={<OriginCard hostname={props.origin} />}>
       <Grid gap={20}>
-        {"tx" in props && <TxDetails {...props} tx={{ ...props.tx, fee }} />}
+        {"tx" in props && <TxDetails {...props} />}
 
         {warning && <FormWarning>{warning}</FormWarning>}
         {error && <FormError>{error}</FormError>}
