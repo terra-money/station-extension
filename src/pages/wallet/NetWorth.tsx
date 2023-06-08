@@ -17,11 +17,13 @@ import qs from "qs"
 import { useNetwork } from "data/wallet"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useNetworkName } from "data/wallet"
+import { useIsWalletEmpty } from "data/queries/bank"
 
 const cx = classNames.bind(styles)
 
 const NetWorth = () => {
   const { t } = useTranslation()
+  const isWalletEmpty = useIsWalletEmpty()
   const currency = useCurrency()
   const coins = useBankBalance()
   const { data: prices } = useExchangeRates()
@@ -81,6 +83,7 @@ const NetWorth = () => {
         <div className={styles.button__wrapper}>
           <Button
             color="primary"
+            disabled={isWalletEmpty}
             onClick={() =>
               setRoute({
                 path: Path.send,
