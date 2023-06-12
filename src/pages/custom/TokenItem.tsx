@@ -7,6 +7,7 @@ import { truncate } from "@terra-money/terra-utils"
 import { FinderLink } from "components/general"
 import { Token } from "components/token"
 import styles from "./TokenItem.module.scss"
+import { AccAddress } from "@terra-money/feather.js"
 
 const cx = classNames.bind(styles)
 
@@ -29,12 +30,16 @@ const TokenItem = ({ added, onAdd, onRemove, ...props }: Props) => {
   const { token, contract, decimals, ...rest } = props
   const { t } = useTranslation()
 
-  const link = contract && (
-    <FinderLink value={contract}>
-      {truncate(contract)}
-      {!isNil(decimals) && `(${t("decimals")}: ${decimals ?? "6"})`}
-    </FinderLink>
-  )
+  let link
+  if (contract && AccAddress.validate(token)) {
+    link = (
+      <FinderLink value={contract}>
+        {truncate(contract)}
+        {!isNil(decimals) && `(${t("decimals")}: ${decimals ?? "6"})`}
+      </FinderLink>
+    )
+  }
+  // TODO: Link to native token pages.
 
   return (
     <Token
