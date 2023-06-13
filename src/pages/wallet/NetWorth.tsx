@@ -20,11 +20,13 @@ import { useNetworkName } from "data/wallet"
 import { ReactComponent as SendIcon } from "styles/images/icons/Send_v2.svg"
 import { ReactComponent as ReceiveIcon } from "styles/images/icons/Receive_v2.svg"
 import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
+import { useIsWalletEmpty } from "data/queries/bank"
 
 const cx = classNames.bind(styles)
 
 const NetWorth = () => {
   const { t } = useTranslation()
+  const isWalletEmpty = useIsWalletEmpty()
   const currency = useCurrency()
   const coins = useBankBalance()
   const { data: prices } = useExchangeRates()
@@ -92,6 +94,7 @@ const NetWorth = () => {
           <Button
             color="primary"
             className={styles.wallet_primary}
+            disabled={isWalletEmpty}
             onClick={() =>
               setRoute({
                 path: Path.send,
