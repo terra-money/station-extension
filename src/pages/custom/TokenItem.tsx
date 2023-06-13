@@ -39,7 +39,6 @@ const TokenItem = ({ added, onAdd, onRemove, ...props }: Props) => {
       </FinderLink>
     )
   }
-  // TODO: Link to native token pages.
 
   return (
     <Token
