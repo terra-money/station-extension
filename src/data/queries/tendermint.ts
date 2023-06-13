@@ -1,9 +1,9 @@
-import { useQueries, useQuery } from "react-query"
-import axios from "axios"
-import { queryKey, RefetchOptions } from "../query"
-import { useNetworks } from "app/InitNetworks"
 import { VALIDATION_TIMEOUT } from "config/constants"
+import { queryKey, RefetchOptions } from "../query"
+import { useQueries, useQuery } from "react-query"
+import { useNetworks } from "app/InitNetworks"
 import { randomAddress } from "utils/bech32"
+import axios from "axios"
 
 export const useLocalNodeInfo = (chainID: string) => {
   const { networks } = useNetworks()
@@ -84,13 +84,15 @@ export const useValidNetworks = (networks: Network[]) => {
         queryFn: async () => {
           if (prefix === "terra") return chainID
 
-          const { data } = await axios.get(
+          const { data } = (await axios.get(
             `/cosmos/bank/v1beta1/balances/${randomAddress(prefix)}`,
             {
               baseURL: lcd, // TODO: pass custom lcd to the function
               timeout: VALIDATION_TIMEOUT,
             }
-          )
+          )) || {
+            data: {},
+          }
 
           if (Array.isArray(data.balances)) return chainID
         },
