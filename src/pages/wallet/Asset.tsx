@@ -40,9 +40,10 @@ const Asset = (props: Props) => {
   return (
     <article
       className={styles.asset}
-      onClick={() =>
-        setRoute({ path: Path.coin, denom: id, previousPage: route })
-      }
+      onClick={() => {
+        if (route.path !== Path.coin)
+          setRoute({ path: Path.coin, denom: id, previousPage: route })
+      }}
     >
       <section className={styles.details}>
         <div className={styles.token__icon__container}>
