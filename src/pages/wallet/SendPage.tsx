@@ -265,7 +265,8 @@ const SendPage = () => {
                 addresses[token?.chain ?? ""],
                 address,
                 undefined,
-                (Date.now() + 120 * 1000) * 1e6
+                (Date.now() + 120 * 1000) * 1e6,
+                undefined
               ),
             ]
 
@@ -350,11 +351,13 @@ const SendPage = () => {
                   })}
                   autoFocus
                 >
-                  {availableAssets.map(({ denom, symbol }, i) => (
-                    <option value={denom} key={i}>
-                      {symbol}
-                    </option>
-                  ))}
+                  {availableAssets
+                    .filter(({ symbol }) => !symbol.endsWith("..."))
+                    .map(({ denom, symbol }, i) => (
+                      <option value={denom} key={i}>
+                        {symbol}
+                      </option>
+                    ))}
                 </Select>
               </FormItem>
               {availableChains && (
