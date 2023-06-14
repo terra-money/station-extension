@@ -31,5 +31,5 @@
     "128": "icon-128.png",
     "180": "icon-180.png"
   },
-  "permissions": ["storage"]
+  "permissions": ["storage", "alarms"]
 }
