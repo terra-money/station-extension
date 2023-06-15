@@ -49,7 +49,7 @@ export function getChainNamefromID(
   chains: Record<string, InterchainNetwork>
 ) {
   return (
-    Object.values(chains)
+    Object.values(chains ?? {})
       .find(({ chainID }) => chainID === id)
       ?.name.toLowerCase() ?? ""
   )
@@ -60,7 +60,7 @@ export function getChainIdFromAddress(
   chains: Record<string, InterchainNetwork>
 ) {
   return (
-    Object.values(chains)
+    Object.values(chains ?? {})
       .find(({ prefix }) => address.includes(prefix))
       ?.chainID.toLowerCase() ?? ""
   )

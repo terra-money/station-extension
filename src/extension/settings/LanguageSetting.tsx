@@ -7,7 +7,7 @@ const LanguageSetting = () => {
 
   return (
     <RadioGroup
-      options={Object.values(Languages)}
+      options={Object.values(Languages ?? {})}
       value={i18n.language}
       onChange={(language) => i18n.changeLanguage(language)}
     />

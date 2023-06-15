@@ -29,7 +29,7 @@ export const useAllInterchainAddresses = () => {
   const words = wallet?.words
   if (!words) return
 
-  const addresses = Object.values(networks[networkName])
+  const addresses = Object.values(networks[networkName] ?? {})
     .filter(({ coinType }) => !!words[coinType])
     .reduce((acc, { prefix, coinType, chainID }) => {
       acc[chainID] = addressFromWords(words[coinType] as string, prefix)
@@ -51,7 +51,7 @@ export const useInterchainAddresses = () => {
   const words = wallet?.words
   if (!words) return
 
-  const addresses = Object.values(networks).reduce(
+  const addresses = Object.values(networks ?? {}).reduce(
     (acc, { prefix, coinType, chainID }) => {
       acc[chainID] = addressFromWords(words[coinType] as string, prefix)
       return acc

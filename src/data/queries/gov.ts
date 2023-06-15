@@ -44,7 +44,7 @@ export const useProposals = (status: Proposal.Status) => {
   return useQuery(
     [queryKey.gov.proposals, status],
     async () => {
-      const chainList = Object.keys(networks)
+      const chainList = Object.keys(networks ?? {})
       // TODO: Pagination
       // Required when the number of results exceed 100
       // About 50 passed propsals from 2019 to 2021

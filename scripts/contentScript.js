@@ -78,8 +78,8 @@ function setupEvents() {
         changes.wallet &&
         (changes.wallet.oldValue.address !== changes.wallet.newValue.address ||
           changes.wallet.oldValue.name !== changes.wallet.newValue.name ||
-          Object.values(changes.wallet.oldValue.pubkey).join(",") !==
-            Object.values(changes.wallet.newValue.pubkey).join(","))
+          Object.values(changes.wallet.oldValue.pubkey ?? {}).join(",") !==
+            Object.values(changes.wallet.newValue.pubkey ?? {}).join(","))
       ) {
         const event = new CustomEvent("station_wallet_change", {
           detail: changes.wallet.newValue,

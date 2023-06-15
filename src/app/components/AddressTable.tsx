@@ -26,7 +26,7 @@ const AddressTable = (props: Props) => {
 
   const addressData = useMemo(
     () =>
-      Object.keys(addresses)
+      Object.keys(addresses ?? {})
         .map((key) => ({
           address: addresses?.[key],
           chainName: getChainNamefromID(key, networks) ?? key,

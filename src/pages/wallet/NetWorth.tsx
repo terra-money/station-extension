@@ -29,7 +29,7 @@ const NetWorth = () => {
   const networks = useNetwork()
   const chainID = useChainID()
   const availableGasDenoms = useMemo(() => {
-    return Object.keys(networks[chainID]?.gasPrices || {})
+    return Object.keys(networks[chainID]?.gasPrices ?? {})
   }, [chainID, networks])
   const sendButtonDisabled = isWalletEmpty && !!availableGasDenoms.length
 
@@ -54,7 +54,7 @@ const NetWorth = () => {
   }, 0)
   const onToAddressMulti =
     addresses &&
-    Object.keys(addresses)
+    Object.keys(addresses ?? {})
       .map((key) => `${network[key].name}:${addresses[key]}`)
       .join(",")
 

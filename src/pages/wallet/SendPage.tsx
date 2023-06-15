@@ -92,7 +92,7 @@ const SendPage = () => {
         }, {} as Record<string, AssetType>)
       ).sort(
         (a, b) => b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
-      ),
+      ) ?? {},
     [balances, readNativeDenom, prices]
   )
   const defaultAsset = route?.denom || availableAssets[0].denom
