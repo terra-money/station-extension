@@ -32,10 +32,12 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
             {title && (
               <header className={styles.header}>
                 <h1 className={styles.title}>
-                  {backButtonPath && (
-                    <ArrowBack onClick={() => navigate(backButtonPath)} />
-                  )}
-                  <Container className={styles.container}>{title}</Container>
+                  <Container className={styles.container}>
+                    {backButtonPath && (
+                      <ArrowBack onClick={() => navigate(backButtonPath)} />
+                    )}{" "}
+                    {title}
+                  </Container>
                 </h1>
               </header>
             )}

@@ -18,14 +18,22 @@
   .header > & {
     padding-bottom: 16px;
   }
+
+  svg {
+    padding-top: 5px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
 
 .header {
   padding-top: 20px;
   color: var(--extension-text);
-  text-align: center;
+  text-align: left;
 }
 
 .title {
-  font-size: 18px;
+  font-size: 22px;
 }
