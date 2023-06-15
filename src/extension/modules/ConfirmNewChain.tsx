@@ -24,7 +24,7 @@ const ConfirmNewChain = (request: SuggestChainRequest) => {
   const { hostname } = new URL(origin)
   const { data: errorMessage, isLoading } = useValidateLCD(
     chain.lcd,
-    chain.chainID
+    chain?.chainID
   )
 
   if (networkName !== network || !["mainnet", "testnet"].includes(network)) {
@@ -47,7 +47,7 @@ const ConfirmNewChain = (request: SuggestChainRequest) => {
               <header className={styles.header}>
                 <p className={styles.txhash}>
                   <span className={styles.chain}>
-                    <img src={chain.icon} alt={chain.chainID} />
+                    <img src={chain.icon} alt={chain?.chainID} />
                     {chain.name}
                   </span>
                 </p>
@@ -57,7 +57,7 @@ const ConfirmNewChain = (request: SuggestChainRequest) => {
               <Dl>
                 <Fragment>
                   <dt>ChainID: </dt>
-                  <dd>{chain.chainID}</dd>
+                  <dd>{chain?.chainID}</dd>
                 </Fragment>
                 <Fragment>
                   <dt>LCD: </dt>
@@ -126,7 +126,7 @@ const ConfirmNewChain = (request: SuggestChainRequest) => {
                     ...customChains,
                     [network]: {
                       ...customChains[network],
-                      [chain.chainID]: { ...chain, isCustom: true },
+                      [chain?.chainID]: { ...chain, isCustom: true },
                     },
                   })
                   actions.chain(request, true)

@@ -31,10 +31,10 @@ const StakeTx = () => {
 
   const { data: balances, ...balancesState } = useBalances()
   const { data: validators, ...validatorsState } = useValidators(
-    network.chainID
+    network?.chainID
   )
   const { data: delegations, ...delegationsState } = useDelegations(
-    network.chainID
+    network?.chainID
   )
   const state = combineState(balancesState, validatorsState, delegationsState)
 
@@ -52,7 +52,7 @@ const StakeTx = () => {
       balances,
       validators,
       delegations,
-      chainID: network.chainID,
+      chainID: network?.chainID,
     }
     return <StakeForm {...props} />
   }

@@ -305,16 +305,16 @@ export const useCalcInterchainDelegationsTotal = (
               delegationsByDemon[balance.denom] = currecyPrice
               delegationsAmountsByDemon[balance.denom] = amount
 
-              if (!delegationsByChain[result.data.chainID]) {
-                delegationsByChain[result.data.chainID] = {}
-                delegationsByChain[result.data.chainID][balance.denom] = {
+              if (!delegationsByChain[result.data?.chainID]) {
+                delegationsByChain[result.data?.chainID] = {}
+                delegationsByChain[result.data?.chainID][balance.denom] = {
                   value: 0,
                   amount: 0,
                 }
               }
 
               const chainSpecificAmount = BigNumber.sum(
-                delegationsByChain[result.data.chainID][balance.denom]
+                delegationsByChain[result.data?.chainID][balance.denom]
                   ?.amount || 0,
                 balance.amount.toNumber()
               ).toNumber()
@@ -323,7 +323,7 @@ export const useCalcInterchainDelegationsTotal = (
                 (chainSpecificAmount * (prices?.[token]?.price || 0)) /
                 10 ** decimals
 
-              delegationsByChain[result.data.chainID][balance.denom] = {
+              delegationsByChain[result.data?.chainID][balance.denom] = {
                 value: chainSpecificCurrecyPrice,
                 amount: chainSpecificAmount,
               }
@@ -423,15 +423,15 @@ export const useCalcDelegationsByValidator = (
               delegationsPriceByDenom[balance.denom] = currecyPrice
               delegationsAmountsByDenom[balance.denom] = amount
 
-              if (!validatorByChain[result.data.chainID]) {
-                validatorByChain[result.data.chainID] = {}
+              if (!validatorByChain[result.data?.chainID]) {
+                validatorByChain[result.data?.chainID] = {}
               }
 
               const delegatorCurrecyPrice =
                 (balance.amount.toNumber() * (prices?.[token]?.price || 0)) /
                 10 ** decimals
 
-              validatorByChain[result.data.chainID][validator_address] = {
+              validatorByChain[result.data?.chainID][validator_address] = {
                 value: delegatorCurrecyPrice,
                 amount: balance.amount.toNumber(),
                 denom: balance.denom,
