@@ -6,7 +6,7 @@ const DeleteWalletPage = () => {
   const { t } = useTranslation()
 
   return (
-    <ExtensionPage title={t("Delete wallet")}>
+    <ExtensionPage title={t("Delete wallet")} backButtonPath="/">
       <DeleteWalletForm />
     </ExtensionPage>
   )
