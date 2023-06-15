@@ -106,7 +106,7 @@ export default function ManageWallets() {
       {path !== Path.select && (
         <button
           onClick={() => setPath(Path.select)}
-          style={{ position: "absolute", top: 16, left: 20 }}
+          style={{ position: "absolute", top: 43, left: 30 }}
         >
           <KeyboardBackspaceRoundedIcon style={{ fontSize: 24 }} />
         </button>

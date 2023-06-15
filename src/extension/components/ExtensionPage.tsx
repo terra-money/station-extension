@@ -1,7 +1,10 @@
 import { ErrorBoundary, WithFetching } from "components/feedback"
 import { PropsWithChildren, ReactNode } from "react"
 import styles from "./ExtensionPage.module.scss"
-import { ArrowBack } from "@mui/icons-material"
+// import { ArrowBack } from "@mui/icons-material"
+// import KeyboardBackspaceRoundedIcon from "@mui/icons-material/KeyboardBackspaceRounded"
+import { ReactComponent as BackIcon } from "styles/images/icons/BackButton.svg"
+
 import { useNavigate } from "react-router-dom"
 import Container from "../layouts/Container"
 import { Card } from "components/layout"
@@ -30,16 +33,26 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
             )}
 
             {title && (
-              <header className={styles.header}>
-                <h1 className={styles.title}>
-                  <Container className={styles.container}>
+              <Container className={styles.container}>
+                <header className={styles.header}>
+                  <div className={styles.title_container}>
                     {backButtonPath && (
-                      <ArrowBack onClick={() => navigate(backButtonPath)} />
+                      <BackIcon
+                        width={18}
+                        height={18}
+                        onClick={() => navigate(backButtonPath)}
+                      />
                     )}{" "}
-                    {title}
-                  </Container>
-                </h1>
-              </header>
+                    <h1
+                      className={`${styles.title} ${
+                        backButtonPath ? styles.skew_title : ""
+                      }`}
+                    >
+                      {title}
+                    </h1>
+                  </div>
+                </header>
+              </Container>
             )}
 
             <section className={styles.main}>

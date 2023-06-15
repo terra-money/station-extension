@@ -7,6 +7,12 @@
   // padding here to position progress bar
 }
 
+.title_container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .container {
   padding: 20px;
 
@@ -20,7 +26,7 @@
   }
 
   svg {
-    padding-top: 5px;
+    z-index: 10;
 
     &:hover {
       cursor: pointer;
@@ -36,4 +42,11 @@
 
 .title {
   font-size: 22px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  &.skew_title {
+    margin-left: -34px;
+  }
 }
