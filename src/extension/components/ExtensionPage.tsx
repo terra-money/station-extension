@@ -1,8 +1,6 @@
 import { ErrorBoundary, WithFetching } from "components/feedback"
 import { PropsWithChildren, ReactNode } from "react"
 import styles from "./ExtensionPage.module.scss"
-// import { ArrowBack } from "@mui/icons-material"
-// import KeyboardBackspaceRoundedIcon from "@mui/icons-material/KeyboardBackspaceRounded"
 import { ReactComponent as BackIcon } from "styles/images/icons/BackButton.svg"
 
 import { useNavigate } from "react-router-dom"
