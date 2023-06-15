@@ -77,7 +77,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
         const { baseAsset, gasPrices } = network[tx?.chainID]
 
         const feeDenom =
-          baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices)[0]
+          baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices ?? {})[0]
 
         const unsignedTx = await lcd.tx.create(
           [{ address: addresses[tx?.chainID] }],
@@ -114,7 +114,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
       const gas = Math.ceil((estimatedGas ?? 0) * gasAdjustment)
 
       const feeDenom =
-        baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices)[0]
+        baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices ?? {})[0]
 
       fee = new Fee(gas, { [feeDenom]: Math.ceil(gasPrices[feeDenom] * gas) })
     }

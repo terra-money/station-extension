@@ -20,7 +20,7 @@ const ChainFilter = ({
   swap?: boolean
 }) => {
   const { t } = useTranslation()
-  const networks = Object.values(useNetwork()).sort((a, b) =>
+  const networks = Object.values(useNetwork() ?? {}).sort((a, b) =>
     a.name === "Terra" ? -1 : b.name === "Terra" ? 1 : 0
   )
   const [selectedChain, setChain] = useState<string | undefined>(

@@ -46,7 +46,7 @@ const Unbondings = () => {
       })
 
       const { token, decimals } = readNativeDenom(
-        Object.values(networks).find(
+        Object.values(networks ?? {}).find(
           ({ prefix }) => prefix === unbonding.delegator_address
         )?.baseAsset || "uluna"
       )

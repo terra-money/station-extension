@@ -33,7 +33,7 @@ const TerraAddress = ({ children: address }: { children: string }) => {
   const addresses = useInterchainAddresses()
 
   const name = useMemo(() => {
-    if (addresses && Object.values(addresses).includes(address))
+    if (addresses && Object.values(addresses ?? {}).includes(address))
       return "my wallet" // Do not translate this
     if (!(contracts && tokens)) return
     const contract = contracts[address] ?? tokens[address]

@@ -50,7 +50,7 @@ const SettingsSelector = ({ value, options, onChange, withSearch }: Props) => {
               >
                 <div className={styles.icons_container}>
                   <div>{label}</div>
-                  {Object.keys(networksOnSelection).length > 1 && (
+                  {Object.keys(networksOnSelection ?? {}).length > 1 && (
                     <Tooltip content={t("View active chains")}>
                       <KeyboardArrowDownIcon
                         className={styles.icon}
@@ -75,8 +75,8 @@ const SettingsSelector = ({ value, options, onChange, withSearch }: Props) => {
                   openAcc === index + 1 ? "opened" : ""
                 )}
               >
-                {Object.keys(networksOnSelection).length > 1 &&
-                  Object.keys(networksOnSelection).map((network: any) => {
+                {Object.keys(networksOnSelection ?? {}).length > 1 &&
+                  Object.keys(networksOnSelection ?? {}).map((network: any) => {
                     return (
                       <div
                         className={styles.network}

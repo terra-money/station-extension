@@ -8,7 +8,7 @@ const ProposalSummary = ({ proposal }: { proposal: Proposal }) => {
   if (!proposal.content) return null
   const contentData = proposal.content.toData()
 
-  const details = Object.entries(contentData)
+  const details = Object.entries(contentData ?? {})
     .filter(([key]) => !["@type", "title", "description"].includes(key))
     .map(([key, content]) => ({
       title: capitalize(key),
