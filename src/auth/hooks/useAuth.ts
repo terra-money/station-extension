@@ -170,8 +170,8 @@ const useAuth = () => {
     if (!wallet) throw new Error("Wallet is not defined")
     const { words } = wallet
     const address = addressFromWords(
-      words[networks[txOptions.chainID].coinType] ?? "",
-      networks[txOptions.chainID]?.prefix
+      words[networks[txOptions?.chainID].coinType] ?? "",
+      networks[txOptions?.chainID]?.prefix
     )
 
     return await lcd.tx.create([{ address }], txOptions)
@@ -257,7 +257,7 @@ const useAuth = () => {
     if (!wallet) throw new Error("Wallet is not defined")
 
     if (is.ledger(wallet)) {
-      const key = await getLedgerKey(networks[txOptions.chainID].coinType)
+      const key = await getLedgerKey(networks[txOptions?.chainID].coinType)
       const wallet = lcd.wallet(key)
       return await wallet.createAndSignTx({
         ...txOptions,
@@ -272,16 +272,16 @@ const useAuth = () => {
           seed: Buffer.from(pk.seed, "hex"),
           coinType: pk.legacy
             ? 118
-            : parseInt(networks[txOptions.chainID].coinType),
+            : parseInt(networks[txOptions?.chainID].coinType),
           index: pk.index || 0,
         })
         const w = lcd.wallet(key)
         return await w.createAndSignTx({ ...txOptions, signMode })
       } else {
-        if (!pk[networks[txOptions.chainID].coinType])
+        if (!pk[networks[txOptions?.chainID].coinType])
           throw new PasswordError("Incorrect password")
         const key = new RawKey(
-          Buffer.from(pk[networks[txOptions.chainID].coinType] ?? "", "hex")
+          Buffer.from(pk[networks[txOptions?.chainID].coinType] ?? "", "hex")
         )
         const w = lcd.wallet(key)
         return await w.createAndSignTx(txOptions)
@@ -331,7 +331,7 @@ const useAuth = () => {
   ) => {
     if (!wallet) throw new Error("Wallet is not defined")
     const signedTx = await sign(txOptions, password, signMode)
-    const result = await lcd.tx.broadcastSync(signedTx, txOptions.chainID)
+    const result = await lcd.tx.broadcastSync(signedTx, txOptions?.chainID)
     if (isTxError(result)) throw new Error(result.raw_log)
     return result
   }

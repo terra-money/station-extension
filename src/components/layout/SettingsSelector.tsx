@@ -80,7 +80,7 @@ const SettingsSelector = ({ value, options, onChange, withSearch }: Props) => {
                     return (
                       <div
                         className={styles.network}
-                        key={networksOnSelection[network].chainID}
+                        key={networksOnSelection[network]?.chainID}
                       >
                         <img
                           src={networksOnSelection[network].icon}
@@ -91,7 +91,7 @@ const SettingsSelector = ({ value, options, onChange, withSearch }: Props) => {
                           <button
                             onClick={() =>
                               deleteCustomChain(
-                                networksOnSelection[network].chainID
+                                networksOnSelection[network]?.chainID
                               )
                             }
                           >
