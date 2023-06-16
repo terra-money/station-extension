@@ -209,19 +209,19 @@ const SendPage = () => {
       if (!chain || !destinationChain || !token) return
 
       if (destinationChain === chain) {
-        const msgs = isDenom(token?.denom)
+        const msgs = AccAddress.validate(token?.denom)
           ? [
-              new MsgSend(
-                addresses[token?.chain ?? ""],
-                address,
-                amount + token?.denom
-              ),
-            ]
-          : [
               new MsgExecuteContract(
                 addresses[token?.chain ?? ""],
                 token?.denom ?? "",
                 execute_msg
+              ),
+            ]
+          : [
+              new MsgSend(
+                addresses[token?.chain ?? ""],
+                address,
+                amount + token?.denom
               ),
             ]
 
