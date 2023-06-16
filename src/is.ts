@@ -21,4 +21,8 @@ export const isDenomTerraNative = (string = "") =>
   isDenomLuna(string) || isDenomTerra(string)
 
 export const isDenom = (string = "") =>
-  string.startsWith("u") || isDenomCheq(string) || isDenomIBC(string)
+  string.startsWith("u") ||
+  isDenomCheq(string) ||
+  isDenomIBC(string) ||
+  isDenomGamm(string) ||
+  isDenomFactory(string)
