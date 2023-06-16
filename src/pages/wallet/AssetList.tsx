@@ -78,7 +78,7 @@ const AssetList = () => {
               // @ts-expect-error
               unknownIBCDenoms[denom]?.chainID ?? data?.chainID ?? chain,
               data.token,
-            ].join(":")
+            ].join("*")
 
             if (acc[key]) {
               acc[key].balance = `${
