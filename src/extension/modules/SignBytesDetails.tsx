@@ -4,6 +4,10 @@ import { Card, Grid } from "components/layout"
 import { Dl, ToNow } from "components/display"
 import { SignBytesRequest } from "../utils"
 import styles from "./SignBytesDetails.module.scss"
+import { isJSON } from "utils/json"
+import { capitalize } from "@mui/material"
+import { FinderLink } from "components/general"
+import { AccAddress } from "@terra-money/feather.js"
 
 const SignBytesDetails = ({ origin, timestamp, bytes }: SignBytesRequest) => {
   const { t } = useTranslation()
@@ -12,6 +16,8 @@ const SignBytesDetails = ({ origin, timestamp, bytes }: SignBytesRequest) => {
     { title: t("Origin"), content: origin },
     { title: t("Timestamp"), content: <ToNow update>{timestamp}</ToNow> },
   ]
+
+  const content = bytes.toString("utf-8")
 
   return (
     <Grid gap={12}>
@@ -29,10 +35,29 @@ const SignBytesDetails = ({ origin, timestamp, bytes }: SignBytesRequest) => {
 
       <Card size="small" bordered className={styles.bytes__card}>
         <header className={styles.header}>
-          <p className={styles.title}>SignBytes</p>
+          <p className={styles.title}>Signature Request</p>
         </header>
 
-        <p>{bytes.toString("utf-8")}</p>
+        {isJSON(content) ? (
+          <Dl>
+            {Object.entries(JSON.parse(content)).map(([key, value]) => (
+              <Fragment key={key}>
+                <dt>{capitalize(key)}</dt>
+                <dd>
+                  {typeof value === "string" && AccAddress.validate(value) ? (
+                    <FinderLink value={value}>{value}</FinderLink>
+                  ) : typeof value === "object" ? (
+                    JSON.stringify(value)
+                  ) : (
+                    (value as any).toString()
+                  )}
+                </dd>
+              </Fragment>
+            ))}
+          </Dl>
+        ) : (
+          <p>{bytes.toString("utf-8")}</p>
+        )}
       </Card>
     </Grid>
   )
