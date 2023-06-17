@@ -26,6 +26,6 @@
     "128": "icon-128.png",
     "180": "icon-180.png"
   },
-  "permissions": ["storage"],
+  "permissions": ["storage", "alarms"],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }

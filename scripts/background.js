@@ -1,5 +1,6 @@
 import extension from "extensionizer"
 import PortStream from "extension-port-stream"
+import browser from "webextension-polyfill"
 
 const connectRemote = (remotePort) => {
   if (remotePort.name !== "TerraStationExtension") {
@@ -266,3 +267,13 @@ const closePopup = () => {
 
 /* utils */
 const capitalize = (string) => string.charAt(0).toUpperCase() + string.slice(1)
+
+// Invoke alarm periodically to keep service worker persistent
+browser.alarms.create("keep-alive-alarm", {
+  periodInMinutes: 0.25,
+});
+
+browser.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === "keep-alive-alarm") {
+  }
+});
