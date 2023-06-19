@@ -5,6 +5,7 @@ import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import ExtensionList from "../components/ExtensionList"
 import { clearStoredPassword } from "../storage"
 import { addressFromWords } from "utils/bech32"
+import { useNavigate } from "react-router-dom"
 import { Flex, Grid } from "components/layout"
 import { useModal } from "components/feedback"
 import UsbIcon from "@mui/icons-material/Usb"
@@ -12,6 +13,7 @@ import { isWallet, useAuth } from "auth"
 
 const SwitchWallet = ({ manage }: { manage?: () => void }) => {
   const { wallet, wallets, connect, connectedWallet } = useAuth()
+  const navigate = useNavigate()
   const close = useModal()
 
   const list = [
@@ -45,6 +47,7 @@ const SwitchWallet = ({ manage }: { manage?: () => void }) => {
           connect(name)
           clearStoredPassword()
           close()
+          navigate("/")
         }
 
         const { name, lock } = wallet
