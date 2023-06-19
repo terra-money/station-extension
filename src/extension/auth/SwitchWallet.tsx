@@ -1,16 +1,18 @@
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
-import { Flex, Grid } from "components/layout"
-import { isWallet, useAuth } from "auth"
-import MultisigBadge from "auth/components/MultisigBadge"
-import UsbIcon from "@mui/icons-material/Usb"
-import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import SelectPreconfigured from "auth/modules/select/SelectPreconfigured"
-import { clearStoredPassword } from "../storage"
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
+import MultisigBadge from "auth/components/MultisigBadge"
+import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import ExtensionList from "../components/ExtensionList"
+import { clearStoredPassword } from "../storage"
 import { addressFromWords } from "utils/bech32"
+import { Flex, Grid } from "components/layout"
+import { useModal } from "components/feedback"
+import UsbIcon from "@mui/icons-material/Usb"
+import { isWallet, useAuth } from "auth"
 
 const SwitchWallet = ({ manage }: { manage?: () => void }) => {
   const { wallet, wallets, connect, connectedWallet } = useAuth()
+  const close = useModal()
 
   const list = [
     wallet && {
@@ -42,6 +44,7 @@ const SwitchWallet = ({ manage }: { manage?: () => void }) => {
         const select = () => {
           connect(name)
           clearStoredPassword()
+          close()
         }
 
         const { name, lock } = wallet
