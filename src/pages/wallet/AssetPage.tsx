@@ -55,9 +55,17 @@ const AssetPage = () => {
     {} as Record<string, { baseDenom: string; chains: string[] }>
   )
 
-  const filteredUnsupportedBalances = balances.filter(
-    (b) => unknownIBCDenoms[b.denom]?.baseDenom === token
-  )
+  const filteredUnsupportedBalances = balances.filter((b) => {
+    // only return unsupported token if the current chain is found in the ibc path
+    if (chain) {
+      return (
+        unknownIBCDenoms[b.denom]?.baseDenom === token &&
+        unknownIBCDenoms[b.denom]?.chains.includes(chain)
+      )
+    }
+
+    return unknownIBCDenoms[b.denom]?.baseDenom === token
+  })
 
   const totalBalance = [
     ...filteredBalances,
