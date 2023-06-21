@@ -80,7 +80,7 @@ const AssetPage = () => {
           <Read decimals={decimals} amount={totalBalance * price} fixed={2} />
         </h1>
         <p>
-          <Read decimals={decimals} amount={totalBalance} /> {symbol}
+          <Read decimals={decimals} amount={totalBalance} fixed={2} /> {symbol}
         </p>
       </section>
       <section className={styles.chainlist__container}>
