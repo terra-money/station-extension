@@ -55,9 +55,17 @@ const AssetPage = () => {
     {} as Record<string, { baseDenom: string; chains: string[] }>
   )
 
-  const filteredUnsupportedBalances = balances.filter(
-    (b) => unknownIBCDenoms[b.denom]?.baseDenom === token
-  )
+  const filteredUnsupportedBalances = balances.filter((b) => {
+    // only return unsupported token if the current chain is found in the ibc path
+    if (chain) {
+      return (
+        unknownIBCDenoms[b.denom]?.baseDenom === token &&
+        unknownIBCDenoms[b.denom]?.chains?.includes(chain)
+      )
+    }
+
+    return unknownIBCDenoms[b.denom]?.baseDenom === token
+  })
 
   const totalBalance = [
     ...filteredBalances,
@@ -82,9 +90,9 @@ const AssetPage = () => {
           {symbol}
         </p>
       </section>
-      <section className={styles.chainlist}>
+      <section className={styles.chainlist__container}>
         {filteredBalances.length > 0 && (
-          <>
+          <div className={styles.chainlist}>
             <div className={styles.chainlist__title}>
               <h3>{t("Chains")}</h3>
             </div>
@@ -104,10 +112,10 @@ const AssetPage = () => {
                   </div>
                 ))}
             </div>
-          </>
+          </div>
         )}
         {filteredUnsupportedBalances.length > 0 && (
-          <>
+          <div className={styles.chainlist}>
             <div className={styles.chainlist__title}>
               <h3>{t("Unsupported Chains")}</h3>
             </div>
@@ -128,7 +136,7 @@ const AssetPage = () => {
                   </div>
                 ))}
             </div>
-          </>
+          </div>
         )}
       </section>
 

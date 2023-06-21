@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Station Wallet",
-  "version": "7.2.9",
+  "version": "7.2.9.2",
   "background": {
     "scripts": ["background.js"],
     "persistent": true
@@ -26,6 +26,6 @@
     "128": "icon-128.png",
     "180": "icon-180.png"
   },
-  "permissions": ["storage"],
+  "permissions": ["storage", "alarms"],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }
