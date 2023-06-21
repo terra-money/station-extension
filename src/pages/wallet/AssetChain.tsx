@@ -37,7 +37,8 @@ const AssetChain = (props: Props) => {
   const { icon, name } = networks[chain] || {}
 
   // send back is not available if one of the chains the asset went through is not supprted by Station
-  const isSendBackDisabled = !!path?.find((chain) => !networks[chain])
+  const isSendBackDisabled =
+    !!path?.find((chain) => !networks[chain]) || symbol === "LUNC"
 
   return (
     <article className={styles.chain} key={name}>
