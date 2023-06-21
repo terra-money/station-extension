@@ -90,9 +90,9 @@ const AssetPage = () => {
           {symbol}
         </p>
       </section>
-      <section className={styles.chainlist}>
+      <section className={styles.chainlist__container}>
         {filteredBalances.length > 0 && (
-          <>
+          <div className={styles.chainlist}>
             <div className={styles.chainlist__title}>
               <h3>{t("Chains")}</h3>
             </div>
@@ -112,10 +112,10 @@ const AssetPage = () => {
                   </div>
                 ))}
             </div>
-          </>
+          </div>
         )}
         {filteredUnsupportedBalances.length > 0 && (
-          <>
+          <div className={styles.chainlist}>
             <div className={styles.chainlist__title}>
               <h3>{t("Unsupported Chains")}</h3>
             </div>
@@ -136,7 +136,7 @@ const AssetPage = () => {
                   </div>
                 ))}
             </div>
-          </>
+          </div>
         )}
       </section>
 
