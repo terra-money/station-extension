@@ -201,7 +201,7 @@ const connectRemote = (remotePort) => {
         extension.storage.local.get(["connect", "wallet"], handleGetPubkey)
 
         break
-        
+
       case "suggestChain":
         handleRequest("suggestChain")
         break
@@ -271,9 +271,9 @@ const capitalize = (string) => string.charAt(0).toUpperCase() + string.slice(1)
 // Invoke alarm periodically to keep service worker persistent
 browser.alarms.create("keep-alive-alarm", {
   periodInMinutes: 0.25,
-});
+})
 
 browser.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === "keep-alive-alarm") {
   }
-});
+})
