@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Station Wallet",
-  "version": "7.2.9",
+  "version": "7.2.9.2",
   "background": {
     "service_worker": "background.js",
     "type": "module"
@@ -31,5 +31,5 @@
     "128": "icon-128.png",
     "180": "icon-180.png"
   },
-  "permissions": ["storage"]
+  "permissions": ["storage", "alarms"]
 }
