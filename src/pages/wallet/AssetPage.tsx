@@ -26,10 +26,6 @@ const AssetPage = () => {
     : [undefined, routeDenom]
   const { token, symbol, icon, decimals } = readNativeDenom(denom, chain)
 
-  const filteredBalances = balances.filter((b) => {
-    return readNativeDenom(b.denom).token === token && b.chain === chain
-  })
-
   let price
   if (symbol === "LUNC") {
     price = prices?.["uluna:classic"]?.price ?? 0
@@ -61,6 +57,10 @@ const AssetPage = () => {
         : acc,
     {} as Record<string, { baseDenom: string; chains: string[] }>
   )
+
+  const filteredBalances = balances.filter((b) => {
+    return readNativeDenom(b.denom).token === token && b.chain === chain
+  })
 
   const filteredUnsupportedBalances = balances.filter((b) => {
     // only return unsupported token if the current chain is found in the ibc path
