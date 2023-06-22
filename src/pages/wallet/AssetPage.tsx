@@ -61,7 +61,10 @@ const AssetPage = () => {
   )
 
   const filteredBalances = balances.filter((b) => {
-    return readNativeDenom(b.denom).token === token && b.chain === chain
+    return (
+      readNativeDenom(b.denom).token === token &&
+      readNativeDenom(b.denom).symbol === symbol
+    )
   })
 
   const filteredUnsupportedBalances = balances.filter((b) => {
