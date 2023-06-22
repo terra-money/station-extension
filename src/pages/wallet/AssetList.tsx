@@ -43,7 +43,7 @@ const AssetList = () => {
       .map(({ denom, chain }) => ({ denom, chainID: chain }))
       .filter(({ denom }) => {
         const data = readNativeDenom(denom)
-        return denom.startsWith("ibc/") && data.symbol.endsWith("...")
+        return denom.startsWith("ibc/") && data.isNonWhitelisted
       })
   )
   const unknownIBCDenoms = unknownIBCDenomsData.reduce(
@@ -98,7 +98,7 @@ const AssetList = () => {
                   change: prices?.["uluna:classic"]?.change ?? 0,
                   chains: [chain],
                   id: key,
-                  whitelisted: true,
+                  whitelisted: false,
                 },
               }
             } else {

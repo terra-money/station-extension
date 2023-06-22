@@ -95,11 +95,11 @@ export const useNativeDenoms = () => {
     chainID?: string
   ): TokenItem & { isNonWhitelisted?: boolean } {
     let tokenType = ""
-    if (denom.startsWith("ibc/")) {
+    if (denom?.startsWith("ibc/")) {
       tokenType = "ibc"
-    } else if (denom.startsWith("factory/")) {
+    } else if (denom?.startsWith("factory/")) {
       tokenType = "factory"
-    } else if (denom.startsWith("gamm/")) {
+    } else if (denom?.startsWith("gamm/")) {
       tokenType = "gamm"
       decimals = GAMM_TOKEN_DECIMALS
     }
@@ -123,7 +123,6 @@ export const useNativeDenoms = () => {
         fixedDenom = tokenAddress
         break
       }
-
       default:
         fixedDenom = readDenom(denom)
     }
@@ -156,8 +155,15 @@ export const useNativeDenoms = () => {
 
     // ibc token
     const ibcToken = ibcDenoms[networkName]?.[denom]?.token
-
-    if (ibcToken && whitelist[networkName][ibcToken]) {
+    const chainOrigin = ibcDenoms[networkName]?.[denom]?.chainID
+    if (chainOrigin !== chainID && ibcToken === "phoenix-1:uluna") {
+      console.log("test", whitelist["classic"][ibcToken])
+      return {
+        ...whitelist["classic"][ibcToken],
+        // @ts-expect-error
+        chains: [ibcDenoms["classic"][denom].chainID],
+      }
+    } else if (ibcToken && whitelist[networkName][ibcToken]) {
       return {
         ...whitelist[networkName][ibcToken],
         // @ts-expect-error
@@ -173,7 +179,7 @@ export const useNativeDenoms = () => {
         name: "Luna Classic",
         icon: "https://assets.terra.money/icon/svg/LUNC.svg",
         decimals: 6,
-        isNonWhitelisted: false,
+        isNonWhitelisted: true,
       }
     }
 
@@ -193,7 +199,7 @@ export const useNativeDenoms = () => {
             ? factoryIcon
             : "https://assets.terra.money/icon/svg/Terra.svg",
         decimals,
-        isNonWhitelisted: true,
+        isNonWhitelisted: false,
       }
     )
   }

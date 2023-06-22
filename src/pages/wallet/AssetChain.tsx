@@ -2,7 +2,7 @@ import { WithFetching } from "components/feedback"
 import { Read, TokenIcon } from "components/token"
 import { useExchangeRates } from "data/queries/coingecko"
 import { useCurrency } from "data/settings/Currency"
-import { useNetwork } from "data/wallet"
+import { useNetwork, useNetworkName } from "data/wallet"
 import { useTranslation } from "react-i18next"
 import styles from "./AssetChain.module.scss"
 import IbcSendBack from "./IbcSendBack"
@@ -24,6 +24,7 @@ const AssetChain = (props: Props) => {
   const currency = useCurrency()
   const { data: prices, ...pricesState } = useExchangeRates()
   const { t } = useTranslation()
+  const networkName = useNetworkName()
 
   let price
   if (symbol === "LUNC") {
@@ -38,7 +39,8 @@ const AssetChain = (props: Props) => {
 
   // send back is not available if one of the chains the asset went through is not supprted by Station
   const isSendBackDisabled =
-    !!path?.find((chain) => !networks[chain]) || symbol === "LUNC"
+    !!path?.find((chain) => !networks[chain]) ||
+    (symbol === "LUNC" && networkName !== "classic")
 
   return (
     <article className={styles.chain} key={name}>

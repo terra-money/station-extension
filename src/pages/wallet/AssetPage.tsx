@@ -26,10 +26,6 @@ const AssetPage = () => {
     : [undefined, routeDenom]
   const { token, symbol, icon, decimals } = readNativeDenom(denom, chain)
 
-  const filteredBalances = balances.filter((b) => {
-    return readNativeDenom(b.denom).token === token && b.chain === chain
-  })
-
   let price
   if (symbol === "LUNC") {
     price = prices?.["uluna:classic"]?.price ?? 0
@@ -44,9 +40,15 @@ const AssetPage = () => {
       .map(({ denom, chain }) => ({ denom, chainID: chain }))
       .filter(({ denom }) => {
         const data = readNativeDenom(denom)
-        return denom.startsWith("ibc/") && data.symbol.endsWith("...")
+        return denom.startsWith("ibc/") && data.isNonWhitelisted
       })
   )
+
+  // console.log(
+  //   readNativeDenom(
+  //     "ibc/4627AD2524E3E0523047E35BB76CC90E37D9D57ACF14F0FCBCEB2480705F3CB8"
+  //   )
+  // );
 
   const unknownIBCDenoms = unknownIBCDenomsData.reduce(
     (acc, { data }) =>
@@ -61,6 +63,17 @@ const AssetPage = () => {
         : acc,
     {} as Record<string, { baseDenom: string; chains: string[] }>
   )
+
+  const filteredBalances = balances.filter((b) => {
+    let condition = readNativeDenom(b.denom).token === token
+    if (b.denom.startsWith("ibc/")) {
+      condition =
+        condition && unknownIBCDenoms[b.denom]?.chains?.includes(chain || "")
+    } else {
+      condition = condition && b.chain === chain
+    }
+    return condition
+  })
 
   const filteredUnsupportedBalances = balances.filter((b) => {
     // only return unsupported token if the current chain is found in the ibc path
