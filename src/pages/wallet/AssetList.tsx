@@ -15,7 +15,7 @@ import {
   useCustomTokensNative,
 } from "data/settings/CustomTokens"
 import { useIBCBaseDenoms } from "data/queries/ibc"
-import { useNetwork } from "data/wallet"
+import { useNetwork, useNetworkName } from "data/wallet"
 import { ReactComponent as ManageAssets } from "styles/images/icons/ManageAssets.svg"
 
 const AssetList = () => {
@@ -23,6 +23,7 @@ const AssetList = () => {
   const isWalletEmpty = useIsWalletEmpty()
   const { hideNoWhitelist, hideLowBal } = useTokenFilters()
   const networks = useNetwork()
+  const networkName = useNetworkName()
 
   const coins = useBankBalance()
   const { data: prices } = useExchangeRates()
@@ -86,7 +87,10 @@ const AssetList = () => {
               }`
               acc[key].chains.push(chain)
               return acc
-            } else if (key === "columbus-5*uluna") {
+            } else if (
+              key === "columbus-5*uluna" &&
+              networkName === "mainnet"
+            ) {
               return {
                 ...acc,
                 [key]: {
@@ -146,6 +150,7 @@ const AssetList = () => {
       alwaysVisibleDenoms,
       unknownIBCDenoms,
       networks,
+      networkName,
     ]
   )
 

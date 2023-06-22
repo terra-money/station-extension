@@ -157,11 +157,11 @@ export const useNativeDenoms = () => {
     // ibc token
     let ibcToken = ibcDenoms[networkName]?.[denom]?.token
     const chainOrigin = ibcDenoms[networkName]?.[denom]?.chainID
-    if (
+    const ibcLunc =
       chainOrigin !== chainID &&
       ibcToken === "phoenix-1:uluna" &&
       networkName === "mainnet"
-    ) {
+    if (ibcLunc) {
       ibcToken = ibcDenoms["classic"]?.[denom]?.token
       return {
         ...whitelist["classic"][ibcToken],
@@ -177,7 +177,7 @@ export const useNativeDenoms = () => {
     }
 
     // Assuming terra-utils returns "Luna" for LUNC.
-    if (fixedDenom === "Luna") {
+    if (fixedDenom === "Luna" && networkName === "mainnet") {
       return {
         token: denom,
         symbol: "LUNC",
