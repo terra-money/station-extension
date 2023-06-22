@@ -12,6 +12,7 @@ import { capitalize } from "@mui/material"
 import { isTerraChain } from "utils/chain"
 import Vesting from "./Vesting"
 import { useIBCBaseDenoms } from "data/queries/ibc"
+import { useNetworkName } from "data/wallet"
 
 const AssetPage = () => {
   const currency = useCurrency()
@@ -20,17 +21,21 @@ const AssetPage = () => {
   const readNativeDenom = useNativeDenoms()
   const { t } = useTranslation()
   const { setRoute, route } = useWalletRoute()
+  const networkName = useNetworkName()
   const routeDenom = route.path === Path.coin ? route.denom ?? "uluna" : "uluna"
-  const [chain, denom] = routeDenom.includes(":")
-    ? routeDenom.split(":")
+  const [chain, denom] = routeDenom.includes("*")
+    ? routeDenom.split("*")
     : [undefined, routeDenom]
   const { token, symbol, icon, decimals } = readNativeDenom(denom, chain)
 
-  const filteredBalances = balances.filter(
-    (b) => readNativeDenom(b.denom).token === token
-  )
-
-  const price = symbol?.endsWith("...") ? 0 : prices?.[token]?.price ?? 0
+  let price
+  if (symbol === "LUNC" && networkName === "mainnet") {
+    price = prices?.["uluna:classic"]?.price ?? 0
+  } else if (!symbol.endsWith("...")) {
+    price = prices?.[token]?.price ?? 0
+  } else {
+    price = 0
+  }
 
   const unknownIBCDenomsData = useIBCBaseDenoms(
     balances
@@ -55,6 +60,13 @@ const AssetPage = () => {
     {} as Record<string, { baseDenom: string; chains: string[] }>
   )
 
+  const filteredBalances = balances.filter((b) => {
+    return (
+      readNativeDenom(b.denom).token === token &&
+      readNativeDenom(b.denom).symbol === symbol
+    )
+  })
+
   const filteredUnsupportedBalances = balances.filter((b) => {
     // only return unsupported token if the current chain is found in the ibc path
     if (chain) {
@@ -78,16 +90,10 @@ const AssetPage = () => {
         <TokenIcon token={token} icon={icon} size={50} />
         <h1>
           {currency.symbol}{" "}
-          <Read
-            decimals={decimals}
-            amount={totalBalance * price}
-            fixed={2}
-            token={symbol}
-          />
+          <Read decimals={decimals} amount={totalBalance * price} fixed={2} />
         </h1>
         <p>
-          <Read decimals={decimals} amount={totalBalance} token={symbol} />{" "}
-          {symbol}
+          <Read decimals={decimals} amount={totalBalance} fixed={2} /> {symbol}
         </p>
       </section>
       <section className={styles.chainlist__container}>
@@ -108,7 +114,9 @@ const AssetPage = () => {
                       token={token}
                       decimals={decimals}
                     />
-                    {token === "uluna" && isTerraChain(b.chain) && <Vesting />}
+                    {token === "uluna" &&
+                      symbol !== "LUNC" &&
+                      isTerraChain(b.chain) && <Vesting />}
                   </div>
                 ))}
             </div>

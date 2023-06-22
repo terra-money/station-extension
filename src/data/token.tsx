@@ -90,10 +90,11 @@ export const useNativeDenoms = () => {
 
   let decimals = DEFAULT_NATIVE_DECIMALS
 
-  function readNativeDenom(denom: Denom, chainID?: string): TokenItem {
-    let fixedDenom = ""
+  function readNativeDenom(
+    denom: Denom,
+    chainID?: string
+  ): TokenItem & { isNonWhitelisted?: boolean } {
     let tokenType = ""
-
     if (denom.startsWith("ibc/")) {
       tokenType = "ibc"
     } else if (denom.startsWith("factory/")) {
@@ -103,6 +104,7 @@ export const useNativeDenoms = () => {
       decimals = GAMM_TOKEN_DECIMALS
     }
 
+    let fixedDenom = ""
     switch (tokenType) {
       case "ibc":
         fixedDenom = `${readDenom(denom).substring(0, 5)}...`
@@ -153,13 +155,36 @@ export const useNativeDenoms = () => {
     }
 
     // ibc token
-    const ibcToken = ibcDenoms[networkName]?.[denom]?.token
-
-    if (ibcToken && whitelist[networkName][ibcToken]) {
+    let ibcToken = ibcDenoms[networkName]?.[denom]?.token
+    const chainOrigin = ibcDenoms[networkName]?.[denom]?.chainID
+    const ibcLunc =
+      chainOrigin !== chainID &&
+      ibcToken === "phoenix-1:uluna" &&
+      networkName === "mainnet"
+    if (ibcLunc) {
+      ibcToken = ibcDenoms["classic"]?.[denom]?.token
+      return {
+        ...whitelist["classic"][ibcToken],
+        // @ts-expect-error
+        chains: [ibcDenoms["classic"][denom].chainID],
+      }
+    } else if (ibcToken && whitelist[networkName][ibcToken]) {
       return {
         ...whitelist[networkName][ibcToken],
         // @ts-expect-error
         chains: [ibcDenoms[networkName][denom].chain],
+      }
+    }
+
+    // Assuming terra-utils returns "Luna" for LUNC.
+    if (fixedDenom === "Luna" && networkName === "mainnet") {
+      return {
+        token: denom,
+        symbol: "LUNC",
+        name: "Luna Classic",
+        icon: "https://assets.terra.money/icon/svg/LUNC.svg",
+        decimals: 6,
+        isNonWhitelisted: false,
       }
     }
 
@@ -179,6 +204,7 @@ export const useNativeDenoms = () => {
             ? factoryIcon
             : "https://assets.terra.money/icon/svg/Terra.svg",
         decimals,
+        isNonWhitelisted: true,
       }
     )
   }
