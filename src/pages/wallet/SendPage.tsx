@@ -70,7 +70,7 @@ const SendPage = () => {
       Object.values(
         (balances ?? []).reduce((acc, { denom, amount, chain }) => {
           const data = readNativeDenom(denom)
-          if (data.symbol === "LUNC") {
+          if (data.symbol === "LUNC" && networkName === "mainnet") {
             return {}
           } else if (acc[data.token]) {
             acc[data.token].balance = `${
@@ -95,7 +95,7 @@ const SendPage = () => {
       ).sort(
         (a, b) => b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
       ),
-    [balances, readNativeDenom, prices]
+    [balances, readNativeDenom, prices, networkName]
   )
   const defaultAsset = route?.denom || availableAssets[0].denom
 
