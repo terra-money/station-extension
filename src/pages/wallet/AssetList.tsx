@@ -89,7 +89,7 @@ const AssetList = () => {
               return acc
             } else if (
               key === "columbus-5*uluna" &&
-              networkName === "mainnet"
+              ["mainnet", "testnet"].includes(networkName)
             ) {
               return {
                 ...acc,

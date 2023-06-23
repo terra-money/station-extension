@@ -29,7 +29,7 @@ const AssetPage = () => {
   const { token, symbol, icon, decimals } = readNativeDenom(denom, chain)
 
   let price
-  if (symbol === "LUNC" && networkName === "mainnet") {
+  if (symbol === "LUNC" && ["mainnet", "testnet"].includes(networkName)) {
     price = prices?.["uluna:classic"]?.price ?? 0
   } else if (!symbol.endsWith("...")) {
     price = prices?.[token]?.price ?? 0

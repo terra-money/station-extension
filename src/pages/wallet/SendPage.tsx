@@ -70,7 +70,10 @@ const SendPage = () => {
       Object.values(
         (balances ?? []).reduce((acc, { denom, amount, chain }) => {
           const data = readNativeDenom(denom)
-          if (data.symbol === "LUNC" && networkName === "mainnet") {
+          if (
+            data.symbol === "LUNC" &&
+            ["mainnet", "testnet"].includes(networkName)
+          ) {
             return {}
           } else if (acc[data.token]) {
             acc[data.token].balance = `${
