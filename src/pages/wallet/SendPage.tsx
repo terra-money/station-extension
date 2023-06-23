@@ -70,6 +70,13 @@ const SendPage = () => {
       Object.values(
         (balances ?? []).reduce((acc, { denom, amount, chain }) => {
           const data = readNativeDenom(denom)
+
+          // TODO: resolve ibc lun(a|c) balances better at balance fetch
+          // then update max / balance / messaging to translate lun(a|c)
+          // for now, check if token is LUNC and network isn't classic, discard if so
+          if (data?.symbol === "LUNC" && networkName !== "classic")
+            return acc as Record<string, AssetType>
+
           if (acc[data.token]) {
             acc[data.token].balance = `${
               parseInt(acc[data.token].balance) + parseInt(amount)
@@ -90,11 +97,15 @@ const SendPage = () => {
             } as Record<string, AssetType>
           }
         }, {} as Record<string, AssetType>)
-      ).sort(
-        (a, b) => b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
-      ),
-    [balances, readNativeDenom, prices]
+      )
+        .sort(
+          (a, b) =>
+            b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
+        )
+        .filter(({ denom }) => denom !== "ulunc"),
+    [balances, readNativeDenom, prices, networkName]
   )
+
   const defaultAsset = route?.denom || availableAssets[0].denom
 
   /* form */
