@@ -158,15 +158,13 @@ export const useNativeDenoms = () => {
     let ibcToken = ibcDenoms[networkName]?.[denom]?.token
     const chainOrigin = ibcDenoms[networkName]?.[denom]?.chainID
     const ibcLunc =
-      chainOrigin !== chainID &&
-      ibcToken === "phoenix-1:uluna" &&
-      networkName === "mainnet"
-    if (ibcLunc) {
+      chainOrigin && ibcToken === "phoenix-1:uluna" && networkName === "mainnet"
+    if (ibcLunc && ibcDenoms["classic"]?.[denom]) {
       ibcToken = ibcDenoms["classic"]?.[denom]?.token
       return {
         ...whitelist["classic"][ibcToken],
         // @ts-expect-error
-        chains: [ibcDenoms["classic"][denom].chainID],
+        chains: [ibcDenoms["classic"]?.[denom]?.chainID],
       }
     } else if (ibcToken && whitelist[networkName][ibcToken]) {
       return {
