@@ -97,12 +97,9 @@ const SendPage = () => {
             } as Record<string, AssetType>
           }
         }, {} as Record<string, AssetType>)
-      )
-        .sort(
-          (a, b) =>
-            b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
-        )
-        .filter(({ denom }) => denom !== "ulunc"),
+      ).sort(
+        (a, b) => b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
+      ),
     [balances, readNativeDenom, prices, networkName]
   )
 
