@@ -70,7 +70,9 @@ const SendPage = () => {
       Object.values(
         (balances ?? []).reduce((acc, { denom, amount, chain }) => {
           const data = readNativeDenom(denom)
-          if (acc[data.token]) {
+          if (data.symbol === "LUNC") {
+            return {}
+          } else if (acc[data.token]) {
             acc[data.token].balance = `${
               parseInt(acc[data.token].balance) + parseInt(amount)
             }`
