@@ -28,10 +28,10 @@ const AssetPage = () => {
     : [undefined, routeDenom]
   const { token, symbol, icon, decimals } = readNativeDenom(denom, chain)
 
-  const isLuncAndPhoenix = symbol === "LUNC" && !(networkName === "classic")
+  const isLuncOffClassic = symbol === "LUNC" && networkName !== "classic"
 
   let price
-  if (isLuncAndPhoenix) {
+  if (isLuncOffClassic) {
     price = prices?.["uluna:classic"]?.price ?? 0
   } else if (!symbol.endsWith("...")) {
     price = prices?.[token]?.price ?? 0
@@ -160,7 +160,7 @@ const AssetPage = () => {
               previousPage: route,
             })
           }
-          disabled={filteredBalances.length === 0 || isLuncAndPhoenix}
+          disabled={filteredBalances.length === 0 || isLuncOffClassic}
         >
           {t("Send")}
         </Button>
