@@ -133,8 +133,9 @@ const AssetList = () => {
         .filter((a) => {
           const { token } = readNativeDenom(a.denom)
 
-          if (!hideLowBal || a.price === 0 || alwaysVisibleDenoms.has(token))
+          if (!hideLowBal || a.price === 0 || alwaysVisibleDenoms.has(token)) {
             return true
+          }
           return a.price * toInput(a.balance) >= 1
         })
         .sort(
@@ -163,19 +164,18 @@ const AssetList = () => {
           <FormError>{t("Coins required to post transactions")}</FormError>
         )}
         <section>
-          {(prices || !hideLowBal) &&
-            list.map(({ denom, chainID, id, ...item }, i) => (
-              <Asset
-                denom={denom}
-                {...readNativeDenom(
-                  unknownIBCDenoms[denom]?.baseDenom ?? denom,
-                  unknownIBCDenoms[denom]?.chainID ?? chainID
-                )}
-                id={id}
-                {...item}
-                key={i}
-              />
-            ))}
+          {list.map(({ denom, chainID, id, ...item }, i) => (
+            <Asset
+              denom={denom}
+              {...readNativeDenom(
+                unknownIBCDenoms[denom]?.baseDenom ?? denom,
+                unknownIBCDenoms[denom]?.chainID ?? chainID
+              )}
+              id={id}
+              {...item}
+              key={i}
+            />
+          ))}
         </section>
       </div>
     )
