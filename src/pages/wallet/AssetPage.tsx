@@ -92,7 +92,11 @@ const AssetPage = () => {
         <TokenIcon token={token} icon={icon} size={50} />
         <h1>
           {currency.symbol}{" "}
-          <Read decimals={decimals} amount={totalBalance * price} fixed={2} />
+          {price ? (
+            <Read decimals={decimals} amount={totalBalance * price} fixed={2} />
+          ) : (
+            <span>—</span>
+          )}
         </h1>
         <p>
           <Read decimals={decimals} amount={totalBalance} fixed={2} /> {symbol}
