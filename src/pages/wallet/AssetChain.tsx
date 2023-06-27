@@ -92,21 +92,25 @@ const AssetChain = (props: Props) => {
         </h1>
         <h1 className={styles.price}>
           {currency.symbol}{" "}
-          <Read
-            {...props}
-            amount={price * parseInt(balance)}
-            decimals={decimals}
-            fixed={2}
-            denom=""
-            token=""
-          />
+          {price ? (
+            <Read
+              {...props}
+              amount={price * parseInt(balance)}
+              decimals={decimals}
+              fixed={2}
+              denom=""
+              token=""
+            />
+          ) : (
+            <span>—</span>
+          )}
         </h1>
         <h2 className={styles.amount}>
           <WithFetching {...pricesState} height={1}>
             {(progress, wrong) => (
               <>
                 {progress}
-                {wrong ? (
+                {wrong && !balance ? (
                   <span className="danger">{t("Failed to query balance")}</span>
                 ) : (
                   <Read
