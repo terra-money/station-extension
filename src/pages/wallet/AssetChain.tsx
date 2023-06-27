@@ -27,7 +27,7 @@ const AssetChain = (props: Props) => {
   const networkName = useNetworkName()
 
   let price
-  if (symbol === "LUNC" && networkName === "mainnet") {
+  if (symbol === "LUNC" && networkName !== "classic") {
     price = prices?.["uluna:classic"]?.price ?? 0
   } else {
     price = prices?.[token]?.price ?? 0
@@ -40,7 +40,7 @@ const AssetChain = (props: Props) => {
   // send back is not available if one of the chains the asset went through is not supprted by Station
   const isSendBackDisabled =
     !!path?.find((chain) => !networks[chain]) ||
-    (symbol === "LUNC" && networkName === "mainnet")
+    (symbol === "LUNC" && networkName !== "classic")
 
   return (
     <article className={styles.chain} key={name}>
@@ -92,14 +92,18 @@ const AssetChain = (props: Props) => {
         </h1>
         <h1 className={styles.price}>
           {currency.symbol}{" "}
-          <Read
-            {...props}
-            amount={price * parseInt(balance)}
-            decimals={decimals}
-            fixed={2}
-            denom=""
-            token=""
-          />
+          {price ? (
+            <Read
+              {...props}
+              amount={price * parseInt(balance)}
+              decimals={decimals}
+              fixed={2}
+              denom=""
+              token=""
+            />
+          ) : (
+            <span>—</span>
+          )}
         </h1>
         <h2 className={styles.amount}>
           <WithFetching {...pricesState} height={1}>
