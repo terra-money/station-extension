@@ -110,7 +110,7 @@ const AssetChain = (props: Props) => {
             {(progress, wrong) => (
               <>
                 {progress}
-                {wrong && !balance ? (
+                {wrong ? (
                   <span className="danger">{t("Failed to query balance")}</span>
                 ) : (
                   <Read
