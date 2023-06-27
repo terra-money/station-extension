@@ -28,8 +28,10 @@ const AssetPage = () => {
     : [undefined, routeDenom]
   const { token, symbol, icon, decimals } = readNativeDenom(denom, chain)
 
+  const isLuncOffClassic = symbol === "LUNC" && networkName !== "classic"
+
   let price
-  if (symbol === "LUNC" && networkName === "mainnet") {
+  if (isLuncOffClassic) {
     price = prices?.["uluna:classic"]?.price ?? 0
   } else if (!symbol.endsWith("...")) {
     price = prices?.[token]?.price ?? 0
@@ -90,7 +92,11 @@ const AssetPage = () => {
         <TokenIcon token={token} icon={icon} size={50} />
         <h1>
           {currency.symbol}{" "}
-          <Read decimals={decimals} amount={totalBalance * price} fixed={2} />
+          {price ? (
+            <Read decimals={decimals} amount={totalBalance * price} fixed={2} />
+          ) : (
+            <span>—</span>
+          )}
         </h1>
         <p>
           <Read decimals={decimals} amount={totalBalance} fixed={2} /> {symbol}
@@ -158,7 +164,7 @@ const AssetPage = () => {
               previousPage: route,
             })
           }
-          disabled={filteredBalances.length === 0}
+          disabled={filteredBalances.length === 0 || isLuncOffClassic}
         >
           {t("Send")}
         </Button>
