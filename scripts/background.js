@@ -276,6 +276,5 @@ browser.alarms.create("keep-alive-alarm", {
 
 browser.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === "keep-alive-alarm") {
-    browser.alarms.clear("keep-alive-alarm")
   }
 })

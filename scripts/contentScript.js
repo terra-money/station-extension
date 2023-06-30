@@ -213,29 +213,11 @@ async function setupStreams() {
   pageStream.pipe(extensionStream)
 
   extensionPort.onDisconnect.addListener((port) => {
-    reconnectStream(pageStream)
-  })
-}
-
-async function reconnectStream(pageStream) {
-  const extensionPort = extension.runtime.connect({
-    name: "TerraStationExtension",
-  })
-
-  const extensionStream = new PortStream(extensionPort)
-
-  console.log("reconnect stream", new Date().toLocaleString(), {
-    pageStream,
-    "extensionPort.name": extensionPort.name,
-    extensionPort,
-    extensionStream,
-  })
-
-  extensionStream.pipe(pageStream)
-  pageStream.pipe(extensionStream)
-
-  extensionPort.onDisconnect.addListener((port) => {
-    reconnectStream(pageStream)
+    console.log("port disconnect", new Date().toLocaleString(), {
+      pageStream,
+      "extensionPort.name": extensionPort.name,
+      port,
+    })
   })
 }
 
