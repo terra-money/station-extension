@@ -211,14 +211,6 @@ async function setupStreams() {
 
   extensionStream.pipe(pageStream)
   pageStream.pipe(extensionStream)
-
-  extensionPort.onDisconnect.addListener((port) => {
-    console.log("port disconnect", new Date().toLocaleString(), {
-      pageStream,
-      "extensionPort.name": extensionPort.name,
-      port,
-    })
-  })
 }
 
 /**
