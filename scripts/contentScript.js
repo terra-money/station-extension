@@ -224,6 +224,13 @@ async function reconnectStream(pageStream) {
 
   const extensionStream = new PortStream(extensionPort)
 
+  console.log("reconnect stream", new Date().toLocaleString(), {
+    pageStream,
+    "extensionPort.name": extensionPort.name,
+    extensionPort,
+    extensionStream,
+  })
+
   extensionStream.pipe(pageStream)
   pageStream.pipe(extensionStream)
 
