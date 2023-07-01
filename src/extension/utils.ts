@@ -135,6 +135,8 @@ export const useParseTx = () => {
           )
         })
 
+      console.log({ networks, chainID, defaultChainID })
+
       return isProto
         ? {
             msgs: msgs.map((msg) =>

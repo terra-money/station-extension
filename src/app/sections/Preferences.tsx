@@ -7,7 +7,6 @@ import HeaderIconButton from "../components/HeaderIconButton"
 import NetworkSetting from "./NetworkSetting"
 import LanguageSetting from "./LanguageSetting"
 import CurrencySetting from "./CurrencySetting"
-import { useWallet, WalletStatus } from "@terra-money/wallet-provider"
 import { ModalButton } from "components/feedback"
 import SettingsButton from "components/layout/SettingsButton"
 import { useNetworkName } from "data/wallet"
@@ -30,7 +29,6 @@ interface SettingsPage {
 
 const Preferences = () => {
   const { t } = useTranslation()
-  const connectedWallet = useWallet()
   const [page, setPage] = useState<Routes | null>(null)
 
   const { i18n } = useTranslation()
@@ -43,8 +41,7 @@ const Preferences = () => {
       key: "network",
       tab: t("Network"),
       value: capitalize(networkName),
-      disabled:
-        !sandbox && connectedWallet.status === WalletStatus.WALLET_CONNECTED,
+      disabled: !sandbox,
     },
     lang: {
       key: "lang",
