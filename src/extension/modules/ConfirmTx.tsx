@@ -24,6 +24,7 @@ import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useChainID, useNetwork } from "data/wallet"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { Fee } from "@terra-money/feather.js"
+import SignBytesDetails from "./SignBytesDetails"
 
 interface Values {
   password: string
@@ -228,6 +229,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
     <ExtensionPage header={<OriginCard hostname={props.origin} />}>
       <Grid gap={20}>
         {"tx" in props && <TxDetails {...props} tx={{ ...props.tx, fee }} />}
+        {"bytes" in props && <SignBytesDetails {...props} />}
 
         {warning && <FormWarning>{warning}</FormWarning>}
         {error && <FormError>{error}</FormError>}
