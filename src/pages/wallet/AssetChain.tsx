@@ -8,6 +8,7 @@ import styles from "./AssetChain.module.scss"
 import IbcSendBack from "./IbcSendBack"
 import { InternalButton } from "components/general"
 import { Tooltip } from "components/display"
+import { useNetworks } from "app/InitNetworks"
 
 export interface Props {
   chain: string
@@ -25,6 +26,11 @@ const AssetChain = (props: Props) => {
   const { data: prices, ...pricesState } = useExchangeRates()
   const { t } = useTranslation()
   const networkName = useNetworkName()
+  const allNetworks = useNetworks().networks[networkName]
+
+  const networks = useNetwork()
+
+  const { icon, name } = allNetworks[chain] ?? { name: chain }
 
   let price
   if (symbol === "LUNC" && networkName !== "classic") {
@@ -32,10 +38,6 @@ const AssetChain = (props: Props) => {
   } else {
     price = prices?.[token]?.price ?? 0
   }
-
-  const networks = useNetwork()
-
-  const { icon, name } = networks[chain] || {}
 
   // send back is not available if one of the chains the asset went through is not supprted by Station
   const isSendBackDisabled =
@@ -73,7 +75,7 @@ const AssetChain = (props: Props) => {
                   chainID={chain}
                   token={ibcDenom}
                   title={`Send ${symbol} back to ${
-                    networks[path[0]]?.name ?? path[0]
+                    allNetworks[path[0]]?.name ?? path[0]
                   }`}
                 >
                   {(open) => (
@@ -88,7 +90,9 @@ const AssetChain = (props: Props) => {
                 </IbcSendBack>
               ))}
           </h4>
-          {path && <p>{path.map((c) => networks[c]?.name ?? c).join(" → ")}</p>}
+          {path && (
+            <p>{path.map((c) => allNetworks[c]?.name ?? c).join(" → ")}</p>
+          )}
         </h1>
         <h1 className={styles.price}>
           {currency.symbol}{" "}
