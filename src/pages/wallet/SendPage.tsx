@@ -172,13 +172,12 @@ const SendPage = () => {
 
     if (
       chain === destinationChain ||
-      (getIBCChannel({
+      getIBCChannel({
         from: chain,
         to: destinationChain,
         tokenAddress: token.denom,
         icsChannel: ibcDenoms[networkName][token.denom]?.icsChannel,
-      }) &&
-        !readNativeDenom(token.denom).isAxelar)
+      })
     ) {
       return (
         <span className={styles.destination}>
@@ -326,8 +325,7 @@ const SendPage = () => {
     taxRequired: true,
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     gasAdjustment:
-      getChainIDFromAddress(addresses?.[chain ?? ""], networks) !== chain &&
-      AccAddress.validate(token?.denom ?? "")
+      getChainIDFromAddress(addresses?.[chain ?? ""], networks) !== chain
         ? 2
         : 1,
   }
