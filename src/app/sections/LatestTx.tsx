@@ -19,6 +19,8 @@ import { Modal, LoadingCircular } from "components/feedback"
 import { Flex } from "components/layout"
 import TxMessage from "../containers/TxMessage"
 import styles from "./LatestTx.module.scss"
+import { createAmplitudeClient } from "utils/analytics/setupAmplitude"
+import { AnalyticsEvent } from "utils/analytics"
 
 const { createActionRuleSet, getTxCanonicalMsgs, createLogMatcherForActions } =
   ruleset
@@ -33,6 +35,7 @@ const TxIndicator = ({ txhash }: { txhash: string }) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const animation = useThemeAnimation()
+  const amplitude = createAmplitudeClient()
 
   const [latestTx, setLatestTx] = useRecoilState(latestTxState)
   const [minimized, setMinimized] = useState(false)
@@ -55,6 +58,12 @@ const TxIndicator = ({ txhash }: { txhash: string }) => {
   useEffect(() => {
     if (status === Status.SUCCESS) onSuccess?.()
   }, [status, onSuccess])
+
+  useEffect(() => {
+    if (status !== Status.LOADING) {
+      amplitude.trackEvent(AnalyticsEvent.TRASNACTION, { status, txhash })
+    }
+  }, [status, amplitude, txhash])
 
   /* render component */
   const icon = {
