@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { PropsWithChildren } from 'react';
 
-import { Text } from '../../texts';
+import { Text } from 'components';
 import * as S from './GroupSelector.styled';
 import { IconButton } from '../../buttons';
 import { SmallRightArrowIcon } from '../../../icons';

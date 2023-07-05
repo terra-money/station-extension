@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { useWindowDimensions } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import * as S from './styles';
-import { Text } from '../texts';
+import { Text } from 'components';
 import { useTheme } from 'styled-components';
 import { ExpandButton } from './ExpandButton';
 import { NavigationIcon } from './NavigationIcon';
@@ -50,7 +50,7 @@ const NavigationBar = ({ state, descriptors, navigation }) => {
             offset.value = withSpring(-36);
         }
         setExpanded(!expanded);
-    }, [expanded, setExpanded]);
+    }, [expanded, setExpanded, offset]);
     return (
         <>
             <S.NavigationWrapper style={[animatedStyles]}>

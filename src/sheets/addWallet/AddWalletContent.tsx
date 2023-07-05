@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import * as S from '../styles';
 
-import { PressableSelector, Text } from '../../components';
+import { PressableSelector, Text } from 'components';
 
-import { AddWalletIcon, ScanQRIcon, SeedPhraseIcon, MultisigWalletIcon } from '../../icons';
+import { AddWalletIcon, ScanQRIcon, SeedPhraseIcon, MultisigWalletIcon } from 'icons';
 
 const Content = ({ navigation }) => {
     return (
@@ -21,15 +21,20 @@ const Content = ({ navigation }) => {
                     <PressableSelector
                         Icon={SeedPhraseIcon}
                         title="Import from seed phrase"
-                        onPress={() => navigation.navigate('importSeed')}
+                        onPress={() => navigation.navigate('recoverWallet')}
+                    />
+                    <PressableSelector
+                        Icon={SeedPhraseIcon}
+                        title="Import from private key"
+                        onPress={() => navigation.navigate('importWallet')}
                     />
                     <PressableSelector
                         Icon={ScanQRIcon}
                         title="Scan QR code"
                         onPress={() => navigation.navigate('scanQrCode')}
                     />
-                    <PressableSelector Icon={MultisigWalletIcon} title="New multisig wallet" onPress={() => null} />
-                    <PressableSelector Icon={ScanQRIcon} title="Access with ledger" onPress={() => null} />
+                    {/* <PressableSelector Icon={MultisigWalletIcon} title="New multisig wallet" onPress={() => null} /> */}
+                    {/* <PressableSelector Icon={ScanQRIcon} title="Access with ledger" onPress={() => null} /> */}
                 </S.SelectorsContainer>
             </S.OffsetedContainer>
         </S.ContentContainer>

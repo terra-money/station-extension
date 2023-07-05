@@ -2,7 +2,7 @@ import React from 'react';
 import { ActivityIndicator } from 'react-native';
 import { useTheme } from 'styled-components';
 
-import { Text } from '../..';
+import { Text } from 'components';
 import * as S from './Button.styled';
 
 export type ButtonSize = 'small' | 'medium' | 'large';

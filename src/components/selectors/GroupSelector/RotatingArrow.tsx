@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
-import { SmallUpArrowIcon } from '../../../icons';
+import { SmallUpArrowIcon } from 'icons';
 
 import * as S from './GroupSelector.styled';
 

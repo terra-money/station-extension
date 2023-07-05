@@ -2,7 +2,7 @@ import React from 'react';
 import { useRecoilState } from 'recoil';
 import { SvgUri } from 'react-native-svg';
 
-import { GroupSelector, GroupSelectorElement, Text } from '../../../components';
+import { GroupSelector, GroupSelectorElement, Text } from 'components';
 import { currentNetworkState, currentThemeState } from '../../../state';
 
 import chains from './chains.json';

@@ -1,7 +1,8 @@
 import React from 'react';
 import { useTheme } from 'styled-components';
-import { SmallRightArrowIcon } from '../../../icons';
-import { Text } from '../../texts';
+import { SmallRightArrowIcon } from 'icons';
+import { Text } from 'components';
+
 import * as S from './PressableSelector.styled';
 
 interface SelectorProps {

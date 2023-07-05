@@ -1,7 +1,7 @@
 import React from 'react';
 import * as S from '../styles';
 
-import { PressableSelector, Text } from '../../components';
+import { PressableSelector, Text } from 'components';
 
 import { useRecoilState } from 'recoil';
 import { currentNetworkState, currentThemeState } from '../../state';

@@ -9,6 +9,10 @@ import { darkTheme } from './src/constants/themes/dark';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { currentThemeState } from './src/state';
 import { availableThemes } from './src/constants/themes';
+import InitBankBalance from './src/components/InitBankBalance';
+import { InitNetworks } from './src/components/InitNetworks';
+import InitQueryClient from './src/components/InitQueryClient';
+import InitChains from './src/components/InitChains';
 
 function Root(): JSX.Element {
     const [currentTheme] = useRecoilState(currentThemeState);
@@ -18,16 +22,27 @@ function Root(): JSX.Element {
     );
     return (
         <ThemeProvider theme={theme}>
-            <NavigationContainer>
-                <MainLayout />
-            </NavigationContainer>
-            <SheetLayout />
+            <InitQueryClient>
+                <InitNetworks>
+                    <InitChains>
+                        <InitBankBalance>
+                            <NavigationContainer>
+                                <MainLayout />
+                            </NavigationContainer>
+                            <SheetLayout />
+                        </InitBankBalance>
+                    </InitChains>
+                </InitNetworks>
+            </InitQueryClient>
+
             <StatusBar barStyle={theme.barStyle} backgroundColor={theme.palette.background.default} />
         </ThemeProvider>
     );
 }
 
 function App(): JSX.Element {
+    // getChainOptions().then(chainOptions => console.log('chain options', chainOptions));
+
     return (
         <RecoilRoot>
             <SafeAreaProvider>

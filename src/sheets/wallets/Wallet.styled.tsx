@@ -13,8 +13,26 @@ export const Container = styled.TouchableOpacity<{ active?: boolean }>`
 `;
 
 export const InfoContainer = styled.View`
-    display: flex;
-    max-width: 80%;
-    margin-right: auto;
+    flex: 1;
     gap: 8px;
+`;
+
+export const HeaderContainer = styled.View`
+    align-items: center;
+    gap: 8px;
+`;
+
+export const ButtonsContainer = styled.View`
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+    align-items: center;
+    gap: 10px;
+    padding-left: 10px;
+`;
+
+export const WalletAddressContainer = styled.View`
+    width: 50%;
+    margin-top: 8px;
+    margin-bottom: 24px;
 `;

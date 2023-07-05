@@ -2,6 +2,8 @@ import styled from 'styled-components/native';
 
 export const Container = styled.View`
     padding: 15px 10px;
+    flex: 1;
+    background-color: ${p => p.theme.palette.background.default};
 `;
 
 export const AssetsHeader = styled.View`
@@ -12,10 +14,9 @@ export const AssetsHeader = styled.View`
     padding: 10px;
 `;
 
-export const AssetContainer = styled.View`
+export const AssetContainer = styled.TouchableOpacity`
     width: 100%;
     height: 68px;
-    padding: 0px 10px;
     display: flex;
     align-items: center;
     flex-direction: row;
@@ -47,4 +48,8 @@ export const AssetTrend = styled.View`
     display: flex;
     flex-direction: row;
     gap: 4px;
+`;
+
+export const AssetsContainer = styled.ScrollView`
+    margin: 0px 10px;
 `;

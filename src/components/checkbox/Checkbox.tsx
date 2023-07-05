@@ -1,7 +1,7 @@
 import React from 'react';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useTheme } from 'styled-components';
-import { Text } from '../texts';
+import { Text } from 'components';
 
 import * as S from './Checkbox.styled';
 

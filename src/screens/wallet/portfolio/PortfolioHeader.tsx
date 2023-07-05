@@ -1,34 +1,54 @@
-import { CircleButton, Text } from 'components';
 import React from 'react';
-import { PlusIcon, PortfolioReceiveIcon, PortfolioSendIcon } from '../../../icons';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { currentWalletState, openedSheetState } from '../../../state';
+import { CircleButton, Text } from 'components';
+import { PlusIcon, PortfolioReceiveIcon, PortfolioSendIcon } from 'icons';
 
 import * as S from './PortfolioHeader.styled';
+import { useTheme } from 'styled-components';
+import { useBankBalance } from '../../../utils/queries/bank';
+import { useExchangeRates } from 'utils';
+import { useNativeDenoms } from 'utils';
+import { useNavigation } from '@react-navigation/native';
 
 const PortfolioHeaderComponent = () => {
+    const theme = useTheme();
+    const coins = useBankBalance();
+    const readNativeDenom = useNativeDenoms();
+    const { data: prices } = useExchangeRates();
+    const [wallet] = useRecoilState(currentWalletState);
+
+    const setOpenedSheet = useSetRecoilState(openedSheetState);
+
+    const coinsValue = coins?.reduce((acc, { amount, denom }) => {
+        const { token, decimals, symbol } = readNativeDenom(denom);
+        return acc + (parseInt(amount) * (symbol?.endsWith('...') ? 0 : prices?.[token]?.price ?? 0)) / 10 ** decimals;
+    }, 0);
+
     return (
         <>
             <S.BorderLine />
             <S.Container>
-                <Text.Title6>Portfolio value</Text.Title6>
-                <Text.Title3>$12,345.67</Text.Title3>
+                <Text.Title6 color={theme.palette.text.muted}>Portfolio value</Text.Title6>
+                <Text.Title3>{wallet ? `$${coinsValue.toFixed(2)}` : '--'}</Text.Title3>
                 <S.ActionsContainer>
                     <S.ActionContainer>
                         <CircleButton onPress={() => null} active>
                             <PlusIcon />
                         </CircleButton>
-                        <Text.Body>Buy</Text.Body>
+                        <Text.Body color={theme.palette.button.primary.text}>Buy</Text.Body>
                     </S.ActionContainer>
                     <S.ActionContainer>
-                        <CircleButton onPress={() => null}>
+                        <CircleButton onPress={() => setOpenedSheet('send')}>
                             <PortfolioSendIcon />
                         </CircleButton>
-                        <Text.Body>Send</Text.Body>
+                        <Text.Body color={theme.palette.button.primary.text}>Send</Text.Body>
                     </S.ActionContainer>
                     <S.ActionContainer>
-                        <CircleButton onPress={() => null}>
+                        <CircleButton onPress={() => setOpenedSheet('receive')}>
                             <PortfolioReceiveIcon />
                         </CircleButton>
-                        <Text.Body>Receive</Text.Body>
+                        <Text.Body color={theme.palette.button.primary.text}>Receive</Text.Body>
                     </S.ActionContainer>
                 </S.ActionsContainer>
             </S.Container>

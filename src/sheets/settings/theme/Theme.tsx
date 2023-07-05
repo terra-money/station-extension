@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
-import { GroupSelector, GroupSelectorElement, Text } from '../../../components';
+import { GroupSelector, GroupSelectorElement, Text } from 'components';
 import { availableThemes } from '../../../constants/themes';
 import { currentThemeState } from '../../../state';
 

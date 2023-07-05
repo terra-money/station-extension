@@ -5,7 +5,9 @@ export const createContext = <A>(name: string) => {
 
     const useCtx = () => {
         const c = useContext(ctx);
-        if (!c) throw new Error(`${name} must be inside a provider with a value`);
+        if (!c) {
+            throw new Error(`${name} must be inside a provider with a value`);
+        }
         return c;
     };
 

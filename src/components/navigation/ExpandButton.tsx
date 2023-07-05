@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
-import { ArrowDownIcon } from '../../icons';
+import { ArrowDownIcon } from 'icons';
 
 import * as S from './styles';
 
@@ -24,7 +24,7 @@ const Button = ({ onExpand, expanded }: ButtonProps) => {
         } else {
             rotation.value = withSpring('180deg');
         }
-    }, [expanded]);
+    }, [expanded, rotation]);
 
     return (
         <S.ExpandButton onPress={onExpand} activeOpacity={0.5}>

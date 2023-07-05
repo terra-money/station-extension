@@ -1,5 +1,5 @@
 import React from 'react';
-import { SettingsSheet, AddWalletSheet, WalletsSheet } from '../sheets';
+import { SettingsSheet, AddWalletSheet, WalletsSheet, ReceiveSheet, SendSheet } from '../sheets';
 
 const SheetLayout = () => {
     return (
@@ -7,6 +7,8 @@ const SheetLayout = () => {
             <SettingsSheet />
             <AddWalletSheet />
             <WalletsSheet />
+            <ReceiveSheet />
+            <SendSheet />
         </>
     );
 };

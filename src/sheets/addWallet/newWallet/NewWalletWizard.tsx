@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { MnemonicKey } from '@terra-money/feather.js';
-import { useRecoilState } from 'recoil';
 
 import { NewWalletForm } from './NewWalletForm';
 import { CreatedWallet } from './CreatedWallet';
-import { addWallet, createContext, wordsFromAddress } from '../../../utils';
-import { userWalletsState } from '../../../state';
+import { createContext, useAuth, wordsFromAddress } from 'utils';
 
 interface Props {
     defaultMnemonic?: string;
@@ -40,9 +38,10 @@ const DefaultValues = { name: '', password: '', mnemonic: '', index: 0 };
 export const [useCreateWallet, CreateWalletProvider] = createContext<CreateWallet>('useCreateWallet');
 
 const NewWalletWizardComponent = ({ defaultMnemonic = '', beforeCreate }: Props) => {
-    const [wallets, setWallets] = useRecoilState(userWalletsState);
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
+
+    const { addWallet } = useAuth();
 
     /* form values */
     const initial = { ...DefaultValues, mnemonic: defaultMnemonic };
@@ -63,12 +62,7 @@ const NewWalletWizardComponent = ({ defaultMnemonic = '', beforeCreate }: Props)
             '330': mk330.privateKey,
             '118': mk118.privateKey,
         };
-        const newWallets = addWallet({ name, password, words, key });
-        try {
-            setWallets(newWallets);
-        } catch (e) {
-            console.error(e);
-        }
+        addWallet({ name, password, words, key });
 
         setCreatedWallet({ name, words });
         setLoading(false);
@@ -94,6 +88,10 @@ const NewWalletWizardComponent = ({ defaultMnemonic = '', beforeCreate }: Props)
                     setStep(1);
                     return null;
                 }
+                if (!beforeCreate) {
+                    createWallet(330);
+                    setStep(3);
+                }
                 return beforeCreate;
 
             case 3:
@@ -110,6 +108,7 @@ const NewWalletWizardComponent = ({ defaultMnemonic = '', beforeCreate }: Props)
         createdWallet,
         createWallet,
         loading,
+        setLoading,
     };
 
     return <CreateWalletProvider value={value}>{render()}</CreateWalletProvider>;

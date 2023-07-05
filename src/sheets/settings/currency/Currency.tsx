@@ -1,5 +1,5 @@
 import React from 'react';
-import { GroupSelector, GroupSelectorElement, Text } from '../../../components';
+import { GroupSelector, GroupSelectorElement, Text } from 'components';
 
 import * as GS from '../../styles';
 

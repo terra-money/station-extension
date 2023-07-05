@@ -3,6 +3,10 @@ const moduleResolver = [
     {
         alias: {
             components: './src/components/index.ts',
+            utils: './src/utils/index.ts',
+            icons: './src/icons/index.ts',
+            store: './src/state/index.ts',
+            constants: './src/constants/index.ts',
         },
     },
 ];

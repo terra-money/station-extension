@@ -1,14 +1,14 @@
 import React, { useState, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { Alert } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 import numeral from 'numeral';
-import { shuffle } from '../../../utils';
+import { shuffle } from 'utils';
+
+import { Text, Button, TextButton } from 'components';
 import { useCreateWallet } from './NewWalletWizard';
 
 import * as GS from '../../styles';
 import * as S from './NewWallet.styled';
-import { Text, Button, TextButton } from 'components';
-import { useTheme } from '@react-navigation/native';
-import { Alert } from 'react-native';
 
 export interface QuizItem {
     index: number;
@@ -16,8 +16,7 @@ export interface QuizItem {
 }
 
 const QuizComponent = () => {
-    const theme = useTheme();
-    const { setStep, values, createWallet } = useCreateWallet();
+    const { setStep, values, createWallet, setLoading } = useCreateWallet();
     const { mnemonic } = values;
 
     /* quiz */
@@ -27,47 +26,52 @@ const QuizComponent = () => {
     /* submit */
 
     const submit = () => {
-        console.log('answers', answers);
         if (win(answers)) {
+            setLoading(true);
             createWallet(330);
         } else {
             Alert.alert('Write down the mnemonic and choose the correct word');
         }
+        setLoading(false);
     };
 
     return (
         <>
-            <GS.VerticalStack>
-                {quiz.map(({ index }, i) => (
-                    <S.QuizBlock
-                        // do not translate this unless you find a simple way to handle ordinal
-                        key={index}>
-                        <Text.Title6Bold>{`${numeral(index + 1).format('0o')} word`}</Text.Title6Bold>
-                        <S.QuizButtonsWrapper>
-                            {hint.map(word => {
-                                const handleClick = () => {
-                                    const next = [...answers];
-                                    next[i] = word;
-                                    setAnswers(next as [string, string]);
-                                };
+            <GS.OffsetedContainer>
+                <GS.VerticalStack>
+                    {quiz.map(({ index }, i) => (
+                        <S.QuizBlock
+                            // do not translate this unless you find a simple way to handle ordinal
+                            key={index}>
+                            <Text.Title6Bold>{`${numeral(index + 1).format('0o')} word`}</Text.Title6Bold>
+                            <S.QuizButtonsWrapper>
+                                {hint.map(word => {
+                                    const handleClick = () => {
+                                        const next = [...answers];
+                                        next[i] = word;
+                                        setAnswers(next as [string, string]);
+                                    };
 
-                                return (
-                                    <Button
-                                        onPress={handleClick}
-                                        active={answers[i] === word}
-                                        key={word}
-                                        text={word}
-                                        height="46px"
-                                        width="46%"
-                                    />
-                                );
-                            })}
-                        </S.QuizButtonsWrapper>
-                    </S.QuizBlock>
-                ))}
-                <TextButton text={`I haven't written the mnemonic`} onPress={() => setStep(1)} />
-            </GS.VerticalStack>
-            <Button marginTop="auto" height="48px" text="Submit" onPress={submit} />
+                                    return (
+                                        <Button
+                                            onPress={handleClick}
+                                            active={answers[i] === word}
+                                            key={word}
+                                            text={word}
+                                            height="46px"
+                                            width="46%"
+                                        />
+                                    );
+                                })}
+                            </S.QuizButtonsWrapper>
+                        </S.QuizBlock>
+                    ))}
+                    <TextButton text={"I haven't written the mnemonic"} onPress={() => setStep(1)} />
+                </GS.VerticalStack>
+            </GS.OffsetedContainer>
+            <GS.BottomButtonsWrapper>
+                <Button marginTop="auto" height="48px" text="Submit" onPress={submit} />
+            </GS.BottomButtonsWrapper>
         </>
     );
 };

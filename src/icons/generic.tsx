@@ -1,5 +1,5 @@
 import React from 'react-native';
-import Svg, { Path, SvgProps } from 'react-native-svg';
+import Svg, { Rect, Path, SvgProps } from 'react-native-svg';
 
 export const ArrowDownIcon = (props: SvgProps) => (
     <Svg width={20} height={20} fill="none" {...props}>
@@ -110,6 +110,71 @@ export const CopyIcon = (props: SvgProps) => (
             clipRule="evenodd"
             d="M21.0911 1.94543V0.199951L9.45457 0.199951C8.65456 0.199951 8 0.985415 8 1.94543L8 15.9092H9.45457L9.45457 1.94543L21.0911 1.94543ZM24 17.6546L24 5.43631C24 4.4763 23.3454 3.69084 22.5454 3.69084L12.3635 3.69084C11.5635 3.69084 10.9089 4.4763 10.9089 5.43631L10.9089 17.6546C10.9089 18.6146 11.5635 19.4001 12.3635 19.4001H22.5454C23.3454 19.4001 24 18.6146 24 17.6546ZM12.3635 17.6547L12.3635 5.43633L22.5454 5.43633L22.5454 17.6547H12.3635Z"
             fill={props.fill || '#E8E8E8'}
+        />
+    </Svg>
+);
+
+export const MoreVerticalIcon = (props: SvgProps) => (
+    <Svg width={24} height={24} fill="none" {...props}>
+        <Path
+            fillRule="evenodd"
+            clipRule="evenodd"
+            d="M12.25 7.5C13.4875 7.5 14.5 6.4875 14.5 5.25C14.5 4.0125 13.4875 3 12.25 3C11.0125 3 10 4.0125 10 5.25C10 6.4875 11.0125 7.5 12.25 7.5ZM12.25 9.75C11.0125 9.75 10 10.7625 10 12C10 13.2375 11.0125 14.25 12.25 14.25C13.4875 14.25 14.5 13.2375 14.5 12C14.5 10.7625 13.4875 9.75 12.25 9.75ZM10 18.75C10 17.5125 11.0125 16.5 12.25 16.5C13.4875 16.5 14.5 17.5125 14.5 18.75C14.5 19.9875 13.4875 21 12.25 21C11.0125 21 10 19.9875 10 18.75Z"
+            fill={props.fill || '#F2F2F2'}
+        />
+    </Svg>
+);
+
+export const QRCodeIcon = (props: SvgProps) => (
+    <Svg width={20} height={20} fill="none" {...props}>
+        <Path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M9.16667 9.66667H2.5V3H9.16667V9.66667ZM7.5 4.66667H4.16667V8H7.5V4.66667Z"
+            fill="#F2F2F2"
+        />
+        <Path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M9.16667 18H2.5V11.3333H9.16667V18ZM7.5 13H4.16667V16.3333H7.5V13Z"
+            fill="#F2F2F2"
+        />
+        <Path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M10.8333 9.66667V3H17.4999V9.66667H10.8333ZM12.4999 8H15.8333V4.66667H12.4999V8Z"
+            fill="#F2F2F2"
+        />
+        <Rect x="15.8333" y="16.3333" width="1.66667" height="1.66667" fill="#F2F2F2" />
+        <Rect x="10.8333" y="11.3333" width="1.66667" height="1.66667" fill="#F2F2F2" />
+        <Rect x="12.5" y="13" width="1.66667" height="1.66667" fill="#F2F2F2" />
+        <Rect x="10.8333" y="14.6667" width="1.66667" height="1.66667" fill="#F2F2F2" />
+        <Rect x="12.5" y="16.3333" width="1.66667" height="1.66667" fill="#F2F2F2" />
+        <Rect x="14.1667" y="14.6667" width="1.66667" height="1.66667" fill="#F2F2F2" />
+        <Rect x="14.1667" y="11.3333" width="1.66667" height="1.66667" fill="#F2F2F2" />
+        <Rect x="15.8333" y="13" width="1.66667" height="1.66667" fill="#F2F2F2" />
+    </Svg>
+);
+
+export const TinyRightArrowIcon = (props: SvgProps) => (
+    <Svg width={12} height={12} fill="none" {...props}>
+        <Path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M7.37569 3.17574C7.61 2.94142 7.9899 2.94142 8.22422 3.17574L10.6242 5.57574C10.8585 5.81006 10.8585 6.18996 10.6242 6.42427L8.22422 8.82428C7.9899 9.05859 7.61 9.05859 7.37569 8.82428C7.14137 8.58996 7.14137 8.21006 7.37569 7.97575L8.75142 6.60001L1.79995 6.60001C1.46858 6.60001 1.19995 6.33138 1.19995 6.00001C1.19995 5.66864 1.46858 5.40001 1.79995 5.40001L8.75142 5.40001L7.37569 4.02427C7.14137 3.78995 7.14137 3.41005 7.37569 3.17574Z"
+            fill="#DFE1EE"
+            fill-opacity="0.6"
+        />
+    </Svg>
+);
+
+export const DeleteTrashIcon = (props: SvgProps) => (
+    <Svg width={16} height={16} fill="none" {...props}>
+        <Path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M9.66659 2.5H6.33325L5.66659 3.16667H3.33325V4.5H12.6666V3.16667H10.3333L9.66659 2.5ZM10.6666 6.5V13.1667H5.33325V6.5H10.6666ZM3.99992 5.16667H11.9999V13.1667C11.9999 13.9 11.3999 14.5 10.6666 14.5H5.33325C4.59992 14.5 3.99992 13.9 3.99992 13.1667V5.16667Z"
+            fill="#F2F2F2"
         />
     </Svg>
 );

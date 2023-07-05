@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from 'styled-components';
-import { WarningIcon } from '../../../icons';
-import { Text } from '../../texts';
+import { WarningIcon } from 'icons';
+import { Text } from 'components';
 import * as S from './Warning.styled';
 
 const Warning = ({ text }: { text: string }) => {

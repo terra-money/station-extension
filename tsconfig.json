@@ -14,7 +14,10 @@
         "baseUrl": ".",
         "paths": {
             "components": ["src/components"],
-            "components/*": ["src/components/*"]
+            "utils": ["src/utils"],
+            "icons": ["src/icons"],
+            "store": ["src/state"],
+            "constants": ["src/constants"]
         }
     },
     "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js"]

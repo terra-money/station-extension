@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MnemonicKey } from '@terra-money/feather.js';
 
-import { ContainerWithLoader, Text } from '../../../components';
+import { ContainerWithLoader, Text } from 'components';
 
 import * as GS from '../../styles';
 import { NewWalletWizard } from './NewWalletWizard';
@@ -23,12 +23,10 @@ const NewWalletPage = () => {
     }
     return (
         <GS.ContentContainer>
-            <GS.OffsetedContainer>
-                <GS.TitleContainer>
-                    <Text.Title4>New Wallet</Text.Title4>
-                </GS.TitleContainer>
-                <NewWalletWizard defaultMnemonic={mnemonic.mnemonic} beforeCreate={<Quiz />} />
-            </GS.OffsetedContainer>
+            <GS.TitleContainer>
+                <Text.Title4>New Wallet</Text.Title4>
+            </GS.TitleContainer>
+            <NewWalletWizard defaultMnemonic={mnemonic.mnemonic} beforeCreate={<Quiz />} />
         </GS.ContentContainer>
     );
 };

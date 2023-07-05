@@ -15,13 +15,18 @@ const Settings = () => {
 
     const snapPoints = useMemo(() => ['90%'], []);
 
-    const handleSheetChanges = useCallback((index: number) => {
-        if (index === -1) {
-            setOpenedSheet('');
-        }
-    }, []);
+    const handleSheetChanges = useCallback(
+        (index: number) => {
+            if (index === -1) {
+                setOpenedSheet('');
+            }
+        },
+        [setOpenedSheet],
+    );
 
-    if (openedSheet !== 'settings') return null;
+    if (openedSheet !== 'settings') {
+        return null;
+    }
 
     return (
         <BottomSheet

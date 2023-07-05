@@ -33,7 +33,9 @@ const AddWallet = () => {
         }
     });
 
-    if (openedSheet !== 'addWallet') return null;
+    if (openedSheet !== 'addWallet') {
+        return null;
+    }
 
     return (
         <BottomSheet
@@ -41,6 +43,7 @@ const AddWallet = () => {
             ref={bottomSheetRef}
             index={bottomSheetIndex}
             snapPoints={snapPoints}
+            keyboardBlurBehavior="restore"
             backgroundStyle={{
                 backgroundColor: theme.palette.background.cardMuted,
             }}
