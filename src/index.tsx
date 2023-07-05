@@ -21,10 +21,10 @@ import App from "extension/App"
 import InitChains from "app/InitChains"
 import WithNodeInfo from "app/WithNodeInfo"
 import InitQueryClient from "app/InitQueryClient"
-import { initSentry } from "utils/sentry/setupSentry"
+import { initAnalytics } from "utils/analytics"
 
 const connectorOpts = { bridge: BRIDGE }
-initSentry()
+initAnalytics()
 
 getChainOptions().then((chainOptions) =>
   render(
