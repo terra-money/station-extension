@@ -118,6 +118,7 @@ const AssetPage = () => {
                       balance={b.amount}
                       chain={b.chain}
                       token={token}
+                      denom={b.denom}
                       decimals={decimals}
                     />
                     {token === "uluna" &&
@@ -143,6 +144,7 @@ const AssetPage = () => {
                       balance={b.amount}
                       chain={b.chain}
                       token={token}
+                      denom={b.denom}
                       decimals={decimals}
                       path={unknownIBCDenoms[b.denom]?.chains}
                       ibcDenom={b.denom}
