@@ -199,7 +199,7 @@ export const useNativeDenoms = () => {
         token: denom,
         symbol: fixedDenom,
         name: fixedDenom,
-        //type: tokenType,
+        type: tokenType,
         icon:
           tokenType === "ibc"
             ? "https://assets.terra.money/icon/svg/IBC.svg"
