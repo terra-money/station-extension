@@ -6,6 +6,7 @@ import { useCustomChains, useCustomLCDs } from "utils/localStorage"
 import { useValidNetworks } from "data/queries/tendermint"
 import { WithFetching } from "components/feedback"
 import { combineState } from "data/query"
+import { InterchainNetworks } from "types/network"
 
 export const [useNetworks, NetworksProvider] = createContext<{
   networks: InterchainNetworks

@@ -1,0 +1,27 @@
+@import "mixins";
+
+.dl {
+  font-size: var(--font-size-small);
+  word-break: break-word;
+}
+
+.bytes__card {
+  margin-top: 1rem;
+  margin-bottom: 2.4rem;
+  .header {
+    @include flex(space-between);
+    padding: var(--card-padding);
+    padding-top: 0;
+    border-bottom: 1px solid var(--card-border);
+    margin: 0 calc(-1 * var(--card-padding));
+    margin-bottom: var(--card-padding);
+    .title {
+      font-size: 12pt;
+      font-weight: 500;
+    }
+  }
+
+  p {
+    word-break: break-word;
+  }
+}
