@@ -55,7 +55,7 @@ const AssetPage = () => {
             ...acc,
             [data.ibcDenom]: {
               baseDenom: data.baseDenom,
-              chains: data.chainIDs,
+              chains: data?.chainIDs,
             },
           }
         : acc,

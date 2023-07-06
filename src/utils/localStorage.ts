@@ -159,12 +159,12 @@ export const useCustomChains = () => {
     },
     deleteCustomChain: (chainID: string) => {
       const newChains = Object.fromEntries(
-        Object.entries(customChains).map(([key, value]) => [
+        Object.entries(customChains ?? {}).map(([key, value]) => [
           key,
           Object.fromEntries(
-            Object.entries(value).filter(([key]) => key !== chainID)
+            Object.entries(value ?? {}).filter(([key]) => key !== chainID) ?? {}
           ),
-        ])
+        ]) ?? {}
       )
       setLocalSetting(SettingKey.CustomChains, newChains)
       setCustomChains(newChains)

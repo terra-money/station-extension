@@ -40,7 +40,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const lcd = useInterchainLCDClient()
   const terraChainID = useChainID()
   const chainID =
-    "tx" in props ? props.tx.chainID ?? terraChainID : terraChainID
+    "tx" in props ? props.tx?.chainID ?? terraChainID : terraChainID
 
   /* form */
   const form = useForm<Values>({
@@ -72,15 +72,15 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
       const { tx } = props
 
       try {
-        if (!addresses || !addresses[tx.chainID] || !network[tx.chainID])
+        if (!addresses || !addresses[tx?.chainID] || !network[tx?.chainID])
           return 0
-        const { baseAsset, gasPrices } = network[tx.chainID]
+        const { baseAsset, gasPrices } = network[tx?.chainID]
 
         const feeDenom =
-          baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices)[0]
+          baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices ?? {})[0]
 
         const unsignedTx = await lcd.tx.create(
-          [{ address: addresses[tx.chainID] }],
+          [{ address: addresses[tx?.chainID] }],
           {
             ...tx,
             feeDenoms: [feeDenom],
@@ -106,15 +106,15 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
 
   let fee: Fee | undefined
 
-  if ("tx" in props && network[props.tx.chainID]) {
+  if ("tx" in props && network[props.tx?.chainID]) {
     const { tx } = props
     fee = tx.fee
     if (!tx.fee?.gas_limit) {
-      const { baseAsset, gasPrices, gasAdjustment } = network[tx.chainID]
+      const { baseAsset, gasPrices, gasAdjustment } = network[tx?.chainID]
       const gas = Math.ceil((estimatedGas ?? 0) * gasAdjustment)
 
       const feeDenom =
-        baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices)[0]
+        baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices ?? {})[0]
 
       fee = new Fee(gas, { [feeDenom]: Math.ceil(gasPrices[feeDenom] * gas) })
     }

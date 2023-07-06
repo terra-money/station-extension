@@ -20,11 +20,11 @@ const ChainFilter = ({
   swap?: boolean
 }) => {
   const { t } = useTranslation()
-  const networks = Object.values(useNetwork()).sort((a, b) =>
+  const networks = Object.values(useNetwork() ?? {}).sort((a, b) =>
     a.name === "Terra" ? -1 : b.name === "Terra" ? 1 : 0
   )
   const [selectedChain, setChain] = useState<string | undefined>(
-    all ? undefined : networks[0].chainID
+    all ? undefined : networks[0]?.chainID
   )
 
   return (
@@ -48,10 +48,10 @@ const ChainFilter = ({
           )}
           {swap && (
             <button
-              key={networks[0].chainID}
-              onClick={() => setChain(networks[0].chainID)}
+              key={networks[0]?.chainID}
+              onClick={() => setChain(networks[0]?.chainID)}
               className={
-                selectedChain === networks[0].chainID
+                selectedChain === networks[0]?.chainID
                   ? styles.active
                   : undefined
               }
@@ -63,10 +63,10 @@ const ChainFilter = ({
           {!swap &&
             networks.map((chain) => (
               <button
-                key={chain.chainID}
-                onClick={() => setChain(chain.chainID)}
+                key={chain?.chainID}
+                onClick={() => setChain(chain?.chainID)}
                 className={
-                  selectedChain === chain.chainID ? styles.active : undefined
+                  selectedChain === chain?.chainID ? styles.active : undefined
                 }
               >
                 <img src={chain.icon} alt={chain.name} />

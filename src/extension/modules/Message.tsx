@@ -35,14 +35,18 @@ const Message = ({ msg, warn }: { msg: Msg; warn: boolean }) => {
 
       {!collapsed && (
         <section>
-          {[["type", type], ...Object.entries(msg)].map(([key, value]) => {
-            return (
-              <article className={styles.detail} key={key}>
-                <h1>{key}</h1>
-                <section className={styles.value}>{renderValue(value)}</section>
-              </article>
-            )
-          })}
+          {[["type", type], ...Object.entries(msg ?? {})].map(
+            ([key, value]) => {
+              return (
+                <article className={styles.detail} key={key}>
+                  <h1>{key}</h1>
+                  <section className={styles.value}>
+                    {renderValue(value)}
+                  </section>
+                </article>
+              )
+            }
+          )}
         </section>
       )}
     </article>

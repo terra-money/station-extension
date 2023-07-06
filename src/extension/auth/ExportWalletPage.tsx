@@ -6,7 +6,7 @@ const ExportWalletPage = () => {
   const { t } = useTranslation()
 
   return (
-    <ExtensionPage title={t("Export wallet")}>
+    <ExtensionPage title={t("Export wallet")} backButtonPath="/">
       <ExportWalletForm />
     </ExtensionPage>
   )
