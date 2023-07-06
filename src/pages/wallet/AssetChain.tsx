@@ -43,10 +43,7 @@ const AssetChain = (props: Props) => {
     price = prices?.[token]?.price ?? 0
   }
 
-  const networks = useNetwork()
   const { devMode } = useDevMode()
-
-  const { icon, name } = networks[chain] || {}
 
   // send back is not available if one of the chains the asset went through is not supprted by Station
   const isSendBackDisabled =
@@ -99,7 +96,9 @@ const AssetChain = (props: Props) => {
                 </IbcSendBack>
               ))}
           </h4>
-          {path && <p>{path.map((c) => allNetworks[c]?.name ?? c).join(" → ")}</p>}
+          {path && (
+            <p>{path.map((c) => allNetworks[c]?.name ?? c).join(" → ")}</p>
+          )}
           {devMode && (
             <p>
               <span className={styles.copy__denom}>
