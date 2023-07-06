@@ -7,7 +7,6 @@ import HeaderIconButton from "../components/HeaderIconButton"
 import NetworkSetting from "./NetworkSetting"
 import LanguageSetting from "./LanguageSetting"
 import CurrencySetting from "./CurrencySetting"
-import { useWallet, WalletStatus } from "@terra-money/wallet-provider"
 import { ModalButton } from "components/feedback"
 import SettingsButton from "components/layout/SettingsButton"
 import { useNetworkName } from "data/wallet"
@@ -19,18 +18,20 @@ import styles from "./Preferences.module.scss"
 import SelectTheme from "./SelectTheme"
 import LCDSetting from "./LCDSetting"
 import { useTheme } from "data/settings/Theme"
+import AdvancedSettings from "./AdvancedSettings"
 
-type Routes = "network" | "lang" | "currency" | "theme" | "lcd"
+type Routes = "network" | "lang" | "currency" | "theme" | "lcd" | "advanced"
+
 interface SettingsPage {
   key: Routes
   tab: string
   value?: string
   disabled?: boolean
+  className?: string
 }
 
 const Preferences = () => {
   const { t } = useTranslation()
-  const connectedWallet = useWallet()
   const [page, setPage] = useState<Routes | null>(null)
 
   const { i18n } = useTranslation()
@@ -43,8 +44,7 @@ const Preferences = () => {
       key: "network",
       tab: t("Network"),
       value: capitalize(networkName),
-      disabled:
-        !sandbox && connectedWallet.status === WalletStatus.WALLET_CONNECTED,
+      disabled: !sandbox,
     },
     lang: {
       key: "lang",
@@ -66,6 +66,13 @@ const Preferences = () => {
       tab: t("Theme"),
       value: capitalize(name),
       disabled: false,
+    },
+    advanced: {
+      key: "advanced",
+      tab: t("Advanced"),
+      value: "",
+      disabled: false,
+      className: styles.advanced,
     },
     lcd: {
       key: "lcd",
@@ -97,16 +104,19 @@ const Preferences = () => {
         return <SelectTheme />
       case "lcd":
         return <LCDSetting />
+      case "advanced":
+        return <AdvancedSettings />
       default:
         return (
           <FlexColumn gap={8}>
             {Object.values(routes ?? {})
               .filter(({ disabled }) => !disabled)
-              .map(({ tab, value, key }) => (
+              .map(({ tab, value, key, className }) => (
                 <SettingsButton
                   title={tab}
                   value={value}
                   key={key}
+                  className={className}
                   onClick={() => setPage(key)}
                 />
               ))}

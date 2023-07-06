@@ -1,10 +1,10 @@
 import { atom, useRecoilState, useRecoilValue } from "recoil"
 import { useNetworks } from "app/InitNetworks"
 import { getStoredNetwork, storeNetwork } from "../scripts/network"
-import { useWallet, WalletStatus } from "@terra-money/wallet-provider"
 import { walletState } from "./useAuth"
 import is from "../scripts/is"
 import { useCustomLCDs } from "utils/localStorage"
+import { NetworkName, ChainID, InterchainNetwork } from "types/network"
 
 const networkState = atom({
   key: "network",
@@ -36,9 +36,8 @@ export const useNetworkOptions = () => {
 
 export const useNetwork = (): Record<ChainID, InterchainNetwork> => {
   const { networks, filterEnabledNetworks } = useNetworks()
-  const [network, setNetwork] = useNetworkState()
+  const [network] = useNetworkState()
   const wallet = useRecoilValue(walletState)
-  const connectedWallet = useWallet()
   const { customLCDs } = useCustomLCDs()
 
   function withCustomLCDs(networks: Record<ChainID, InterchainNetwork>) {
@@ -47,29 +46,6 @@ export const useNetwork = (): Record<ChainID, InterchainNetwork> => {
         key,
         { ...val, lcd: customLCDs[val?.chainID] || val.lcd },
       ]) ?? {}
-    )
-  }
-
-  // check connected wallet
-  if (connectedWallet.status === WalletStatus.WALLET_CONNECTED) {
-    if (network !== "mainnet" && "phoenix-1" in connectedWallet.network) {
-      setNetwork("mainnet")
-    } else if (network !== "testnet" && "pisco-1" in connectedWallet.network) {
-      setNetwork("testnet")
-    } else if (
-      network !== "classic" &&
-      "columbus-5" in connectedWallet.network
-    ) {
-      setNetwork("classic")
-    } else if (
-      network !== "localterra" &&
-      "localterra" in connectedWallet.network
-    ) {
-      setNetwork("localterra")
-    }
-
-    return filterEnabledNetworks(
-      connectedWallet.network as Record<ChainID, InterchainNetwork>
     )
   }
 
