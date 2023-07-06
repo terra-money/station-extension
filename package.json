@@ -5,7 +5,7 @@
   "repository": "github:terra-money/terra-utils",
   "license": "MIT",
   "main": "dist/index.js",
-  "module": "dist/utils.esm.js",
+  "module": "dist/terra-utils.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
