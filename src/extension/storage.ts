@@ -1,6 +1,7 @@
 import { AccAddress } from "@terra-money/feather.js"
 import extension from "extensionizer"
 import decrypt from "auth/scripts/decrypt"
+import { ChainID, InterchainNetwork, TerraNetwork } from "types/network"
 
 /* network */
 export const storeNetwork = (
