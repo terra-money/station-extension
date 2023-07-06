@@ -1,18 +1,16 @@
-import {
-  DEFAULT_GAS_ADJUSTMENT,
-  CLASSIC_DEFAULT_GAS_ADJUSTMENT,
-} from "config/constants"
+import { DEFAULT_GAS_ADJUSTMENT } from "config/constants"
 import themes from "styles/themes/themes"
 import { useCallback } from "react"
 import { atom, useRecoilState } from "recoil"
+import { WalletStatus, useWallet } from "@terra-money/use-wallet"
+import { CustomNetwork, InterchainNetwork } from "types/network"
 
 export enum SettingKey {
   Theme = "Theme",
   Currency = "FiatCurrency",
   CustomNetworks = "CustomNetworks",
   CustomChains = "CustomChains",
-  GasAdjustment = "GasAdjustment", // Tx
-  ClassicGasAdjustment = "ClassicGasAdjustment",
+  GasAdjustment = "GasAdjust", // Tx
   AddressBook = "AddressBook", // Send
   HideNonWhitelistTokens = "HideNonWhiteListTokens",
   Network = "Network",
@@ -23,6 +21,7 @@ export enum SettingKey {
   WithdrawAs = "WithdrawAs", // Rewards (Preferred denom to withdraw rewards)
   EnabledNetworks = "EnabledNetworks",
   NetworkCacheTime = "NetworkCacheTime",
+  DevMode = "DevMode",
 }
 
 //const isSystemDarkMode =
@@ -57,7 +56,6 @@ export const DefaultSettings = {
     classic: {},
   } as Record<string, Record<string, InterchainNetwork>>,
   [SettingKey.GasAdjustment]: DEFAULT_GAS_ADJUSTMENT,
-  [SettingKey.ClassicGasAdjustment]: CLASSIC_DEFAULT_GAS_ADJUSTMENT,
   [SettingKey.AddressBook]: [] as AddressBook[],
   [SettingKey.CustomTokens]: DefaultCustomTokens as CustomTokens,
   [SettingKey.MinimumValue]: 0,
@@ -68,6 +66,7 @@ export const DefaultSettings = {
   [SettingKey.Network]: "",
   [SettingKey.EnabledNetworks]: { time: 0, networks: [] as string[] },
   [SettingKey.CustomLCD]: {},
+  [SettingKey.DevMode]: false,
 }
 
 export const getLocalSetting = <T>(key: SettingKey): T => {
@@ -114,6 +113,11 @@ export const customChainsState = atom({
   default: getLocalSetting<Record<string, Record<string, InterchainNetwork>>>(
     SettingKey.CustomChains
   ),
+})
+
+export const devModeState = atom({
+  key: "devModeState",
+  default: !!getLocalSetting(SettingKey.DevMode),
 })
 
 export const useShowWelcomeModal = () => {
@@ -187,4 +191,21 @@ export const useTokenFilters = () => {
     toggleHideLowBal,
     hideLowBal,
   }
+}
+
+const toggleSetting = (
+  key: SettingKey,
+  state: boolean,
+  setState: (state: boolean) => void
+) => {
+  setLocalSetting(key, !state)
+  setState(!state)
+}
+
+export const useDevMode = () => {
+  const [devMode, setDevMode] = useRecoilState(devModeState)
+  const changeDevMode = () =>
+    toggleSetting(SettingKey.DevMode, devMode, setDevMode)
+
+  return { changeDevMode, devMode }
 }

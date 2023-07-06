@@ -6,8 +6,11 @@ import { useNetwork, useNetworkName } from "data/wallet"
 import { useTranslation } from "react-i18next"
 import styles from "./AssetChain.module.scss"
 import IbcSendBack from "./IbcSendBack"
-import { InternalButton } from "components/general"
+import { CopyIcon, InternalButton } from "components/general"
 import { Tooltip } from "components/display"
+import { useDevMode } from "utils/localStorage"
+import { truncate } from "@terra-money/terra-utils"
+import { useNetworks } from "app/InitNetworks"
 
 export interface Props {
   chain: string
@@ -15,16 +18,23 @@ export interface Props {
   symbol: string
   decimals: number
   token: string
+  denom: string
   path?: string[]
   ibcDenom?: string
 }
 
 const AssetChain = (props: Props) => {
-  const { chain, symbol, balance, decimals, token, path, ibcDenom } = props
+  const { chain, symbol, balance, decimals, token, path, ibcDenom, denom } =
+    props
   const currency = useCurrency()
   const { data: prices, ...pricesState } = useExchangeRates()
   const { t } = useTranslation()
   const networkName = useNetworkName()
+  const allNetworks = useNetworks().networks[networkName]
+
+  const networks = useNetwork()
+
+  const { icon, name } = allNetworks[chain] ?? { name: chain }
 
   let price
   if (symbol === "LUNC" && networkName !== "classic") {
@@ -33,9 +43,7 @@ const AssetChain = (props: Props) => {
     price = prices?.[token]?.price ?? 0
   }
 
-  const networks = useNetwork()
-
-  const { icon, name } = networks[chain] || {}
+  const { devMode } = useDevMode()
 
   // send back is not available if one of the chains the asset went through is not supprted by Station
   const isSendBackDisabled =
@@ -73,7 +81,7 @@ const AssetChain = (props: Props) => {
                   chainID={chain}
                   token={ibcDenom}
                   title={`Send ${symbol} back to ${
-                    networks[path[0]]?.name ?? path[0]
+                    allNetworks[path[0]]?.name ?? path[0]
                   }`}
                 >
                   {(open) => (
@@ -88,7 +96,17 @@ const AssetChain = (props: Props) => {
                 </IbcSendBack>
               ))}
           </h4>
-          {path && <p>{path.map((c) => networks[c]?.name ?? c).join(" → ")}</p>}
+          {path && (
+            <p>{path.map((c) => allNetworks[c]?.name ?? c).join(" → ")}</p>
+          )}
+          {devMode && (
+            <p>
+              <span className={styles.copy__denom}>
+                {truncate(denom)}
+                <CopyIcon text={denom} size={14} />
+              </span>
+            </p>
+          )}
         </h1>
         <h1 className={styles.price}>
           {currency.symbol}{" "}

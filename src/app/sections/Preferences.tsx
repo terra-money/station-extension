@@ -18,13 +18,16 @@ import styles from "./Preferences.module.scss"
 import SelectTheme from "./SelectTheme"
 import LCDSetting from "./LCDSetting"
 import { useTheme } from "data/settings/Theme"
+import AdvancedSettings from "./AdvancedSettings"
 
-type Routes = "network" | "lang" | "currency" | "theme" | "lcd"
+type Routes = "network" | "lang" | "currency" | "theme" | "lcd" | "advanced"
+
 interface SettingsPage {
   key: Routes
   tab: string
   value?: string
   disabled?: boolean
+  className?: string
 }
 
 const Preferences = () => {
@@ -64,6 +67,13 @@ const Preferences = () => {
       value: capitalize(name),
       disabled: false,
     },
+    advanced: {
+      key: "advanced",
+      tab: t("Advanced"),
+      value: "",
+      disabled: false,
+      className: styles.advanced,
+    },
     lcd: {
       key: "lcd",
       tab: t("Custom LCD"),
@@ -94,16 +104,19 @@ const Preferences = () => {
         return <SelectTheme />
       case "lcd":
         return <LCDSetting />
+      case "advanced":
+        return <AdvancedSettings />
       default:
         return (
           <FlexColumn gap={8}>
             {Object.values(routes ?? {})
               .filter(({ disabled }) => !disabled)
-              .map(({ tab, value, key }) => (
+              .map(({ tab, value, key, className }) => (
                 <SettingsButton
                   title={tab}
                   value={value}
                   key={key}
+                  className={className}
                   onClick={() => setPage(key)}
                 />
               ))}

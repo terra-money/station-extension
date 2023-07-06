@@ -118,15 +118,17 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const simulationTx = estimationTxValues && createTx(estimationTxValues)
   const gasAdjustmentSetting = SettingKey.GasAdjustment
   const gasAdjustment =
-    networks[chain]?.gasAdjustment ??
+    networks[chain]?.gasAdjustment *
     getLocalSetting<number>(gasAdjustmentSetting)
+
   const key = {
     address: addresses?.[chain],
     //network: networks,
     gasAdjustment: gasAdjustment * (txGasAdjustment ?? 1),
     estimationTxValues,
-    //msgs: simulationTx?.msgs.map((msg) => msg.toData(isClassic)),
+    msgs: simulationTx?.msgs.map((msg) => msg.toData(isClassic)["@type"]),
   }
+
   const { data: estimatedGas, ...estimatedGasState } = useQuery(
     [queryKey.tx.create, key, isWalletEmpty],
     async () => {
