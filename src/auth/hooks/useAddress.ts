@@ -1,7 +1,7 @@
 import { useNetworks } from "app/InitNetworks"
 import { addressFromWords } from "utils/bech32"
 import useAuth from "./useAuth"
-import { useChainID, useNetworkName } from "./useNetwork"
+import { useNetworkName } from "./useNetwork"
 import { useNetwork } from "data/wallet"
 
 /* auth | walle-provider */

@@ -2,7 +2,6 @@ import { DEFAULT_GAS_ADJUSTMENT } from "config/constants"
 import themes from "styles/themes/themes"
 import { useCallback } from "react"
 import { atom, useRecoilState } from "recoil"
-import { WalletStatus, useWallet } from "@terra-money/use-wallet"
 import { CustomNetwork, InterchainNetwork } from "types/network"
 
 export enum SettingKey {
