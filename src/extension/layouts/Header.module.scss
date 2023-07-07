@@ -2,7 +2,7 @@
 
 .header {
   @include flex(space-between);
-  background: var(--menu-bg);
+  background: var(--card-bg);
   color: var(--text);
   border-bottom: var(--border-width) solid var(--card-border);
   padding: 10px;
