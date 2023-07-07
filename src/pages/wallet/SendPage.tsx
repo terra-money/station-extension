@@ -176,7 +176,8 @@ const SendPage = () => {
         from: chain,
         to: destinationChain,
         tokenAddress: token.denom,
-        icsChannel: ibcDenoms[networkName][token.denom]?.icsChannel,
+        icsChannel:
+          ibcDenoms[networkName][`${chain}:${token.denom}`]?.icsChannel,
       })
     ) {
       return (
@@ -236,7 +237,8 @@ const SendPage = () => {
           from: chain,
           to: destinationChain,
           tokenAddress: token.denom,
-          icsChannel: ibcDenoms[networkName][token?.denom ?? ""]?.icsChannel,
+          icsChannel:
+            ibcDenoms[networkName][`${chain}:${token.denom}`]?.icsChannel,
         })
         if (!channel) throw new Error("No IBC channel found")
 
