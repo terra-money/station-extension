@@ -279,6 +279,7 @@ function IbcSendBackTx({ token, chainID }: Props) {
                     decimals
                   ),
                 })}
+                type="number"
                 token={ibcDetails?.baseDenom}
                 inputMode="decimal"
                 onFocus={max.reset}

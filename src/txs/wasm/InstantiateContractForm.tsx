@@ -155,6 +155,7 @@ const InstantiateContractForm = () => {
                       valueAsNumber: true,
                     })}
                     inputMode="decimal"
+                    type="number"
                     placeholder={getPlaceholder(decimals)}
                     selectBefore={
                       <Select {...register(`coins.${index}.denom`)} before>
