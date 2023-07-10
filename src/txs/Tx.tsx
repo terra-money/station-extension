@@ -141,7 +141,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
           feeDenoms: [gasDenom],
         })
 
-        return unsignedTx.auth_info.fee.gas_limit
+        return unsignedTx.auth_info.fee.gas_limit * key.gasAdjustment
       } catch (error) {
         console.error(error)
         return 200_000
