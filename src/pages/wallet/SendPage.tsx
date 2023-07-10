@@ -334,7 +334,7 @@ const SendPage = () => {
     taxRequired: true,
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     gasAdjustment:
-      getChainIDFromAddress(destinationAddress, networks) !== chain ? 3 : 1,
+      getChainIDFromAddress(destinationAddress, networks) !== chain ? 2 : 1,
   }
 
   useEffect(() => {
