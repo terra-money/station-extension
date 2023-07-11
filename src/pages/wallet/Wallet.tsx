@@ -18,18 +18,10 @@ enum Path {
 type Route =
   | {
       path: Path.wallet
+      denom?: string
     }
   | {
-      path: Path.coin
-      denom: string
-      previousPage: Route
-    }
-  | {
-      path: Path.receive
-      previousPage: Route
-    }
-  | {
-      path: Path.send
+      path: Path.coin | Path.receive | Path.send
       denom?: string
       previousPage: Route
     }

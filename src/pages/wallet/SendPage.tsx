@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { CoinInput, getPlaceholder, toInput } from "txs/utils"
 import styles from "./SendPage.module.scss"
-import { useWalletRoute } from "./Wallet"
+import { useWalletRoute, Path } from "./Wallet"
 import validate from "../../txs/validate"
 import { useIBCChannels, useWhitelist } from "data/queries/chains"
 import CheckIcon from "@mui/icons-material/Check"
@@ -62,9 +62,7 @@ const SendPage = () => {
   const balances = useBankBalance()
   const { data: prices } = useExchangeRates()
   const readNativeDenom = useNativeDenoms()
-  const { route } = useWalletRoute() as unknown as {
-    route: { denom?: string }
-  }
+  const { route, setRoute } = useWalletRoute()
 
   const availableAssets = useMemo(
     () =>
@@ -330,7 +328,7 @@ const SendPage = () => {
     createTx,
     disabled: false,
     onChangeMax,
-    onSuccess: () => reset(),
+    onSuccess: () => setRoute({ path: Path.wallet }),
     taxRequired: true,
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     gasAdjustment:
