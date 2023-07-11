@@ -1,4 +1,3 @@
-import extension from "extensionizer"
 import PortStream from "extension-port-stream"
 import browser from "webextension-polyfill"
 
@@ -40,16 +39,15 @@ const connectRemote = (remotePort) => {
               changed.origin === origin &&
               sendResponse("on" + capitalize(key), changed)
 
-            extension.storage.local.get(
-              ["sign", "post"],
-              ({ sign = [], post = [] }) => {
+            browser.storage.local
+              .get(["sign", "post"])
+              .then(({ sign = [], post = [] }) => {
                 const getRequest = ({ success }) => typeof success !== "boolean"
                 const nextRequest =
                   sign.some(getRequest) || post.some(getRequest)
 
                 !nextRequest && closePopup()
-              }
-            )
+              })
           }
         }
       }
@@ -66,32 +64,30 @@ const connectRemote = (remotePort) => {
           ) !== -1
 
         !alreadyRequested &&
-          extension.storage.local.set({
+          browser.storage.local.set({
             [key]: payload.purgeQueue
               ? [{ ...payload, origin }]
               : [...list, { ...payload, origin }],
           })
 
         openPopup()
-        extension.storage.onChanged.addListener(handleChange)
+        browser.storage.onChanged.addListener(handleChange)
       }
 
-      extension.storage.local.get([key], handleGet)
+      browser.storage.local.get([key]).then(handleGet)
     }
 
     switch (type) {
       case "info":
-        extension.storage.local.get(["network"], ({ network }) => {
+        browser.storage.local.get(["network"]).then(({ network }) => {
           sendResponse("onInfo", network)
         })
-
         break
 
       case "interchain-info":
-        extension.storage.local.get(["networks"], ({ networks }) => {
+        browser.storage.local.get(["networks"]).then(({ networks }) => {
           sendResponse("onInterchainInfo", networks)
         })
-
         break
 
       case "connect":
@@ -107,10 +103,9 @@ const connectRemote = (remotePort) => {
               oldValue.allowed.length === newValue.allowed.length
 
             if (!denied)
-              extension.storage.local.get(
-                ["connect", "wallet"],
-                handleGetConnect
-              )
+              browser.storage.local
+                .get(["connect", "wallet"])
+                .then(handleGetConnect)
           }
         }
 
@@ -132,19 +127,19 @@ const connectRemote = (remotePort) => {
           if (isAllowed && walletExists) {
             sendResponse("onConnect", wallet)
             closePopup()
-            extension.storage.onChanged.removeListener(handleChangeConnect)
+            browser.storage.onChanged.removeListener(handleChangeConnect)
           } else {
             !alreadyRequested &&
-              extension.storage.local.set({
+              browser.storage.local.set({
                 connect: { ...connect, request: [origin, ...connect.request] },
               })
 
             openPopup()
-            extension.storage.onChanged.addListener(handleChangeConnect)
+            browser.storage.onChanged.addListener(handleChangeConnect)
           }
         }
 
-        extension.storage.local.get(["connect", "wallet"], handleGetConnect)
+        browser.storage.local.get(["connect", "wallet"]).then(handleGetConnect)
 
         break
 
@@ -156,17 +151,16 @@ const connectRemote = (remotePort) => {
             const hasPubKey = changes.wallet && changes.wallet.newValue.pubkey
 
             if (hasPubKey) {
-              extension.storage.local.get(
-                ["connect", "wallet"],
-                handleGetPubkey
-              )
+              browser.storage.local
+                .get(["connect", "wallet"])
+                .then(handleGetPubkey)
             } else {
-              extension.storage.local.get(["pubkey"], ({ pubkey }) => {
+              browser.storage.local.get(["pubkey"]).then(({ pubkey }) => {
                 // pubkey terminated
                 if (!pubkey) {
                   sendResponse("onGetPubkey", null)
                   closePopup()
-                  extension.storage.onChanged.removeListener(handleChangePubkey)
+                  browser.storage.onChanged.removeListener(handleChangePubkey)
                 }
               })
             }
@@ -187,18 +181,18 @@ const connectRemote = (remotePort) => {
           if (isAllowed && hasPubKey) {
             sendResponse("onGetPubkey", wallet)
             closePopup()
-            extension.storage.onChanged.removeListener(handleChangePubkey)
+            browser.storage.onChanged.removeListener(handleChangePubkey)
           } else {
-            extension.storage.local.set({
+            browser.storage.local.set({
               pubkey: origin,
             })
 
             openPopup()
-            extension.storage.onChanged.addListener(handleChangePubkey)
+            browser.storage.onChanged.addListener(handleChangePubkey)
           }
         }
 
-        extension.storage.local.get(["connect", "wallet"], handleGetPubkey)
+        browser.storage.local.get(["connect", "wallet"]).then(handleGetPubkey)
 
         break
 
@@ -220,12 +214,12 @@ const connectRemote = (remotePort) => {
   })
 }
 
-extension.runtime.onConnect.addListener(connectRemote)
+browser.runtime.onConnect.addListener(connectRemote)
 
 /* popup */
 // TODO: Actions such as transaction rejection if user closes a popup
 let tabId = undefined
-extension.tabs.onRemoved.addListener(() => (tabId = undefined))
+browser.tabs.onRemoved.addListener(() => (tabId = undefined))
 
 const POPUP_WIDTH = 480
 const POPUP_HEIGHT = 600 // Chrome extension maximum height
@@ -245,24 +239,25 @@ const openPopup = () => {
     height: POPUP_HEIGHT,
   }
   !tabId &&
-    extension.tabs.create(
-      { url: extension.runtime.getURL("index.html"), active: false },
-      (tab) => {
+    browser.tabs
+      .create({ url: browser.runtime.getURL("index.html"), active: false })
+      .then((tab) => {
         tabId = tab.id
-        extension.windows.getCurrent((window) => {
+        browser.windows.getCurrent().then((window) => {
           const center = getCenter(window)
           const top = Math.max(center.top, 0) || 0
           const left = Math.max(center.left, 0) || 0
 
           const config = { ...popup, tabId: tab.id, top, left }
-          extension.windows.create(config)
+
+          // type error here, it might cause problems
+          browser.windows.create(config)
         })
-      }
-    )
+      })
 }
 
 const closePopup = () => {
-  tabId && extension.tabs.remove(tabId)
+  tabId && browser.tabs.remove(tabId)
 }
 
 /* utils */

@@ -1,6 +1,11 @@
 module.exports = function override(config, env) {
-  return { 
+  return {
     ...config,
+    resolve: {
+      alias: {
+        "@ledgerhq/devices": "@ledgerhq/devices/lib-es",
+      },
+    },
     optimization: {
       splitChunks: {
         minSize: 20000,
@@ -12,8 +17,8 @@ module.exports = function override(config, env) {
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all'
+            name: "vendors",
+            chunks: "all",
           },
           default: {
             minChunks: 2,
@@ -23,5 +28,5 @@ module.exports = function override(config, env) {
         },
       },
     },
-  };
+  }
 }

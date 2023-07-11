@@ -19,4 +19,7 @@ module.exports = {
     path: path.join(__dirname, "..", "build"),
     filename: "[name].js",
   },
+  resolve: {
+    fallback: { stream: require.resolve("stream-browserify") },
+  },
 }

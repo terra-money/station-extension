@@ -5,10 +5,10 @@ import { ReactQueryDevtools } from "react-query/devtools"
 import { RecoilRoot } from "recoil"
 import "tippy.js/dist/tippy.css"
 
-import "config/lang"
+import "./config/lang"
 import { debug } from "utils/env"
 
-import "index.scss"
+import "./index.scss"
 import ScrollToTop from "app/ScrollToTop"
 import InitNetworks from "app/InitNetworks"
 import InitWallet from "app/InitWallet"
