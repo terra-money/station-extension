@@ -20,18 +20,28 @@ interface InterchainNetwork {
   icon: string
   coinType: "118" | "330"
   alliance?: boolean
-  channels?: Record<ChainID, IBCChannel>
-  icsChannels?: Record<
-    ChainID,
-    {
-      contract: AccAddress
-      channel: IBCChannel
-      otherChannel: IBCChannel
+  ibc?: {
+    toTerra: string
+    fromTerra: string
+    ics?: {
+      contract: string
+      toTerra: string
+      fromTerra: string
     }
-  >
+    icsFromTerra?: {
+      contract: string
+      toTerra: string
+      fromTerra: string
+    }
+  }
   version?: string
   isClassic?: boolean
-  isCustom?: boolean
+  explorer: {
+    address?: string
+    tx?: string
+    validator?: string
+    block?: string
+  }
 }
 
 interface TerraNetwork {
