@@ -32,9 +32,11 @@ interface TokenItem {
   token: string
   decimals: number
   symbol: string
+  type?: string
   name?: string
   icon?: string
   isAxelar?: boolean
+  lsd?: string
 }
 
 interface TokenItemWithBalance extends TokenItem {

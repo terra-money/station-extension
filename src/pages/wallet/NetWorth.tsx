@@ -1,32 +1,38 @@
-import { Button } from "components/general"
-import { Read } from "components/token"
-import { TooltipIcon } from "components/display"
-import { useBankBalance } from "data/queries/bank"
+import { ReactComponent as ReceiveIcon } from "styles/images/icons/Receive_v2.svg"
+import { ReactComponent as SendIcon } from "styles/images/icons/Send_v2.svg"
+import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
+import { useNetworkName, useNetwork, useChainID } from "data/wallet"
+import { useIsWalletEmpty, useBankBalance } from "data/queries/bank"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { FIAT_RAMP, KADO_API_KEY } from "config/constants"
 import { useExchangeRates } from "data/queries/coingecko"
 import { useCurrency } from "data/settings/Currency"
-import { useNativeDenoms } from "data/token"
-import { useTranslation } from "react-i18next"
-import styles from "./NetWorth.module.scss"
-import { useWalletRoute, Path } from "./Wallet"
-import { capitalize } from "@mui/material"
+import { TooltipIcon } from "components/display"
 import NetWorthTooltip from "./NetWorthTooltip"
-import { FIAT_RAMP, KADO_API_KEY } from "config/constants"
-// import { Add as AddIcon, Send as SendIcon } from "@mui/icons-material"
+import { useWalletRoute, Path } from "./Wallet"
+import { useTranslation } from "react-i18next"
+import { useNativeDenoms } from "data/token"
+import { Button } from "components/general"
+import styles from "./NetWorth.module.scss"
+import { capitalize } from "@mui/material"
+import { Read } from "components/token"
 import classNames from "classnames"
+import { useMemo } from "react"
 import qs from "qs"
-import { useNetwork } from "data/wallet"
-import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { useNetworkName } from "data/wallet"
-import { ReactComponent as SendIcon } from "styles/images/icons/Send_v2.svg"
-import { ReactComponent as ReceiveIcon } from "styles/images/icons/Receive_v2.svg"
-import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
-import { useIsWalletEmpty } from "data/queries/bank"
 
 const cx = classNames.bind(styles)
 
 const NetWorth = () => {
   const { t } = useTranslation()
+
   const isWalletEmpty = useIsWalletEmpty()
+  const networks = useNetwork()
+  const chainID = useChainID()
+  const availableGasDenoms = useMemo(() => {
+    return Object.keys(networks[chainID]?.gasPrices ?? {})
+  }, [chainID, networks])
+  const sendButtonDisabled = isWalletEmpty && !!availableGasDenoms.length
+
   const currency = useCurrency()
   const coins = useBankBalance()
   const { data: prices } = useExchangeRates()
@@ -48,7 +54,7 @@ const NetWorth = () => {
   }, 0)
   const onToAddressMulti =
     addresses &&
-    Object.keys(addresses)
+    Object.keys(addresses ?? {})
       .map((key) => `${network[key].name}:${addresses[key]}`)
       .join(",")
 
@@ -94,7 +100,7 @@ const NetWorth = () => {
           <Button
             color="primary"
             className={styles.wallet_primary}
-            disabled={isWalletEmpty}
+            disabled={sendButtonDisabled}
             onClick={() =>
               setRoute({
                 path: Path.send,

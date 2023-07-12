@@ -30,7 +30,7 @@ interface Props {
 const Contacts = ({ contacts, menu }: Props) => {
   return (
     <Flex start className={cx(styles.wrapper, { menu })}>
-      {Object.entries(contacts).map(([key, href]) => {
+      {Object.entries(contacts ?? {}).map(([key, href]) => {
         const icon = icons[key]
         return !icon ? null : (
           <ExternalLink href={href} className={styles.icon} key={key}>

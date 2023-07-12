@@ -6,7 +6,7 @@ const ChangePasswordPage = () => {
   const { t } = useTranslation()
 
   return (
-    <ExtensionPage title={t("Change password")}>
+    <ExtensionPage title={t("Change password")} backButtonPath="/">
       <ChangePasswordForm />
     </ExtensionPage>
   )

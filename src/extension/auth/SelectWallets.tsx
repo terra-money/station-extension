@@ -5,7 +5,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert"
 import UsbIcon from "@mui/icons-material/Usb"
 import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import { useAuth } from "auth"
-import { ModalButton } from "components/feedback"
+import { ModalButton, useModal } from "components/feedback"
 import { Button } from "components/general"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -45,38 +45,6 @@ export default function ManageWallets() {
       </button>
     )
 
-  function render() {
-    switch (path) {
-      case Path.select:
-        return (
-          <>
-            <SwitchWallet manage={() => setPath(Path.manage)} />
-            <Button
-              className={styles.add__button}
-              onClick={() => setPath(Path.add)}
-            >
-              <AddIcon style={{ fontSize: 18 }} />
-              {t("Add a wallet")}
-            </Button>
-          </>
-        )
-
-      case Path.add:
-        return (
-          <>
-            <AddWallet />
-          </>
-        )
-
-      case Path.manage:
-        return (
-          <>
-            <ManageWallet />
-          </>
-        )
-    }
-  }
-
   return (
     <ModalButton
       title={t("Manage Wallets")}
@@ -106,13 +74,48 @@ export default function ManageWallets() {
       {path !== Path.select && (
         <button
           onClick={() => setPath(Path.select)}
-          style={{ position: "absolute", top: 16, left: 20 }}
+          style={{ position: "absolute", top: 43, left: 30 }}
         >
           <KeyboardBackspaceRoundedIcon style={{ fontSize: 24 }} />
         </button>
       )}
-
-      {render()}
+      <ManageWalletsModal />
     </ModalButton>
   )
+}
+
+function ManageWalletsModal() {
+  const { t } = useTranslation()
+  const [path, setPath] = useState(Path.select)
+  const close = useModal()
+
+  switch (path) {
+    case Path.select:
+      return (
+        <>
+          <SwitchWallet manage={() => setPath(Path.manage)} onSwitch={close} />
+          <Button
+            className={styles.add__button}
+            onClick={() => setPath(Path.add)}
+          >
+            <AddIcon style={{ fontSize: 18 }} />
+            {t("Add a wallet")}
+          </Button>
+        </>
+      )
+
+    case Path.add:
+      return (
+        <>
+          <AddWallet />
+        </>
+      )
+
+    case Path.manage:
+      return (
+        <>
+          <ManageWallet />
+        </>
+      )
+  }
 }

@@ -18,7 +18,7 @@ const StakeTx = () => {
   const networks = useNetwork()
   const network = useMemo(() => {
     if (!destination || !ValAddress.validate(destination)) return null
-    return Object.values(networks).find(
+    return Object.values(networks ?? {}).find(
       ({ prefix }) => prefix === ValAddress.getPrefix(destination)
     )
   }, [networks, destination])
@@ -31,10 +31,10 @@ const StakeTx = () => {
 
   const { data: balances, ...balancesState } = useBalances()
   const { data: validators, ...validatorsState } = useValidators(
-    network.chainID
+    network?.chainID
   )
   const { data: delegations, ...delegationsState } = useDelegations(
-    network.chainID
+    network?.chainID
   )
   const state = combineState(balancesState, validatorsState, delegationsState)
 
@@ -52,7 +52,7 @@ const StakeTx = () => {
       balances,
       validators,
       delegations,
-      chainID: network.chainID,
+      chainID: network?.chainID,
     }
     return <StakeForm {...props} />
   }
@@ -62,7 +62,7 @@ const StakeTx = () => {
       <Auto
         columns={[
           <Tabs
-            tabs={Object.values(StakeAction).map((tab) => {
+            tabs={Object.values(StakeAction ?? {}).map((tab) => {
               return {
                 key: tab,
                 tab: t(tab),

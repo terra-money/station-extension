@@ -3,12 +3,9 @@ import { render } from "react-dom"
 import { HashRouter } from "react-router-dom"
 import { ReactQueryDevtools } from "react-query/devtools"
 import { RecoilRoot } from "recoil"
-import { getChainOptions } from "@terra-money/wallet-controller"
-import { WalletProvider } from "@terra-money/wallet-provider"
 import "tippy.js/dist/tippy.css"
 
 import "config/lang"
-import { BRIDGE } from "config/constants"
 import { debug } from "utils/env"
 
 import "index.scss"
@@ -21,36 +18,31 @@ import App from "extension/App"
 import InitChains from "app/InitChains"
 import WithNodeInfo from "app/WithNodeInfo"
 import InitQueryClient from "app/InitQueryClient"
-import { initSentry } from "utils/sentry/setupSentry"
+import { initAnalytics } from "utils/analytics"
 
-const connectorOpts = { bridge: BRIDGE }
-initSentry()
+initAnalytics()
 
-getChainOptions().then((chainOptions) =>
-  render(
-    <StrictMode>
-      <RecoilRoot>
-        <HashRouter>
-          <ScrollToTop />
-          <WalletProvider {...chainOptions} connectorOpts={connectorOpts}>
-            <InitQueryClient>
-              <InitNetworks>
-                <WithNodeInfo>
-                  <InitChains>
-                    <InitWallet>
-                      <InitTheme />
-                      <ElectronVersion />
-                      <App />
-                    </InitWallet>
-                  </InitChains>
-                </WithNodeInfo>
-              </InitNetworks>
-            </InitQueryClient>
-          </WalletProvider>
-          {debug.query && <ReactQueryDevtools position="bottom-right" />}
-        </HashRouter>
-      </RecoilRoot>
-    </StrictMode>,
-    document.getElementById("station")
-  )
+render(
+  <StrictMode>
+    <RecoilRoot>
+      <HashRouter>
+        <ScrollToTop />
+        <InitQueryClient>
+          <InitNetworks>
+            <WithNodeInfo>
+              <InitChains>
+                <InitWallet>
+                  <InitTheme />
+                  <ElectronVersion />
+                  <App />
+                </InitWallet>
+              </InitChains>
+            </WithNodeInfo>
+          </InitNetworks>
+        </InitQueryClient>
+        {debug.query && <ReactQueryDevtools position="bottom-right" />}
+      </HashRouter>
+    </RecoilRoot>
+  </StrictMode>,
+  document.getElementById("station")
 )

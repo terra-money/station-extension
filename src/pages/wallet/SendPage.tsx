@@ -5,10 +5,9 @@ import {
   MsgSend,
   MsgTransfer,
 } from "@terra-money/feather.js"
-import { isDenom, toAmount } from "@terra-money/terra-utils"
+import { toAmount } from "@terra-money/terra-utils"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { Form, FormItem, FormWarning, Input, Select } from "components/form"
-import ChainSelector from "components/form/ChainSelector"
+import { Form, FormItem, FormWarning, Input } from "components/form"
 import { Flex, Grid } from "components/layout"
 import { SAMPLE_ADDRESS } from "config/constants"
 import { useBankBalance } from "data/queries/bank"
@@ -19,7 +18,7 @@ import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { CoinInput, getPlaceholder, toInput } from "txs/utils"
 import styles from "./SendPage.module.scss"
-import { Path, useWalletRoute } from "./Wallet"
+import { useWalletRoute } from "./Wallet"
 import validate from "../../txs/validate"
 import { useIBCChannels, useWhitelist } from "data/queries/chains"
 import CheckIcon from "@mui/icons-material/Check"
@@ -31,9 +30,11 @@ import { queryKey } from "data/query"
 import Tx from "txs/Tx"
 import AddressBookList from "txs/AddressBook/AddressBookList"
 import { ModalButton } from "components/feedback"
+import ChainSelector from "components/form/ChainSelector"
+import AssetSelector from "components/form/AssetSelector"
 
 interface TxValues {
-  asset: string
+  asset?: string
   chain?: string
   recipient?: string // AccAddress | TNS
   address?: AccAddress // hidden input
@@ -64,7 +65,7 @@ const SendPage = () => {
   const { route } = useWalletRoute() as unknown as {
     route: { denom?: string }
   }
-  const { setRoute } = useWalletRoute()
+
   const availableAssets = useMemo(
     () =>
       Object.values(
@@ -95,7 +96,7 @@ const SendPage = () => {
               },
             } as Record<string, AssetType>
           }
-        }, {} as Record<string, AssetType>)
+        }, {} as Record<string, AssetType>) ?? {}
       ).sort(
         (a, b) => b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
       ),
@@ -105,7 +106,7 @@ const SendPage = () => {
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange" })
-  const { register, trigger, watch, setValue, handleSubmit } = form
+  const { register, trigger, watch, setValue, handleSubmit, reset } = form
   const { formState } = form
   const { errors } = formState
   const {
@@ -120,6 +121,7 @@ const SendPage = () => {
   const decimals = asset ? readNativeDenom(asset).decimals : 6
 
   const amount = toAmount(input, { decimals })
+
   const availableChains = useMemo(
     () =>
       availableAssets
@@ -137,6 +139,13 @@ const SendPage = () => {
       chain === watch("chain") &&
       readNativeDenom(denom).token === watch("asset")
   )
+
+  /* resolve asset */
+  useEffect(() => {
+    if (!asset) {
+      setValue("asset", defaultAsset)
+    }
+  }, [form, asset, defaultAsset, setValue])
 
   /* resolve recipient */
   useEffect(() => {
@@ -172,13 +181,13 @@ const SendPage = () => {
 
     if (
       chain === destinationChain ||
-      (getIBCChannel({
+      getIBCChannel({
         from: chain,
         to: destinationChain,
         tokenAddress: token.denom,
-        icsChannel: ibcDenoms[networkName][token.denom]?.icsChannel,
-      }) &&
-        !readNativeDenom(token.denom).isAxelar)
+        icsChannel:
+          ibcDenoms[networkName][`${chain}:${token.denom}`]?.icsChannel,
+      })
     ) {
       return (
         <span className={styles.destination}>
@@ -215,19 +224,19 @@ const SendPage = () => {
       if (!chain || !destinationChain || !token) return
 
       if (destinationChain === chain) {
-        const msgs = isDenom(token?.denom)
+        const msgs = AccAddress.validate(token?.denom)
           ? [
-              new MsgSend(
-                addresses[token?.chain ?? ""],
-                address,
-                amount + token?.denom
-              ),
-            ]
-          : [
               new MsgExecuteContract(
                 addresses[token?.chain ?? ""],
                 token?.denom ?? "",
                 execute_msg
+              ),
+            ]
+          : [
+              new MsgSend(
+                addresses[token?.chain ?? ""],
+                address,
+                amount + token?.denom
               ),
             ]
 
@@ -237,7 +246,8 @@ const SendPage = () => {
           from: chain,
           to: destinationChain,
           tokenAddress: token.denom,
-          icsChannel: ibcDenoms[networkName][token?.denom ?? ""]?.icsChannel,
+          icsChannel:
+            ibcDenoms[networkName][`${chain}:${token.denom}`]?.icsChannel,
         })
         if (!channel) throw new Error("No IBC channel found")
 
@@ -320,16 +330,11 @@ const SendPage = () => {
     createTx,
     disabled: false,
     onChangeMax,
-    onSuccess: () => {
-      setRoute({ path: Path.wallet })
-    },
+    onSuccess: () => reset(),
     taxRequired: true,
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     gasAdjustment:
-      getChainIDFromAddress(addresses?.[chain ?? ""], networks) !== chain &&
-      AccAddress.validate(token?.denom ?? "")
-        ? 2
-        : 1,
+      getChainIDFromAddress(destinationAddress, networks) !== chain ? 2 : 1,
   }
 
   useEffect(() => {
@@ -338,6 +343,19 @@ const SendPage = () => {
     }
   }, [chain, trigger, recipient])
 
+  const filteredAssets = useMemo(
+    () => availableAssets.filter(({ symbol }) => !symbol.endsWith("...")),
+    [availableAssets]
+  )
+
+  const assetsByDenom = filteredAssets.reduce(
+    (acc: Record<string, AssetType>, item: AssetType) => {
+      acc[item.denom] = item
+      return acc
+    },
+    {}
+  )
+
   return (
     // @ts-expect-error
     <Tx {...tx}>
@@ -345,26 +363,19 @@ const SendPage = () => {
         <Form onSubmit={handleSubmit(submit.fn)} className={styles.form}>
           <section className={styles.send}>
             <div className={styles.form__container}>
-              <h1>{t("Send")}</h1>
-
+              <div className={styles.form__header__wrapper}>
+                <h1>{t("Send")}</h1>
+              </div>
               <FormItem
                 label={t("Asset")}
                 error={errors.asset?.message ?? errors.address?.message}
               >
-                <Select
-                  {...register("asset", {
-                    value: defaultAsset,
-                  })}
-                  autoFocus
-                >
-                  {availableAssets
-                    .filter(({ symbol }) => !symbol.endsWith("..."))
-                    .map(({ denom, symbol }, i) => (
-                      <option value={denom} key={i}>
-                        {symbol}
-                      </option>
-                    ))}
-                </Select>
+                <AssetSelector
+                  value={asset ?? ""}
+                  onChange={(asset) => setValue("asset", asset)}
+                  assetList={filteredAssets}
+                  assetsByDenom={assetsByDenom}
+                />
               </FormItem>
               {availableChains && (
                 <FormItem label={t("Source chain")}>
@@ -404,7 +415,6 @@ const SendPage = () => {
                       autoFocus
                     />
                   )}
-                  maxHeight
                 >
                   <AddressBookList
                     onClick={async ({ recipient, memo }) => {

@@ -63,7 +63,7 @@ const WithdrawRewardsForm = ({ rewards, validators, chain }: Props) => {
 
   const selectable = byValidator.length > 1
   const selected = useMemo(
-    () => Object.keys(state).filter((address) => state[address]),
+    () => Object.keys(state ?? {}).filter((address) => state[address]),
     [state]
   )
 
@@ -154,7 +154,7 @@ const WithdrawRewardsForm = ({ rewards, validators, chain }: Props) => {
             {selectable && isOpen && (
               <Card size="small" className={styles.card}>
                 <Flex className={styles.actions} start>
-                  {Object.values(state).some((state) => !state) ? (
+                  {Object.values(state ?? {}).some((state) => !state) ? (
                     <button
                       type="button"
                       className={styles.button}
@@ -200,7 +200,7 @@ const WithdrawRewardsForm = ({ rewards, validators, chain }: Props) => {
 
             <FormItem>
               <TokenCardGrid maxHeight>
-                {Object.entries(selectedTotal).map(([denom, amount]) => (
+                {Object.entries(selectedTotal ?? {}).map(([denom, amount]) => (
                   <WithTokenItem token={denom} key={denom}>
                     {(item) => (
                       <TokenCard

@@ -78,6 +78,7 @@ const FinderLink = forwardRef(
         }
         break
       case "terra classic":
+      case "terra testnet":
       case "terra":
         link = [FINDER, networkName, finderPath, value]
         break

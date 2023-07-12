@@ -1,16 +1,24 @@
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
-import { Flex, Grid } from "components/layout"
-import { isWallet, useAuth } from "auth"
-import MultisigBadge from "auth/components/MultisigBadge"
-import UsbIcon from "@mui/icons-material/Usb"
-import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import SelectPreconfigured from "auth/modules/select/SelectPreconfigured"
-import { clearStoredPassword } from "../storage"
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
+import MultisigBadge from "auth/components/MultisigBadge"
+import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import ExtensionList from "../components/ExtensionList"
+import { clearStoredPassword } from "../storage"
 import { addressFromWords } from "utils/bech32"
+import { useNavigate } from "react-router-dom"
+import { Flex, Grid } from "components/layout"
+import UsbIcon from "@mui/icons-material/Usb"
+import { isWallet, useAuth } from "auth"
 
-const SwitchWallet = ({ manage }: { manage?: () => void }) => {
+const SwitchWallet = ({
+  manage,
+  onSwitch,
+}: {
+  manage?: () => void
+  onSwitch?: () => void
+}) => {
   const { wallet, wallets, connect, connectedWallet } = useAuth()
+  const navigate = useNavigate()
 
   const list = [
     wallet && {
@@ -42,6 +50,8 @@ const SwitchWallet = ({ manage }: { manage?: () => void }) => {
         const select = () => {
           connect(name)
           clearStoredPassword()
+          onSwitch && onSwitch()
+          navigate("/")
         }
 
         const { name, lock } = wallet
