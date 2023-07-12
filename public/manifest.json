@@ -3,13 +3,12 @@
   "name": "Station Wallet",
   "version": "7.3.0",
   "background": {
-    "service_worker": "background.js",
-    "type": "module"
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["contentScript.js"],
+      "js": ["browser-polyfill.js", "content.js"],
       "run_at": "document_start",
       "all_frames": true
     }
