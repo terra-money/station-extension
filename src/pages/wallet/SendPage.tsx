@@ -104,7 +104,7 @@ const SendPage = () => {
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange" })
-  const { register, trigger, watch, setValue, handleSubmit, reset } = form
+  const { register, trigger, watch, setValue, handleSubmit } = form
   const { formState } = form
   const { errors } = formState
   const {
