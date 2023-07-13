@@ -1,15 +1,15 @@
 {
   "manifest_version": 3,
   "name": "Station Wallet",
-  "version": "7.3.0",
+  "version": "7.4.0",
+  "version_name": "7.4.0",
   "background": {
-    "service_worker": "background.js",
-    "type": "module"
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["contentScript.js"],
+      "js": ["browser-polyfill.js", "contentScript.js"],
       "run_at": "document_start",
       "all_frames": true
     }

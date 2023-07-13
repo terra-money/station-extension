@@ -1,6 +1,5 @@
-import extension from "extensionizer"
 import PortStream from "extension-port-stream"
-import LocalMessageDuplexStream from "post-message-stream"
+import PostMessageStream from "post-message-stream"
 
 if (shouldInjectProvider()) {
   checkWebpage()
@@ -14,7 +13,7 @@ if (shouldInjectProvider()) {
  *
  */
 function checkWebpage() {
-  extension.storage.local.get(["blacklist"], async ({ blacklist }) => {
+  browser.storage.local.get(["blacklist"]).then(async ({ blacklist }) => {
     const WARNING_PAGE = `https://scam-warning.terra.money/`
 
     function checkAndRedirect(list) {
@@ -44,7 +43,7 @@ function checkWebpage() {
       const list = await response.json()
       checkAndRedirect(list)
 
-      extension.storage.local.set({
+      browser.storage.local.set({
         blacklist: { list, updatedAt: Date.now() },
       })
     }
@@ -63,7 +62,7 @@ function injectScript() {
     // FIXME (Ian Lee) <script async="false"> is useless. both async="false" and async="true" operate in async="true"
     //  by removing async attribute, the `inpage.js` will be complated before DOM loading.
     //scriptTag.setAttribute('async', 'false')
-    scriptTag.setAttribute("src", extension.runtime.getURL("inpage.js"))
+    scriptTag.setAttribute("src", browser.runtime.getURL("inpage.js"))
     container.insertBefore(scriptTag, container.children[0])
     container.removeChild(scriptTag)
   } catch (e) {
@@ -107,21 +106,18 @@ function setupEvents() {
     }
   }
 
-  extension.storage.local.get(["connect"], ({ connect }) => {
+  browser.storage.local.get(["connect"]).then(({ connect }) => {
     const isAllowed = ((connect && connect.allowed) || []).includes(
       window.location.origin
     )
 
     if (isAllowed) {
-      extension.storage.onChanged.addListener(createEvent)
+      browser.storage.onChanged.addListener(createEvent)
     } else {
-      extension.storage.onChanged.addListener(function reset(
-        changes,
-        namespace
-      ) {
+      browser.storage.onChanged.addListener(function reset(changes, namespace) {
         if (namespace === "local" && changes.connect) {
-          extension.storage.onChanged.removeListener(reset)
-          extension.storage.onChanged.removeListener(createEvent)
+          browser.storage.onChanged.removeListener(reset)
+          browser.storage.onChanged.removeListener(createEvent)
           setupEvents()
         }
       })
@@ -198,12 +194,12 @@ function documentElementCheck() {
  * browser extension and local per-page browser context.
  */
 async function setupStreams() {
-  const pageStream = new LocalMessageDuplexStream({
+  const pageStream = new PostMessageStream({
     name: "station:content",
     target: "station:inpage",
   })
 
-  const extensionPort = extension.runtime.connect({
+  const extensionPort = browser.runtime.connect({
     name: "TerraStationExtension",
   })
 

@@ -1,5 +1,6 @@
 const path = require("path")
 const webpack = require("webpack")
+const CopyWebpackPlugin = require("copy-webpack-plugin")
 
 module.exports = {
   mode: process.env.NODE_ENV || "development",
@@ -14,6 +15,11 @@ module.exports = {
     new webpack.DefinePlugin({
       global: {},
     }),
+    new CopyWebpackPlugin([
+      {
+        from: "node_modules/webextension-polyfill/dist/browser-polyfill.js",
+      },
+    ]),
   ],
   output: {
     path: path.join(__dirname, "..", "build"),
