@@ -1,9 +1,11 @@
 import PortStream from "extension-port-stream"
 import PostMessageStream from "post-message-stream"
 
+// contentScript
 if (shouldInjectProvider()) {
   checkWebpage()
   injectScript()
+  injectStation()
   setupEvents()
   start()
 }
@@ -68,6 +70,93 @@ function injectScript() {
   } catch (e) {
     console.error("MsgDemo provider injection failed.", e)
   }
+}
+
+async function injectStation() {
+  await domIsReady()
+  const origin = window.location.origin
+
+  window.addEventListener("message", (event) => {
+    if (!event.data || !event.data.uuid) return
+
+    const sendResponse = (success, data) => {
+      event.source.postMessage(
+        {
+          uuid: event.data.uuid,
+          sender: "station",
+          data,
+          success,
+        },
+        event.origin
+      )
+    }
+
+    // is the message coming from the connected webapp?
+    if (event.origin !== origin) {
+      sendResponse(false, "Not authorized: origin mismatch.")
+      return
+    }
+
+    const { sender, type, data } = event.data
+    if (sender !== "web") return
+
+    switch (type) {
+      case "connect":
+        const handleChangeConnect = (changes, namespace) => {
+          // It is recursive.
+          // After referring to a specific value in the storage, perform the function listed below again.
+          if (namespace === "local" && changes.connect) {
+            const { newValue, oldValue } = changes.connect
+
+            const denied =
+              oldValue &&
+              oldValue.request.length - 1 === newValue.request.length &&
+              oldValue.allowed.length === newValue.allowed.length
+
+            if (denied) {
+              sendResponse(false, "User denied the connection request.")
+            } else {
+              browser.storage.local
+                .get(["connect", "wallet"])
+                .then(handleGetConnect)
+            }
+          }
+        }
+
+        const handleGetConnect = ({
+          connect = { request: [], allowed: [] },
+          wallet = {},
+        }) => {
+          // 1. If the address is authorized and the wallet exists
+          //    - send back the response and close the popup.
+          // 2. If not,
+          //    - store the address on the storage and open the popup to request it (only if it is not the requested address).
+          const isAllowed = connect.allowed.includes(origin)
+          const walletExists = wallet.address
+          const alreadyRequested = [
+            ...connect.request,
+            ...connect.allowed,
+          ].includes(origin)
+
+          if (isAllowed && walletExists) {
+            sendResponse(true, wallet)
+            //closePopup()
+            browser.storage.onChanged.removeListener(handleChangeConnect)
+          } else {
+            !alreadyRequested &&
+              browser.storage.local.set({
+                connect: { ...connect, request: [origin, ...connect.request] },
+              })
+
+            //openPopup()
+            browser.storage.onChanged.addListener(handleChangeConnect)
+          }
+        }
+
+        browser.storage.local.get(["connect", "wallet"]).then(handleGetConnect)
+        break
+    }
+  })
 }
 
 function setupEvents() {
