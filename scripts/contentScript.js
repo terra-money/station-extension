@@ -5,7 +5,7 @@ import PostMessageStream from "post-message-stream"
 if (shouldInjectProvider()) {
   checkWebpage()
   injectScript()
-  injectStation()
+  setupStationProvider()
   setupEvents()
   start()
 }
@@ -61,19 +61,13 @@ function injectScript() {
   try {
     const container = document.head || document.documentElement
     const scriptTag = document.createElement("script")
-    // FIXME (Ian Lee) <script async="false"> is useless. both async="false" and async="true" operate in async="true"
-    //  by removing async attribute, the `inpage.js` will be complated before DOM loading.
-    //scriptTag.setAttribute('async', 'false')
     scriptTag.setAttribute("src", browser.runtime.getURL("inpage.js"))
     container.insertBefore(scriptTag, container.children[0])
     container.removeChild(scriptTag)
-  } catch (e) {
-    console.error("MsgDemo provider injection failed.", e)
-  }
+  } catch (e) {}
 }
 
-async function injectStation() {
-  await domIsReady()
+async function setupStationProvider() {
   const origin = window.location.origin
 
   window.addEventListener("message", (event) => {
@@ -115,6 +109,8 @@ async function injectStation() {
 
             if (denied) {
               sendResponse(false, "User denied the connection request.")
+              closePopup()
+              browser.storage.onChanged.removeListener(handleChangeConnect)
             } else {
               browser.storage.local
                 .get(["connect", "wallet"])
@@ -140,7 +136,7 @@ async function injectStation() {
 
           if (isAllowed && walletExists) {
             sendResponse(true, wallet)
-            //closePopup()
+            closePopup()
             browser.storage.onChanged.removeListener(handleChangeConnect)
           } else {
             !alreadyRequested &&
@@ -148,7 +144,7 @@ async function injectStation() {
                 connect: { ...connect, request: [origin, ...connect.request] },
               })
 
-            //openPopup()
+            openPopup()
             browser.storage.onChanged.addListener(handleChangeConnect)
           }
         }
@@ -311,4 +307,12 @@ function domIsReady() {
   return new Promise((resolve) =>
     window.addEventListener("DOMContentLoaded", resolve, { once: true })
   )
+}
+
+function openPopup() {
+  browser.runtime.sendMessage("OPEN_POPUP")
+}
+
+function closePopup() {
+  browser.runtime.sendMessage("CLOSE_POPUP")
 }
