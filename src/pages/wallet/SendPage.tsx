@@ -439,6 +439,7 @@ const SendPage = () => {
                       decimals
                     ),
                   })}
+                  type="number"
                   token={asset}
                   inputMode="decimal"
                   onFocus={max.reset}
