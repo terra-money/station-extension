@@ -11,6 +11,13 @@ export const storeNetwork = (
   browser.storage?.local.set({ network, networks, networkName: network.name })
 }
 
+/* theme */
+export const storeTheme = (theme: string) => {
+  browser.storage?.local.set({
+    theme,
+  })
+}
+
 /* wallet */
 export const storeWalletAddress = (wallet: {
   address: AccAddress
@@ -19,7 +26,6 @@ export const storeWalletAddress = (wallet: {
   ledger?: boolean
   pubkey?: { "330": string; "118"?: string }
   network: string
-  theme: string
 }) => {
   browser.storage?.local.set({
     wallet,

@@ -1,3 +1,5 @@
+import Station from "@terra-money/station-connector"
+
 // legacy terra webapps
 window.isTerraExtensionAvailable = true
 // new inetchain webapps
@@ -29,3 +31,5 @@ if (
 } else {
   window.interchainWallets = [STATION_INFO]
 }
+
+window.station = new Station()

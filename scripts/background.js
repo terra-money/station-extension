@@ -218,6 +218,20 @@ const connectRemote = (remotePort) => {
 
 browser.runtime.onConnect.addListener(connectRemote)
 
+// popup requests from contentScript
+browser.runtime.onMessage.addListener(function (request, sender) {
+  if (!sender.tab) return
+
+  switch (request) {
+    case "OPEN_POPUP":
+      openPopup()
+      break
+    case "CLOSE_POPUP":
+      closePopup()
+      break
+  }
+})
+
 /* popup */
 // TODO: Actions such as transaction rejection if user closes a popup
 let tabId = undefined

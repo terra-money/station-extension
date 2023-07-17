@@ -47,6 +47,12 @@ export interface SuggestChainRequest extends PrimitiveDefaultRequest {
   success?: boolean
 }
 
+export interface SwitchNetworkRequest extends PrimitiveDefaultRequest {
+  network: "mainnet" | "testnet" | "classic" | "localterra"
+  error?: { message: string }
+  success?: boolean
+}
+
 export interface PrimitiveTxRequest
   extends Partial<TxResponse>,
     PrimitiveDefaultRequest {
@@ -69,6 +75,7 @@ export interface ExtensionStorage {
   post?: PrimitiveTxRequest[]
   pubkey?: string // hostname
   suggestChain?: SuggestChainRequest[]
+  switchNetwork?: SwitchNetworkRequest[]
 }
 
 /* app */
