@@ -10,11 +10,12 @@ import Welcome from "./Welcome"
 import Wallet from "pages/wallet/Wallet"
 import ConfirmPubkey from "./ConfirmPubkey"
 import ConfirmNewChain from "./ConfirmNewChain"
+import ConfirmSwitchNetwork from "./ConfirmSwitchNetwork"
 
 const Front = () => {
   const { wallet, wallets } = useAuth()
   const { requests } = useRequest()
-  const { connect, tx, pubkey, chain } = requests
+  const { connect, tx, pubkey, chain, network } = requests
 
   if (!wallet) {
     return (
@@ -40,6 +41,9 @@ const Front = () => {
   }
   if (tx) {
     return <ConfirmTx {...tx} />
+  }
+  if (network) {
+    return <ConfirmSwitchNetwork {...network} />
   }
 
   return <Wallet />

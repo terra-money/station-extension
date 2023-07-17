@@ -22,9 +22,9 @@
     "sourceMap": true,
     "inlineSources": true,
     "sourceRoot": "src",
-    "noEmit": true
+    //"noEmit": true
   },
   "include": [
-    "src"
+    "*"
   ]
 }

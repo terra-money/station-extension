@@ -157,10 +157,7 @@ async function setupStationProvider() {
         break
 
       case "theme":
-        const handleGetTheme = ({
-          connect = { allowed: [] },
-          theme,
-        }) => {
+        const handleGetTheme = ({ connect = { allowed: [] }, theme }) => {
           const isAllowed = connect.allowed.includes(origin)
 
           if (isAllowed) {
@@ -237,6 +234,10 @@ async function setupStationProvider() {
       case "post":
         data && handleRequest("post")
         break
+
+      case "switch-network":
+        data && handleRequest("switchNetwork")
+        break
     }
   })
 }
@@ -256,9 +257,7 @@ function setupEvents() {
         })
         window.dispatchEvent(event)
       }
-      if (
-        changes.theme
-      ) {
+      if (changes.theme) {
         const event = new CustomEvent("station_theme_change", {
           detail: changes.theme.newValue,
         })

@@ -97,4 +97,15 @@ export default class Station {
       this._pendingRequests[reqID] = { resolve, reject }
     })
   }
+
+  async switchNetwork(network: string, purgeQueue = false) {
+    return new Promise((resolve, reject) => {
+      const reqID = crypto.randomUUID()
+      this._sendMessage(
+        { type: "switch-network", data: { network, purgeQueue, id: Date.now() } },
+        reqID
+      )
+      this._pendingRequests[reqID] = { resolve, reject }
+    })
+  }
 }
