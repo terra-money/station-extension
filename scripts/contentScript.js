@@ -64,6 +64,15 @@ function injectScript() {
     scriptTag.setAttribute("src", browser.runtime.getURL("inpage.js"))
     container.insertBefore(scriptTag, container.children[0])
     container.removeChild(scriptTag)
+
+    browser.storage.local.get(["replaceKeplr"]).then(({ replaceKeplr }) => {
+      if (replaceKeplr) {
+        const keplrScriptTag = document.createElement("script")
+        keplrScriptTag.setAttribute("src", browser.runtime.getURL("keplr.js"))
+        container.insertBefore(keplrScriptTag, container.children[0])
+        container.removeChild(keplrScriptTag)
+      }
+    })
   } catch (e) {}
 }
 
@@ -309,6 +318,11 @@ function setupEvents() {
           detail: changes.wallet.newValue,
         })
         window.dispatchEvent(event)
+
+        browser.storage.local.get(["replaceKeplr"]).then(({ replaceKeplr }) => {
+          replaceKeplr &&
+            window.dispatchEvent(new CustomEvent("keplr_keystorechange"))
+        })
       }
       if (changes.theme) {
         const event = new CustomEvent("station_theme_change", {
@@ -332,6 +346,15 @@ function setupEvents() {
     const isAllowed = ((connect && connect.allowed) || []).includes(
       window.location.origin
     )
+
+    // if replaceKeplr changed, refresh the page
+    browser.storage.onChanged.addListener((changes, namespace) => {
+      if (namespace === "local") {
+        if (changes.replaceKeplr) {
+          window.location.reload()
+        }
+      }
+    })
 
     if (isAllowed) {
       browser.storage.onChanged.addListener(createEvent)

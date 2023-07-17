@@ -12,6 +12,7 @@ import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
 import {
   clearWalletAddress,
   storeNetwork,
+  storeReplaceKeplr,
   storeTheme,
   storeWalletAddress,
 } from "./storage"
@@ -30,6 +31,7 @@ import { useAuth } from "auth"
 import is from "auth/scripts/is"
 import { useNetworks } from "app/InitNetworks"
 import { useTheme } from "data/settings/Theme"
+import { useReplaceKeplr } from "utils/localStorage"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -40,6 +42,7 @@ const App = () => {
   const addresses = useAllInterchainAddresses()
   const { name: theme } = useTheme()
   const { wallet } = useAuth()
+  const { replaceKeplr } = useReplaceKeplr()
 
   useEffect(() => {
     storeNetwork({ ...networks[name][chainID], name }, networks[name])
@@ -61,6 +64,10 @@ const App = () => {
   useEffect(() => {
     storeTheme(theme)
   }, [theme])
+
+  useEffect(() => {
+    storeReplaceKeplr(replaceKeplr)
+  }, [replaceKeplr])
 
   const routes = useRoutes([
     { path: "/networks", element: <ManageNetworks /> },

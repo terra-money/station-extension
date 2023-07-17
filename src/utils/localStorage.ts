@@ -21,6 +21,7 @@ export enum SettingKey {
   EnabledNetworks = "EnabledNetworks",
   NetworkCacheTime = "NetworkCacheTime",
   DevMode = "DevMode",
+  ReplaceKeplr = "ReplaceKeplr",
 }
 
 //const isSystemDarkMode =
@@ -66,6 +67,7 @@ export const DefaultSettings = {
   [SettingKey.EnabledNetworks]: { time: 0, networks: [] as string[] },
   [SettingKey.CustomLCD]: {},
   [SettingKey.DevMode]: false,
+  [SettingKey.ReplaceKeplr]: false,
 }
 
 export const getLocalSetting = <T>(key: SettingKey): T => {
@@ -117,6 +119,11 @@ export const customChainsState = atom({
 export const devModeState = atom({
   key: "devModeState",
   default: !!getLocalSetting(SettingKey.DevMode),
+})
+
+export const replaceKeplrState = atom({
+  key: "replaceKeplrState",
+  default: !!getLocalSetting(SettingKey.ReplaceKeplr),
 })
 
 export const useShowWelcomeModal = () => {
@@ -207,4 +214,12 @@ export const useDevMode = () => {
     toggleSetting(SettingKey.DevMode, devMode, setDevMode)
 
   return { changeDevMode, devMode }
+}
+
+export const useReplaceKeplr = () => {
+  const [replaceKeplr, setReplaceKeplr] = useRecoilState(replaceKeplrState)
+  const toggleReplaceKeplr = () =>
+    toggleSetting(SettingKey.ReplaceKeplr, replaceKeplr, setReplaceKeplr)
+
+  return { toggleReplaceKeplr, replaceKeplr }
 }

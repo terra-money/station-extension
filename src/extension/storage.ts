@@ -18,6 +18,13 @@ export const storeTheme = (theme: string) => {
   })
 }
 
+/* replace keplr */
+export const storeReplaceKeplr = (replaceKeplr: boolean) => {
+  browser.storage?.local.set({
+    replaceKeplr,
+  })
+}
+
 /* wallet */
 export const storeWalletAddress = (wallet: {
   address: AccAddress
