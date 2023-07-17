@@ -9,7 +9,12 @@ import NetworkHeader from "app/sections/NetworkHeader"
 import SwapTx from "txs/swap/SwapTx"
 import SignMultisigTxPage from "pages/multisig/SignMultisigTxPage"
 import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
-import { clearWalletAddress, storeNetwork, storeWalletAddress } from "./storage"
+import {
+  clearWalletAddress,
+  storeNetwork,
+  storeTheme,
+  storeWalletAddress,
+} from "./storage"
 import RequestContainer from "./RequestContainer"
 import ManageNetworks from "./networks/ManageNetworks"
 import AddNetworkPage from "./networks/AddNetworkPage"
@@ -49,10 +54,13 @@ const App = () => {
         ledger: is.ledger(wallet),
         pubkey,
         network: name,
-        theme,
       })
     else clearWalletAddress()
-  }, [address, addresses, pubkey, wallet, name, theme])
+  }, [address, addresses, pubkey, wallet, name])
+
+  useEffect(() => {
+    storeTheme(theme)
+  }, [theme])
 
   const routes = useRoutes([
     { path: "/networks", element: <ManageNetworks /> },

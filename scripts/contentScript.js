@@ -91,10 +91,88 @@ async function setupStationProvider() {
       return
     }
 
-    const { sender, type, data } = event.data
+    const { sender, type, data, uuid } = event.data
     if (sender !== "web") return
 
+    const handleRequest = (key) => {
+      const handleChange = (changes, namespace) => {
+        // Detects changes in storage and returns responses if there are changes.
+        // When the request is successful, it also closes the popup.
+        if (namespace === "local") {
+          const { oldValue, newValue } = changes[key] || {}
+
+          if (oldValue && newValue) {
+            const changed = newValue.find(
+              (post, index) =>
+                oldValue[index] &&
+                typeof oldValue[index].success === "undefined" &&
+                typeof post.success === "boolean"
+            )
+
+            changed && changed.origin === origin && sendResponse(true, changed)
+
+            browser.storage.local
+              .get(["sign", "post"])
+              .then(({ sign = [], post = [] }) => {
+                const getRequest = ({ success }) => typeof success !== "boolean"
+                const nextRequest =
+                  sign.some(getRequest) || post.some(getRequest)
+
+                !nextRequest && closePopup()
+              })
+          }
+        }
+      }
+
+      const handleGet = (storage) => {
+        // Check the storage for any duplicate requests already, place them at the end of the storage, and then open a popup.
+        // Then it detects changes in storage. (See code above)
+        // TODO: Even if the popup is already open, reactivate the popup
+        const list = storage[key] || []
+
+        const alreadyRequested =
+          list.findIndex(
+            (req) => req.uuid === uuid && req.origin === origin
+          ) !== -1
+
+        !alreadyRequested &&
+          browser.storage.local.set({
+            [key]: data.purgeQueue
+              ? [{ ...data, origin, uuid }]
+              : [...list, { ...data, origin, uuid }],
+          })
+
+        openPopup()
+        browser.storage.onChanged.addListener(handleChange)
+      }
+
+      browser.storage.local.get([key]).then(handleGet)
+    }
+
     switch (type) {
+      case "interchain-info":
+        browser.storage.local.get(["networks"]).then(({ networks }) => {
+          sendResponse(true, networks)
+        })
+        break
+
+      case "theme":
+        const handleGetTheme = ({
+          connect = { allowed: [] },
+          theme,
+        }) => {
+          const isAllowed = connect.allowed.includes(origin)
+
+          if (isAllowed) {
+            sendResponse(true, theme)
+          } else {
+            sendResponse(false, "Not authorized: extension not connected.")
+          }
+        }
+
+        browser.storage.local.get(["connect", "theme"]).then(handleGetTheme)
+        break
+
       case "connect":
         const handleChangeConnect = (changes, namespace) => {
           // It is recursive.
@@ -151,6 +229,14 @@ async function setupStationProvider() {
 
         browser.storage.local.get(["connect", "wallet"]).then(handleGetConnect)
         break
+
+      case "sign":
+        data && handleRequest("sign")
+        break
+
+      case "post":
+        data && handleRequest("post")
+        break
     }
   })
 }
@@ -171,11 +257,10 @@ function setupEvents() {
         window.dispatchEvent(event)
       }
       if (
-        changes.wallet &&
-        changes.wallet.oldValue.theme !== changes.wallet.newValue.theme
+        changes.theme
       ) {
         const event = new CustomEvent("station_theme_change", {
-          detail: changes.wallet.newValue.theme,
+          detail: changes.theme.newValue,
         })
         window.dispatchEvent(event)
       }
