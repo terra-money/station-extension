@@ -24,8 +24,9 @@ const AdvancedSettings = () => {
       />
       {replaceKeplr && (
         <FormWarning>
-          To prevent collisions between Keplr and Station, when this fature is
-          enabled uninstall or disable the Keplr extension on your browser.
+          To prevent collisions between Keplr and Station, please uninstall or
+          disable the Keplr extension on your browser when this feature is
+          enabled.
         </FormWarning>
       )}
       <SettingsSelectorToggle
