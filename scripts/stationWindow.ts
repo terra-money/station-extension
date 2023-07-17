@@ -5,10 +5,62 @@ interface TxRequest {
   memo?: string
 }
 
+type NetworkName = "mainnet" | "testnet" | "classic" | "localterra"
+type ChainID = string
+
+type InfoResponse = Record<ChainID, ChainInfo>
+type ChainInfo = {
+  baseAsset: string
+  chainID: ChainID
+  coinType: "330" | "118"
+  explorer: {
+    address: string
+    block: string
+    tx: string
+    validator: string
+  }
+  gasAdjustment: number
+  gasPrices: Record<string, number>
+  icon: string
+  lcd: string
+  name: string
+  prefix: string
+}
+
+type AccAddress = string
+type ConnectResponse = {
+  addresses: Record<ChainID, AccAddress>
+  ledger: boolean
+  name: string
+  network: NetworkName
+  pubkey?: {
+    "330": string
+    "118"?: string
+  }
+}
+
+type PostResponse = {
+  height: number
+  raw_log: string
+  txhash: string
+}
+
+type SignResponse = {
+  auth_info: Object
+  body: Object
+  signatures: string[]
+}
+
+type SignBytesResponse = {
+  public_key: string
+  recid: number
+  signature: string
+}
+
 export default class Station {
   private _pendingRequests: Record<
     string,
-    { resolve: (data: unknown) => void; reject: (data: unknown) => void }
+    { resolve: (data: any) => void; reject: (data: any) => void }
   > = {}
 
   constructor() {
@@ -41,7 +93,7 @@ export default class Station {
     )
   }
 
-  async info() {
+  async info(): Promise<InfoResponse> {
     return new Promise((resolve, reject) => {
       const reqID = crypto.randomUUID()
       this._sendMessage({ type: "interchain-info" }, reqID)
@@ -49,7 +101,7 @@ export default class Station {
     })
   }
 
-  async connect() {
+  async connect(): Promise<ConnectResponse> {
     return new Promise((resolve, reject) => {
       const reqID = crypto.randomUUID()
       this._sendMessage({ type: "connect" }, reqID)
@@ -57,52 +109,70 @@ export default class Station {
     })
   }
 
-  async theme() {
+  async theme(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reqID = crypto.randomUUID()
+      this._sendMessage({ type: "theme" }, reqID)
+      this._pendingRequests[reqID] = { resolve, reject }
+    })
+  }
+
+  async post(tx: TxRequest, purgeQueue = false): Promise<PostResponse> {
     return new Promise((resolve, reject) => {
       const reqID = crypto.randomUUID()
       this._sendMessage(
-        { type: "theme" },
+        { type: "post", data: { ...tx, purgeQueue, id: Date.now() } },
         reqID
       )
-      this._pendingRequests[reqID] = { resolve, reject }
+      this._pendingRequests[reqID] = {
+        resolve: (data: any) => resolve(data.result),
+        reject,
+      }
     })
   }
 
-  async post(tx: TxRequest, purgeQueue = false) {
-    return new Promise((resolve, reject) => {
-      const reqID = crypto.randomUUID()
-      this._sendMessage({ type: "post", data: { ...tx, purgeQueue } }, reqID)
-      this._pendingRequests[reqID] = { resolve, reject }
-    })
-  }
-
-  async sign(tx: TxRequest, purgeQueue = false) {
+  async sign(tx: TxRequest, purgeQueue = false): Promise<SignResponse> {
     return new Promise((resolve, reject) => {
       const reqID = crypto.randomUUID()
       this._sendMessage(
         { type: "sign", data: { ...tx, purgeQueue, id: Date.now() } },
         reqID
       )
-      this._pendingRequests[reqID] = { resolve, reject }
+      this._pendingRequests[reqID] = {
+        resolve: (data: any) => resolve(data.result),
+        reject,
+      }
     })
   }
 
-  async signBytes(bytes: string, purgeQueue = false) {
+  async signBytes(
+    bytes: string,
+    purgeQueue = false
+  ): Promise<SignBytesResponse> {
     return new Promise((resolve, reject) => {
       const reqID = crypto.randomUUID()
       this._sendMessage(
         { type: "sign", data: { bytes, purgeQueue, id: Date.now() } },
         reqID
       )
-      this._pendingRequests[reqID] = { resolve, reject }
+      this._pendingRequests[reqID] = {
+        resolve: (data: any) => resolve(data.result),
+        reject,
+      }
     })
   }
 
-  async switchNetwork(network: string, purgeQueue = false) {
+  async switchNetwork(
+    network: NetworkName,
+    purgeQueue = true
+  ): Promise<{ success: true; network: NetworkName }> {
     return new Promise((resolve, reject) => {
       const reqID = crypto.randomUUID()
       this._sendMessage(
-        { type: "switch-network", data: { network, purgeQueue, id: Date.now() } },
+        {
+          type: "switch-network",
+          data: { network, purgeQueue, id: Date.now() },
+        },
         reqID
       )
       this._pendingRequests[reqID] = { resolve, reject }
