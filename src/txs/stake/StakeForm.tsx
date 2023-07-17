@@ -210,6 +210,7 @@ const StakeForm = (props: Props) => {
               onFocus={max.reset}
               inputMode="decimal"
               placeholder={getPlaceholder()}
+              type="number"
               autoFocus
             />
           </FormItem>
