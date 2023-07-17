@@ -235,7 +235,11 @@ browser.runtime.onMessage.addListener(function (request, sender) {
 /* popup */
 // TODO: Actions such as transaction rejection if user closes a popup
 let tabId = undefined
-browser.tabs.onRemoved.addListener(() => (tabId = undefined))
+let isPopupOpen = false
+browser.tabs.onRemoved.addListener(() => {
+  tabId = undefined
+  isPopupOpen = false
+})
 
 const POPUP_WIDTH = 480
 const POPUP_HEIGHT = 600 // Chrome extension maximum height
@@ -254,7 +258,9 @@ const openPopup = () => {
     width: POPUP_WIDTH,
     height: POPUP_HEIGHT,
   }
-  !tabId &&
+  if (!isPopupOpen && !tabId) {
+    isPopupOpen = true
+
     browser.tabs
       .create({ url: browser.runtime.getURL("index.html"), active: false })
       .then((tab) => {
@@ -270,10 +276,14 @@ const openPopup = () => {
           browser.windows.create(config)
         })
       })
+  }
 }
 
 const closePopup = () => {
-  tabId && browser.tabs.remove(tabId)
+  if (tabId) {
+    isPopupOpen = false
+    tabId && browser.tabs.remove(tabId)
+  }
 }
 
 /* utils */
