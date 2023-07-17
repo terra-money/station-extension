@@ -1,14 +1,4 @@
-import Station from "./stationWindow"
-
-declare global {
-  interface Window {
-    isTerraExtensionAvailable: boolean
-    isStationExtensionAvailable: boolean
-    terraWallets?: any[]
-    interchainWallets?: any[]
-    station: Station
-  }
-}
+import Station from "@terra-money/station-connector"
 
 // legacy terra webapps
 window.isTerraExtensionAvailable = true

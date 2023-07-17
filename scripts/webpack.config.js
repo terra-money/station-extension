@@ -9,7 +9,7 @@ module.exports = {
   entry: {
     contentScript: path.join(__dirname, "contentScript.js"),
     background: path.join(__dirname, "background.js"),
-    inpage: path.join(__dirname, "inpage.ts"),
+    inpage: path.join(__dirname, "inpage.js"),
   },
   plugins: [
     new webpack.DefinePlugin({

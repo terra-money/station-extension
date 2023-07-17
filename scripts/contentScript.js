@@ -227,6 +227,59 @@ async function setupStationProvider() {
         browser.storage.local.get(["connect", "wallet"]).then(handleGetConnect)
         break
 
+      case "get-pubkey":
+        const handleChangePubkey = (changes, namespace) => {
+          // It is recursive.
+          // After referring to a specific value in the storage, perform the function listed below again.
+          if (namespace === "local" && (changes.wallet || changes.pubkey)) {
+            const hasPubKey = changes.wallet && changes.wallet.newValue.pubkey
+
+            if (hasPubKey) {
+              browser.storage.local
+                .get(["connect", "wallet"])
+                .then(handleGetPubkey)
+            } else {
+              browser.storage.local.get(["pubkey"]).then(({ pubkey }) => {
+                // pubkey terminated
+                if (!pubkey) {
+                  sendResponse(false, "User denied.")
+                  closePopup()
+                  browser.storage.onChanged.removeListener(handleChangePubkey)
+                }
+              })
+            }
+          }
+        }
+
+        const handleGetPubkey = ({
+          connect = { request: [], allowed: [] },
+          wallet = {},
+        }) => {
+          // 1. If the address is authorized and the wallet exists
+          //    - send back the response and close the popup.
+          // 2. If not,
+          //    - store the address on the storage and open the popup to request it (only if it is not the requested address).
+          const isAllowed = connect.allowed.includes(origin)
+          const hasPubKey = wallet.pubkey
+
+          if (isAllowed && hasPubKey) {
+            sendResponse(true, wallet)
+            closePopup()
+            browser.storage.onChanged.removeListener(handleChangePubkey)
+          } else {
+            browser.storage.local.set({
+              pubkey: origin,
+            })
+
+            openPopup()
+            browser.storage.onChanged.addListener(handleChangePubkey)
+          }
+        }
+
+        browser.storage.local.get(["connect", "wallet"]).then(handleGetPubkey)
+
+        break
+
       case "sign":
         data && handleRequest("sign")
         break
@@ -249,8 +302,8 @@ function setupEvents() {
         changes.wallet &&
         (changes.wallet.oldValue.address !== changes.wallet.newValue.address ||
           changes.wallet.oldValue.name !== changes.wallet.newValue.name ||
-          Object.values(changes.wallet.oldValue.pubkey).join(",") !==
-            Object.values(changes.wallet.newValue.pubkey).join(","))
+          Object.values(changes.wallet.oldValue.pubkey || {}).join(",") !==
+            Object.values(changes.wallet.newValue.pubkey || {}).join(","))
       ) {
         const event = new CustomEvent("station_wallet_change", {
           detail: changes.wallet.newValue,
