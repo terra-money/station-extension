@@ -6,7 +6,7 @@ set -e
 echo "Updating node_modules"
 npm ci
 
-version=$(cat public/manifest.json | jq -r '.version')
+version=$(cat public/manifest.json | jq -r '.version_name')
 name=$(cat public/manifest.json | jq -r '.name')
 echo "Building $name $version"
 npm run build

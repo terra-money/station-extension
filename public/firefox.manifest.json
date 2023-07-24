@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Station Wallet",
   "version": "7.4.2",
-  "version_name": "7.4.2-rc2",
+  "version_name": "7.4.2-rc.2",
   "background": {
     "scripts": ["background.js"],
     "persistent": true
