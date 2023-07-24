@@ -38,6 +38,9 @@
     width: fit-content !important;
     padding: 0 !important;
   }
+  &.scrollable {
+    overflow-y: scroll !important;
+  }
 }
 
 .close {
