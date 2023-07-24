@@ -1,10 +1,10 @@
 import { ReactComponent as ReceiveIcon } from "styles/images/icons/Receive_v2.svg"
 import { ReactComponent as SendIcon } from "styles/images/icons/Send_v2.svg"
-// import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
-import { useNetwork, useChainID } from "data/wallet"
+import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
+import { useNetworkName, useNetwork, useChainID } from "data/wallet"
 import { useIsWalletEmpty, useBankBalance } from "data/queries/bank"
-// import { useInterchainAddresses } from "auth/hooks/useAddress"
-// import { FIAT_RAMP, KADO_API_KEY } from "config/constants"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { FIAT_RAMP, KADO_API_KEY } from "config/constants"
 import { useExchangeRates } from "data/queries/coingecko"
 import { useCurrency } from "data/settings/Currency"
 import { TooltipIcon } from "components/display"
@@ -18,7 +18,7 @@ import { capitalize } from "@mui/material"
 import { Read } from "components/token"
 import classNames from "classnames"
 import { useMemo } from "react"
-// import qs from "qs"
+import qs from "qs"
 
 const cx = classNames.bind(styles)
 
@@ -38,9 +38,9 @@ const NetWorth = () => {
   const { data: prices } = useExchangeRates()
   const readNativeDenom = useNativeDenoms()
   const { setRoute, route } = useWalletRoute()
-  // const addresses = useInterchainAddresses()
-  // const network = useNetwork()
-  // const networkName = useNetworkName()
+  const addresses = useInterchainAddresses()
+  const network = useNetwork()
+  const networkName = useNetworkName()
 
   // TODO: show CW20 balances and staked tokens
   const coinsValue = coins?.reduce((acc, { amount, denom }) => {
@@ -52,32 +52,32 @@ const NetWorth = () => {
         10 ** decimals
     )
   }, 0)
-  // const onToAddressMulti =
-  //   addresses &&
-  //   Object.keys(addresses ?? {})
-  //     .map((key) => `${network[key].name}:${addresses[key]}`)
-  //     .join(",")
+  const onToAddressMulti =
+    addresses &&
+    Object.keys(addresses ?? {})
+      .map((key) => `${network[key].name}:${addresses[key]}`)
+      .join(",")
 
-  // const rampParams = {
-  //   network: "Terra",
-  //   apiKey: KADO_API_KEY,
-  //   product: "BUY",
-  //   onRevCurrency: "USDC",
-  //   networkList: ["TERRA", "OSMOSIS", "KUJIRA", "JUNO"].join(","),
-  //   productList: ["BUY", "SELL"].join(","),
-  //   cryptoList: ["USDC"].join(","),
-  //   onToAddressMulti,
-  // }
+  const rampParams = {
+    network: "Terra",
+    apiKey: KADO_API_KEY,
+    product: "BUY",
+    onRevCurrency: "USDC",
+    networkList: ["TERRA", "OSMOSIS", "KUJIRA", "JUNO"].join(","),
+    productList: ["BUY", "SELL"].join(","),
+    cryptoList: ["USDC"].join(","),
+    onToAddressMulti,
+  }
 
-  // const kadoUrlParams = qs.stringify(rampParams)
+  const kadoUrlParams = qs.stringify(rampParams)
 
-  // const openKadoWindow = () => {
-  //   window.open(
-  //     `${FIAT_RAMP}?${kadoUrlParams}`,
-  //     "_blank",
-  //     "toolbar=yes,scrollbars=yes,resizable=yes,top=0,left=0,width=420,height=680"
-  //   )
-  // }
+  const openKadoWindow = () => {
+    window.open(
+      `${FIAT_RAMP}?${kadoUrlParams}`,
+      "_blank",
+      "toolbar=yes,scrollbars=yes,resizable=yes,top=0,left=0,width=420,height=680"
+    )
+  }
 
   return (
     <article className={styles.networth}>
@@ -126,14 +126,14 @@ const NetWorth = () => {
           </Button>
           <h3>{capitalize(t("receive"))}</h3>
         </div>
-        {/* {networkName === "mainnet" && (
+        {networkName === "mainnet" && (
           <div className={styles.button__wrapper}>
             <Button className={styles.wallet_default} onClick={openKadoWindow}>
               <AddIcon className={styles.icon} />
             </Button>
             <h2>{t(capitalize("buy"))}</h2>
           </div>
-        )} */}
+        )}
       </div>
     </article>
   )
