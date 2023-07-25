@@ -370,7 +370,7 @@ const SendPage = () => {
                 error={errors.asset?.message ?? errors.address?.message}
               >
                 <AssetSelector
-                  value={asset ?? ""}
+                  value={asset ?? defaultAsset}
                   onChange={(asset) => setValue("asset", asset)}
                   assetList={filteredAssets}
                   assetsByDenom={assetsByDenom}
