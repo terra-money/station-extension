@@ -16,7 +16,7 @@ const IbcSendBack = ({
   chainID,
 }: Props) => {
   return (
-    <ModalButton title={title} renderButton={renderButton}>
+    <ModalButton title={title} scrollable renderButton={renderButton}>
       <IbcSendBackTx token={token} chainID={chainID} />
     </ModalButton>
   )
