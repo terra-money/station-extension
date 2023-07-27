@@ -33,7 +33,6 @@ const Vesting = () => {
         balance={schedule.amount.total}
         hideActions
       />
-
       <section className={styles.amount}>
         <dl>
           <dt>{t("Vested")}</dt>

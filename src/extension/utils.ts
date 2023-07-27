@@ -8,7 +8,7 @@ import {
 } from "@terra-money/feather.js"
 import { useChainID, useNetwork } from "data/wallet"
 import { isNil } from "ramda"
-import extension from "extensionizer"
+import browser from "webextension-polyfill"
 
 /* primitive */
 export interface PrimitiveDefaultRequest {
@@ -47,6 +47,12 @@ export interface SuggestChainRequest extends PrimitiveDefaultRequest {
   success?: boolean
 }
 
+export interface SwitchNetworkRequest extends PrimitiveDefaultRequest {
+  network: "mainnet" | "testnet" | "classic" | "localterra"
+  error?: { message: string }
+  success?: boolean
+}
+
 export interface PrimitiveTxRequest
   extends Partial<TxResponse>,
     PrimitiveDefaultRequest {
@@ -69,6 +75,7 @@ export interface ExtensionStorage {
   post?: PrimitiveTxRequest[]
   pubkey?: string // hostname
   suggestChain?: SuggestChainRequest[]
+  switchNetwork?: SwitchNetworkRequest[]
 }
 
 /* app */
@@ -196,9 +203,9 @@ export async function incomingRequest() {
   // Requests from storage
   // except for that is already success or failure
   return new Promise<boolean>((resolve) => {
-    extension.storage?.local.get(
-      ["connect", "post", "sign"],
-      (storage: ExtensionStorage) => {
+    browser.storage?.local
+      .get(["connect", "post", "sign"])
+      .then((storage: ExtensionStorage) => {
         const { connect = { allowed: [], request: [] } } = storage
         const { sign = [], post = [] } = storage
         const [connectRequest] = connect.request
@@ -210,7 +217,6 @@ export async function incomingRequest() {
         return resolve(
           !!(connectRequest || postRequest || signRequest || bytesRequest)
         )
-      }
-    )
+      })
   })
 }

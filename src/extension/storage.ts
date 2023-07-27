@@ -1,5 +1,5 @@
 import { AccAddress } from "@terra-money/feather.js"
-import extension from "extensionizer"
+import browser from "webextension-polyfill"
 import decrypt from "auth/scripts/decrypt"
 import { ChainID, InterchainNetwork, TerraNetwork } from "types/network"
 
@@ -8,7 +8,21 @@ export const storeNetwork = (
   network: TerraNetwork,
   networks: Record<ChainID, InterchainNetwork>
 ) => {
-  extension.storage?.local.set({ network, networks, networkName: network.name })
+  browser.storage?.local.set({ network, networks, networkName: network.name })
+}
+
+/* theme */
+export const storeTheme = (theme: string) => {
+  browser.storage?.local.set({
+    theme,
+  })
+}
+
+/* replace keplr */
+export const storeReplaceKeplr = (replaceKeplr: boolean) => {
+  browser.storage?.local.set({
+    replaceKeplr,
+  })
 }
 
 /* wallet */
@@ -19,37 +33,35 @@ export const storeWalletAddress = (wallet: {
   ledger?: boolean
   pubkey?: { "330": string; "118"?: string }
   network: string
-  theme: string
 }) => {
-  extension.storage?.local.set({
+  browser.storage?.local.set({
     wallet,
   })
 }
 
 export const clearWalletAddress = () => {
-  extension.storage?.local.remove("wallet")
+  browser.storage?.local.remove("wallet")
 }
 
 /* password */
 export const getStoredPassword = (callback: (password: string) => void) => {
-  extension.storage?.local.get(
-    ["encrypted", "timestamp"],
-    ({ encrypted, timestamp }: { encrypted: string; timestamp: number }) => {
+  browser.storage?.local
+    .get(["encrypted", "timestamp"])
+    .then(({ encrypted, timestamp }) => {
       if (!(encrypted && timestamp)) return ""
       const decrypted = decrypt(encrypted, String(timestamp))
       callback(decrypted)
-    }
-  )
+    })
 }
 
 export const clearStoredPassword = () => {
-  extension.storage?.local.set({ encrypted: null, timestamp: null })
+  browser.storage?.local.set({ encrypted: null, timestamp: null })
 }
 
 /* open */
 export const getOpenURL = (url = "") => {
-  if (!extension.runtime) return
-  if (!extension.runtime.getURL) return
+  if (!browser.runtime) return
+  if (!browser.runtime.getURL) return
   return () =>
-    window.open(extension.runtime.getURL(["index.html", url].join("#")))
+    window.open(browser.runtime.getURL(["index.html", url].join("#")))
 }

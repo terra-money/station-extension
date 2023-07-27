@@ -32,8 +32,8 @@ const Asset = (props: Props) => {
   const { data: prices, ...pricesState } = useExchangeRates()
   const { route, setRoute } = useWalletRoute()
 
-  const coinPrice = props.price ?? 0
-  const change = props.change ?? 0
+  const coinPrice = (props.price || prices?.[token]?.price) ?? 0
+  const change = (props.change || prices?.[token]?.change) ?? 0
 
   const walletPrice = coinPrice * parseInt(balance ?? "0")
 

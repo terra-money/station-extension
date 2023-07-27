@@ -67,7 +67,13 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const [submitting, setSubmitting] = useState(false)
 
   const { data: estimatedGas, ...estimatedGasState } = useQuery(
-    [queryKey.tx.create, props, addresses?.[chainID], network[chainID]],
+    [
+      queryKey.tx.create,
+      "tx" in props &&
+        props.tx.msgs.map((m) => m.toData(network[chainID]?.isClassic)),
+      addresses?.[chainID],
+      network[chainID],
+    ],
     async () => {
       if (!("tx" in props)) return 0
       const { tx } = props

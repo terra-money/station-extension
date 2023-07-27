@@ -1,5 +1,17 @@
 import { useTranslation } from "react-i18next"
+export const ReplaceKeplrTooltip = () => {
+  const { t } = useTranslation()
 
+  return (
+    <article>
+      <p>
+        {t(
+          "When this option is enabled Station will try to replace Keplr on external websites."
+        )}
+      </p>
+    </article>
+  )
+}
 export const DevModeTooltip = () => {
   const { t } = useTranslation()
 
