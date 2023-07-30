@@ -52,6 +52,7 @@ type Key =
   | {
       "330": string
       "118"?: string
+      "60"?: string
     }
   | { seed: string; index: number; legacy: boolean }
 
@@ -100,13 +101,13 @@ export const testPassword = (params: Params) => {
 
 type AddWalletParams =
   | {
-      words: { "330": string; "118"?: string }
+      words: { "330": string; "118"?: string; "60"?: string }
       password: string
       seed: Buffer
       name: string
       index: number
       legacy: boolean
-      pubkey: { "330": string; "118"?: string }
+      pubkey: { "330": string; "118"?: string; "60"?: string }
     }
   | {
       words: { "330": string; "118"?: string }
@@ -204,6 +205,7 @@ interface StorePubKeyParams {
   pubkey: {
     "330": string
     "118"?: string
+    "60"?: string
   }
 }
 
