@@ -55,6 +55,7 @@ export default function ManageWallets() {
             setPath(Path.select)
           }}
           className={styles.manage__wallets}
+          data-testid="manage-wallets-button"
         >
           {isLedger ? (
             wallet.bluetooth ? (
