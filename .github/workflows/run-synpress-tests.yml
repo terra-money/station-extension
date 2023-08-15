@@ -1,0 +1,34 @@
+name: Run Synpress Tests and Build
+
+on:
+  pull_request:
+    branches:
+      - is-sprint-24  # adjust if the main branch has a different name
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16.14.0'  # or whatever version you need
+
+    - name: Install jq
+      run: sudo apt-get install jq
+
+    - name: Execute Build Script
+      run: ./scripts/build-station-extension.sh
+
+    - name: Checkout synpress test repository
+      uses: actions/checkout@v2
+      with:
+        repository: DimitrijeDragasevic/synpress
+        path: synpress
+
+    - name: Execute Synpress Test Script
+      run: ./scripts/run-synpress-tests.sh
