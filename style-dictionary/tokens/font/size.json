@@ -1,0 +1,36 @@
+{
+  "fontSize": {
+    "xx-sm": {
+      "value": "10px",
+      "type": "fontSize"
+    },
+    "x-sm": {
+      "value": "12px",
+      "type": "fontSize"
+    },
+    "sm": {
+      "value": "14px",
+      "type": "fontSize"
+    },
+    "md": {
+      "value": "16px",
+      "type": "fontSize"
+    },
+    "mdlg": {
+      "value": "20px",
+      "type": "fontSize"
+    },
+    "lg": {
+      "value": "24px",
+      "type": "fontSize"
+    },
+    "x-lg": {
+      "value": "32px",
+      "type": "fontSize"
+    },
+    "xx-lg": {
+      "value": "40px",
+      "type": "fontSize"
+    }
+  }
+}

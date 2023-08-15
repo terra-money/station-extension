@@ -1,0 +1,38 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Description, Source } from '@storybook/addon-docs/blocks';
+import LoadingCircular from './';
+import * as LoadingCircularStories from './LoadingCircular.stories';
+import 'scss/storybookoverrides.scss';
+
+<Meta title='Components/Feedback/LoadingCircular' of={LoadingCircularStories} />
+
+# Default Empty UI
+Displays an "empty" icon and "No results found".
+
+## Props
+- `size` - Passes in a size to the mui icon.
+- `thickness` - Passes in a thickness to the mui icon.
+
+## Imports
+```tsx
+  import { LoadingCircular } from '@terra-station-ui/components/feedback';
+```
+
+# Stories
+
+## Playground
+<div class='story_with_source_below'>
+  <Canvas withSource="none">
+    <Story id='components-feedback-loading-circular--playground' />
+  </Canvas>
+  <Controls />
+</div>
+
+## Default
+<div class='story_with_source_below'>
+  <Canvas withSource="none">
+    <Story id='components-feedback-loading-circular--default' />
+  </Canvas>
+  <Source code={`
+  <LoadingCircular />
+  `} />
+</div>

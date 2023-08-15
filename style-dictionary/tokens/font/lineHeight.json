@@ -1,0 +1,64 @@
+{
+  "lineHeight": {
+    "xx-sm": {
+      "default": {
+        "value": "10px",
+        "type": "lineHeight"
+      }
+    },
+    "x-sm": {
+      "default": {
+        "value": "12px",
+        "type": "lineHeight"
+      },
+      "larger": {
+        "value": "14px",
+        "type": "lineHeight"
+      }
+    },
+    "sm": {
+      "default": {
+        "value": "14px",
+        "type": "lineHeight"
+      },
+      "larger": {
+        "value": "18px",
+        "type": "lineHeight"
+      }
+    },
+    "md": {
+      "default": {
+        "value": "16px",
+        "type": "lineHeight"
+      },
+      "larger": {
+        "value": "20px",
+        "type": "lineHeight"
+      }
+    },
+    "mdlg": {
+      "default": {
+        "value": "26px",
+        "type": "lineHeight"
+      }
+    },
+    "lg": {
+      "default": {
+        "value": "24px",
+        "type": "lineHeight"
+      }
+    },
+    "x-lg": {
+      "default": {
+        "value": "32px",
+        "type": "lineHeight"
+      }
+    },
+    "xx-lg": {
+      "default": {
+        "value": "40px",
+        "type": "lineHeight"
+      }
+    }
+  }
+}

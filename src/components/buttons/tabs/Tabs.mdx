@@ -1,0 +1,53 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Description, Source } from '@storybook/blocks';
+import Tabs from './Tabs';
+import * as TabsStories from './Tabs.stories';
+
+<Meta title="Components/Buttons/Tabs" />
+
+# Tabs
+This is used for filtering and switching between different views.
+
+## Import
+```jsx
+import { Tabs } from '@terra-station/components/buttons';
+```
+
+# Tabs Props
+* **`tabs`** - <span style={{ color: "var(--token-error-500)", fontWeight: "bold", fontSize: "14px" }}>*required*</span> - Used to set the tabs.
+* * **`tabs.key`** - `string` - For identifying tab.
+* * **`tabs.tabLabel`** - `string` - The label for the tab.
+* * **`tabs.onClick`** - `() => void` - Called when associated tab is clicked.
+* **`activeTabKey`** - `string` - The key of the active tab.
+
+# Tabs Stories
+
+## Tabs
+<div className='story_with_source_below'>
+  <Canvas of={TabsStories.Default} />
+  <Source code={`
+    const [activeTabKey, setActiveTabKey] = useState('tab1');
+
+return (
+    <Tabs
+    activeTabKey={activeTabKey}
+    tabs={[
+      {
+        key: 'tab1',
+        tabLabel: 'Tab 1',
+        onClick: () => setActiveTabKey('tab1'),
+      },
+      {
+        key: 'tab2',
+        tabLabel: 'Tab 2',
+        onClick: () => setActiveTabKey('tab2'),
+      },
+      {
+        key: 'tab3',
+        tabLabel: 'Tab 3',
+        onClick: () => setActiveTabKey('tab3'),
+      },
+    ]}
+  />
+);
+  `} />
+</div>

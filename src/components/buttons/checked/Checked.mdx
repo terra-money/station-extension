@@ -1,0 +1,71 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Description, Source } from '@storybook/blocks';
+import CheckedButton from './CheckedButton';
+import * as CheckedButtonStories from './CheckedButton.stories';
+
+<Meta title="Components/Buttons/Checked" />
+
+# Checked Button
+This button is used for toggling a state. It is used in the `Create New Wallet` page for confirming seed phrase toggling .
+
+## Import
+
+```jsx
+import { CheckedButton } from '@terra-station/components/buttons';
+```
+
+# CheckedButton Props
+##### The `CheckedButton` is build on top of `<Button />`.
+* **`label`** - <span style={{ color: "var(--token-error-500)", fontWeight: "bold", fontSize: "14px" }}>*required*</span> - Sets the label for the button.
+* **`active`** - Sets the button to be active.
+* **`onClick`** - Sets the onClick handler for the button. Will likely be a function to set the button to an active state.
+
+# CheckedButton Stories
+## Playground
+<div className='story_with_source_below'>
+  <Canvas of={CheckedButtonStories.Playground} />
+  <Controls of={CheckedButtonStories.Playground} />
+</div>
+
+## Not Active
+<div className='story_with_source_below'>
+  <Canvas of={CheckedButtonStories.NotActive} />
+  <Source code={`
+    <CheckedButton
+  label={'Button'}
+/>
+  `} />
+</div>
+
+## Active
+<div className='story_with_source_below'>
+  <Canvas of={CheckedButtonStories.Active} />
+  <Source code={`
+    <CheckedButton
+  label={'Button'}
+  active={true}
+/>
+  `} />
+</div>
+
+## New Wallet Example
+<div className='story_with_source_below'>
+  <Canvas of={CheckedButtonStories.NewWalletExample} />
+  <Source code={`
+    const seedPhrase = 'these are some words that make';
+
+const [activeIndex, setActiveIndex] = useState(1);
+
+return (
+    <div style={{ width: '342px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+    {seedPhrase.split(' ').map((word, index) => (
+                <CheckedButton
+        key={index}
+        active={activeIndex === index}
+        label={word}
+        onClick={() => setActiveIndex(index)}
+      />
+            ))}
+  </div>
+)
+  `} />
+</div>

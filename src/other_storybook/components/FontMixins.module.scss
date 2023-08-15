@@ -1,0 +1,56 @@
+@import "scss/font_mixins";
+
+.xx__small {
+  @include XX-Small;
+  font-size: var(--token-font-size-xx-sm) !important;
+}
+
+.x__small__lh {
+  @include X-SmallLH;
+  font-size: var(--token-font-size-x-sm) !important;
+}
+
+.x__small {
+  @include X-Small;
+  font-size: var(--token-font-size-x-sm) !important;
+}
+
+.small__lh {
+  @include SmallLH;
+  font-size: var(--token-font-size-sm) !important;
+}
+
+.small {
+  @include Small;
+  font-size: var(--token-font-size-sm) !important;
+}
+
+.medium__lh {
+  @include MediumLH;
+  font-size: var(--token-font-size-md) !important;
+}
+
+.medium {
+  @include Medium;
+  font-size: var(--token-font-size-md) !important;
+}
+
+.medium__large {
+  @include Medium-Large;
+  font-size: var(--token-font-size-mdlg) !important;
+}
+
+.large {
+  @include Large;
+  font-size: var(--token-font-size-lg) !important;
+}
+
+.x__large {
+  @include X-Large;
+  font-size: var(--token-font-size-x-lg) !important;
+}
+
+.xx__large {
+  @include XX-Large;
+  font-size: var(--token-font-size-xx-lg) !important;
+}
