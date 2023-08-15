@@ -57,7 +57,6 @@ npm link station-ui
 ```
 4. Add the station-ui stylesheet to your project (likely in `src/index.tsx`):
 ```
-```
 import 'station-ui/dist/style.css';
 ```
 5. Import the package:
