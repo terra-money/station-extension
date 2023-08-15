@@ -23,18 +23,20 @@ interface ModalProps {
   /* style */
   confirm?: boolean
   maxHeight?: boolean | number
+  scrollable?: boolean
 }
 
 export interface Props extends ModalProps, ReactModal.Props {}
 
 const Modal = (props: PropsWithChildren<Props>) => {
   const { title, children, footer } = props
-  const { icon, closeIcon, onRequestClose, confirm, maxHeight } = props
+  const { icon, closeIcon, onRequestClose, confirm, maxHeight, scrollable } =
+    props
 
   return (
     <ReactModal
       {...props}
-      className={styles.modal}
+      className={cx(styles.modal, { scrollable })}
       overlayClassName={styles.overlay}
     >
       {onRequestClose && (
@@ -74,6 +76,7 @@ export const [useModal, ModalProvider] = createContext<() => void>("useModal")
 interface ModalButtonProps extends ModalProps {
   renderButton: RenderButton
   modalKey?: string
+  scrollable?: boolean
 }
 
 export const ModalButton = (props: PropsWithChildren<ModalButtonProps>) => {
