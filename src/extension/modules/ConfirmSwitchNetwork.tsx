@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { Card, Grid } from "components/layout"
+import { Grid } from "components/layout"
 import ConfirmButtons from "../components/ConfirmButtons"
 import { useRequest } from "../RequestContainer"
 import styles from "./ConfirmNewChain.module.scss"

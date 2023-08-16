@@ -198,7 +198,6 @@ const useAuth = () => {
 
     if (is.ledger(wallet)) {
       const key = await getLedgerKey(networks[chainID].coinType)
-      // @ts-expect-error
       return await key.createSignatureAmino(doc)
     } else {
       const pk = getKey(password)
@@ -262,7 +261,6 @@ const useAuth = () => {
 
     if (is.ledger(wallet)) {
       const key = await getLedgerKey(networks[txOptions?.chainID].coinType)
-      // @ts-expect-error
       const wallet = lcd.wallet(key)
       return await wallet.createAndSignTx({
         ...txOptions,
