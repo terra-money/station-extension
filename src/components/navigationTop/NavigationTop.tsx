@@ -27,7 +27,7 @@ const Navigation = ({ navigation }) => {
                 {currentWallet ? (
                     <>
                         <WalletIcon style={{ marginRight: 12 }} />
-                        <Text.Body color={theme.palette.menu.text}>{currentWallet?.name}</Text.Body>
+                        <Text.Body color={theme.palette.white}>{currentWallet?.name}</Text.Body>
                         <IconButton onPress={() => setOpenedSheet('wallets')}>
                             <MenuIcon />
                         </IconButton>

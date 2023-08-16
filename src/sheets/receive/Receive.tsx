@@ -36,10 +36,10 @@ const Settings = () => {
             index={0}
             snapPoints={snapPoints}
             backgroundStyle={{
-                backgroundColor: theme.palette.background.cardMuted,
+                backgroundColor: theme.palette.dark700,
             }}
             handleIndicatorStyle={{
-                backgroundColor: theme.palette.text.default,
+                backgroundColor: theme.palette.white,
             }}
             onChange={handleSheetChanges}
             backdropComponent={backdropProps => (

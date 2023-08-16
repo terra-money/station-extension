@@ -6,7 +6,7 @@ export const ContentContainer = styled.View`
     flex: 1;
     align-items: center;
     height: 100%;
-    background-color: ${p => p.theme.palette.background.cardMuted};
+    background-color: ${p => p.theme.palette.dark};
 `;
 
 export const OffsetedContainer = styled.ScrollView`

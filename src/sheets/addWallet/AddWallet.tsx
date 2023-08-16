@@ -45,10 +45,10 @@ const AddWallet = () => {
             snapPoints={snapPoints}
             keyboardBlurBehavior="restore"
             backgroundStyle={{
-                backgroundColor: theme.palette.background.cardMuted,
+                backgroundColor: theme.palette.dark,
             }}
             handleIndicatorStyle={{
-                backgroundColor: theme.palette.text.default,
+                backgroundColor: theme.palette.white,
             }}
             onChange={handleSheetChanges}
             backdropComponent={backdropProps => (

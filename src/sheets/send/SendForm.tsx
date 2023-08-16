@@ -113,17 +113,17 @@ const SendFormComponent = () => {
                             {reviewStep && (
                                 <TransactionFeesContainer>
                                     <TransactionFeeContainer>
-                                        <Text.BodySmallBold color={theme.palette.text.muted}>Fee</Text.BodySmallBold>
+                                        <Text.BodySmallBold color={theme.palette.dark900}>Fee</Text.BodySmallBold>
                                         <Text.BodySmallBold>0.054355 LUNA</Text.BodySmallBold>
                                     </TransactionFeeContainer>
                                     <TransactionFeeContainer>
-                                        <Text.BodySmallBold color={theme.palette.text.muted}>
+                                        <Text.BodySmallBold color={theme.palette.dark900}>
                                             Balance
                                         </Text.BodySmallBold>
                                         <Text.BodySmallBold>49.355 LUNA</Text.BodySmallBold>
                                     </TransactionFeeContainer>
                                     <TransactionFeeContainer>
-                                        <Text.BodySmallBold color={theme.palette.text.muted}>
+                                        <Text.BodySmallBold color={theme.palette.dark900}>
                                             Balance after tx
                                         </Text.BodySmallBold>
                                         <Text.BodySmallBold>2.0355 LUNA</Text.BodySmallBold>

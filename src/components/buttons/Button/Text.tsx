@@ -16,7 +16,7 @@ const TextButtonComponent = ({ onPress, text, disabled = false }: ButtonProps) =
     const theme = useTheme();
     return (
         <TouchableOpacity onPress={onPress}>
-            <Text.BodySmallBold color={theme.palette.text.info}>{text}</Text.BodySmallBold>
+            <Text.BodySmallBold color={theme.palette.light100}>{text}</Text.BodySmallBold>
         </TouchableOpacity>
     );
 };

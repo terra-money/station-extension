@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 export const ChainsContainer = styled.View`
     display: flex;
     flex-direction: row;
-    background-color: ${p => p.theme.palette.background.default};
+    background-color: ${p => p.theme.palette.dark200};
     padding: 8px 12px;
     gap: 8px;
     flex-wrap: wrap;

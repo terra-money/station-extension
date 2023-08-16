@@ -37,7 +37,7 @@ const AssetDetailsComponent = ({ navigation, route }) => {
                     <SvgUri width="26px" height="26px" uri={icon} />
                 </AS.IconContainer>
                 <Text.Title3>{`${balance ? balance / 1000000 : 0} ${symbol}`}</Text.Title3>
-                <Text.Label color={theme.palette.text.muted}>{`$ ${
+                <Text.Label color={theme.palette.dark900}>{`$ ${
                     assetPrice ? assetPrice.toFixed(2) : 0
                 }`}</Text.Label>
                 <S.ActionsContainer>

@@ -21,7 +21,7 @@ const ManageWalletComponent = ({ navigation, route }) => {
                 <Text.Title4 color={theme.palette.text.info}>{wallet.name}</Text.Title4>
             </S.Header>
             <S.WalletAddressContainer>
-                <Text.Label numberOfLines={1} color={theme.palette.text.muted}>
+                <Text.Label numberOfLines={1} color={theme.palette.dark900}>
                     {address}
                 </Text.Label>
             </S.WalletAddressContainer>

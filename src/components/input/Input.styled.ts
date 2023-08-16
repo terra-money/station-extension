@@ -12,10 +12,10 @@ export const InputContainer = styled(BottomSheetTextInput)<{ minHeight?: string 
     min-height: ${p => p.minHeight || '46px'};
     margin-top: 8px;
     padding: 12px;
-    background-color: ${p => p.theme.palette.background.input};
+    background-color: ${p => p.theme.palette.dark300};
     border-radius: 8px;
-    border: 1px solid ${p => p.theme.palette.border.input};
-    color: ${p => p.theme.palette.text.default};
+    border: 1px solid ${p => p.theme.palette.dark700};
+    color: ${p => p.theme.palette.white};
 `;
 
 export const ErrorMessageContainer = styled.View`

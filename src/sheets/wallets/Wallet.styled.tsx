@@ -6,8 +6,8 @@ export const Container = styled.TouchableOpacity<{ active?: boolean }>`
     display: flex;
     flex-direction: row;
     align-items: center;
-    background: ${p => (p.active ? p.theme.palette.button.primary.background : p.theme.palette.background.muted)};
-    border: 1px solid ${p => p.theme.palette.border.card};
+    background: ${p => (p.active ? p.theme.palette.button.primary.background : p.theme.palette.dark)};
+    border: 1px solid ${p => p.theme.palette.dark600};
     padding: 0px 18px;
     border-radius: 8px;
 `;

@@ -22,10 +22,10 @@ const QRCodeWalletExport = ({ route }) => {
                     <QRCodeReact
                         value={address}
                         size={260}
-                        fgColor={theme.palette.text.default}
+                        fgColor={theme.palette.white}
                         bgColor={theme.palette.background.card}
                     />
-                    <Text.BodySmallX color={theme.palette.text.muted}>{address}</Text.BodySmallX>
+                    <Text.BodySmallX color={theme.palette.dark900}>{address}</Text.BodySmallX>
                 </QRCodeScreenContainer>
             </S.OffsetedContainer>
         </S.ContentContainer>

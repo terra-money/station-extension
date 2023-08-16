@@ -1,31 +1,14 @@
 import styled from 'styled-components/native';
-import Animated from 'react-native-reanimated';
 
 export const ExpandButton = styled.TouchableOpacity`
     display: flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
-    background-color: ${p => p.theme.palette.button.primary.background};
-    height: 46px;
-    width: 46px;
-    border-radius: 23px;
-    top: -23px;
-`;
-
-export const NavigationBarSides = styled.View<{
-    width: number;
-    left?: boolean;
-    right?: boolean;
-}>`
-    position: absolute;
-    right: ${p => (p.right ? '0px' : 'auto')};
-    left: ${p => (p.left ? '0px' : 'auto')};
-    border-top-left-radius: ${p => (p.left ? '8px' : '0px')};
-    border-top-right-radius: ${p => (p.right ? '8px' : '0px')};
-    width: ${p => p.width / 2 - 50}px;
-    height: 100%;
-    background-color: ${p => p.theme.palette.menu.background};
+    background-color: #075CEE;
+    height: 64px;
+    width: 64px;
+    border-radius: 32px;
+    transform: translateY(-30px);
 `;
 
 export const NavigationCutoffBar = styled.SafeAreaView`
@@ -38,10 +21,10 @@ export const NavigationCutoffBar = styled.SafeAreaView`
 
 export const NavigationBarBottom = styled.View`
     position: absolute;
-    bottom: -16px;
-    height: 80px;
+    /* bottom: -16px; */
+    /* height: 80px; */
     width: 100%;
-    background-color: ${p => p.theme.palette.menu.background};
+    background-color: ${p => p.theme.palette.dark};
 `;
 
 export const NavigationBottomOutside = styled.View<{ bottomPadding: number }>`
@@ -49,15 +32,14 @@ export const NavigationBottomOutside = styled.View<{ bottomPadding: number }>`
     bottom: 0;
     width: 100%;
     height: ${p => p.bottomPadding}px;
-    background-color: ${p => p.theme.palette.menu.background};
+    background-color: ${p => p.theme.palette.dark};
 `;
 
-export const NavigationWrapper = styled(Animated.View)`
-    position: absolute;
+export const NavigationWrapper = styled.SafeAreaView`
     width: 100%;
-    bottom: 0;
     flex-direction: row;
     justify-content: center;
+    background-color: #212227;
 `;
 
 export const NavigationItem = styled.TouchableOpacity`
@@ -66,7 +48,7 @@ export const NavigationItem = styled.TouchableOpacity`
     justify-content: space-between;
     display: flex;
     align-items: center;
-    flex-basis: 25%;
+    flex-basis: 20%;
 `;
 
 export const NavigationItems = styled.View`

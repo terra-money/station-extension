@@ -23,7 +23,7 @@ const Selector = ({ onPress, title, selectedText = '', Icon }: SelectorProps) =>
             )}
             <Text.Title6Bold>{title}</Text.Title6Bold>
             <S.RightSide>
-                <Text.Label color={theme.palette.text.muted}>{selectedText}</Text.Label>
+                <Text.Label color={theme.palette.dark900}>{selectedText}</Text.Label>
                 <SmallRightArrowIcon />
             </S.RightSide>
         </S.Container>

@@ -20,10 +20,10 @@ const TransferDetailsComponent = ({ selectedAsset }) => {
                         uri={'https://station-assets.terra.money/img/chains/Terra.svg'}
                     />
                 </S.TransferCoinIconWrapper>
-                <Text.BodySmallBold color={theme.palette.text.muted}>terra1...v4ehqc</Text.BodySmallBold>
+                <Text.BodySmallBold color={theme.palette.dark900}>terra1...v4ehqc</Text.BodySmallBold>
                 <S.TransferDetailsValues>
                     <Text.BodySmallBold>40.00 LUNA</Text.BodySmallBold>
-                    <Text.BodySmallBold color={theme.palette.text.muted}>$36.28</Text.BodySmallBold>
+                    <Text.BodySmallBold color={theme.palette.dark900}>$36.28</Text.BodySmallBold>
                 </S.TransferDetailsValues>
             </S.TransferDetails>
 
@@ -35,10 +35,10 @@ const TransferDetailsComponent = ({ selectedAsset }) => {
                         uri={'https://station-assets.terra.money/img/chains/Osmosis.svg'}
                     />
                 </S.TransferCoinIconWrapper>
-                <Text.BodySmallBold color={theme.palette.text.muted}>osmo1s...6j7plq</Text.BodySmallBold>
+                <Text.BodySmallBold color={theme.palette.dark900}>osmo1s...6j7plq</Text.BodySmallBold>
                 <S.TransferDetailsValues>
                     <Text.BodySmallBold>40.00 LUNA</Text.BodySmallBold>
-                    <Text.BodySmallBold color={theme.palette.text.muted}>$36.28</Text.BodySmallBold>
+                    <Text.BodySmallBold color={theme.palette.dark900}>$36.28</Text.BodySmallBold>
                 </S.TransferDetailsValues>
             </S.TransferDetails>
             <S.TransferIconWrapper>

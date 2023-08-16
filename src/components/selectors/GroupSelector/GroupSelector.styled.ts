@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 export const Container = styled.View`
     width: 100%;
     background-color: ${p => p.theme.palette.background.card};
-    border: 1px solid ${p => p.theme.palette.border.card};
+    border: 1px solid ${p => p.theme.palette.dark600};
     border-radius: 8px;
     overflow: hidden;
 `;
@@ -16,7 +16,7 @@ export const Element = styled.TouchableOpacity<{ isFirst?: boolean }>`
     align-items: center;
     padding: 0px 18px;
     border-top-width: ${p => (p.isFirst ? 0 : 1)}px;
-    border-top-color: ${p => p.theme.palette.border.card};
+    border-top-color: ${p => p.theme.palette.dark600};
 `;
 
 export const ElementIndicator = styled.View<{ selected: boolean }>`
@@ -26,7 +26,7 @@ export const ElementIndicator = styled.View<{ selected: boolean }>`
     height: 16px;
     width: 16px;
     border-radius: 8px;
-    border: 1px solid ${p => (p.selected ? p.theme.palette.text.default : p.theme.palette.text.muted)};
+    border: 1px solid ${p => (p.selected ? p.theme.palette.white : p.theme.palette.dark900)};
     margin-left: auto;
 `;
 
@@ -34,7 +34,7 @@ export const ElementIndicatorCircle = styled.View`
     width: 8px;
     height: 8px;
     border-radius: 4px;
-    background-color: ${p => p.theme.palette.text.default};
+    background-color: ${p => p.theme.palette.white};
 `;
 
 export const NameTouchableWrapper = styled.TouchableOpacity`

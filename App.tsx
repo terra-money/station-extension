@@ -35,7 +35,7 @@ function Root(): JSX.Element {
                 </InitNetworks>
             </InitQueryClient>
 
-            <StatusBar barStyle={theme.barStyle} backgroundColor={theme.palette.background.default} />
+            <StatusBar barStyle={theme.barStyle} backgroundColor={theme.palette.primary} />
         </ThemeProvider>
     );
 }

@@ -9,10 +9,10 @@ const Warning = ({ text }: { text: string }) => {
     return (
         <S.Container>
             <S.IconContainer>
-                <WarningIcon fill={theme.palette.extra.warning} />
+                <WarningIcon fill={theme.palette.warning} />
             </S.IconContainer>
             <S.TextContainer>
-                <Text.BodySmall color={theme.palette.extra.warning}>{text}</Text.BodySmall>
+                <Text.BodySmall color={theme.palette.warning}>{text}</Text.BodySmall>
             </S.TextContainer>
         </S.Container>
     );

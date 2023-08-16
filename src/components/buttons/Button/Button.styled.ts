@@ -24,7 +24,7 @@ export const RectangleContainer = styled.TouchableOpacity<RectangleContainerProp
     justify-content: center;
     align-items: center;
     background-color: ${p =>
-        p.active ? p.theme.palette.button.primary.background : p.theme.palette.button.default.background};
+        p.active ? p.theme.palette.primary : p.theme.palette.dark700};
     padding: 0px 10px;
 `;
 
@@ -37,7 +37,7 @@ export const CircleContainer = styled.TouchableOpacity<CircleContainerProps>`
     justify-content: center;
     align-items: center;
     background-color: ${p =>
-        p.active ? p.theme.palette.button.primary.background : p.theme.palette.button.default.background};
+        p.active ? p.theme.palette.primary : p.theme.palette.dark700};
 `;
 
 export const IconContainer = styled.View`

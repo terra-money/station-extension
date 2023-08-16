@@ -7,7 +7,7 @@ interface GenericText {
 
 const GenericText = css<GenericText>`
     font-family: 'Gotham-Book';
-    color: ${p => p.color || p.theme.palette.text.default};
+    color: ${p => p.color || p.theme.palette.white};
 `;
 
 const Display1 = styled.Text`

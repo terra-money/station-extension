@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
-import { ArrowDownIcon } from 'icons';
+import { SwapIcon } from 'icons';
 
 import * as S from './styles';
 
@@ -29,7 +29,7 @@ const Button = ({ onExpand, expanded }: ButtonProps) => {
     return (
         <S.ExpandButton onPress={onExpand} activeOpacity={0.5}>
             <Animated.View style={[animatedStyles]}>
-                <ArrowDownIcon />
+                <SwapIcon />
             </Animated.View>
         </S.ExpandButton>
     );

@@ -31,7 +31,7 @@ export const CreatedWalletContainer = styled.View`
 export const WalletInfoContainer = styled.View`
     margin-top: 24px;
     padding: 20px;
-    background-color: ${p => p.theme.palette.background.muted};
+    background-color: ${p => p.theme.palette.dark};
     border-radius: 8px;
     gap: 8px;
 `;

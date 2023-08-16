@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 export const Container = styled.View`
     padding: 15px 10px;
     flex: 1;
-    background-color: ${p => p.theme.palette.background.default};
+    background-color: ${p => p.theme.palette.dark200};
 `;
 
 export const AssetsHeader = styled.View`
@@ -29,7 +29,7 @@ export const IconContainer = styled.View`
     height: 48px;
     width: 48px;
     border-radius: 24px;
-    background-color: ${p => p.theme.palette.background.muted};
+    background-color: ${p => p.theme.palette.dark};
 `;
 
 export const AssetInfo = styled.View`

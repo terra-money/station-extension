@@ -2,7 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 export type AppStackParamList = {
     Wallet: undefined;
-    Swap: undefined;
+    Activity: undefined;
     Staking: undefined;
     Governance: undefined;
     History: undefined;

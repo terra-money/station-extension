@@ -12,7 +12,7 @@ const WalletManagementHeaderComponent = ({ wallet, header }) => {
         <S.HeaderContainer>
             <Text.Title4>{header}</Text.Title4>
             <S.WalletAddressContainer>
-                <Text.Label numberOfLines={1} color={theme.palette.text.muted}>
+                <Text.Label numberOfLines={1} color={theme.palette.dark900}>
                     {address}
                 </Text.Label>
             </S.WalletAddressContainer>

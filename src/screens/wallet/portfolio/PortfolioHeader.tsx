@@ -2,7 +2,7 @@ import React from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { currentWalletState, openedSheetState } from '../../../state';
 import { CircleButton, Text } from 'components';
-import { PlusIcon, PortfolioReceiveIcon, PortfolioSendIcon } from 'icons';
+import { PlusIcon, PortfolioReceiveIcon, PortfolioSendIcon, SwapIcon } from 'icons';
 
 import * as S from './PortfolioHeader.styled';
 import { useTheme } from 'styled-components';
@@ -29,26 +29,32 @@ const PortfolioHeaderComponent = () => {
         <>
             <S.BorderLine />
             <S.Container>
-                <Text.Title6 color={theme.palette.text.muted}>Portfolio value</Text.Title6>
+                <Text.Title6 color={theme.palette.dark900}>Portfolio</Text.Title6>
                 <Text.Title3>{wallet ? `$${coinsValue.toFixed(2)}` : '--'}</Text.Title3>
                 <S.ActionsContainer>
                     <S.ActionContainer>
-                        <CircleButton onPress={() => null} active>
-                            <PlusIcon />
+                        <CircleButton onPress={() => setOpenedSheet('send')} active>
+                            <PortfolioSendIcon />
                         </CircleButton>
-                        <Text.Body color={theme.palette.button.primary.text}>Buy</Text.Body>
+                        <Text.Body color={theme.palette.white}>Send</Text.Body>
                     </S.ActionContainer>
                     <S.ActionContainer>
                         <CircleButton onPress={() => setOpenedSheet('send')}>
-                            <PortfolioSendIcon />
+                            <SwapIcon />
                         </CircleButton>
-                        <Text.Body color={theme.palette.button.primary.text}>Send</Text.Body>
+                        <Text.Body color={theme.palette.white}>Swap</Text.Body>
                     </S.ActionContainer>
                     <S.ActionContainer>
                         <CircleButton onPress={() => setOpenedSheet('receive')}>
                             <PortfolioReceiveIcon />
                         </CircleButton>
-                        <Text.Body color={theme.palette.button.primary.text}>Receive</Text.Body>
+                        <Text.Body color={theme.palette.white}>Receive</Text.Body>
+                    </S.ActionContainer>
+                    <S.ActionContainer>
+                        <CircleButton onPress={() => null}>
+                            <PlusIcon />
+                        </CircleButton>
+                        <Text.Body color={theme.palette.white}>Buy</Text.Body>
                     </S.ActionContainer>
                 </S.ActionsContainer>
             </S.Container>

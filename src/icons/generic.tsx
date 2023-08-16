@@ -79,15 +79,14 @@ export const WarningIcon = (props: SvgProps) => (
 );
 
 export const PlusIcon = (props: SvgProps) => (
-    <Svg width={24} height={24} fill="none" {...props}>
+    <Svg width={16} height={16} fill="none" {...props}>
         <Path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M5.5 12H19.5M12.5 19V5"
-            stroke={props.fill || '#E8E8E8'}
-            strokeWidth="2px"
-            strokeLinejoin="round"
-            strokeLinecap="round"
+            d="M6.5 1.5C6.5 0.671573 7.17157 0 8 0C8.82843 0 9.5 0.671573 9.5 1.5V14.5C9.5 15.3284 8.82843 16 8 16C7.17157 16 6.5 15.3284 6.5 14.5V1.5Z"
+            fill="white"
+        />
+        <Path
+            d="M14.5 6.5C15.3284 6.5 16 7.17157 16 8C16 8.82843 15.3284 9.5 14.5 9.5L1.5 9.5C0.671573 9.5 -3.62117e-08 8.82843 0 8C3.62117e-08 7.17157 0.671573 6.5 1.5 6.5L14.5 6.5Z"
+            fill="white"
         />
     </Svg>
 );

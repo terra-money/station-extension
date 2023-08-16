@@ -30,7 +30,7 @@ export const IconContainer = styled.View`
     height: 34px;
     width: 34px;
     border-radius: 17px;
-    background-color: ${p => p.theme.palette.background.muted};
+    background-color: ${p => p.theme.palette.dark};
 `;
 
 export const QRCodeScreenContainer = styled.View`

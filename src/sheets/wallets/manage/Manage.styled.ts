@@ -1,7 +1,7 @@
 import styled from 'styled-components/native';
 
 export const Container = styled.View`
-    background-color: ${p => p.theme.palette.background.cardMuted};
+    background-color: ${p => p.theme.palette.dark};
     flex: 1;
     align-items: center;
 `;

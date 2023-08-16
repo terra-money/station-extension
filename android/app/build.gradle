@@ -95,11 +95,12 @@ android {
 
     namespace "com.station"
     defaultConfig {
-        applicationId "com.station"
+        applicationId "com.station.beta"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        missingDimensionStrategy 'react-native-camera', 'general'
     }
 
     splits {

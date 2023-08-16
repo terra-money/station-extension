@@ -32,7 +32,7 @@ export const TransferIconContainer = styled.View`
     background-color: ${p => p.theme.palette.background.card};
     align-items: center;
 
-    border: 4px solid ${p => p.theme.palette.background.cardMuted};
+    border: 4px solid ${p => p.theme.palette.dark};
 `;
 
 export const TransferIconWrapper = styled.View`
@@ -53,7 +53,7 @@ export const TransferCoinIconWrapper = styled.View`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: ${p => p.theme.palette.background.cardMuted};
+    background-color: ${p => p.theme.palette.dark};
 `;
 
 export const TransactionFeesContainer = styled.View`

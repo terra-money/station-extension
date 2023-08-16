@@ -19,13 +19,13 @@ const CheckboxComponent = ({ isChecked, onPress, text = '' }: CheckboxComponentP
                 disableBuiltInState
                 textComponent={
                     <S.TextContainer>
-                        <Text.BodySmall color={theme.palette.text.muted}>{text}</Text.BodySmall>
+                        <Text.BodySmall color={theme.palette.light100}>{text}</Text.BodySmall>
                     </S.TextContainer>
                 }
                 size={17}
                 onPress={onPress}
                 isChecked={isChecked}
-                fillColor={theme.palette.text.muted}
+                fillColor={theme.palette.light100}
             />
         </S.Container>
     );

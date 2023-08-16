@@ -1,6 +1,7 @@
 import React from 'react';
 import { SvgProps } from 'react-native-svg';
 import {
+    ActivityNavigationIcon,
     ArrowDownIcon,
     GovNavigationIcon,
     HistoryNavigationIcon,
@@ -17,7 +18,7 @@ interface NavigationIconProps {
 
 const icons = {
     Wallet: (props: SvgProps) => <WalletNavigationIcon {...props} />,
-    Swap: (props: SvgProps) => <SwapNavigationIcon {...props} />,
+    Activity: (props: SvgProps) => <ActivityNavigationIcon {...props} />,
     Staking: (props: SvgProps) => <StakingNavigationIcon {...props} />,
     Governance: (props: SvgProps) => <GovNavigationIcon {...props} />,
     History: (props: SvgProps) => <HistoryNavigationIcon {...props} />,

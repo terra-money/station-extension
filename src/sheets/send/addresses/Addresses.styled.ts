@@ -4,7 +4,7 @@ export const AddressContainer = styled.TouchableOpacity`
     width: 100%;
     display: flex;
     flex-direction: row;
-    border: 1px solid ${p => p.theme.palette.border.card};
+    border: 1px solid ${p => p.theme.palette.dark600};
     border-radius: 8px;
     margin-bottom: 8px;
     height: 96px;
@@ -41,7 +41,7 @@ export const VerticalLine = styled.View`
     height: 100%;
     width: 1px;
     margin-left: auto;
-    background-color: ${p => p.theme.palette.border.card};
+    background-color: ${p => p.theme.palette.dark600};
 `;
 
 export const EmptyAddressesListContainer = styled.View`

@@ -4,7 +4,7 @@ import { BottomNavigation, DrawerStackNavigation } from '../routes';
 
 const Container = styled.View`
     flex: 1;
-    background: ${p => p.theme.palette.background.default};
+    background: ${p => p.theme.palette.dark200};
 `;
 
 const MainLayout = () => {

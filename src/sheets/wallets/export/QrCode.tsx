@@ -8,7 +8,7 @@ const QRCodeWalletExport = ({ encoded }) => {
         <QRCodeReact
             value={`terrastation://wallet_recover/?payload=${encoded}`}
             size={210}
-            fgColor={theme.palette.text.default}
+            fgColor={theme.palette.white}
             bgColor={theme.palette.background.card}
         />
     );

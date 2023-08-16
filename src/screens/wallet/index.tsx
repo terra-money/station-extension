@@ -6,7 +6,7 @@ import { RoutesStackNavigator } from './routes';
 
 const Container = styled.View`
     flex: 1;
-    background-color: ${p => p.theme.palette.background.default};
+    background-color: ${p => p.theme.palette.dark200};
 `;
 
 const Screen = (): JSX.Element => {

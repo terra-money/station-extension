@@ -47,7 +47,7 @@ const RectangleButton = ({
                 </S.IconContainer>
             )}
             {loading && <ActivityIndicator />}
-            {text && <Text.Label color={theme.palette.button.default.text}>{text}</Text.Label>}
+            {text && <Text.Label color={theme.palette.white}>{text}</Text.Label>}
         </S.RectangleContainer>
     );
 };

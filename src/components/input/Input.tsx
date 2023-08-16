@@ -46,15 +46,15 @@ const InputComponent = ({
     return (
         <S.Container marginTop={marginTop}>
             <S.InputHeaderContainer>
-                {label && <Text.BodySmallBold color={theme.palette.text.muted}>{label}</Text.BodySmallBold>}
+                {label && <Text.BodySmallBold color={theme.palette.light100}>{label}</Text.BodySmallBold>}
                 {actionButtonName && (
                     <S.ActionButtonContainer onPress={actionButtonOnClick}>
-                        <Text.BodySmallBold color={theme.palette.text.info}>{actionButtonName}</Text.BodySmallBold>
+                        <Text.BodySmallBold color={theme.palette.primary}>{actionButtonName}</Text.BodySmallBold>
                     </S.ActionButtonContainer>
                 )}
             </S.InputHeaderContainer>
             <S.InputContainer
-                placeholderTextColor={theme.palette.text.muted}
+                placeholderTextColor={theme.palette.dark900}
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 value={field.value}
@@ -63,7 +63,7 @@ const InputComponent = ({
             />
             {(typeof errors[name]?.message === 'string' || customError) && (
                 <S.ErrorMessageContainer>
-                    <Text.BodySmallBold color={theme.palette.extra.danger}>
+                    <Text.BodySmallBold color={theme.palette.error}>
                         {customError || (errors[name]?.message as string)}
                     </Text.BodySmallBold>
                 </S.ErrorMessageContainer>

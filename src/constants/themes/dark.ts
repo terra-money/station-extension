@@ -1,17 +1,5 @@
 import { DefaultTheme } from 'styled-components';
 
-export const defaultExtras: DefaultTheme['palette']['extra'] = {
-    buttonDanger: '#FF5762',
-    info: '#3774F6',
-    infoLight: '#4572ED1A',
-    warning: '#FC9803',
-    warningLight: '#FC98031A',
-    success: '#1DAA8E',
-    successLight: '#1DAA8E1A',
-    danger: '#EE4444',
-    dangerLight: '#EE44441A',
-};
-
 export const darkTheme: DefaultTheme = {
     name: 'Dark',
     barStyle: 'light-content',
@@ -19,37 +7,26 @@ export const darkTheme: DefaultTheme = {
         width: '1px',
     },
     palette: {
-        extra: defaultExtras,
-        button: {
-            primary: {
-                background: '#4572ED',
-                text: '#F3F3F3',
-            },
-            default: {
-                background: '#35353B',
-                text: '#DEDEDE',
-            },
-        },
-        menu: {
-            background: '#29292E',
-            border: '#35353B',
-            text: '#E8E8E8',
-        },
-        text: {
-            info: '#4572ED',
-            default: '#F2F2F2',
-            muted: '#8C8C8C',
-        },
-        background: {
-            default: '#1F1F1F',
-            muted: '#35353B',
-            card: '#29292E',
-            cardMuted: '#242428',
-            input: '#29292E',
-        },
-        border: {
-            card: '#35353B',
-            input: '#4D4D4D',
-        },
+        primary: '#075CEE',
+        primary300: '#064DC6',
+        primary600: '#1166F8',
+        primary900: '#88B2FB',
+        dark: '#212227',
+        dark100: '#131316',
+        dark200: '#17181C',
+        dark300: '#1C1D21',
+        dark600: '#26272C',
+        dark700: '#2A2B32',
+        dark900: '#5E616E',
+        light: '#C8C9D0',
+        light100: '#8B8E9C',
+        light300: '#B2B4BD',
+        white: '#ffffff',
+        success: '#1DAA8E',
+        success100: '#1A2522',
+        warning: '#EE9D38',
+        warning100: '#2B2316',
+        error: '#DC524C',
+        error100: '#291C1C',
     },
 };

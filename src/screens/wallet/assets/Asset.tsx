@@ -21,7 +21,7 @@ interface AssetComponent {
 const Trend = ({ trend }: { trend: number }) => {
     const theme = useTheme();
     const positive = trend >= 0;
-    const color = positive ? theme.palette.extra.info : theme.palette.extra.danger;
+    const color = positive ? theme.palette.success : theme.palette.error;
 
     const Icon = positive ? TrendingUpIcon : TrendingDownIcon;
 
@@ -56,7 +56,7 @@ const AssetComponent = ({ icon, symbol, change, balance, amount, price, denom = 
             </S.AssetInfo>
             <S.AssetValue>
                 <Text.BodySmallBold>{`$ ${assetPrice ? assetPrice.toFixed(2) : 0}`}</Text.BodySmallBold>
-                <Text.BodySmallBold color={theme.palette.text.muted}>{`${
+                <Text.BodySmallBold color={theme.palette.dark900}>{`${
                     balance ? balance / 1000000 : 0
                 } ${symbol}`}</Text.BodySmallBold>
             </S.AssetValue>
