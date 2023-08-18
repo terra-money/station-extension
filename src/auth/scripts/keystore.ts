@@ -52,6 +52,7 @@ type Key =
   | {
       "330": string
       "118"?: string
+      "60"?: string
     }
   | { seed: string; index: number; legacy: boolean }
 
@@ -100,20 +101,20 @@ export const testPassword = (params: Params) => {
 
 type AddWalletParams =
   | {
-      words: { "330": string; "118"?: string }
+      words: { "330": string; "118"?: string; "60"?: string }
       password: string
       seed: Buffer
       name: string
       index: number
       legacy: boolean
-      pubkey: { "330": string; "118"?: string }
+      pubkey: { "330": string; "118"?: string; "60"?: string }
     }
   | {
       words: { "330": string; "118"?: string }
       password: string
       key: { "330": Buffer }
       name: string
-      pubkey: { "330": string; "118"?: string }
+      pubkey?: { "330": string; "118"?: string }
     }
   | LedgerWallet
   | MultisigWallet
@@ -204,6 +205,7 @@ interface StorePubKeyParams {
   pubkey: {
     "330": string
     "118"?: string
+    "60"?: string
   }
 }
 
@@ -231,6 +233,33 @@ export const storePubKey = (params: StorePubKeyParams) => {
       } else {
         return { ...wallet, pubkey }
       }
+    }
+    return wallet
+  })
+
+  storeWallets(next)
+}
+
+interface UpdateStoredWalletParams {
+  name: string
+  words: {
+    "330": string
+    "118"?: string
+    "60"?: string
+  }
+  pubkey?: {
+    "330": string
+    "118"?: string
+    "60"?: string
+  }
+}
+
+export const updateStoredWallet = (params: UpdateStoredWalletParams) => {
+  const { name, words, pubkey } = params
+  const wallets = getStoredWallets()
+  const next = wallets.map((wallet) => {
+    if (wallet.name === name) {
+      return { ...wallet, pubkey, words }
     }
     return wallet
   })

@@ -32,6 +32,7 @@ import is from "auth/scripts/is"
 import { useNetworks } from "app/InitNetworks"
 import { useTheme } from "data/settings/Theme"
 import { useReplaceKeplr } from "utils/localStorage"
+import EnableCoinType from "app/sections/EnableCoinType"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -93,6 +94,7 @@ const App = () => {
             <ManageWallets />
             <Flex gap={5}>
               <LatestTx />
+              <EnableCoinType />
               <NetworkHeader />
               <NetworkStatus />
               <Preferences />

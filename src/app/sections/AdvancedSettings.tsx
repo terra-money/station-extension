@@ -1,4 +1,7 @@
-import { useDevMode, useReplaceKeplr } from "utils/localStorage"
+import {
+  useDevMode,
+  //useReplaceKeplr
+} from "utils/localStorage"
 import SettingsSelectorToggle from "components/layout/SettingsSelectorToggle"
 import { FlexColumn, GasAdjustment } from "components/layout"
 import { TooltipIcon } from "components/display"
