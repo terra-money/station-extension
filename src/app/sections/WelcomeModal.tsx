@@ -32,7 +32,7 @@ const accordions = [
       [
         " You can find a guide ",
         <ExternalLink
-          href="https://docs.terra.money/learn/station/migration/"
+          href="https://docs-terra.pages.dev/learn/station/migration/"
           target="_blank"
           rel="noopener noreferrer"
         >
