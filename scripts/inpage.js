@@ -11,7 +11,7 @@ window.isStationExtensionAvailable = true
 const STATION_INFO = {
   name: "Station Wallet",
   identifier: "station",
-  icon: "https://assets.terra.money/icon/station-extension/icon.png",
+  icon: "https://assets.terra.dev/icon/station-extension/icon.png",
 }
 
 if (

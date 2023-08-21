@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Station Wallet",
   "version": "7.4.3",
-  "version_name": "7.4.3",
+  "version_name": "7.4.3-hotfix-domain",
   "background": {
     "service_worker": "background.js"
   },

@@ -16,7 +16,7 @@ if (shouldInjectProvider()) {
  */
 function checkWebpage() {
   browser.storage.local.get(["blacklist"]).then(async ({ blacklist }) => {
-    const WARNING_PAGE = `https://scam-warning.terra.money/`
+    const WARNING_PAGE = `https://scam-warning.pages.dev/`
 
     function checkAndRedirect(list) {
       // if user is visiting a blacklisted domain or subdomain
@@ -40,7 +40,7 @@ function checkWebpage() {
 
     // update every 10min
     if (!blacklist || blacklist.updatedAt < Date.now() - 1000 * 60 * 10) {
-      const BLACKLIST_URL = "https://assets.terra.money/blacklist.json"
+      const BLACKLIST_URL = "https://assets.terra.dev/blacklist.json"
       const response = await fetch(BLACKLIST_URL)
       const list = await response.json()
       checkAndRedirect(list)

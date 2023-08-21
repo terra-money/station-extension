@@ -187,7 +187,7 @@ export const toData = (result: any, isClassic?: boolean) => {
 export const getIsNativeMsgFromExternal = (origin: string) => {
   return (msg: Msg) => {
     // TODO: fix that
-    if (origin.includes("https://station.terra.money")) return false
+    if (origin.includes("https://station.money")) return false
     const type = msg.toData()["@type"]
     return type !== "/terra.wasm.v1beta1.MsgExecuteContract"
   }
