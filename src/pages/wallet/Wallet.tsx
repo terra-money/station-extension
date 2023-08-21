@@ -45,7 +45,7 @@ const Wallet = () => {
         className={styles.back}
         onClick={() => setRoute(route.previousPage)}
       >
-        <BackIcon width={18} height={18} />
+        <BackIcon width={18} height={18} data-testid="BackIcon" />
       </button>
     )
   }
