@@ -5,18 +5,17 @@ export const LAZY_LIMIT = 999
 export const BRIDGE = "https://walletconnect.terra.dev"
 
 /* api */
-export const ASSETS = "https://assets.terra.money"
-// TODO: revert back to station-assets.pages.dev after deployment
-export const STATION_ASSETS = "https://injective.station-assets.pages.dev"
+export const ASSETS = "https://assets.terra.dev"
+export const STATION_ASSETS = "https://station-assets.terra.dev"
 export const OBSERVER = "wss://observer.terra.dev"
 
 /* website */
-export const STATION = "https://station.terra.money"
+export const STATION = "https://station.money"
 export const EXTENSION =
   "https://chrome.google.com/webstore/detail/aiifbnbfobpmeekipheeijimdpnlpgpp"
 export const DOCUMENTATION =
-  "https://docs.terra.money/learn/terra-station/Download/terra-station-desktop.html"
-export const SETUP = "https://setup-station.terra.money/"
+  "https://docs-terra.pages.dev/learn/terra-station/Download/terra-station-desktop.html"
+export const SETUP = "https://setup.station.money/"
 
 /* website: fiat ramp */
 export const FIAT_RAMP = "https://app.kado.money/"
