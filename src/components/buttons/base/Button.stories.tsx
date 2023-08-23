@@ -62,7 +62,7 @@ const meta: Meta<ButtonConfig> = {
     (Story: StoryFn) => (
       <div className="story__decorator" style={{
         padding: '48px 24px',
-        backgroundvariant: 'var(--token-dark-200)',
+        backgroundColor: 'var(--token-dark-200)',
         margin: '-20px -10px',
         borderRadius: '8px',
         fontSize: 'var(--token-font-size-small)'
