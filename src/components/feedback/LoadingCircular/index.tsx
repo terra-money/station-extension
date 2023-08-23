@@ -1,7 +1,7 @@
 import { CircularProgress, CircularProgressProps } from '@mui/material';
 
 const LoadingCircular = (props: CircularProgressProps) => (
-  <CircularProgress variant='inherit' {...props} />
+  <CircularProgress color='inherit' {...props} />
 );
 
 export default LoadingCircular;
