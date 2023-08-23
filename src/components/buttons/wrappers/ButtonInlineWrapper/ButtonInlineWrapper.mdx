@@ -39,17 +39,18 @@ import {
 <div className="story_with_source_below">
   <Canvas of={ButtonInlineWrapperStories.CancelWithSubmit} />
   <Source
-    code={`<ButtonInlineWrapper buttons={[
-    <SubmitButton
-      color='secondary'
-      label='Cancel'
-    />,
-    <SubmitButton
-      color='primary'
-      label='Submit'
-    />
-  ]}
-/> `}
+    code={`<ButtonInlineWrapper 
+      buttons={[
+        <SubmitButton
+          variant='secondary'
+          label='Cancel'
+        />,
+        <SubmitButton
+          variant='primary'
+          label='Submit'
+        />
+  ]} /> 
+`}
   />
 </div>
 
@@ -61,14 +62,14 @@ import {
     code={`<ButtonInlineWrapper
     buttons={[
       <SubmitButton
-        color='secondary'
+        variant='secondary'
         label='Cancel'
       />,
     <SubmitButton
-        color='destructive'
+        variant='warning'
         label='Delete'
         icon={<TrashCan fill='var(--token-error-500)' stroke='var(--token-error-500)' />}
-        />
+      />
     ]}
     />
     `}
@@ -83,11 +84,11 @@ import {
     code={`<ButtonInlineWrapper
     buttons={[
       <SubmitButton
-        color='secondary'
+        variant='secondary'
         label='Claim Rewards'
       />,
         <SubmitButton
-            color='primary'
+            variant='primary'
             label='Stake'
             icon={<Stake fill='var(--token-light-white)' />}
             />

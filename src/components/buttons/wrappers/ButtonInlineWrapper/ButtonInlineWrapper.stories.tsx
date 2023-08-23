@@ -59,7 +59,7 @@ export const CancelWithDelete: StoryObj<ButtonInlineWrapperProps> = {
     buttons={[
       <SubmitButton variant='secondary' label='Cancel' />, 
       <SubmitButton
-          variant='destructive'
+          variant='warning'
           label='Delete'
           icon={<TrashCan fill='var(--token-error-500)' stroke='var(--token-error-500)' />}
           />

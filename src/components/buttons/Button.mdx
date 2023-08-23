@@ -39,7 +39,7 @@ import { Button } from "@terra-money/station-ui/components/buttons";
 ##### Used as the base for most buttons.
 
 - **`variant`** - <RequiredText /> - Sets the variant of the button.
-  - Options are `primary`, `secondary`, `destructive`, `dashed`, `white-filled`, `outlined`.
+  - Options are `primary`, `secondary`, `warning`, `dashed`, `white-filled`, `outlined`.
 - **`label`** - <RequiredText /> - Sets the label of the button.
 - **`loading`** - Sets the button to a loading state (replaces icon while loading).
 - **`block`** - Sets the button to take up the full width of its container.
@@ -80,12 +80,12 @@ import { Button } from "@terra-money/station-ui/components/buttons";
     </DocsLink>
   </div>
   <div className="story__wrapper">
-    <DocsLink linkToRoute="Components/Buttons/Base" linkToID="destructive">
-      <h6>Destructive</h6>
+    <DocsLink linkToRoute="Components/Buttons/Base" linkToID="warning">
+      <h6>Warning</h6>
       <p>
         See More <RightArrow />
       </p>
-      <Story of={ButtonStories.Destructive} />
+      <Story of={ButtonStories.Warning} />
     </DocsLink>
   </div>
   <div className="story__wrapper">
@@ -178,7 +178,7 @@ import {
 ##### One button for submitting a form or directing the user to a specific page.
 
 - **`variant`** - <RequiredText /> - Sets the variant of the button.
-  - Options are `primary`, `secondary`, `destructive`.
+  - Options are `primary`, `secondary`, `warning`.
 - **`label`** - <RequiredText /> - Sets the label of the button.
 - **`loading`** - Sets the button to a loading state (replaces icon while loading).
 - **`icon`** - Appends an icon to the button. In front of the label.

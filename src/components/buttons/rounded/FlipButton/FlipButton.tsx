@@ -6,7 +6,7 @@ const FlipButton = () => {
   return (
     <RoundedButton
       className={styles.flip__button}
-      color='secondary'
+      variant='secondary'
       size='small'
       icon={<SwapArrows fill='var(--token-light-100)' />}
     />

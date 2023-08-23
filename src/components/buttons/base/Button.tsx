@@ -7,8 +7,8 @@ const cx = classNames.bind(styles);
 
 export interface ButtonConfig {
   variant:
-    'primary' | 'secondary' | 'destructive' | 'dashed' | 'white-filled' | 'outlined'
-  label: string
+    'primary' | 'secondary' | 'warning' | 'dashed' | 'white-filled' | 'outlined'
+  label?: string
   block?: boolean
   type?: 'button' | 'submit' | 'reset'
   loading?: boolean

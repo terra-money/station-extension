@@ -9,7 +9,7 @@ const meta: Meta<ButtonConfig> = {
   component: Button,
   argTypes: {
     variant: {
-      options: ['primary', 'secondary', 'destructive', 'dashed', 'white-filled', 'outlined'],
+      options: ['primary', 'secondary', 'warning', 'dashed', 'white-filled', 'outlined'],
       control: {
         type: 'select',
       },
@@ -171,10 +171,10 @@ export const Secondary: StoryObj<ButtonConfig> = {
   },
 };
 
-export const Destructive: StoryObj<ButtonConfig> = {
+export const Warning: StoryObj<ButtonConfig> = {
   render: () =>
     <Button
-      variant='destructive'
+      variant='warning'
       label='Button'
       icon={<TrashCan fill='var(--token-error-500)' stroke='var(--token-error-500)' />}
     />,

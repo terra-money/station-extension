@@ -8,7 +8,7 @@ const meta: Meta<SubmitButtonProps> = {
   component: SubmitButton,
   argTypes: {
     variant: {
-      options: ['primary', 'secondary', 'destructive'],
+      options: ['primary', 'secondary', 'warning'],
       control: {
         type: 'select',
       },
@@ -103,7 +103,7 @@ export const Playground: StoryObj<StoryButtonConfig> = {
     variant: {
       control: {
         type: 'select',
-        options: ['primary', 'secondary', 'destructive'],
+        options: ['primary', 'secondary', 'warning'],
       },
     },
     loading: { control: 'boolean' },

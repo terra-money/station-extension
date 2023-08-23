@@ -28,7 +28,7 @@ import { Button } from "@terra-money/station-ui/components/buttons";
 ##### Used as the base for most buttons.
 
 - **`variant`** - <span style={{ color: "var(--token-error-500)", fontWeight: "bold", fontSize: "14px" }}>_required_</span> - Sets the variant of the button.
-  - Options are `primary`, `secondary`, `destructive`, `dashed`, `white-filled`, `outlined`.
+  - Options are `primary`, `secondary`, `warning`, `dashed`, `white-filled`, `outlined`.
 - **`label`** - <span style={{ color: "var(--token-error-500)", fontWeight: "bold", fontSize: "14px" }}>_required_</span> - Sets the label of the button.
 - **`loading`** - Sets the button to a loading state (replaces icon while loading).
 - **`block`** - Sets the button to take up the full width of its container.
@@ -76,13 +76,13 @@ The `Secondary` button is used for secondary actions on a page. The label might 
   <Source code={`<Button variant='secondary' label='Secondary' />`} />
 </div>
 
-## Destructive
+## Warning
 
-The `Destructive` button is used for destructive purposes such as Deleting accounts.
+The `Warning` button is used for warning purposes such as Deleting accounts.
 
 <div className="story_with_source_below">
-  <Canvas of={ButtonStories.Destructive} />
-  <Source code={`<Button variant='destructive' label='Button' />`} />
+  <Canvas of={ButtonStories.Warning} />
+  <Source code={`<Button variant='warning' label='Button' />`} />
 </div>
 
 ## Dashed
