@@ -7,13 +7,13 @@ const meta: Meta<SingleCTAProps> = {
   title: 'Components/Buttons/CTA/Single',
   component: SingleCTA,
   argTypes: {
-    color: {
+    variant: {
       options: ['primary', 'secondary'],
       control: {
         type: 'select',
       },
       defaultValue: 'primary',
-      description: 'The color of the Button.',
+      description: 'The variant of the Button.',
       table: {
         defaultValue: { summary: '"primary"' },
         type: { summary: 'string' },
@@ -87,7 +87,7 @@ export const Playground: StoryObj<StoryButtonConfig> = {
   render: (args: StoryButtonConfig) =>
     <SingleCTAWithLoadingState {...args} />,
   args: {
-    color: 'primary',
+    variant: 'primary',
     loading: false,
     label: 'Playground',
   },
@@ -100,7 +100,7 @@ export const Playground: StoryObj<StoryButtonConfig> = {
         defaultValue: { summary: 'Playground' },
       },
     },
-    color: {
+    variant: {
       control: {
         type: 'select',
         options: ['primary', 'secondary', 'destructive'],
@@ -112,10 +112,10 @@ export const Playground: StoryObj<StoryButtonConfig> = {
 
 export const Primary: StoryObj<SingleCTAProps> = {
   render: () => (
-    <SingleCTA color='primary' label='Primary' />
+    <SingleCTA variant='primary' label='Primary' />
   ),
   argTypes: {
-    color: {
+    variant: {
       control: false,
       defaultValue: 'primary',
       table: {
@@ -130,13 +130,13 @@ export const Primary: StoryObj<SingleCTAProps> = {
 export const PrimaryWithIcon: StoryObj<SingleCTAProps> = {
   render: () => (
     <SingleCTA
-      color='primary'
+    variant='primary'
       label='Primary'
       icon={<SmallCircleCheck fill='var(--token-light-white)' />}
     />
   ),
   argTypes: {
-    color: {
+    variant: {
       control: false,
       defaultValue: 'primary',
       table: {
@@ -150,9 +150,9 @@ export const PrimaryWithIcon: StoryObj<SingleCTAProps> = {
 
 export const Secondary: StoryObj<SingleCTAProps> = {
   render: () =>
-    <SingleCTA color='secondary' label='Secondary' />,
+    <SingleCTA variant='secondary' label='Secondary' />,
   argTypes: {
-    color: {
+    variant: {
       control: false,
       defaultValue: 'secondary',
       table: {
@@ -168,7 +168,7 @@ export const Loading: StoryObj<SingleCTAProps> = {
   render: (args: StoryButtonConfig) =>
     <SingleCTA {...args} loading={true} />,
   args: {
-    color: 'primary',
+    variant: 'primary',
     label: 'Loading',
   },
   argTypes: {

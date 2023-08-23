@@ -14,7 +14,7 @@ const CheckedButton = ({ active, label, onClick }: CheckedButtonProps) => {
   return (
     <Button
       className={cx(styles.checked__button, { active })}
-      color='outline'
+      variant='outlined'
       label={label}
       onClick={onClick}
     />
