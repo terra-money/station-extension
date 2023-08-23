@@ -1,19 +1,19 @@
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 import { Button } from 'components/buttons';
-import styles from '../CTAs.module.scss';
+import styles from './SubmitButton.module.scss';
 
-export interface SingleCTAProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface SubmitButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant: 'primary' | 'secondary' | 'destructive'
   label: string
   loading?: boolean
   icon?: ReactNode
 }
 
-const SingleCTA = ({variant, label, loading, icon, ...attrs}: SingleCTAProps) => {
+const SubmitButton = ({variant, label, loading, icon, ...attrs}: SubmitButtonProps) => {
   return (
     <Button
       {...attrs}
-      className={styles.single__cta}
+      className={styles.button}
       loading={loading}
       type={attrs.type ?? 'submit'}
       variant={variant}
@@ -24,4 +24,4 @@ const SingleCTA = ({variant, label, loading, icon, ...attrs}: SingleCTAProps) =>
   );
 };
 
-export default SingleCTA;
+export default SubmitButton;

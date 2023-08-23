@@ -1,0 +1,97 @@
+import {
+  Meta,
+  Story,
+  Canvas,
+  Controls,
+  ArgTypes,
+  Description,
+  Source,
+} from "@storybook/blocks";
+import SubmitButton from "../../submit/SubmitButton/SubmitButton.tsx";
+import ButtonInlineWrapper from "./ButtonInlineWrapper.tsx";
+import * as ButtonInlineWrapperStories from "./ButtonInlineWrapper.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Buttons/Wrappers/ButtonInlineWrapper" />
+
+# Button Wrapper
+
+- **`ButtonInlineWrapper`** - Used to wrap multiple call to actions.
+
+## Import
+
+```jsx
+import {
+  SubmitButton,
+  ButtonInlineWrapper,
+} from "@terra-money/station-ui/components/buttons";
+```
+
+# ButtonInlineWrapper
+
+##### A container for multiple submit buttons.
+
+- **`buttons`** - <span style={{ color: "var(--token-error-500)", fontWeight: "bold", fontSize: "14px" }}>_required_</span> - An array of buttons to be wrapped.
+  - **Should typically be a "Cancel" or "Back" button**
+
+## Cancel With Submit Example
+
+<div className="story_with_source_below">
+  <Canvas of={ButtonInlineWrapperStories.CancelWithSubmit} />
+  <Source
+    code={`<ButtonInlineWrapper buttons={[
+    <SubmitButton
+      color='secondary'
+      label='Cancel'
+    />,
+    <SubmitButton
+      color='primary'
+      label='Submit'
+    />
+  ]}
+/> `}
+  />
+</div>
+
+## Cancel With Delete Example
+
+<div className="story_with_source_below">
+  <Canvas of={ButtonInlineWrapperStories.CancelWithDelete} />
+  <Source
+    code={`<ButtonInlineWrapper
+    buttons={[
+      <SubmitButton
+        color='secondary'
+        label='Cancel'
+      />,
+    <SubmitButton
+        color='destructive'
+        label='Delete'
+        icon={<TrashCan fill='var(--token-error-500)' stroke='var(--token-error-500)' />}
+        />
+    ]}
+    />
+    `}
+  />
+</div>
+
+## Stake Example
+
+<div className="story_with_source_below">
+  <Canvas of={ButtonInlineWrapperStories.StakeExample} />
+  <Source
+    code={`<ButtonInlineWrapper
+    buttons={[
+      <SubmitButton
+        color='secondary'
+        label='Claim Rewards'
+      />,
+        <SubmitButton
+            color='primary'
+            label='Stake'
+            icon={<Stake fill='var(--token-light-white)' />}
+            />
+    ]}
+    />`}
+  />
+</div>

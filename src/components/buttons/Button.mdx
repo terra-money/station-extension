@@ -11,8 +11,8 @@ import {
 import { RightArrow, DocsLink, RequiredText } from "../../DocsHelpers.tsx";
 import { Button } from "./";
 import * as ButtonStories from "./base/Button.stories";
-import * as CTAStories from "./CTA/Single/SingleCTA.stories.tsx";
-import * as SequentialCTAStories from "./CTA/Sequential/SequentialCTAs.stories.tsx";
+import * as CTAStories from "./CTA/Single/SubmitButton.stories.tsx";
+import * as ButtonInlineWrappertories from "./CTA/Sequential/ButtonInlineWrapper.stories.tsx";
 import * as RoundedButtonStories from "./rounded/RoundedButton/RoundedButton.stories";
 import * as FlipButtonStories from "./rounded/FlipButton/FlipButton.stories";
 import * as NavButtonStories from "./navigation/button/NavButton.stories";
@@ -31,14 +31,14 @@ These are the Base buttons accessed through `<Button />`. It is used for all act
 ## Import
 
 ```jsx
-import { Button } from "@terra-station/components/buttons";
+import { Button } from "@terra-money/station-ui/components/buttons";
 ```
 
 ## Base [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-buttons-base--docs)
 
 ##### Used as the base for most buttons.
 
-- **`color`** - <RequiredText /> - Sets the color of the button.
+- **`variant`** - <RequiredText /> - Sets the variant of the button.
   - Options are `primary`, `secondary`, `destructive`, `dashed`, `white-filled`, `outlined`.
 - **`label`** - <RequiredText /> - Sets the label of the button.
 - **`loading`** - Sets the button to a loading state (replaces icon while loading).
@@ -156,32 +156,34 @@ import { Button } from "@terra-station/components/buttons";
 <br />
 <br />
 
-# Call To Action Buttons (CTAs)
+# Submit Button(CTAs)
 
-These buttons are used for a "call to action".
-They are used to direct the user to a specific page or action.
+This button is used to direct the user to a specific page or action.
 We have 2 main types:
 
-- **`SingleCTA`** - Used for a single call to action.
-- **`SequentialCTAs`** - Used for 2 call to actions.
+- **`SubmitButton`** - Used for a single call to action.
+- **`ButtonInlineWrapper`** - Used for 2 call to actions.
 
 ## Import
 
 ```jsx
-import { SingleCTA, SequentialCTAs } from "@terra-station/components/buttons";
+import {
+  SubmitButton,
+  ButtonInlineWrapper,
+} from "@terra-money/station-ui/components/buttons";
 ```
 
-## SingleCTA [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-buttons-cta--docs#singlecta-props)
+## SubmitButton [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-buttons-submit--docs#SubmitButton-props)
 
 ##### One button for submitting a form or directing the user to a specific page.
 
-- **`color`** - <RequiredText /> - Sets the color of the button.
+- **`variant`** - <RequiredText /> - Sets the variant of the button.
   - Options are `primary`, `secondary`, `destructive`.
 - **`label`** - <RequiredText /> - Sets the label of the button.
 - **`loading`** - Sets the button to a loading state (replaces icon while loading).
 - **`icon`** - Appends an icon to the button. In front of the label.
 
-> ##### `<SingleCTA />` is a full width button.
+> ##### `<SubmitButton />` is a full width button.
 
 ## Variations
 
@@ -230,7 +232,7 @@ import { SingleCTA, SequentialCTAs } from "@terra-station/components/buttons";
 <br />
 <br />
 
-## SequentialCTAs [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-buttons-cta--docs#sequentialctas)
+## ButtonInlineWrapper [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-buttons-cta--docs#ButtonInlineWrapper)
 
 ##### A container for 2 CTA buttons.
 
@@ -248,7 +250,7 @@ import { SingleCTA, SequentialCTAs } from "@terra-station/components/buttons";
       linkToID="cancel-with-submit-example"
     >
       <h6>Cancel w/Submit</h6>
-      <Story of={SequentialCTAStories.CancelWithSubmit} />
+      <Story of={ButtonInlineWrappertories.CancelWithSubmit} />
       <p>
         See More <RightArrow />
       </p>
@@ -263,7 +265,7 @@ import { SingleCTA, SequentialCTAs } from "@terra-station/components/buttons";
       <p>
         See More <RightArrow />
       </p>
-      <Story of={SequentialCTAStories.CancelWithDelete} />
+      <Story of={ButtonInlineWrappertories.CancelWithDelete} />
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "48%" }}>
@@ -272,7 +274,7 @@ import { SingleCTA, SequentialCTAs } from "@terra-station/components/buttons";
       <p>
         See More <RightArrow />
       </p>
-      <Story of={SequentialCTAStories.StakeExample} />
+      <Story of={ButtonInlineWrappertories.StakeExample} />
     </DocsLink>
   </div>
 </div>
@@ -292,7 +294,10 @@ This is a round button.
 ## Import
 
 ```jsx
-import { RoundedButton, FlipButton } from "@terra-station/components/buttons";
+import {
+  RoundedButton,
+  FlipButton,
+} from "@terra-money/station-ui/components/buttons";
 ```
 
 ## RoundedButton [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-buttons-rounded--docs#rounded)
@@ -400,7 +405,7 @@ These are buttons that are used for navigational purposes.
 import {
   NavButton,
   RoundedActionButton,
-} from "@terra-station/components/buttons";
+} from "@terra-money/station-ui/components/buttons";
 ```
 
 ## NavButton [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-buttons-navigation--docs#navbutton-props)
@@ -480,7 +485,7 @@ This button is used for toggling a state. It is used in the `Create New Wallet` 
 ## Import
 
 ```jsx
-import { CheckedButton } from "@terra-station/components/buttons";
+import { CheckedButton } from "@terra-money/station-ui/components/buttons";
 ```
 
 ## CheckedButton Props [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow /></span>](/docs/components-buttons-checked--docs)
@@ -545,7 +550,7 @@ This is used for filtering and switching between different views.
 ## Import
 
 ```jsx
-import { Tabs } from "@terra-station/components/buttons";
+import { Tabs } from "@terra-money/station-ui/components/buttons";
 ```
 
 ## Tabs Props [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow /></span>](/docs/components-buttons-tabs--docs)
@@ -582,7 +587,7 @@ Button for validator.
 ## Import
 
 ```jsx
-import { ValidatorButton } from "@terra-station/components/buttons";
+import { ValidatorButton } from "@terra-money/station-ui/components/buttons";
 ```
 
 ## ValidatorButton Props [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow /></span>](/docs/components-buttons-validator--docs)

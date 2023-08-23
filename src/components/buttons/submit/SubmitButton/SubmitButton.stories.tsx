@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import type { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { ReactComponent as SmallCircleCheck } from 'assets/icon/SmallCircleCheck.svg';
-import SingleCTA, { SingleCTAProps } from './SingleCTA';
+import SubmitButton, { SubmitButtonProps } from './SubmitButton';
 
-const meta: Meta<SingleCTAProps> = {
-  title: 'Components/Buttons/CTA/Single',
-  component: SingleCTA,
+const meta: Meta<SubmitButtonProps> = {
+  title: 'Components/Buttons/Submit/SubmitButton',
+  component: SubmitButton,
   argTypes: {
     variant: {
-      options: ['primary', 'secondary'],
+      options: ['primary', 'secondary', 'destructive'],
       control: {
         type: 'select',
       },
@@ -62,9 +62,9 @@ const meta: Meta<SingleCTAProps> = {
 
 export default meta;
 
-type StoryButtonConfig = SingleCTAProps & { label?: string };
+type StoryButtonConfig = SubmitButtonProps & { label?: string };
 
-const SingleCTAWithLoadingState = (args: StoryButtonConfig) => {
+const SubmitButtonWithLoadingState = (args: StoryButtonConfig) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -72,7 +72,7 @@ const SingleCTAWithLoadingState = (args: StoryButtonConfig) => {
   }, [args.loading]);
 
   return (
-    <SingleCTA
+    <SubmitButton
       {...args}
       loading={loading}
       onClick={() => {
@@ -85,7 +85,7 @@ const SingleCTAWithLoadingState = (args: StoryButtonConfig) => {
 
 export const Playground: StoryObj<StoryButtonConfig> = {
   render: (args: StoryButtonConfig) =>
-    <SingleCTAWithLoadingState {...args} />,
+    <SubmitButtonWithLoadingState {...args} />,
   args: {
     variant: 'primary',
     loading: false,
@@ -110,9 +110,9 @@ export const Playground: StoryObj<StoryButtonConfig> = {
   },
 };
 
-export const Primary: StoryObj<SingleCTAProps> = {
+export const Primary: StoryObj<SubmitButtonProps> = {
   render: () => (
-    <SingleCTA variant='primary' label='Primary' />
+    <SubmitButton variant='primary' label='Primary' />
   ),
   argTypes: {
     variant: {
@@ -127,9 +127,9 @@ export const Primary: StoryObj<SingleCTAProps> = {
   },
 };
 
-export const PrimaryWithIcon: StoryObj<SingleCTAProps> = {
+export const PrimaryWithIcon: StoryObj<SubmitButtonProps> = {
   render: () => (
-    <SingleCTA
+    <SubmitButton
     variant='primary'
       label='Primary'
       icon={<SmallCircleCheck fill='var(--token-light-white)' />}
@@ -148,9 +148,9 @@ export const PrimaryWithIcon: StoryObj<SingleCTAProps> = {
   },
 };
 
-export const Secondary: StoryObj<SingleCTAProps> = {
+export const Secondary: StoryObj<SubmitButtonProps> = {
   render: () =>
-    <SingleCTA variant='secondary' label='Secondary' />,
+    <SubmitButton variant='secondary' label='Secondary' />,
   argTypes: {
     variant: {
       control: false,
@@ -164,9 +164,9 @@ export const Secondary: StoryObj<SingleCTAProps> = {
   },
 };
 
-export const Loading: StoryObj<SingleCTAProps> = {
+export const Loading: StoryObj<SubmitButtonProps> = {
   render: (args: StoryButtonConfig) =>
-    <SingleCTA {...args} loading={true} />,
+    <SubmitButton {...args} loading={true} />,
   args: {
     variant: 'primary',
     label: 'Loading',

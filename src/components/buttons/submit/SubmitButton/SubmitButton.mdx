@@ -1,0 +1,96 @@
+import {
+  Meta,
+  Story,
+  Canvas,
+  Controls,
+  ArgTypes,
+  Description,
+  Source,
+} from "@storybook/blocks";
+import SubmitButton from "./SubmitButton.tsx";
+import * as SubmitButtonStories from ".SubmitButton.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Buttons/Submit" />
+
+# Submit Button
+
+This button is used for form submission or "call to action".
+
+## Import
+
+```jsx
+import { SubmitButton } from "@terra-money/station-ui/components/buttons";
+```
+
+# SubmitButton Props
+
+##### The `SubmitButton` button is used for either user form submitting or routing.
+
+- **`variant`** - <span style={{ color: "var(--token-error-500)", fontWeight: "bold", fontSize: "14px" }}>_required_</span> - Sets the variant of the button.
+  - Options are `primary`, `secondary`, `destructive`.
+- **`label`** - <span style={{ color: "var(--token-error-500)", fontWeight: "bold", fontSize: "14px" }}>_required_</span> - Sets the label of the button.
+- **`loading`** - Sets the button to a loading state (replaces icon while loading).
+- **`icon`** - Appends an icon to the button. In front of the label.
+
+> ##### `<SubmitButton />` is a full width button.
+>
+> - Built on top of `<Button />`.
+> - Has a `type='submit'` attribute by default.
+> - `block` by default.
+> - Is disabled when `loading` is active.
+
+# Stories
+
+## Playground
+
+<div className="story_with_source_below">
+  <Canvas of={SubmitButtonStories.Playground} />
+  <Controls of={SubmitButtonStories.Playground} />
+</div>
+
+## Submit
+
+This `Primary` button is used for main actions on a page. The label will typically be 'Submit'.
+
+<div className="story_with_source_below">
+  <Canvas of={SubmitButtonStories.Primary} />
+  <Source code={`<SubmitButton variant='primary' label='Submit' />`} />
+</div>
+
+## Submit With Icon
+
+This is the Primary button with an icon passed in.
+
+<div className="story_with_source_below">
+  <Canvas of={SubmitButtonStories.PrimaryWithIcon} sourceState="none" />
+  <Source
+    code={`<SubmitButton
+  variant='primary'
+  label='Primary Submit'
+  icon={<SmallCircleCheck fill='var(--token-light-white)' />}
+/>`}
+  />
+</div>
+
+## Secondary
+
+The `Secondary` button is used for secondary actions on a page. The label might be 'Back' or 'Cancel'.
+
+<div className="story_with_source_below">
+  <Canvas of={SubmitButtonStories.Secondary} />
+  <Source
+    code={`<SubmitButton variant='secondary' label='Secondary Submit' />`}
+  />
+</div>
+
+## Loading
+
+Display Button with an active loading state.
+
+- Requires `loading` prop to be set to `true`.
+- Button is disabled when `loading` is active.
+  <div className="story_with_source_below">
+    <Canvas of={SubmitButtonStories.Loading} />
+    <Source code={`<SubmitButton loading={true} label='Loading Submit' />`} />
+  </div>
