@@ -7,8 +7,9 @@ import {
   Description,
   Source,
 } from "@storybook/blocks";
+import { RequiredText } from "../../../../DocsHelpers.tsx";
 import SubmitButton from "./SubmitButton.tsx";
-import * as SubmitButtonStories from ".SubmitButton.stories.tsx";
+import * as SubmitButtonStories from "./SubmitButton.stories.tsx";
 import "scss/storybookoverrides.scss";
 
 <Meta title="Components/Buttons/Submit" />
@@ -27,9 +28,9 @@ import { SubmitButton } from "@terra-money/station-ui/components/buttons";
 
 ##### The `SubmitButton` button is used for either user form submitting or routing.
 
-- **`variant`** - <span style={{ color: "var(--token-error-500)", fontWeight: "bold", fontSize: "14px" }}>_required_</span> - Sets the variant of the button.
+- **`variant`** - <RequiredText /> - Sets the variant of the button.
   - Options are `primary`, `secondary`, `warning`.
-- **`label`** - <span style={{ color: "var(--token-error-500)", fontWeight: "bold", fontSize: "14px" }}>_required_</span> - Sets the label of the button.
+- **`label`** - <RequiredText /> - Sets the label of the button.
 - **`loading`** - Sets the button to a loading state (replaces icon while loading).
 - **`icon`** - Appends an icon to the button. In front of the label.
 
@@ -49,7 +50,7 @@ import { SubmitButton } from "@terra-money/station-ui/components/buttons";
   <Controls of={SubmitButtonStories.Playground} />
 </div>
 
-## Submit
+## Primary
 
 This `Primary` button is used for main actions on a page. The label will typically be 'Submit'.
 
@@ -58,7 +59,7 @@ This `Primary` button is used for main actions on a page. The label will typical
   <Source code={`<SubmitButton variant='primary' label='Submit' />`} />
 </div>
 
-## Submit With Icon
+## Primary With Icon
 
 This is the Primary button with an icon passed in.
 
@@ -90,7 +91,8 @@ Display Button with an active loading state.
 
 - Requires `loading` prop to be set to `true`.
 - Button is disabled when `loading` is active.
-  <div className="story_with_source_below">
-    <Canvas of={SubmitButtonStories.Loading} />
-    <Source code={`<SubmitButton loading={true} label='Loading Submit' />`} />
-  </div>
+
+<div className="story_with_source_below">
+  <Canvas of={SubmitButtonStories.Loading} />
+  <Source code={`<SubmitButton variant='primary' loading={true} label='Loading Submit' />`} />
+</div>

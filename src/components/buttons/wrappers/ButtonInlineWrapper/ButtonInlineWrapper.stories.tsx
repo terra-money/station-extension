@@ -46,8 +46,8 @@ export const CancelWithSubmit: StoryObj<ButtonInlineWrapperProps> = {
   render: () => (
     <ButtonInlineWrapper
       buttons={[
-        <SubmitButton variant='secondary' label='Cancel' />, 
-        <SubmitButton variant='primary' label='Submit'/> 
+        <SubmitButton variant='secondary' label='Cancel' />,
+        <SubmitButton variant='primary' label='Submit'/>
       ]}
     />
   ),
@@ -56,15 +56,15 @@ export const CancelWithSubmit: StoryObj<ButtonInlineWrapperProps> = {
 export const CancelWithDelete: StoryObj<ButtonInlineWrapperProps> = {
   render: () => (
     <ButtonInlineWrapper
-    buttons={[
-      <SubmitButton variant='secondary' label='Cancel' />, 
-      <SubmitButton
+      buttons={[
+        <SubmitButton variant='secondary' label='Cancel' />,
+        <SubmitButton
           variant='warning'
           label='Delete'
           icon={<TrashCan fill='var(--token-error-500)' stroke='var(--token-error-500)' />}
-          />
-    ]}
         />
+      ]}
+    />
   ),
 };
 
@@ -73,7 +73,7 @@ export const StakeExample: StoryObj<ButtonInlineWrapperProps> = {
     <ButtonInlineWrapper
       buttons={[
         <SubmitButton variant='secondary' label='Claim Rewards' />,
-       <SubmitButton
+        <SubmitButton
           variant='primary'
           label='Stake'
           icon={<Stake fill='var(--token-light-white)' />}

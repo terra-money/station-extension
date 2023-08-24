@@ -9,13 +9,13 @@ const meta: Meta<RoundedButtonConfig> = {
   title: 'Components/Buttons/Rounded/Base',
   component: RoundedButton,
   argTypes: {
-    color: {
+    variant: {
       options: ['primary', 'secondary'],
       control: {
         type: 'select',
       },
       defaultValue: 'primary',
-      description: 'The color of the Button.',
+      description: 'The variant of the Button.',
       table: {
         defaultValue: { summary: '"primary"' },
         type: { summary: 'string' },
@@ -75,7 +75,7 @@ export const Playground: StoryObj<StoryRoundedButtonConfig> = {
       {...args}
     />,
   args: {
-    color: 'primary',
+    variant: 'primary',
     size: 'default',
     icon: <SendArrow fill='var(--token-light-white)' />,
   },
@@ -87,12 +87,12 @@ export const Primary: StoryObj<StoryRoundedButtonConfig> = {
       {...args}
     />,
   args: {
-    color: 'primary',
+    variant: 'primary',
     size: 'default',
     icon: <SendArrow fill='var(--token-light-white)' />,
   },
   argTypes: {
-    color: {
+    variant: {
       control: false,
     },
     size: {
@@ -107,12 +107,12 @@ export const Secondary: StoryObj<StoryRoundedButtonConfig> = {
       {...args}
     />,
   args: {
-    color: 'secondary',
+    variant: 'secondary',
     size: 'default',
     icon: <Receive fill='var(--token-light-white)' />,
   },
   argTypes: {
-    color: {
+    variant: {
       control: false,
     },
     size: {
@@ -127,12 +127,12 @@ export const Small: StoryObj<StoryRoundedButtonConfig> = {
       {...args}
     />,
   args: {
-    color: 'secondary',
+    variant: 'secondary',
     size: 'small',
     icon: <FlipArrows fill='var(--token-light-100)' />,
   },
   argTypes: {
-    color: {
+    variant: {
       control: false,
     },
     size: {
@@ -147,12 +147,12 @@ export const Large: StoryObj<StoryRoundedButtonConfig> = {
       {...args}
     />,
   args: {
-    color: 'primary',
+    variant: 'primary',
     size: 'large',
     icon: <SwapArrows fill='var(--token-light-white)' />,
   },
   argTypes: {
-    color: {
+    variant: {
       control: false,
     },
     size: {

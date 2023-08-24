@@ -7,6 +7,7 @@ import {
   Description,
   Source,
 } from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
 import NavButton from "./button/NavButton.tsx";
 import RoundedActionButton from "./rounded action/RoundedActionButton.tsx";
 import * as NavButtonStories from "./button/NavButton.stories";
@@ -35,7 +36,7 @@ import {
 
 ##### The `NavButton` Used for navigating settings or page routing.
 
-- **`label`** - <span style={{ color: "var(--token-error-500)", fontWeight: "bold", fontSize: "14px" }}>_required_</span> - Sets the label for the button.
+- **`label`** - <RequiredText /> - Sets the label for the button.
 - **`subLabel`** - Sets right side 'sub'-label.
 - **`icon`** - Sets icon that is left of the `label`.
 
@@ -55,8 +56,8 @@ import {
   <Source
     code={`
     <NavButton
-    label={'Nav Button'}
-  />
+  label={'Nav Button'}
+/>
   `}
   />
 </div>
@@ -68,9 +69,9 @@ import {
   <Source
     code={`
     <NavButton
-    label={'Nav Button'}
-    icon={<SmallCircleCheck />}
-  />
+  label={'Nav Button'}
+  icon={<SmallCircleCheck />}
+/>
   `}
   />
 </div>
@@ -82,10 +83,10 @@ import {
   <Source
     code={`
     <NavButton
-    label={'Nav Button'}
-    subLabel={'Sub Label'}
-    icon={<SmallCircleCheck />}
-  />
+  label={'Nav Button'}
+  subLabel={'Sub Label'}
+  icon={<SmallCircleCheck />}
+/>
   `}
   />
 </div>
@@ -99,9 +100,9 @@ A larger version of the RoundedButton.
   <Source
     code={`
     <NavButton
-    label={'Nav Button'}
-    subLabel={'Sub Label'}
-  />
+  label={'Nav Button'}
+  subLabel={'Sub Label'}
+/>
   `}
   />
 </div>
@@ -112,7 +113,7 @@ A larger version of the RoundedButton.
 
 > **Built on top of the `RoundedButton` component.**
 
-- **_No Props_**
+- **_No Props for now_**
 
 # RoundedActionButton Stories
 

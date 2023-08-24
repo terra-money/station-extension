@@ -7,6 +7,7 @@ import {
   Description,
   Source,
 } from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
 import Tabs from "./Tabs";
 import * as TabsStories from "./Tabs.stories";
 
@@ -24,7 +25,7 @@ import { Tabs } from "@terra-money/station-ui/components/buttons";
 
 # Tabs Props
 
-- **`tabs`** - <span style={{ color: "var(--token-error-500)", fontWeight: "bold", fontSize: "14px" }}>_required_</span> - Used to set the tabs.
+- **`tabs`** - <RequiredText /> - Used to set the tabs.
 - - **`tabs.key`** - `string` - For identifying tab.
 - - **`tabs.tabLabel`** - `string` - The label for the tab.
 - - **`tabs.onClick`** - `() => void` - Called when associated tab is clicked.
@@ -41,26 +42,26 @@ import { Tabs } from "@terra-money/station-ui/components/buttons";
 
 return (
 
-<Tabs
-  activeTabKey={activeTabKey}
-  tabs={[
-    {
-      key: "tab1",
-      tabLabel: "Tab 1",
-      onClick: () => setActiveTabKey("tab1"),
-    },
-    {
-      key: "tab2",
-      tabLabel: "Tab 2",
-      onClick: () => setActiveTabKey("tab2"),
-    },
-    {
-      key: "tab3",
-      tabLabel: "Tab 3",
-      onClick: () => setActiveTabKey("tab3"),
-    },
-  ]}
-/>
+    <Tabs
+    activeTabKey={activeTabKey}
+    tabs={[
+      {
+        key: "tab1",
+        tabLabel: "Tab 1",
+        onClick: () => setActiveTabKey("tab1"),
+      },
+      {
+        key: "tab2",
+        tabLabel: "Tab 2",
+        onClick: () => setActiveTabKey("tab2"),
+      },
+      {
+        key: "tab3",
+        tabLabel: "Tab 3",
+        onClick: () => setActiveTabKey("tab3"),
+      },
+    ]}
+  />
 ); `} />
 
 </div>

@@ -7,6 +7,7 @@ import {
   Description,
   Source,
 } from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
 import CheckedButton from "./CheckedButton";
 import * as CheckedButtonStories from "./CheckedButton.stories";
 
@@ -26,7 +27,7 @@ import { CheckedButton } from "@terra-money/station-ui/components/buttons";
 
 ##### The `CheckedButton` is build on top of `<Button />`.
 
-- **`label`** - <span style={{ color: "var(--token-error-500)", fontWeight: "bold", fontSize: "14px" }}>_required_</span> - Sets the label for the button.
+- **`label`** - <RequiredText /> - Sets the label for the button.
 - **`active`** - Sets the button to be active.
 - **`onClick`** - Sets the onClick handler for the button. Will likely be a function to set the button to an active state.
 
@@ -76,16 +77,15 @@ import { CheckedButton } from "@terra-money/station-ui/components/buttons";
 const [activeIndex, setActiveIndex] = useState(1);
 
 return (
-<div style={{ width: '342px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-{seedPhrase.split(' ').map((word, index) => (
-<CheckedButton
-key={index}
-active={activeIndex === index}
-label={word}
-onClick={() => setActiveIndex(index)}
-/>
-))}
-
+    <div style={{ width: '342px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+    {seedPhrase.split(' ').map((word, index) => (
+                  <CheckedButton
+          key={index}
+          active={activeIndex === index}
+          label={word}
+          onClick={() => setActiveIndex(index)}
+        />
+            ))}
   </div>
 )
   `} />

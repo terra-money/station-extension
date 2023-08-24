@@ -33,7 +33,7 @@ const Button = forwardRef(
         ref={ref}
         disabled={attrs.disabled ?? loading}
       >
-        {loading ? <LoadingCircular size={16} /> : icon}
+        {loading ? <LoadingCircular size={14} /> : icon}
         {children ?? label}
       </button>
     );
