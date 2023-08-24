@@ -5,7 +5,7 @@ import styles from './RoundedButton.module.scss';
 const cx = classNames.bind(styles);
 
 export interface RoundedButtonConfig {
-  color: 'primary' | 'secondary'
+  variant: 'primary' | 'secondary'
   icon: ReactNode
   size?: 'default' | 'small' | 'large'
 }
@@ -17,11 +17,11 @@ const RoundedButton = forwardRef(
     { ...props }: Props,
     ref?: ForwardedRef<HTMLButtonElement>
   ) => {
-    const { color, icon, size, className, ...attrs } = props;
+    const { variant, icon, size, className, ...attrs } = props;
     const buttonClassNames = cx(
       styles.rounded__button,
       className,
-      color,
+      variant,
       {
         large: size === 'large',
         small: size === 'small'

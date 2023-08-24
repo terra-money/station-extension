@@ -1,10 +1,10 @@
 export { default as Button } from './base/Button';
 export * from './base/Button';
 
-export { default as SingleCTA } from './CTA/Single/SingleCTA';
-export * from './CTA/Single/SingleCTA';
-export { default as SequentialCTAs } from './CTA/Sequential/SequentialCTAs';
-export * from './CTA/Sequential/SequentialCTAs';
+export { default as SubmitButton } from './submit/SubmitButton/SubmitButton';
+export * from './submit/SubmitButton/SubmitButton';
+export { default as ButtonInlineWrapper } from './wrappers/ButtonInlineWrapper/ButtonInlineWrapper';
+export * from './wrappers/ButtonInlineWrapper/ButtonInlineWrapper';
 
 export { default as Checked } from './checked/CheckedButton';
 export * from './checked/CheckedButton';

@@ -2,8 +2,8 @@ import '../styles/index.scss';
 
 export {
   Button,
-  SingleCTA,
-  SequentialCTAs,
+  SubmitButton,
+  ButtonInlineWrapper,
   Checked,
   NavButton,
   RoundedActionButton,
@@ -15,8 +15,8 @@ export {
 
 export type {
   ButtonConfig,
-  SingleCTAProps,
-  SequentialCTAsProps,
+  SubmitButtonProps,
+  ButtonInlineWrapperProps,
   CheckedButtonProps,
   NavButtonProps,
   RoundedButtonConfig,
