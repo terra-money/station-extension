@@ -41,6 +41,18 @@ const connectRemote = (remotePort) => {
               changed.origin === origin &&
               sendResponse("on" + capitalize(key), changed)
 
+            if (changed.uuid) {
+              browser.storage.local.set(
+                key,
+                newValue.filter((tx) => tx.uuid !== changed.uuid)
+              )
+            } else {
+              browser.storage.local.set(
+                key,
+                newValue.filter((tx) => tx.id !== changed.id)
+              )
+            }
+
             browser.storage.local
               .get(["sign", "post"])
               .then(({ sign = [], post = [] }) => {
