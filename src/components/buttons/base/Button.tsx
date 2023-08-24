@@ -6,10 +6,11 @@ import styles from './Button.module.scss';
 const cx = classNames.bind(styles);
 
 export interface ButtonConfig {
-  color:
-    'primary' | 'secondary' | 'destructive' | 'dashed' | 'white-filled' | 'outline'
-  label: string
+  variant:
+    'primary' | 'secondary' | 'warning' | 'dashed' | 'white-filled' | 'outlined'
+  label?: string
   block?: boolean
+  type?: 'button' | 'submit' | 'reset'
   loading?: boolean
   icon?: ReactNode
 }
@@ -21,19 +22,19 @@ const Button = forwardRef(
     { ...props }: Props,
     ref?: ForwardedRef<HTMLButtonElement>
   ) => {
-    const { color, label, loading, icon, block, className, ...attrs } = props;
-    const buttonClassName = cx(styles.button, color, className, { block, loading });
+    const { variant, label, loading, icon, block, className, children, type, ...attrs } = props;
+    const buttonClassName = cx(styles.button, variant, className, { block, loading });
 
     return (
       <button
-        type='button'
+        type={type ?? 'button'}
         {...attrs}
         className={buttonClassName}
         ref={ref}
-        disabled={attrs.disabled || loading}
+        disabled={attrs.disabled ?? loading}
       >
-        {loading ? <LoadingCircular size={16} /> : icon}
-        {label}
+        {loading ? <LoadingCircular size={14} /> : icon}
+        {children ?? label}
       </button>
     );
   },

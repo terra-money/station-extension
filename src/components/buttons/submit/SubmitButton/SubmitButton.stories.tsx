@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
 import type { Meta, StoryFn, StoryObj } from '@storybook/react';
 import { ReactComponent as SmallCircleCheck } from 'assets/icon/SmallCircleCheck.svg';
-import SingleCTA, { SingleCTAProps } from './SingleCTA';
+import SubmitButton, { SubmitButtonProps } from './SubmitButton';
 
-const meta: Meta<SingleCTAProps> = {
-  title: 'Components/Buttons/CTA/Single',
-  component: SingleCTA,
+const meta: Meta<SubmitButtonProps> = {
+  title: 'Components/Buttons/Submit/SubmitButton',
+  component: SubmitButton,
   argTypes: {
-    color: {
-      options: ['primary', 'secondary'],
+    variant: {
+      options: ['primary', 'secondary', 'warning'],
       control: {
         type: 'select',
       },
       defaultValue: 'primary',
-      description: 'The color of the Button.',
+      description: 'The variant of the Button.',
       table: {
         defaultValue: { summary: '"primary"' },
         type: { summary: 'string' },
@@ -62,9 +62,9 @@ const meta: Meta<SingleCTAProps> = {
 
 export default meta;
 
-type StoryButtonConfig = SingleCTAProps & { label?: string };
+type StoryButtonConfig = SubmitButtonProps & { label?: string };
 
-const SingleCTAWithLoadingState = (args: StoryButtonConfig) => {
+const SubmitButtonWithLoadingState = (args: StoryButtonConfig) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -72,7 +72,7 @@ const SingleCTAWithLoadingState = (args: StoryButtonConfig) => {
   }, [args.loading]);
 
   return (
-    <SingleCTA
+    <SubmitButton
       {...args}
       loading={loading}
       onClick={() => {
@@ -85,9 +85,9 @@ const SingleCTAWithLoadingState = (args: StoryButtonConfig) => {
 
 export const Playground: StoryObj<StoryButtonConfig> = {
   render: (args: StoryButtonConfig) =>
-    <SingleCTAWithLoadingState {...args} />,
+    <SubmitButtonWithLoadingState {...args} />,
   args: {
-    color: 'primary',
+    variant: 'primary',
     loading: false,
     label: 'Playground',
   },
@@ -100,22 +100,22 @@ export const Playground: StoryObj<StoryButtonConfig> = {
         defaultValue: { summary: 'Playground' },
       },
     },
-    color: {
+    variant: {
       control: {
         type: 'select',
-        options: ['primary', 'secondary', 'destructive'],
+        options: ['primary', 'secondary', 'warning'],
       },
     },
     loading: { control: 'boolean' },
   },
 };
 
-export const Primary: StoryObj<SingleCTAProps> = {
+export const Primary: StoryObj<SubmitButtonProps> = {
   render: () => (
-    <SingleCTA color='primary' label='Primary' />
+    <SubmitButton variant='primary' label='Primary' />
   ),
   argTypes: {
-    color: {
+    variant: {
       control: false,
       defaultValue: 'primary',
       table: {
@@ -127,16 +127,16 @@ export const Primary: StoryObj<SingleCTAProps> = {
   },
 };
 
-export const PrimaryWithIcon: StoryObj<SingleCTAProps> = {
+export const PrimaryWithIcon: StoryObj<SubmitButtonProps> = {
   render: () => (
-    <SingleCTA
-      color='primary'
+    <SubmitButton
+    variant='primary'
       label='Primary'
       icon={<SmallCircleCheck fill='var(--token-light-white)' />}
     />
   ),
   argTypes: {
-    color: {
+    variant: {
       control: false,
       defaultValue: 'primary',
       table: {
@@ -148,11 +148,11 @@ export const PrimaryWithIcon: StoryObj<SingleCTAProps> = {
   },
 };
 
-export const Secondary: StoryObj<SingleCTAProps> = {
+export const Secondary: StoryObj<SubmitButtonProps> = {
   render: () =>
-    <SingleCTA color='secondary' label='Secondary' />,
+    <SubmitButton variant='secondary' label='Secondary' />,
   argTypes: {
-    color: {
+    variant: {
       control: false,
       defaultValue: 'secondary',
       table: {
@@ -164,11 +164,11 @@ export const Secondary: StoryObj<SingleCTAProps> = {
   },
 };
 
-export const Loading: StoryObj<SingleCTAProps> = {
+export const Loading: StoryObj<SubmitButtonProps> = {
   render: (args: StoryButtonConfig) =>
-    <SingleCTA {...args} loading={true} />,
+    <SubmitButton {...args} loading={true} />,
   args: {
-    color: 'primary',
+    variant: 'primary',
     label: 'Loading',
   },
   argTypes: {

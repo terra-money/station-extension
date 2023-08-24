@@ -50,13 +50,13 @@ const RoundedActionButton = () => {
   return (
     <div style={{ display: 'flex', gap: '20px' }}>
       <RoundedButton
-        color='primary'
+        variant='primary'
         size='large'
         icon={displayIcon}
         onClick={handleClick}
       />
         <RoundedButton
-        color='primary'
+        variant='primary'
         size='large'
         icon={displayIcon2}
         onClick={handleClick2}

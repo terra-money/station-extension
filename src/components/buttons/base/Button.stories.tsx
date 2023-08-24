@@ -8,13 +8,13 @@ const meta: Meta<ButtonConfig> = {
   title: 'Components/Buttons/Base/Stories',
   component: Button,
   argTypes: {
-    color: {
-      options: ['primary', 'secondary', 'destructive', 'dashed', 'white-filled', 'outline'],
+    variant: {
+      options: ['primary', 'secondary', 'warning', 'dashed', 'white-filled', 'outlined'],
       control: {
         type: 'select',
       },
       defaultValue: 'primary',
-      description: 'The color of the Button.',
+      description: 'The variant of the Button.',
       table: {
         defaultValue: { summary: '"primary"' },
         type: { summary: 'string' },
@@ -99,7 +99,7 @@ const ButtonWithLoadingState = (args: StoryButtonConfig) => {
 export const Playground: StoryObj<StoryButtonConfig> = {
   render: (args: StoryButtonConfig) => <ButtonWithLoadingState {...args} />,
   args: {
-    color: 'primary',
+    variant: 'primary',
     block: false,
     loading: false,
     label: 'Playground',
@@ -120,10 +120,10 @@ export const Playground: StoryObj<StoryButtonConfig> = {
 
 export const Primary: StoryObj<ButtonConfig> = {
   render: () => (
-    <Button color='primary' label='Primary' />
+    <Button variant='primary' label='Primary' />
   ),
   argTypes: {
-    color: {
+    variant: {
       control: false,
       defaultValue: 'primary',
       table: {
@@ -139,13 +139,13 @@ export const Primary: StoryObj<ButtonConfig> = {
 export const PrimaryWithIcon: StoryObj<ButtonConfig> = {
   render: () => (
     <Button
-      color='primary'
+      variant='primary'
       label='Primary'
       icon={<SmallCircleCheck fill='var(--token-light-white)' />}
     />
   ),
   argTypes: {
-    color: {
+    variant: {
       control: false,
       defaultValue: 'primary',
     },
@@ -156,9 +156,9 @@ export const PrimaryWithIcon: StoryObj<ButtonConfig> = {
 };
 
 export const Secondary: StoryObj<ButtonConfig> = {
-  render: () => <Button color='secondary' label='Secondary' />,
+  render: () => <Button variant='secondary' label='Secondary' />,
   argTypes: {
-    color: {
+    variant: {
       control: false,
       defaultValue: 'secondary',
       table: {
@@ -171,15 +171,15 @@ export const Secondary: StoryObj<ButtonConfig> = {
   },
 };
 
-export const Destructive: StoryObj<ButtonConfig> = {
+export const Warning: StoryObj<ButtonConfig> = {
   render: () =>
     <Button
-      color='destructive'
+      variant='warning'
       label='Button'
       icon={<TrashCan fill='var(--token-error-500)' stroke='var(--token-error-500)' />}
     />,
   argTypes: {
-    color: {
+    variant: {
       control: false,
       defaultValue: 'secondary',
       table: {
@@ -195,11 +195,11 @@ export const Destructive: StoryObj<ButtonConfig> = {
 export const Dashed: StoryObj<ButtonConfig> = {
   render: () =>
     <Button
-      color='dashed'
+      variant='dashed'
       label='Button'
     />,
   argTypes: {
-    color: {
+    variant: {
       control: false,
       defaultValue: 'dashed',
       table: {
@@ -215,11 +215,11 @@ export const Dashed: StoryObj<ButtonConfig> = {
 export const WhiteFilled: StoryObj<ButtonConfig> = {
   render: () =>
     <Button
-      color='white-filled'
+      variant='white-filled'
       label='Button'
     />,
   argTypes: {
-    color: {
+    variant: {
       control: false,
       defaultValue: 'white-filled',
       table: {
@@ -232,18 +232,18 @@ export const WhiteFilled: StoryObj<ButtonConfig> = {
   },
 };
 
-export const Outline: StoryObj<ButtonConfig> = {
+export const Outlined: StoryObj<ButtonConfig> = {
   render: () =>
     <Button
-      color='outline'
+      variant='outlined'
       label='Button'
     />,
   argTypes: {
-    color: {
+    variant: {
       control: false,
-      defaultValue: 'outline',
+      defaultValue: 'outlined',
       table: {
-        defaultValue: { summary: '"outline"' },
+        defaultValue: { summary: '"outlined"' },
       }
     },
     label: { control: false },
@@ -255,7 +255,7 @@ export const Outline: StoryObj<ButtonConfig> = {
 export const Block: StoryObj<ButtonConfig> = {
   render: (args: StoryButtonConfig) => <Button {...args} block />,
   args: {
-    color: 'primary',
+    variant: 'primary',
     label: 'Block',
   },
   argTypes: {
@@ -268,7 +268,7 @@ export const Block: StoryObj<ButtonConfig> = {
 export const Loading: StoryObj<ButtonConfig> = {
   render: (args: StoryButtonConfig) => <Button {...args} loading={true} />,
   args: {
-    color: 'primary',
+    variant: 'primary',
     label: 'Loading',
   },
   argTypes: {
@@ -280,7 +280,7 @@ export const Loading: StoryObj<ButtonConfig> = {
 export const Disabled: StoryObj<ButtonConfig> = {
   render: (args: StoryButtonConfig) => <Button {...args} disabled />,
   args: {
-    color: 'primary',
+    variant: 'primary',
     label: 'Disabled',
     block: false,
     loading: false,

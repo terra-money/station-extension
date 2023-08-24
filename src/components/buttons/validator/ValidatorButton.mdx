@@ -1,34 +1,48 @@
-import { Meta, Story, Canvas, Controls, ArgTypes, Description, Source } from '@storybook/blocks';
-import ValidatorButton from './ValidatorButton';
-import * as ValidatorButtonStories from './ValidatorButton.stories';
-import { RequiredText } from '../../../DocsHelpers.tsx';
-import 'scss/storybookoverrides.scss';
+import {
+  Meta,
+  Story,
+  Canvas,
+  Controls,
+  ArgTypes,
+  Description,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import ValidatorButton from "./ValidatorButton";
+import * as ValidatorButtonStories from "./ValidatorButton.stories";
+import "scss/storybookoverrides.scss";
 
 <Meta title="Components/Buttons/Validator" />
 
 # ValidatorButton
+
 Button for validator.
 
 ## Import
+
 ```jsx
-import { ValidatorButton } from '@terra-station/components/buttons';
+import { ValidatorButton } from "@terra-money/station-ui/components/buttons";
 ```
 
 # ValidatorButton Props
-* **`validatorLabel`** - <RequiredText /> - `string` - Main label of the ValidatorButton.
-* **`validatorSubLabel`** - <RequiredText /> - `string` - Sub label that is below the main label.
-* **`imgSrc`** - <RequiredText /> - `string` - Source of the Validator image.
+
+- **`validatorLabel`** - <RequiredText /> - `string` - Main label of the ValidatorButton.
+- **`validatorSubLabel`** - <RequiredText /> - `string` - Sub label that is below the main label.
+- **`imgSrc`** - <RequiredText /> - `string` - Source of the Validator image.
 
 # ValidatorButton Stories
 
 ## Default
-<div className='story_with_source_below'>
+
+<div className="story_with_source_below">
   <Canvas of={ValidatorButtonStories.Default} />
-  <Source code={`
+  <Source
+    code={`
     <ValidatorButton
   validatorLabel={'Lavender.Five Nodes 🐝'}
   validatorSubLabel={'0.29% voting power • 5% commission'}
   imgSrc={'https://assets.terra.money/logos/lavender.png'}
 />
-  `} />
+  `}
+  />
 </div>
