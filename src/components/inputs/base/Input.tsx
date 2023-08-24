@@ -10,13 +10,11 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     onClick?: () => void
   }
   emoji?: string
-  error?: boolean
-  warning?: boolean
 }
 
-const Input = ({ actionIcon, emoji, warning, error, ...attrs }: InputProps) => {
+const Input = ({ actionIcon, emoji, ...attrs }: InputProps) => {
   return (
-    <div className={cx(styles.base__input, { warning, error } )}>
+    <div className={cx(styles.base__input)}>
       <input
         {...attrs}
         className={styles.base__input__field}

@@ -1,0 +1,17 @@
+@import "scss/font_mixins";
+
+.textarea {
+  background: var(--token-dark-300);
+  border: 1px solid var(--token-dark-700);
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 18px;
+  white-space: normal;
+
+  @include SmallLH;
+  color: var(--token-light-white);
+
+  &::placeholder {
+    color: var(--token-dark-900);
+  }
+}
