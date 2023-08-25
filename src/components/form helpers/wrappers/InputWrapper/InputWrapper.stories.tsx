@@ -1,4 +1,6 @@
-import type { Meta, StoryFn, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
+import { Decorator } from "DocsHelpers"
+import { DEFAULT_PARAMS } from 'Constants';
 import { InputWrapper, InputWrapperProps } from './InputWrapper';
 import { Input } from 'components/inputs';
 
@@ -7,28 +9,9 @@ import { ReactComponent as WalletIcon } from 'assets/icon/Wallet16.svg';
 const meta: Meta = {
   title: 'Components/Form Helpers/Wrappers/InputWrapper',
   component: InputWrapper,
-  parameters: {
-    controls: {
-      hideNoControlsWarning: true,
-      expanded: true,
-    },
-    backgrounds: {
-      disable: true,
-    }
-  },
-  decorators: [
-    (Story: StoryFn) => (
-      <div className="story__decorator" style={{
-        padding: '48px 24px',
-        backgroundColor: 'var(--token-dark-200)',
-        margin: '-20px -10px',
-        borderRadius: '8px',
-        fontSize: 'var(--token-font-size-small)'
-      }}>
-        <Story />
-      </div>
-    ),
-  ],
+  parameters: { ...DEFAULT_PARAMS },
+  decorators: [Decorator],
+
 } as Meta;
 
 export default meta;
@@ -62,25 +45,25 @@ export default meta;
 // };
 
 interface PlaygroundArgs extends InputWrapperProps {
-  addExtra: boolean
-  addError: boolean
-  addWarning: boolean
+  showExtra: boolean
+  showError: boolean
+  showWarning: boolean
 }
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  render: ({ addExtra, addError, addWarning, label }: PlaygroundArgs) => (
+  render: ({ showExtra, showError, showWarning, label }: PlaygroundArgs) => (
     <InputWrapper
       label={label}
       extra={
-        addExtra && (
+        showExtra && (
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             <WalletIcon fill='var(--token-dark-900)' />
             <span>8,334.02 LUNA</span>
           </div>
         )
       }
-      error={addError ? 'This is an error message' : ''}
-      warning={addWarning ? 'This is a warning message' : ''}
+      error={showError ? 'This is an error message' : ''}
+      warning={showWarning ? 'This is a warning message' : ''}
     >
       <Input
         // {...register('input-label', {})}
@@ -89,25 +72,25 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     </InputWrapper>
   ),
   args: {
-    addExtra: true,
-    addWarning: false,
-    addError: false,
+    showExtra: true,
+    showWarning: false,
+    showError: false,
     label: 'Input Label',
   },
   argTypes: {
-    addExtra: {
+    showExtra: {
       control: {
         type: 'boolean',
       },
       description: 'For Playground only',
     },
-    addError: {
+    showError: {
       control: {
         type: 'boolean',
       },
       description: 'For Playground only',
     },
-    addWarning: {
+    showWarning: {
       control: {
         type: 'boolean',
       },

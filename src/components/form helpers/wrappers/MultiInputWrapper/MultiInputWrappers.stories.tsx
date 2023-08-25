@@ -60,16 +60,16 @@ export default meta;
 // };
 
 interface PlaygroundArgs extends MultiInputWrapperProps {
-  addError: boolean
-  addWarning: boolean
+  showError: boolean
+  showWarning: boolean
 }
 
 export const Playground: StoryObj<PlaygroundArgs> = {
-  render: ({ addError, addWarning, label, layout }: PlaygroundArgs) => (
+  render: ({ showError, showWarning, label, layout }: PlaygroundArgs) => (
     <MultiInputWrapper
       label={label}
-      error={addError ? 'This is an error message' : ''}
-      warning={addWarning ? 'This is a warning message' : ''}
+      error={showError ? 'This is an error message' : ''}
+      warning={showWarning ? 'This is a warning message' : ''}
       layout={layout}
     >
       <Input
@@ -88,8 +88,8 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   ),
   args: {
     layout: 'horizontal',
-    addWarning: false,
-    addError: false,
+    showWarning: false,
+    showError: false,
     label: 'Input Label',
   },
   argTypes: {
@@ -100,13 +100,13 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       },
       description: 'Sets the layout direction of the inputs',
     },
-    addError: {
+    showError: {
       control: {
         type: 'boolean',
       },
       description: 'For Playground only',
     },
-    addWarning: {
+    showWarning: {
       control: {
         type: 'boolean',
       },

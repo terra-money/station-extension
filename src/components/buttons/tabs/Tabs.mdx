@@ -27,7 +27,7 @@ import { Tabs } from "@terra-money/station-ui/components/buttons";
 
 - **`tabs`** - <RequiredText /> - Used to set the tabs.
 - - **`tabs.key`** - `string` - For identifying tab.
-- - **`tabs.tabLabel`** - `string` - The label for the tab.
+- - **`tabs.label`** - `string` - The label for the tab.
 - - **`tabs.onClick`** - `() => void` - Called when associated tab is clicked.
 - **`activeTabKey`** - `string` - The key of the active tab.
 
@@ -47,17 +47,17 @@ return (
     tabs={[
       {
         key: "tab1",
-        tabLabel: "Tab 1",
+        label: "Tab 1",
         onClick: () => setActiveTabKey("tab1"),
       },
       {
         key: "tab2",
-        tabLabel: "Tab 2",
+        label: "Tab 2",
         onClick: () => setActiveTabKey("tab2"),
       },
       {
         key: "tab3",
-        tabLabel: "Tab 3",
+        label: "Tab 3",
         onClick: () => setActiveTabKey("tab3"),
       },
     ]}

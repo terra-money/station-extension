@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-import type { StoryObj, Meta, StoryFn } from '@storybook/react';
+import type { StoryObj, Meta } from '@storybook/react';
 import Modal, { ModalProps } from './Modal';
 // import { FormItem, Input } from 'components/Form Components';
 import { InputWrapper } from 'components/form helpers/wrappers/InputWrapper/InputWrapper';
 import { Input } from 'components/inputs';
-// import { Submit } from 'components/General';
-import { SingleCTA } from 'components';
+import { SubmitButton } from 'components';
+import { Decorator } from "DocsHelpers"
+import { DEFAULT_PARAMS } from 'Constants';
 
 import styles from './Modal.module.scss';
-
 
 const meta: Meta<ModalProps> = {
   title: 'Components/Feedback/Modals/Modal',
@@ -82,28 +81,9 @@ const meta: Meta<ModalProps> = {
       }
     },
   },
-  parameters: {
-    controls: {
-      hideNoControlsWarning: true,
-      expanded: true,
-    },
-    backgrounds: {
-      disable: true,
-    }
-  },
-  decorators: [
-    (Story: StoryFn) => (
-      <div className="story__decorator" style={{
-        padding: '48px 24px',
-        backgroundColor: 'var(--token-dark-200)',
-        margin: '-20px -10px',
-        borderRadius: '8px',
-        fontSize: 'var(--token-font-size-small)'
-      }}>
-        <Story />
-      </div>
-    ),
-  ],
+  parameters: { ...DEFAULT_PARAMS },
+  decorators: [Decorator],
+
 } as Meta;
 
 export default meta;
@@ -151,8 +131,8 @@ export const Default: StoryObj = {
         />
       </InputWrapper>
 
-      <SingleCTA
-        color={'primary'}
+      <SubmitButton
+        variant='primary'
         onClick={() => { }}
         label={'Submit'}
         className={styles.button__override}
@@ -184,8 +164,8 @@ export const Confirm: StoryObj = {
         />
       </InputWrapper>
 
-      <SingleCTA
-        color={'primary'}
+      <SubmitButton
+        variant='primary'
         onClick={() => { }}
         label={'Submit'}
       />
@@ -215,12 +195,10 @@ export const Minimal: StoryObj = {
           placeholder={'am placeholder'}
         />
       </InputWrapper>
-
-      <SingleCTA
-        color={'primary'}
+      <SubmitButton
+        variant='primary'
         onClick={() => { }}
-        label={'Submit'}
-
+        label='Submit'
       />
     </Modal>
   ),
@@ -239,10 +217,10 @@ export const Footer: StoryObj = {
       isOpen={true}
       onRequestClose={() => { }}
       footer={(close) => (
-        <SingleCTA
-          color={'primary'}
+        <SubmitButton
+          variant='primary'
           onClick={close}
-          label={'Submit'}
+          label='Submit'
         />
       )}
     >

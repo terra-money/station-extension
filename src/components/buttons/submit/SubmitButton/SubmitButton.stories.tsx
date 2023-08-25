@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import type { Meta, StoryFn, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
+import { Decorator } from "DocsHelpers"
+import { DEFAULT_PARAMS } from 'Constants';
 import { ReactComponent as SmallCircleCheck } from 'assets/icon/SmallCircleCheck.svg';
 import SubmitButton, { SubmitButtonProps } from './SubmitButton';
 
@@ -36,28 +38,9 @@ const meta: Meta<SubmitButtonProps> = {
       }
     },
   },
-  parameters: {
-    controls: {
-      hideNoControlsWarning: true,
-      expanded: true,
-    },
-    backgrounds: {
-      disable: true,
-    }
-  },
-  decorators: [
-    (Story: StoryFn) => (
-      <div className="story__decorator" style={{
-        padding: '48px 24px',
-        backgroundColor: 'var(--token-dark-200)',
-        margin: '-20px -10px',
-        borderRadius: '8px',
-        fontSize: 'var(--token-font-size-small)'
-      }}>
-        <Story />
-      </div>
-    ),
-  ],
+  parameters: { ...DEFAULT_PARAMS },
+  decorators: [Decorator],
+
 } as Meta;
 
 export default meta;
