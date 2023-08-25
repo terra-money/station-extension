@@ -41,9 +41,7 @@ const AssetSelectorTo = ({
               <button
                 type='button'
                 className={styles.symbol__button}
-                onClick={() => {
-                  onSymbolClick();
-                }}
+                onClick={onSymbolClick}
               >
                 {symbol}
               </button>

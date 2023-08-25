@@ -21,7 +21,6 @@ const meta: Meta<TextAreaProps> = {
   },
   parameters: { ...DEFAULT_PARAMS },
   decorators: [Decorator],
-
 } as Meta;
 
 export default meta;

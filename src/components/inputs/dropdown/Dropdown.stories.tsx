@@ -7,11 +7,9 @@ import StandardDropdown, { StandardDropdownProps } from './Dropdown';
 const meta: Meta<StandardDropdownProps> = {
   title: 'Components/Inputs/Dropdown/Stories',
   component: StandardDropdown,
-  argTypes: {
-  },
+  argTypes: {},
   parameters: { ...DEFAULT_PARAMS },
   decorators: [Decorator],
-
 } as Meta;
 
 export default meta;
@@ -28,11 +26,10 @@ export const Default: StoryObj<StandardDropdownProps> = {
     return (
       <StandardDropdown
         options={options}
-        onChange={() => { }}
+        onChange={() => {}}
         selectedId="mainnet"
       />
     )
   },
-  argTypes: {
-  },
+  argTypes: {},
 };

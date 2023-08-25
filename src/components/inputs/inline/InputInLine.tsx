@@ -4,16 +4,16 @@ import styles from './InputInLine.module.scss';
 // const cx = classNames.bind(styles);
 
 export interface InputInLineProps extends InputHTMLAttributes<HTMLInputElement> {
-  inLineExtra?: ReactNode
-  inLineLabel: string
+  extra?: ReactNode
+  label: string
 }
 
-const InputInLine = ({ inLineExtra, inLineLabel, ...attrs }: InputInLineProps) => {
+const InputInLine = ({ extra, label, ...attrs }: InputInLineProps) => {
 
   return (
     <div className={styles.inline__input}>
       <label className={styles.inline__input__label}>
-        {inLineLabel}
+        {label}
       </label>
 
       <input
@@ -24,9 +24,9 @@ const InputInLine = ({ inLineExtra, inLineLabel, ...attrs }: InputInLineProps) =
         autoFocus={attrs.autoFocus || false}
       />
 
-      {inLineExtra && (
+      {extra && (
         <span className={styles.inline__input__extra}>
-          {inLineExtra}
+          {extra}
         </span>
       )}
     </div>

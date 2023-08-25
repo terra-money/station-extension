@@ -26,14 +26,13 @@ import Form, { FormArrow, FormGroup, FormItem } from './Form';
     {...}
     <FormItem // import from Form.tsx
       label={'Amount'}
-      error={errors.amount?.message}
-      // errors from react-hook-form
+      error={errors.amount?.message}  // errors from react-hook-form
     >
       <Input  // import from Input.tsx
         //*requires register() from react-hook-form*
-        token={asset} //from another imput not displayed here.
+        token={asset} // Asset comes from another imput not displayed here
         inputMode='decimal'
-        placeholder={'0.00'}
+        placeholder='0.00'
       />
     </FormItem>
   </Form>
@@ -43,8 +42,7 @@ import Form, { FormArrow, FormGroup, FormItem } from './Form';
 
 ## Form Example
 * Wraps a form with a `<Submit />`. Should be used with [useForm] from react-hook-form.
-* This example is the primary way `<Form />`'s are used in the app.
-* Some components have Submit buttons built in for example: `<Tx>` So, you don't need to use `<Submit />` for those.
+* Note that some components, like `<Tx>`, have their own Submit buttons. In which case it's not required to use `<Submit />`.
 <div className='story_with_source_below'>
   <Canvas>
     <Story id='components-form--full-form-example' />
@@ -101,7 +99,6 @@ import Form, { FormArrow, FormGroup, FormItem } from './Form';
 
 ## FormGroup
 * Groups an `<Input />` and a button together inline.
-* This example is the primary way`<FormGroup />`'s are used in the app.
 <div className='story_with_source_below'>
   <Canvas>
     <Story id='components-form--group' />
@@ -141,7 +138,7 @@ import Form, { FormArrow, FormGroup, FormItem } from './Form';
 </div>
 
 ## FormItem
-This is the wrapper around an input item with a label and error message.
+This is the wrapper around an input item that provides the possibility of a label and error message.
 <div className='story_with_source_below'>
   <Canvas>
     <Story id='components-form--item' />

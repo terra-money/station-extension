@@ -6,18 +6,18 @@ import 'scss/storybookoverrides.scss';
 <Meta title='Components/Feedback/Modals' />
 
 # Modals
-Modals all used with a base of `<Modal />` which is built off of `react-modal`.
+Modal components use the `react-modal` npm package.
 - [`<Modal />`](?path=/story/components-feedback-modals-modal--playground)
   - Used in flows without user interaction.
-  - **Example:** after a transaction is successful or fails a Modal pops up with the result.
+  - **Example:** after a transaction is successful or fails a Modal opens with the result.
 - [`<ModalButton />`](?path=/story/components-feedback-modals-modalbutton--playground)
   - Used the majority of the time when we need a modal to pop up when a user clicks something (a button)
   - **Example:** when the preferences icon in the navbar is clicked a modal pops up containing .
 
 # ModalButton
-`<ModalButton>` is the primary Modal component used in the application. It is a button that opens a modal when clicked. It is built off of `<Modal />`.
+`<ModalButton>` opens a modal when clicked. It is based on `<Modal />`.
 * `title` is the title of the modal.
-* `renderButton` is the button that opens the modal. It is a function that takes a `open` boolean and returns a JSX element.
+* `renderButton` is the button that opens the modal. It is a function that takes an `open` boolean and returns a JSX element.
 
 ## Imports
 ```tsx
@@ -25,7 +25,7 @@ import ModalButton, { ModalButtonProps } from '@terra-station-ui/components/feed
 ```
 
 ## Simple Example:
-The most common use case is to use `<ModalButton>` to display a [`<Button />`](?path=/docs/components-general-button--docs) that opens the modal.
+You can use `<ModalButton>` to display a [`<Button />`](?path=/docs/components-general-button--docs) that opens the modal.
 ```jsx
   <ModalButton
     title='Modal Title'
@@ -39,7 +39,7 @@ The most common use case is to use `<ModalButton>` to display a [`<Button />`](?
 
 ## Complex Example:
 This more complex example of how the Modal opeerates with other components.
-In this example, `renderButton` is passed [`<Input />`](?path=/docs/components-form-components-input--docs) which has an `actionButton` that is an Icon that takes `open` from `renderButton` as its `onClick` prop.
+In this example, `renderButton` is passed [`<Input />`](?path=/docs/components-form-components-input--docs) which has an `actionButton` that gets `open` from `renderButton` as its `onClick` prop.
 ```jsx
   <ModalButton
     title='Modal Title'
@@ -61,5 +61,5 @@ In this example, `renderButton` is passed [`<Input />`](?path=/docs/components-f
 
 ## Playground - ModalButton
 <Canvas of={ModalButtonStories.Playground} />
-***These controls will control the actual Modal and not change anything with the Button.***
+***These controls control the actual Modal and do not change the Button.***
 <Controls of={ModalButtonStories.Playground} />

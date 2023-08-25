@@ -11,7 +11,7 @@ const meta: Meta<InputInLineProps> = {
   title: 'Components/Inputs/InLine/Stories',
   component: InputInLine,
   argTypes: {
-    inLineLabel: {
+    label: {
       control: {
         type: 'text'
       },
@@ -21,7 +21,7 @@ const meta: Meta<InputInLineProps> = {
         type: { summary: 'string' },
       }
     },
-    inLineExtra: {
+    extra: {
       control: {
         disable: true
       },
@@ -43,7 +43,6 @@ const meta: Meta<InputInLineProps> = {
   },
   parameters: { ...DEFAULT_PARAMS },
   decorators: [Decorator],
-
 } as Meta;
 
 export default meta;
@@ -63,7 +62,7 @@ export default meta;
 export const Default: StoryObj<InputInLineProps> = {
   render: () => (
     <InputInLine
-      inLineLabel={'To'}
+      label={'To'}
       placeholder='Primary input'
     />
   ),
@@ -77,8 +76,8 @@ export const Default: StoryObj<InputInLineProps> = {
 export const WithTextExtra: StoryObj<InputInLineProps> = {
   render: () => (
     <InputInLine
-      inLineLabel={'To'}
-      inLineExtra={'extra'}
+      label={'To'}
+      extra={'extra'}
       placeholder='Primary input'
     />
   ),
@@ -94,8 +93,8 @@ const ExampleComponent = () => {
 
   return (
     <InputInLine
-      inLineLabel={'To'}
-      inLineExtra={
+      label={'To'}
+      extra={
         <Paste
           onPaste={(text) => setValue(text)}
         />
