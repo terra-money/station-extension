@@ -7,7 +7,7 @@ import { Read } from "components/token"
 import { getIsNativeMsgFromExternal, TxRequest } from "../utils"
 import Message from "./Message"
 import styles from "./TxDetails.module.scss"
-import { useNativeDenoms } from "data/token"
+import { useNativeDenoms, DEFAULT_NATIVE_DECIMALS } from "data/token"
 
 const TxDetails = ({ origin, timestamp, tx }: TxRequest) => {
   const { msgs, memo, fee, chainID } = tx
@@ -15,7 +15,13 @@ const TxDetails = ({ origin, timestamp, tx }: TxRequest) => {
   const { t } = useTranslation()
   const network = useNetwork()
   const readNativeDenom = useNativeDenoms()
-  const { decimals } = readNativeDenom(network[chainID].baseAsset)
+
+  let decimals = DEFAULT_NATIVE_DECIMALS
+
+  if (network[chainID]) {
+    const nativeDenomResponse = readNativeDenom(network[chainID].baseAsset)
+    decimals = nativeDenomResponse?.decimals ?? DEFAULT_NATIVE_DECIMALS
+  }
 
   const fees = fee?.amount.toData()
   const contents = [
