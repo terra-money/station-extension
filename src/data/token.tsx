@@ -83,6 +83,13 @@ export const WithTokenItem = ({ token, chainID, children }: Props) => {
 /* helpers */
 export const getIcon = (path: string) => `${ASSETS}/icon/svg/${path}`
 
+export enum TokenType {
+  IBC = "ibc",
+  GAMM = "gamm",
+  FACTORY = "factory",
+  STRIDE = "stride",
+}
+
 export const useNativeDenoms = () => {
   const { whitelist, ibcDenoms } = useWhitelist()
   const { list: cw20 } = useCustomTokensCW20()
@@ -98,25 +105,30 @@ export const useNativeDenoms = () => {
   ): TokenItem & { isNonWhitelisted?: boolean } {
     let tokenType = ""
     if (denom.startsWith("ibc/")) {
-      tokenType = "ibc"
+      tokenType = TokenType.IBC
     } else if (denom.startsWith("factory/")) {
-      tokenType = "factory"
+      tokenType = TokenType.FACTORY
     } else if (denom.startsWith("gamm/")) {
-      tokenType = "gamm"
+      tokenType = TokenType.GAMM
       decimals = GAMM_TOKEN_DECIMALS
+    } else if (
+      denom.startsWith("stu") &&
+      (!chainID || chainID === "stride-1")
+    ) {
+      tokenType = TokenType.STRIDE
     }
 
     let fixedDenom = ""
     switch (tokenType) {
-      case "ibc":
+      case TokenType.IBC:
         fixedDenom = `${readDenom(denom).substring(0, 5)}...`
         break
 
-      case "gamm":
+      case TokenType.GAMM:
         fixedDenom = gammTokens.get(denom) ?? readDenom(denom)
         break
 
-      case "factory": {
+      case TokenType.FACTORY:
         const factoryParts = denom.split(/[/:]/)
         let tokenAddress = ""
         if (factoryParts.length >= 2) {
@@ -124,14 +136,17 @@ export const useNativeDenoms = () => {
         }
         fixedDenom = tokenAddress
         break
-      }
+
+      case TokenType.STRIDE:
+        fixedDenom = `st${denom.replace("stu", "").toUpperCase()}`
+        break
 
       default:
-        fixedDenom = readDenom(denom)
+        fixedDenom = readDenom(denom) || denom
     }
 
     let factoryIcon
-    if (tokenType === "factory") {
+    if (tokenType === TokenType.FACTORY) {
       const tokenAddress = denom.split(/[/:]/)[1]
       const chainID = getChainIDFromAddress(tokenAddress, networks)
       if (chainID) {
@@ -139,7 +154,7 @@ export const useNativeDenoms = () => {
       }
     }
 
-    if (tokenType === "gamm") {
+    if (tokenType === TokenType.GAMM) {
       factoryIcon = OSMO_ICON
     }
 
@@ -170,6 +185,7 @@ export const useNativeDenoms = () => {
     ) {
       return {
         ...whitelist[networkName][ibcToken?.token],
+        type: tokenType,
         // @ts-expect-error
         chains: [ibcToken?.chainID],
       }
@@ -197,6 +213,10 @@ export const useNativeDenoms = () => {
       }
     }
 
+    const CHAIN_ICON =
+      networks[chainID ?? ""]?.icon ||
+      "https://assets.terra.dev/icon/svg/Terra.svg"
+
     return (
       cw20.find(({ token }) => denom === token) ?? {
         // default token icon
@@ -205,11 +225,12 @@ export const useNativeDenoms = () => {
         name: fixedDenom,
         type: tokenType,
         icon:
-          tokenType === "ibc"
+          (tokenType === TokenType.IBC
             ? "https://assets.terra.dev/icon/svg/IBC.svg"
-            : tokenType === "factory" || tokenType === "gamm"
-            ? factoryIcon
-            : "https://assets.terra.dev/icon/svg/Terra.svg",
+            : tokenType === TokenType.STRIDE
+            ? "https://station-assets.terra.dev/img/chains/Stride.png"
+            : (tokenType === TokenType.FACTORY || TokenType.GAMM) &&
+              factoryIcon) || CHAIN_ICON,
         decimals,
         isNonWhitelisted: true,
       }
