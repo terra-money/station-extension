@@ -1,3 +1,5 @@
+import { linkTo } from '@storybook/addon-links';
+
 export const RightArrow = ({ style }: { style: object }) => {
   return (
     <svg
@@ -18,8 +20,6 @@ export const RightArrow = ({ style }: { style: object }) => {
     </svg>
   );
 };
-
-import { linkTo } from '@storybook/addon-links';
 
 interface DocsLinkProps {
   linkToRoute: string

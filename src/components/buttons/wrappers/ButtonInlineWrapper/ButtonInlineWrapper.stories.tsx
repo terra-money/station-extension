@@ -1,4 +1,4 @@
-import type { Meta, StoryFn, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import ButtonInlineWrapper, { ButtonInlineWrapperProps } from './ButtonInlineWrapper';
 import { ReactComponent as TrashCan } from 'assets/icon/TrashCan.svg';
 import { ReactComponent as Stake } from 'assets/icon/Stake.svg';
@@ -16,28 +16,6 @@ const meta: Meta<ButtonInlineWrapperProps> = {
       }
     },
   },
-  parameters: {
-    controls: {
-      hideNoControlsWarning: true,
-      expanded: true,
-    },
-    backgrounds: {
-      disable: true,
-    }
-  },
-  decorators: [
-    (Story: StoryFn) => (
-      <div className="story__decorator" style={{
-        padding: '48px 24px',
-        backgroundColor: 'var(--token-dark-200)',
-        margin: '-20px -10px',
-        borderRadius: '8px',
-        fontSize: 'var(--token-font-size-small)'
-      }}>
-        <Story />
-      </div>
-    ),
-  ],
 } as Meta;
 
 export default meta;

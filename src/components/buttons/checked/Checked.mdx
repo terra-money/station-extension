@@ -77,15 +77,17 @@ import { CheckedButton } from "@terra-money/station-ui/components/buttons";
 const [activeIndex, setActiveIndex] = useState(1);
 
 return (
-    <div style={{ width: '342px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-    {seedPhrase.split(' ').map((word, index) => (
-                  <CheckedButton
-          key={index}
-          active={activeIndex === index}
-          label={word}
-          onClick={() => setActiveIndex(index)}
-        />
-            ))}
+
+<div style={{ width: '342px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+{seedPhrase.split(' ').map((word, index) => (
+<CheckedButton
+key={index}
+active={activeIndex === index}
+label={word}
+onClick={() => setActiveIndex(index)}
+/>
+))}
+
   </div>
 )
   `} />

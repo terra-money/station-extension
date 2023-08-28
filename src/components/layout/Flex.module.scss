@@ -1,0 +1,33 @@
+// @import "scss/mixins";
+
+.flex {
+  // @include flex;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.column {
+  // @include flex-column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-direction: column;
+}
+
+.inline {
+  // @include inline-flex;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* align */
+.start {
+  justify-content: flex-start;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
