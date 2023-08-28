@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 import ValidatorButton, { ValidatorButtonProps } from './ValidatorButton';
 
 const meta: Meta<ValidatorButtonProps> = {
@@ -33,17 +31,6 @@ const meta: Meta<ValidatorButtonProps> = {
       }
     }
   },
-  parameters: {
-    controls: {
-      hideNoControlsWarning: true,
-      expanded: true,
-    },
-    backgrounds: {
-      disable: true,
-    },
-  },
-  decorators: [Decorator],
-
 } as Meta;
 
 export default meta;

@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 import Checkbox, { CheckboxProps } from './Checkbox';
 
 const meta: Meta<CheckboxProps> = {
@@ -25,9 +23,6 @@ const meta: Meta<CheckboxProps> = {
       }
     },
   },
-  parameters: { ...DEFAULT_PARAMS },
-  decorators: [Decorator],
-
 } as Meta;
 
 export default meta;

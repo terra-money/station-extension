@@ -1,8 +1,6 @@
 import type { StoryObj, Meta } from '@storybook/react';
 import ModalButton, { ModalButtonProps } from './ModalButton';
 import { Button } from 'components/buttons';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 
 const meta: Meta<ModalButtonProps> = {
   title: 'Components/Feedback/Modals/ModalButton',
@@ -76,8 +74,6 @@ const meta: Meta<ModalButtonProps> = {
       }
     },
   },
-  parameters: { ...DEFAULT_PARAMS },
-  decorators: [Decorator],
 } as Meta;
 
 export default meta;

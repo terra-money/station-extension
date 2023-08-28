@@ -4,8 +4,6 @@ import Modal, { ModalProps } from './Modal';
 import { InputWrapper } from 'components/form helpers/wrappers/InputWrapper/InputWrapper';
 import { Input } from 'components/inputs';
 import { SubmitButton } from 'components';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 
 import styles from './Modal.module.scss';
 
@@ -81,9 +79,6 @@ const meta: Meta<ModalProps> = {
       }
     },
   },
-  parameters: { ...DEFAULT_PARAMS },
-  decorators: [Decorator],
-
 } as Meta;
 
 export default meta;

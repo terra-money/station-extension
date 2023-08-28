@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import LoadingCircular from '.';
 import { CircularProgressProps } from '@mui/material/CircularProgress';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 
 const meta: Meta = {
   title: 'Components/Feedback/Loading Circular',
@@ -33,8 +31,6 @@ const meta: Meta = {
       }
     },
   },
-  parameters: { ...DEFAULT_PARAMS },
-  decorators: [Decorator],
 };
 
 export default meta;

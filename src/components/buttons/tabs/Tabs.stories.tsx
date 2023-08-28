@@ -1,15 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Tabs, { TabsProps } from './Tabs';
 import { useState } from 'react';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 
 const meta: Meta<TabsProps> = {
   title: 'Components/Buttons/Tabs/Tabs Only',
   component: Tabs,
   argTypes: {},
-  parameters: { ...DEFAULT_PARAMS },
-  decorators: [Decorator],
 } as Meta;
 
 export default meta;

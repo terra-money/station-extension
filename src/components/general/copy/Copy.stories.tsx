@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 import Copy, { CopyProps } from './Copy';
 
 const meta: Meta<CopyProps> = {
@@ -36,9 +34,6 @@ const meta: Meta<CopyProps> = {
       }
     },
   },
-  decorators: [Decorator],
-
-  parameters: { ...DEFAULT_PARAMS },
 };
 
 export default meta;

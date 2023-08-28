@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import CheckedButton, { CheckedButtonProps } from './CheckedButton';
 import { useState } from 'react';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 
 const meta: Meta<CheckedButtonProps> = {
   title: 'Components/Buttons/Checked/CheckedButton',
@@ -27,9 +25,6 @@ const meta: Meta<CheckedButtonProps> = {
       }
     },
   },
-  parameters: { ...DEFAULT_PARAMS },
-  decorators: [Decorator],
-
 } as Meta;
 
 export default meta;

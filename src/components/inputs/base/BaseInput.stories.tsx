@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 import { ReactComponent as WalletIcon } from 'assets/icon/Wallet16.svg';
 import Input, { InputProps } from './Input';
 
@@ -38,9 +36,6 @@ const meta: Meta<InputProps> = {
       }
     },
   },
-  parameters: { ...DEFAULT_PARAMS },
-  decorators: [Decorator],
-
 } as Meta;
 
 export default meta;

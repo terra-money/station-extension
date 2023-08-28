@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 import { ReactComponent as SmallCircleCheck } from 'assets/icon/SmallCircleCheck.svg';
 import { ReactComponent as TrashCan } from 'assets/icon/TrashCan.svg';
 import Button, { ButtonConfig } from './Button';
@@ -51,8 +49,6 @@ const meta: Meta<ButtonConfig> = {
       description: 'Adds an icon to the Button.',
     },
   },
-  parameters: { ...DEFAULT_PARAMS },
-  decorators: [Decorator],
 } as Meta;
 
 export default meta;

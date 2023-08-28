@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 import AssetSelectorFrom, { AssetSelectorFromProps } from './AssetSelectorFrom';
 import AssetSelectorTo, { AssetSelectorToProps } from './AssetSelectorTo';
 import { ReactComponent as WalletIcon } from 'assets/icon/Wallet16.svg';
@@ -12,8 +10,6 @@ const meta: Meta<AssetSelectorFromProps> = {
   title: 'Components/Inputs/AssetSelector/Stories',
   component: AssetSelectorFrom,
   argTypes: {},
-  parameters: { ...DEFAULT_PARAMS },
-  decorators: [Decorator],
 } as Meta;
 
 export default meta;

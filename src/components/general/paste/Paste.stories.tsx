@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 import Paste, { PasteProps } from './Paste';
 // import { Input, FormItem } from 'components/Form Components'
 import { Input } from 'components/inputs';
@@ -48,9 +46,6 @@ const meta: Meta<PasteProps> = {
       }
     },
   },
-  decorators: [Decorator],
-
-  parameters: { ...DEFAULT_PARAMS },
 } as Meta;
 
 export default meta;

@@ -2,8 +2,6 @@
 // import AddIcon from '@mui/icons-material/Add';
 // import RemoveIcon from '@mui/icons-material/Remove';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 
 // import Form, { FormArrow, FormGroup, FormItem, FormGroupProps } from './Form';
 // import { Input, Select, Checkbox } from 'components/Form Components';
@@ -17,9 +15,6 @@ import { Input } from 'components/inputs'
 const meta: Meta = {
   title: 'Components/Form/Stories',
   component: Form,
-  parameters: { ...DEFAULT_PARAMS },
-  decorators: [Decorator],
-
 } as Meta;
 
 export default meta;

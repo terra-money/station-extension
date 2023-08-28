@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 // import { ReactComponent as WalletIcon } from 'assets/icon/Wallet16.svg';
 import InputInLine, { InputInLineProps } from './InputInLine';
 import Paste from 'components/general/paste/Paste';
@@ -41,8 +39,6 @@ const meta: Meta<InputInLineProps> = {
       }
     },
   },
-  parameters: { ...DEFAULT_PARAMS },
-  decorators: [Decorator],
 } as Meta;
 
 export default meta;

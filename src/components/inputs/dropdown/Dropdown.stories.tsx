@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 // import Input, { InputProps } from './Input';
 import StandardDropdown, { StandardDropdownProps } from './Dropdown';
 
@@ -8,8 +6,6 @@ const meta: Meta<StandardDropdownProps> = {
   title: 'Components/Inputs/Dropdown/Stories',
   component: StandardDropdown,
   argTypes: {},
-  parameters: { ...DEFAULT_PARAMS },
-  decorators: [Decorator],
 } as Meta;
 
 export default meta;

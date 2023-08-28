@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 import ButtonInlineWrapper, { ButtonInlineWrapperProps } from './ButtonInlineWrapper';
 import { ReactComponent as TrashCan } from 'assets/icon/TrashCan.svg';
 import { ReactComponent as Stake } from 'assets/icon/Stake.svg';
@@ -18,9 +16,6 @@ const meta: Meta<ButtonInlineWrapperProps> = {
       }
     },
   },
-  parameters: { ...DEFAULT_PARAMS },
-  decorators: [Decorator],
-
 } as Meta;
 
 export default meta;

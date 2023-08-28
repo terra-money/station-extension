@@ -1,5 +1,4 @@
 import { linkTo } from '@storybook/addon-links';
-import { StoryFn } from '@storybook/react';
 
 export const RightArrow = ({ style }: { style: object }) => {
   return (
@@ -21,8 +20,6 @@ export const RightArrow = ({ style }: { style: object }) => {
     </svg>
   );
 };
-
-
 
 interface DocsLinkProps {
   linkToRoute: string
@@ -63,15 +60,3 @@ export const RequiredText = () => (
     *required*
   </span>
 );
-
-export const Decorator = (Story: StoryFn) => (
-    <div className="story__decorator" style={{
-      padding: '48px 24px',
-      backgroundColor: 'var(--token-dark-200)',
-      margin: '-20px -10px',
-      borderRadius: '8px',
-      fontSize: 'var(--token-font-size-small)'
-    }}>
-      <Story />
-    </div>
-  );

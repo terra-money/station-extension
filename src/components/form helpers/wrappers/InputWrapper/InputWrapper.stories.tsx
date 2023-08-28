@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Decorator } from "DocsHelpers"
-import { DEFAULT_PARAMS } from 'Constants';
 import { InputWrapper, InputWrapperProps } from './InputWrapper';
 import { Input } from 'components/inputs';
 
@@ -9,8 +7,6 @@ import { ReactComponent as WalletIcon } from 'assets/icon/Wallet16.svg';
 const meta: Meta = {
   title: 'Components/Form Helpers/Wrappers/InputWrapper',
   component: InputWrapper,
-  parameters: { ...DEFAULT_PARAMS },
-  decorators: [Decorator],
 
 } as Meta;
 
