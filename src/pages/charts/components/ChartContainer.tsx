@@ -13,6 +13,8 @@ export const LOADING = {
   style: { margin: CHART_HEIGHT / 4 },
 }
 
+const cx = classNames.bind(styles)
+
 interface Props extends ChartProps {
   /* response */
   result?: ChartDataItem[]
@@ -33,9 +35,7 @@ const ChartContainer = (props: Props) => {
 
   const renderTotal = () => {
     if (!total)
-      return (
-        <h1 className={classNames(styles.title, "muted")}>{t("Loading...")}</h1>
-      )
+      return <h1 className={cx(styles.title, "muted")}>{t("Loading...")}</h1>
 
     return (
       <h1 className={styles.title}>

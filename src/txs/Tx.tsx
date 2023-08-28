@@ -34,6 +34,7 @@ import ConnectWallet from "app/sections/ConnectWallet"
 import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
 import { isWallet, useAuth } from "auth"
 import { PasswordError } from "auth/scripts/keystore"
+import { SubmitButton } from "station-ui"
 
 import { toInput, CoinInput, calcTaxes } from "./utils"
 import styles from "./Tx.module.scss"
@@ -41,6 +42,8 @@ import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { getShouldTax, useTaxCap, useTaxRate } from "data/queries/treasury"
 import { useNativeDenoms } from "data/token"
+
+const cx = classNames.bind(styles)
 
 interface Props<TxValues> {
   /* Only when the token is paid out of the balance held */
@@ -313,7 +316,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
     return (
       <button
         type="button"
-        className={classNames({ muted: !isMax })}
+        className={cx({ muted: !isMax })}
         onClick={onClick ? () => onClick(max) : () => setIsMax(!isMax)}
       >
         <Flex gap={4} start>
@@ -392,7 +395,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
                   amount={balanceAfterTx}
                   token={baseDenom ?? token}
                   decimals={decimals}
-                  className={classNames(insufficient && "danger")}
+                  className={cx(insufficient && "danger")}
                 />
               </dd>
             </>
@@ -415,9 +418,9 @@ function Tx<TxValues>(props: Props<TxValues>) {
       {!addresses ? (
         <ConnectWallet
           renderButton={(open) => (
-            <Submit type="button" onClick={open}>
+            <SubmitButton type="button" onClick={open} variant="primary">
               {t("Connect wallet")}
-            </Submit>
+            </SubmitButton>
           )}
         />
       ) : (
@@ -439,12 +442,12 @@ function Tx<TxValues>(props: Props<TxValues>) {
             )
           )}
 
-          <Submit
+          <SubmitButton
             disabled={!estimatedGas || !!disabled || !!walletError}
-            submitting={submitting}
-          >
-            {submitting ? submittingLabel : disabled}
-          </Submit>
+            loading={submitting}
+            variant="primary"
+            label={submitting ? submittingLabel : disabled || t("Submit")}
+          />
         </Grid>
       )}
     </>

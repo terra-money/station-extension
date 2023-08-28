@@ -193,7 +193,7 @@ const useSwapUtils = () => {
       }>(simulation.contract, { pool: {} })
 
       const { pool, rate } = parsePool(params, assets)
-      const { return_amount: value, commission_amount } = calcXyk(amount, pool)
+      const { return_amount: value, commission_amount } = calcyk(amount, pool)
       const payload = commission_amount
       const ratio = toPrice(new BigNumber(amount).div(value))
       return { mode, query, value, ratio, rate, payload }
@@ -372,7 +372,7 @@ const parsePool = (
   return { pool, rate }
 }
 
-const calcXyk = (amount: Amount, [offerPool, askPool]: [Amount, Amount]) => {
+const calcyk = (amount: Amount, [offerPool, askPool]: [Amount, Amount]) => {
   const returnAmount = new BigNumber(amount)
     .times(askPool)
     .div(new BigNumber(amount).plus(offerPool))

@@ -3,6 +3,8 @@ import classNames from "classnames"
 import { Flex } from "components/layout"
 import styles from "./VoteProgress.module.scss"
 
+const cx = classNames.bind(styles)
+
 const Flag = ({ left, children }: PropsWithChildren<{ left: string }>) => {
   return (
     <div className={styles.flag} style={{ left }}>
@@ -24,7 +26,7 @@ const VoteProgress = ({ flag, list }: Props) => {
 
       <Flex className={styles.track} start>
         {list.map(({ percent: width, color }) => {
-          const className = classNames(styles.item, `bg-${color}`)
+          const className = cx(styles.item, `bg-${color}`)
           return <span className={className} style={{ width }} key={color} />
         })}
       </Flex>

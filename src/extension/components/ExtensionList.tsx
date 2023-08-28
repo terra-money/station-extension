@@ -8,6 +8,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert"
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import { addressFromWords } from "utils/bech32"
 
+const cx = classNames.bind(styles)
+
 interface DefaultItemProps {
   children: ReactNode
   description?: string | { "330": string }
@@ -36,9 +38,7 @@ const ExtensionList = ({ list }: { list: Item[] }) => {
         ? addressFromWords(description["330"])
         : description
     const props = {
-      className: active
-        ? classNames(styles.item, styles.item__active)
-        : styles.item,
+      className: active ? cx(styles.item, styles.item__active) : styles.item,
       children: (
         <>
           <Flex gap={8}>
