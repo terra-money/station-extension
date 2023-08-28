@@ -1,4 +1,4 @@
-import { Fragment } from "react"
+import { Fragment, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { useNetwork } from "data/wallet"
 import { Grid } from "components/layout"
@@ -7,7 +7,7 @@ import { Read } from "components/token"
 import { getIsNativeMsgFromExternal, TxRequest } from "../utils"
 import Message from "./Message"
 import styles from "./TxDetails.module.scss"
-import { useNativeDenoms } from "data/token"
+import { useNativeDenoms, DEFAULT_NATIVE_DECIMALS } from "data/token"
 
 const TxDetails = ({ origin, timestamp, tx }: TxRequest) => {
   const { msgs, memo, fee, chainID } = tx
@@ -15,7 +15,13 @@ const TxDetails = ({ origin, timestamp, tx }: TxRequest) => {
   const { t } = useTranslation()
   const network = useNetwork()
   const readNativeDenom = useNativeDenoms()
-  const { decimals } = readNativeDenom(network[chainID].baseAsset)
+
+  const decimals = useMemo(() => {
+    return (
+      readNativeDenom(network[chainID]?.baseAsset)?.decimals ??
+      DEFAULT_NATIVE_DECIMALS
+    )
+  }, [network, chainID, readNativeDenom])
 
   const fees = fee?.amount.toData()
   const contents = [
