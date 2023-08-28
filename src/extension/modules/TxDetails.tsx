@@ -1,4 +1,4 @@
-import { Fragment } from "react"
+import { Fragment, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { useNetwork } from "data/wallet"
 import { Grid } from "components/layout"
@@ -16,12 +16,12 @@ const TxDetails = ({ origin, timestamp, tx }: TxRequest) => {
   const network = useNetwork()
   const readNativeDenom = useNativeDenoms()
 
-  let decimals = DEFAULT_NATIVE_DECIMALS
-
-  if (network[chainID]) {
-    const nativeDenomResponse = readNativeDenom(network[chainID].baseAsset)
-    decimals = nativeDenomResponse?.decimals ?? DEFAULT_NATIVE_DECIMALS
-  }
+  const decimals = useMemo(() => {
+    return (
+      readNativeDenom(network[chainID]?.baseAsset)?.decimals ??
+      DEFAULT_NATIVE_DECIMALS
+    )
+  }, [network, chainID, readNativeDenom])
 
   const fees = fee?.amount.toData()
   const contents = [
