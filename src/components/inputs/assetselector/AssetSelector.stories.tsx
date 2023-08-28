@@ -1,40 +1,19 @@
-import type { Meta, StoryFn, StoryObj } from '@storybook/react';
-// import AssetSelector, { AssetSelectorFromProps } from './AssetSelectorFrom';
+import type { Meta, StoryObj } from '@storybook/react';
+import { Decorator } from "DocsHelpers"
+import { DEFAULT_PARAMS } from 'Constants';
 import AssetSelectorFrom, { AssetSelectorFromProps } from './AssetSelectorFrom';
 import AssetSelectorTo, { AssetSelectorToProps } from './AssetSelectorTo';
 import { ReactComponent as WalletIcon } from 'assets/icon/Wallet16.svg';
-import { walletBalance, tokensBySymbol, tokensPerDollar } from './fakedata';
+import { walletBalance, tokensBySymbol, tokenPrices } from './fakedata';
 import { useState } from 'react';
 import { useForm } from "react-hook-form";
 
 const meta: Meta<AssetSelectorFromProps> = {
   title: 'Components/Inputs/AssetSelector/Stories',
   component: AssetSelectorFrom,
-  argTypes: {
-
-  },
-  parameters: {
-    controls: {
-      hideNoControlsWarning: true,
-      expanded: true,
-    },
-    backgrounds: {
-      disable: true,
-    }
-  },
-  decorators: [
-    (Story: StoryFn) => (
-      <div className="story__decorator" style={{
-        padding: '48px 24px',
-        backgroundColor: 'var(--token-dark-200)',
-        margin: '-20px -10px',
-        borderRadius: '8px',
-        fontSize: 'var(--token-font-size-small)'
-      }}>
-        <Story />
-      </div>
-    ),
-  ],
+  argTypes: {},
+  parameters: { ...DEFAULT_PARAMS },
+  decorators: [Decorator],
 } as Meta;
 
 export default meta;
@@ -45,8 +24,7 @@ const StorybookExample = () => {
 
   const { register, handleSubmit, watch } = useForm();
   const onSubmit = handleSubmit(data => console.log(data));
-
-  const toAmount = parseFloat(watch("fromamount")) * tokensPerDollar[fromSymbol] / tokensPerDollar[toSymbol];
+  const toAmount = parseFloat(watch("fromAmount")) * tokenPrices[fromSymbol] / tokenPrices[toSymbol];
 
   return (
     <form onSubmit={onSubmit}>
@@ -64,8 +42,8 @@ const StorybookExample = () => {
         onSymbolClick={() => {}}
         chainIcon={tokensBySymbol[fromSymbol].chainIcon}
         chainName={tokensBySymbol[fromSymbol].chainName}
-        amountInputAttrs={{...register("fromamount", { required: true, valueAsNumber: true })}}
-        currencyAmount={`$${(parseFloat(watch("fromamount")) * tokensPerDollar[fromSymbol]).toFixed(6)}`}
+        amountInputAttrs={{...register("fromAmount", { required: true, valueAsNumber: true })}}
+        currencyAmount={`$${(parseFloat(watch("fromAmount")) * tokenPrices[fromSymbol]).toFixed(6)}`}
       />
       <br />
       <br />
@@ -85,7 +63,7 @@ const StorybookExample = () => {
         chainIcon={tokensBySymbol[toSymbol].chainIcon}
         chainName={tokensBySymbol[toSymbol].chainName}
         amount={`${toAmount}`}
-        currencyAmount={`$${(toAmount * tokensPerDollar[toSymbol]).toFixed(6)}`}
+        currencyAmount={`$${(toAmount * tokenPrices[toSymbol]).toFixed(6)}`}
       />
     </form>
   );
@@ -120,7 +98,7 @@ export const From: StoryObj<AssetSelectorFromProps> = {
         chainIcon={tokensBySymbol.LUNA.chainIcon}
         chainName={tokensBySymbol.LUNA.chainName}
         amountInputAttrs={{ value: fromAmount }}
-        currencyAmount={`$${(parseFloat(fromAmount) * tokensPerDollar.LUNA).toFixed(6)}`}
+        currencyAmount={`$${(parseFloat(fromAmount) * tokenPrices.LUNA).toFixed(6)}`}
       />
     )
   },
@@ -148,8 +126,8 @@ export const To: StoryObj<AssetSelectorFromProps> = {
         onSymbolClick={() => {}}
         chainIcon={tokensBySymbol.axlUSDC.chainIcon}
         chainName={tokensBySymbol.axlUSDC.chainName}
-        amount={`${(parseFloat(fromAmount) * tokensPerDollar.LUNA / tokensPerDollar.axlUSDC).toFixed(6)}`}
-        currencyAmount={`$${(parseFloat(fromAmount) * tokensPerDollar.LUNA).toFixed(6)}`}
+        amount={`${(parseFloat(fromAmount) * tokenPrices.LUNA / tokenPrices.axlUSDC).toFixed(6)}`}
+        currencyAmount={`$${(parseFloat(fromAmount) * tokenPrices.LUNA).toFixed(6)}`}
       />
     )
   },

@@ -1,8 +1,9 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 // import { useState } from 'react';
 // import AddIcon from '@mui/icons-material/Add';
 // import RemoveIcon from '@mui/icons-material/Remove';
-import type { Meta, StoryFn, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
+import { Decorator } from "DocsHelpers"
+import { DEFAULT_PARAMS } from 'Constants';
 
 // import Form, { FormArrow, FormGroup, FormItem, FormGroupProps } from './Form';
 // import { Input, Select, Checkbox } from 'components/Form Components';
@@ -16,28 +17,9 @@ import { Input } from 'components/inputs'
 const meta: Meta = {
   title: 'Components/Form/Stories',
   component: Form,
-  parameters: {
-    controls: {
-      hideNoControlsWarning: true,
-      expanded: true,
-    },
-    backgrounds: {
-      disable: true,
-    }
-  },
-  decorators: [
-    (Story: StoryFn) => (
-      <div className="story__decorator" style={{
-        padding: '48px 24px',
-        backgroundColor: 'var(--token-dark-200)',
-        margin: '-20px -10px',
-        borderRadius: '8px',
-        fontSize: 'var(--token-font-size-small)'
-      }}>
-        <Story />
-      </div>
-    ),
-  ],
+  parameters: { ...DEFAULT_PARAMS },
+  decorators: [Decorator],
+
 } as Meta;
 
 export default meta;

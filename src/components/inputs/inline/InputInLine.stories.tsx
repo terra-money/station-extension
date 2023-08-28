@@ -1,4 +1,6 @@
-import type { Meta, StoryFn, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
+import { Decorator } from "DocsHelpers"
+import { DEFAULT_PARAMS } from 'Constants';
 // import { ReactComponent as WalletIcon } from 'assets/icon/Wallet16.svg';
 import InputInLine, { InputInLineProps } from './InputInLine';
 import Paste from 'components/general/paste/Paste';
@@ -9,7 +11,7 @@ const meta: Meta<InputInLineProps> = {
   title: 'Components/Inputs/InLine/Stories',
   component: InputInLine,
   argTypes: {
-    inLineLabel: {
+    label: {
       control: {
         type: 'text'
       },
@@ -19,7 +21,7 @@ const meta: Meta<InputInLineProps> = {
         type: { summary: 'string' },
       }
     },
-    inLineExtra: {
+    extra: {
       control: {
         disable: true
       },
@@ -39,28 +41,8 @@ const meta: Meta<InputInLineProps> = {
       }
     },
   },
-  parameters: {
-    controls: {
-      hideNoControlsWarning: true,
-      expanded: true,
-    },
-    backgrounds: {
-      disable: true,
-    }
-  },
-  decorators: [
-    (Story: StoryFn) => (
-      <div className="story__decorator" style={{
-        padding: '48px 24px',
-        backgroundColor: 'var(--token-dark-200)',
-        margin: '-20px -10px',
-        borderRadius: '8px',
-        fontSize: 'var(--token-font-size-small)'
-      }}>
-        <Story />
-      </div>
-    ),
-  ],
+  parameters: { ...DEFAULT_PARAMS },
+  decorators: [Decorator],
 } as Meta;
 
 export default meta;
@@ -80,7 +62,7 @@ export default meta;
 export const Default: StoryObj<InputInLineProps> = {
   render: () => (
     <InputInLine
-      inLineLabel={'To'}
+      label={'To'}
       placeholder='Primary input'
     />
   ),
@@ -94,8 +76,8 @@ export const Default: StoryObj<InputInLineProps> = {
 export const WithTextExtra: StoryObj<InputInLineProps> = {
   render: () => (
     <InputInLine
-      inLineLabel={'To'}
-      inLineExtra={'extra'}
+      label={'To'}
+      extra={'extra'}
       placeholder='Primary input'
     />
   ),
@@ -111,8 +93,8 @@ const ExampleComponent = () => {
 
   return (
     <InputInLine
-      inLineLabel={'To'}
-      inLineExtra={
+      label={'To'}
+      extra={
         <Paste
           onPaste={(text) => setValue(text)}
         />

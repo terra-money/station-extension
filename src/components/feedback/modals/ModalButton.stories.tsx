@@ -1,7 +1,8 @@
-import type { StoryObj, Meta, StoryFn } from '@storybook/react';
+import type { StoryObj, Meta } from '@storybook/react';
 import ModalButton, { ModalButtonProps } from './ModalButton';
-// import { Button } from 'components/General';
 import { Button } from 'components/buttons';
+import { Decorator } from "DocsHelpers"
+import { DEFAULT_PARAMS } from 'Constants';
 
 const meta: Meta<ModalButtonProps> = {
   title: 'Components/Feedback/Modals/ModalButton',
@@ -75,28 +76,8 @@ const meta: Meta<ModalButtonProps> = {
       }
     },
   },
-  parameters: {
-    controls: {
-      hideNoControlsWarning: true,
-      expanded: true,
-    },
-    backgrounds: {
-      disable: true,
-    }
-  },
-  decorators: [
-    (Story: StoryFn) => (
-      <div className="story__decorator" style={{
-        padding: '48px 24px',
-        backgroundColor: 'var(--token-dark-200)',
-        margin: '-20px -10px',
-        borderRadius: '8px',
-        fontSize: 'var(--token-font-size-small)'
-      }}>
-        <Story />
-      </div>
-    ),
-  ],
+  parameters: { ...DEFAULT_PARAMS },
+  decorators: [Decorator],
 } as Meta;
 
 export default meta;
@@ -108,7 +89,7 @@ export const Playground: StoryObj = {
       renderButton={(open) =>
         <Button
           onClick={open}
-          color='primary'
+          variant='primary'
           label='Open Modal'
         />
       }

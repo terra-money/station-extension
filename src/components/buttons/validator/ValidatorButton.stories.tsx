@@ -1,4 +1,6 @@
-import type { Meta, StoryFn, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
+import { Decorator } from "DocsHelpers"
+import { DEFAULT_PARAMS } from 'Constants';
 import ValidatorButton, { ValidatorButtonProps } from './ValidatorButton';
 
 const meta: Meta<ValidatorButtonProps> = {
@@ -40,19 +42,8 @@ const meta: Meta<ValidatorButtonProps> = {
       disable: true,
     },
   },
-  decorators: [
-    (Story: StoryFn) => (
-      <div className="story__decorator" style={{
-        padding: '48px 24px',
-        backgroundColor: 'var(--token-dark-200)',
-        margin: '-20px -10px',
-        borderRadius: '8px',
-        fontSize: 'var(--token-font-size-small)'
-      }}>
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [Decorator],
+
 } as Meta;
 
 export default meta;
