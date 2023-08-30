@@ -4,44 +4,45 @@ import styles from './Flex.module.scss';
 
 const cx = classNames.bind(styles);
 
-interface Props {
+export interface FlexProps {
   gap?: number
   className?: string
-  start?: boolean
   wrap?: boolean
   style?: CSSProperties
+  justify?: 'center' | 'flex-start' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly'
+  align?: 'center' | 'flex-start' | 'flex-end' | 'baseline' | 'stretch'
 }
 
-export const InlineFlex = (props: PropsWithChildren<Props>) => {
-  const { gap, start, wrap, className, children } = props;
+export const InlineFlex = (props: PropsWithChildren<FlexProps>) => {
+  const { gap, wrap, className, children, style, justify, align } = props;
   return (
     <span
-      className={cx(styles.inline, { start, wrap }, className)}
-      style={{ gap }}
+      className={cx(styles.inline, { wrap }, className)}
+      style={{ ...style, gap, justifyContent: justify, alignItems: align }}
     >
       {children}
     </span>
   );
 };
 
-export const FlexColumn = (props: PropsWithChildren<Props>) => {
-  const { gap, start, wrap, className, children } = props;
+export const FlexColumn = (props: PropsWithChildren<FlexProps>) => {
+  const { gap, wrap, className, children, style, justify, align } = props;
   return (
     <div
-      className={cx(styles.column, { start, wrap }, className)}
-      style={{ gap }}
+      className={cx(styles.column, { wrap }, className)}
+      style={{ ...style, gap, justifyContent: justify, alignItems: align }}
     >
       {children}
     </div>
   );
 };
 
-const Flex = (props: PropsWithChildren<Props>) => {
-  const { gap, start, wrap, className, children, style } = props;
+const Flex = (props: PropsWithChildren<FlexProps>) => {
+  const { gap, wrap, className, children, style, justify, align } = props;
   return (
     <div
-      className={cx(styles.flex, { start, wrap }, className)}
-      style={{ ...style, gap }}
+      className={cx(styles.flex, { wrap }, className)}
+      style={{ ...style, gap, justifyContent: justify, alignItems: align }}
     >
       {children}
     </div>
