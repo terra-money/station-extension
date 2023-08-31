@@ -3,13 +3,13 @@ import { Button } from 'components/buttons';
 import styles from './SubmitButton.module.scss';
 
 export interface SubmitButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant: 'primary' | 'secondary' | 'warning'
+  variant?: 'primary' | 'secondary' | 'warning'
   label?: string
   loading?: boolean
   icon?: ReactNode
 }
 
-const SubmitButton = ({variant, label, loading, icon, children, ...attrs}: SubmitButtonProps) => {
+const SubmitButton = ({ variant = 'primary', label, loading, icon, children, ...attrs }: SubmitButtonProps) => {
   return (
     <Button
       {...attrs}

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import AssetSelectorFrom, { AssetSelectorFromProps } from './AssetSelectorFrom';
-import AssetSelectorTo, { AssetSelectorToProps } from './AssetSelectorTo';
+import AssetSelectorTo from './AssetSelectorTo';
 import { ReactComponent as WalletIcon } from 'assets/icon/Wallet16.svg';
 import { walletBalance, tokensBySymbol, tokenPrices } from './fakedata';
 import { useState } from 'react';
@@ -15,8 +15,8 @@ const meta: Meta<AssetSelectorFromProps> = {
 export default meta;
 
 const StorybookExample = () => {
-  const [fromSymbol, setFromSymbol] = useState('LUNA');
-  const [toSymbol, setToSymbol] = useState('axlUSDC');
+  const [fromSymbol, ] = useState('LUNA');
+  const [toSymbol, ] = useState('axlUSDC');
 
   const { register, handleSubmit, watch } = useForm();
   const onSubmit = handleSubmit(data => console.log(data));
