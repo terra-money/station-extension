@@ -25,8 +25,8 @@ import { isBroadcastingState, latestTxState } from "data/queries/tx"
 import { useIsWalletEmpty } from "data/queries/bank"
 
 import { Pre } from "components/general"
-import { Flex, Grid } from "components/layout"
-import { FormError, Submit, Select, Input, FormItem } from "components/form"
+import { Grid } from "components/layout"
+import { FormError, Select, Input, FormItem } from "components/form"
 import { Modal } from "components/feedback"
 import { Details } from "components/display"
 import { Read } from "components/token"
@@ -34,8 +34,7 @@ import ConnectWallet from "app/sections/ConnectWallet"
 import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
 import { isWallet, useAuth } from "auth"
 import { PasswordError } from "auth/scripts/keystore"
-import { SubmitButton } from "station-ui"
-
+import { Submit } from "components/form"
 import { toInput, CoinInput, calcTaxes } from "./utils"
 import styles from "./Tx.module.scss"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
@@ -319,7 +318,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
         className={cx({ muted: !isMax })}
         onClick={onClick ? () => onClick(max) : () => setIsMax(!isMax)}
       >
-        <Flex gap={4} start>
+        <Flex gap={4}>
           <AccountBalanceWalletIcon
             fontSize="inherit"
             className={styles.icon}
@@ -442,12 +441,12 @@ function Tx<TxValues>(props: Props<TxValues>) {
             )
           )}
 
-          <SubmitButton
+          <Submit
             disabled={!estimatedGas || !!disabled || !!walletError}
-            loading={submitting}
-            variant="primary"
-            label={submitting ? submittingLabel : disabled || t("Submit")}
-          />
+            submitting={submitting}
+          >
+            {submitting ? submittingLabel : disabled}
+          </Submit>
         </Grid>
       )}
     </>

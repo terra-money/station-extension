@@ -34,7 +34,7 @@
     "bech32": "^2.0.0",
     "bignumber.js": "^9.0.2",
     "buffer": "^6.0.3",
-    "classnames": "^2.3.1",
+    "classnames": "^2.3.2",
     "crypto-js": "^4.1.1",
     "date-fns": "^2.28.0",
     "i18next": "^21.8.14",
@@ -62,7 +62,6 @@
     "secp256k1": "^4.0.3",
     "semver": "^7.3.7",
     "sentence-case": "^3.0.4",
-    "station-ui": "file:../../station-ui-0.0.0.tgz",
     "xss": "1.0.11"
   },
   "devDependencies": {
