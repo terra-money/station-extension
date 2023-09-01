@@ -82,7 +82,7 @@
     "@types/secp256k1": "^4.0.3",
     "@types/semver": "^7.3.9",
     "@types/webextension-polyfill": "^0.10.1",
-    "copy-webpack-plugin": "^4.5.4",
+    "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",
     "extension-port-stream": "^2.0.1",
     "husky": "^8.0.1",
