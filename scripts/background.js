@@ -1,7 +1,5 @@
 const PortStream = require("extension-port-stream")
-if (typeof importScripts !== "undefined") {
-  importScripts("browser-polyfill.js")
-}
+const browser = require("webextension-polyfill/dist/browser-polyfill.js");
 
 const connectRemote = (remotePort) => {
   if (remotePort.name !== "TerraStationExtension") {

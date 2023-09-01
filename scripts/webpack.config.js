@@ -1,6 +1,5 @@
 const path = require("path")
 const webpack = require("webpack")
-const CopyWebpackPlugin = require("copy-webpack-plugin")
 
 module.exports = {
   mode: process.env.NODE_ENV || "development",
@@ -16,11 +15,6 @@ module.exports = {
     new webpack.DefinePlugin({
       global: {},
     }),
-    new CopyWebpackPlugin([
-      {
-        from: "node_modules/webextension-polyfill/dist/browser-polyfill.js",
-      },
-    ]),
   ],
   module: {
     rules: [
@@ -28,6 +22,13 @@ module.exports = {
         test: /\.tsx?$/,
         use: "ts-loader",
         exclude: /node_modules/,
+      },
+      {
+        test: /\.js$/,
+        include: /node_modules\/webextension-polyfill/,
+        use: {
+          loader: "babel-loader",
+        },
       },
     ],
   },

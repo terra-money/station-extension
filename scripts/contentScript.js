@@ -1,3 +1,4 @@
+import browser from "webextension-polyfill/dist/browser-polyfill.js"
 import PortStream from "extension-port-stream"
 import PostMessageStream from "post-message-stream"
 
