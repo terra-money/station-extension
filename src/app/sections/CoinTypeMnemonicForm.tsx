@@ -104,16 +104,9 @@ const CoinTypeMnemonicForm = ({ close }: { close: () => void }) => {
     <Form onSubmit={handleSubmit(submit)}>
       <FormItem>
         <FormHelp>
-          <p>Station now supports Injective!</p>
           <p>
-            Adding Injective support will allow Station users to be able to
-            carry out transactions utilizing an Injective address tied to their
-            Station wallet.
-          </p>
-          <p>
-            If you are using an older version of Station, you will be prompted
-            for your mnemonic seed. This key will be used in generating a unique
-            Injective address which will be tied to your Station wallet.
+            This wallet was created before version 7.2.0. Provide your mnemonic
+            to generate an injective address for this wallet.
           </p>
         </FormHelp>
       </FormItem>
