@@ -33,6 +33,8 @@ import { useNetworks } from "app/InitNetworks"
 import { useTheme } from "data/settings/Theme"
 import { useReplaceKeplr } from "utils/localStorage"
 import EnableCoinType from "app/sections/EnableCoinType"
+import UpdateNotification from "./update/UpdateNotification"
+import ChangeLogModal from "./update/ChangeLogModal"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -104,6 +106,8 @@ const App = () => {
           <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
         </RequestContainer>
       </InitBankBalance>
+      <ChangeLogModal />
+      <UpdateNotification />
     </ErrorBoundary>
   )
 }
