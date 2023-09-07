@@ -25,7 +25,7 @@ import { isBroadcastingState, latestTxState } from "data/queries/tx"
 import { useIsWalletEmpty } from "data/queries/bank"
 
 import { Pre } from "components/general"
-import { Grid } from "components/layout"
+import { Flex, Grid } from "components/layout"
 import { FormError, Select, Input, FormItem } from "components/form"
 import { Modal } from "components/feedback"
 import { Details } from "components/display"
@@ -417,9 +417,9 @@ function Tx<TxValues>(props: Props<TxValues>) {
       {!addresses ? (
         <ConnectWallet
           renderButton={(open) => (
-            <SubmitButton type="button" onClick={open} variant="primary">
+            <Submit type="button" onClick={open}>
               {t("Connect wallet")}
-            </SubmitButton>
+            </Submit>
           )}
         />
       ) : (
