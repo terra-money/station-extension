@@ -17,10 +17,15 @@ const TxDetails = ({ origin, timestamp, tx }: TxRequest) => {
   const readNativeDenom = useNativeDenoms()
 
   const decimals = useMemo(() => {
-    return (
-      readNativeDenom(network[chainID]?.baseAsset)?.decimals ??
-      DEFAULT_NATIVE_DECIMALS
-    )
+    const baseAsset = network[chainID]?.baseAsset
+
+    if (typeof baseAsset !== "string") {
+      return DEFAULT_NATIVE_DECIMALS
+    }
+
+    const nativeDenom = readNativeDenom(baseAsset)
+
+    return nativeDenom?.decimals ?? DEFAULT_NATIVE_DECIMALS
   }, [network, chainID, readNativeDenom])
 
   const fees = fee?.amount.toData()
