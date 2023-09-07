@@ -1,0 +1,16 @@
+@import "scss/mixins";
+@import "scss/font_mixins";
+
+.ledger__modal {
+  p {
+    width: 100%;
+    text-align: center;
+    @include Medium;
+  }
+
+  .animation {
+    width: 500px;
+    margin: 0 auto;
+    margin-bottom: .6rem;
+  }
+}
