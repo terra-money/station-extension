@@ -240,6 +240,7 @@ const TFMSwapForm = ({ chainID }: { chainID: string }) => {
   return (
     <Tx {...tx} disabled={disabled}>
       {({ max, fee, submit }) => (
+        // @ts-expect-error
         <Form onSubmit={handleSubmit(submit.fn)}>
           <FormWarning>
             {t("Leave coins to pay fees for subsequent transactions")}

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form"
 import { Grid } from "components/layout"
 import { Form, FormItem, FormWarning, Submit, Value } from "components/form"
 import { Checkbox, Input } from "components/form"
-import validate from "../../scripts/validate"
+import validate from "auth/scripts/validate"
 import { TooltipIcon } from "components/display"
 import { useCreateWallet, Values as DefaultValues } from "./CreateWalletWizard"
 
