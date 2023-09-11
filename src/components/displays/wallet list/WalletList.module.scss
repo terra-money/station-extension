@@ -1,0 +1,42 @@
+@import "scss/font_mixins";
+
+.wallet__list__container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  .active__wallet {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .active__title {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0px 8px;
+      @include X-Small;
+      color: var(--token-light-white);
+
+      span {
+        display: block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: var(--token-primary-500);
+      }
+    }
+  }
+
+  .other__wallets {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .other__title {
+      padding: 0px 8px;
+      @include X-Small;
+      color: var(--token-light-100);
+    }
+  }
+}

@@ -1,0 +1,95 @@
+@import 'scss/font_mixins.scss';
+
+.accordion {
+  display: flex;
+  justify-content: center;
+  align-items: normal;
+  flex-direction: column;
+
+  .item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 0 18px;
+    border: 1px solid var(--token-dark-700);
+    height: 54px;
+    cursor: pointer;
+    user-select: none;
+
+    .text {
+      @include Small;
+      color: var(--token-light-white);
+    }
+
+    .track {
+      border: solid 2px var(--token-light-100);
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+
+      .indicator {
+        background: var(--token-light-white);
+        border-radius: 50%;
+        width: 8px;
+        height: 8px;
+
+        opacity: 0;
+        transition: opacity 100ms;
+      }
+
+      &.checked {
+        &.track {
+          border: solid 2px var(--token-light-white);
+        }
+
+        .indicator {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    padding: 0 18px;
+    overflow-y: auto;
+    max-height: 0;
+    opacity: 0;
+    transition:
+      opacity 0.5s ease-in,
+      max-height 0.4s ease-in,
+      padding-top 0.3s ease-in 0.2s,
+      padding-bottom 0.4s ease 0.2s;
+    border: 1px solid var(--token-dark-700);
+    border-top: none;
+    background-color: var(--token-dark-300);
+
+    &.opened {
+      opacity: 1;
+      max-height: 150px;
+      padding: 16px 18px;
+      transition:
+        opacity 0.5s ease-in 0.2s,
+        max-height 0.4s ease-in,
+        padding-top 0.3s ease-in,
+        padding-bottom 0.4s ease;
+    }
+
+    .network {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      @include X-Small;
+      color: var(--token-light-white);
+
+      img {
+        height: 12px;
+      }
+    }
+  }
+}

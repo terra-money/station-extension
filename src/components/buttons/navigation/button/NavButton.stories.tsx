@@ -50,7 +50,7 @@ export const Playground: StoryObj<NavButtonStoryObj> = {
   args: {
     label: 'Nav Button',
     subLabel: 'Sub Label',
-    icon: <SmallCircleCheck />,
+    icon: <SmallCircleCheck fill='var(--token-light-white)' />,
     displayIcon: true,
   },
   argTypes: {
@@ -89,7 +89,7 @@ export const IconAndLabel: StoryObj<NavButtonStoryObj> = {
   render: ({ label }: { label: string }) =>
     <NavButton
       label={label}
-      icon={<SmallCircleCheck />}
+      icon={<SmallCircleCheck fill='var(--token-light-white)' />}
     />,
   args: {
     label: 'Nav Button',
@@ -115,7 +115,7 @@ export const IconAndLabelAndSubLabel: StoryObj<NavButtonStoryObj> = {
     <NavButton
       label={label}
       subLabel={subLabel}
-      icon={<SmallCircleCheck />}
+      icon={<SmallCircleCheck fill='var(--token-light-white)' />}
     />,
   args: {
     label: 'Nav Button',

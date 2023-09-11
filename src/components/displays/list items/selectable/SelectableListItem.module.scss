@@ -1,0 +1,88 @@
+@import "scss/font_mixins.scss";
+
+.selectable__li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  padding: 18px;
+  background-color: var(--token-dark-700);
+  border-radius: 8px;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  .chain__icon__container {
+    position: relative;
+
+    .chain__icon {
+      border-radius: 50%;
+      height: 32px;
+      width: 32px;
+    }
+  }
+
+  .selectable__details__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    .selectable__details {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .selectable__name {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        @include Medium;
+        color: var(--token-light-300);
+      }
+
+      .selectable__address {
+        @include X-Small;
+        color: var(--token-light-300);
+      }
+    }
+
+    .selectable__settings {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      margin: 6px;
+    }
+
+    svg {
+      margin-right: 6px;
+    }
+  }
+
+  &.active {
+    .selectable__details__container {
+      .selectable__name {
+        color: var(--token-light-white);
+      }
+
+      .selectable__address {
+        color: var(--token-light-100);
+      }
+    }
+  }
+
+  &.address__li {
+    .selectable__details__container {
+      .selectable__name {
+        color: var(--token-light-white);
+      }
+
+      .selectable__address {
+        color: var(--token-light-100);
+      }
+    }
+  }
+}
