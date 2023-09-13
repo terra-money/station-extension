@@ -32,6 +32,7 @@
   @media (max-width: 600px) {
     padding: 48px 20px;
     width: calc(100% - 40px);
+    overflow-y: scroll;
   }
 
   &.minimal {
