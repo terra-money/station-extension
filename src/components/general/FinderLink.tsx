@@ -7,6 +7,8 @@ import { ExternalLink } from "./External"
 import { getChainIDFromAddress } from "utils/bech32"
 import styles from "./FinderLink.module.scss"
 
+const cx = classNames.bind(styles)
+
 interface Props extends HTMLAttributes<HTMLAnchorElement> {
   value?: string
   /* path (default: address) */
@@ -28,7 +30,7 @@ const FinderLink = forwardRef(
     const value =
       rest.value || (typeof children === "string" ? (children as string) : "")
 
-    const className = classNames(attrs.className, styles.link)
+    const className = cx(attrs.className, styles.link)
     const explorer =
       networks[chainID ?? getChainIDFromAddress(value, networks) ?? ""]
         ?.explorer

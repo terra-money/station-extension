@@ -7,6 +7,8 @@ import { Flex } from "components/layout"
 import styles from "./LastHeight.module.scss"
 import { useChainID } from "data/wallet"
 
+const cx = classNames.bind(styles)
+
 const LastHeight = () => {
   const { t } = useTranslation()
   const { block } = useTerraObserver()
@@ -17,7 +19,7 @@ const LastHeight = () => {
   return (
     <Flex gap={4} className={styles.component} start>
       <div
-        className={classNames(
+        className={cx(
           styles.indicator,
           height ? styles.success : styles.loading
         )}

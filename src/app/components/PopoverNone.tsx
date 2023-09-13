@@ -7,6 +7,7 @@ interface Props {
   className?: string
   footer?: { children: ReactNode; onClick: () => void; to?: string }
 }
+const cx = classNames.bind(styles)
 
 const PopoverNone = (props: PropsWithChildren<Props>) => {
   const { className, children, footer } = props
@@ -19,7 +20,7 @@ const PopoverNone = (props: PropsWithChildren<Props>) => {
   }
 
   return (
-    <div className={classNames(styles.component, className)}>
+    <div className={cx(styles.component, className)}>
       <div className={styles.inner}>{children}</div>
       {renderFooter()}
     </div>
