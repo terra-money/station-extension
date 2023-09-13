@@ -8,8 +8,13 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["browser-polyfill.js", "contentScript.js"],
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "browser-polyfill.js",
+        "contentScript.js"
+      ],
       "run_at": "document_start",
       "all_frames": true
     }
@@ -23,13 +28,25 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["inpage.js", "keplr.js", "index.html"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "inpage.js",
+        "keplr.js",
+        "index.html"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ],
   "icons": {
     "128": "icon-128.png",
     "180": "icon-180.png"
   },
-  "permissions": ["storage", "alarms"]
+  "permissions": [
+    "storage",
+    "alarms"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'"
+  }
 }

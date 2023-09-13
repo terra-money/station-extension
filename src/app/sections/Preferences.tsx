@@ -19,13 +19,28 @@ import SelectTheme from "./SelectTheme"
 import LCDSetting from "./LCDSetting"
 import { useTheme } from "data/settings/Theme"
 import AdvancedSettings from "./AdvancedSettings"
+import IdentitySetting from "identity/components/IdentitySetting"
+import { CreateIdentity } from "identity/components/CreateIdentity"
+import { LocalStorageServices } from "identity/services"
+import { useActiveIdentity } from "identity/data/Identity"
+import { CreateCredential } from "identity/components/CreateCredential"
 
-type Routes = "network" | "lang" | "currency" | "theme" | "lcd" | "advanced"
+export type Routes =
+  | "network"
+  | "lang"
+  | "currency"
+  | "theme"
+  | "lcd"
+  | "advanced"
+  | "identity"
+  | "newidentity"
+  | "createcredential"
 
 interface SettingsPage {
   key: Routes
   tab: string
   value?: string
+  label?: string
   disabled?: boolean
   className?: string
 }
@@ -38,6 +53,7 @@ const Preferences = () => {
   const { id: currencyId } = useCurrency()
   const networkName = useNetworkName()
   const { name } = useTheme()
+  const { activeIdentity } = useActiveIdentity()
 
   const routes: Record<Routes, SettingsPage> = {
     network: {
@@ -67,6 +83,13 @@ const Preferences = () => {
       value: capitalize(name),
       disabled: false,
     },
+    identity: {
+      key: "identity",
+      tab: t("Identities"),
+      value: activeIdentity?.did ?? "",
+      label: activeIdentity?.name ?? "",
+      disabled: false,
+    },
     advanced: {
       key: "advanced",
       tab: t("Advanced"),
@@ -78,6 +101,16 @@ const Preferences = () => {
       key: "lcd",
       tab: t("Custom LCD"),
       // hide button on the main settings page
+      disabled: true,
+    },
+    newidentity: {
+      key: "newidentity",
+      tab: t("New Identity"),
+      disabled: true,
+    },
+    createcredential: {
+      key: "createcredential",
+      tab: t("Create Credential"),
       disabled: true,
     },
   }
@@ -106,15 +139,21 @@ const Preferences = () => {
         return <LCDSetting />
       case "advanced":
         return <AdvancedSettings />
+      case "identity":
+        return <IdentitySetting setPage={setPage} />
+      case "newidentity":
+        return <CreateIdentity setPage={setPage} />
+      case "createcredential":
+        return <CreateCredential setPage={setPage} />
       default:
         return (
           <FlexColumn gap={8}>
             {Object.values(routes ?? {})
               .filter(({ disabled }) => !disabled)
-              .map(({ tab, value, key, className }) => (
+              .map(({ tab, value, key, className, label }) => (
                 <SettingsButton
                   title={tab}
-                  value={value}
+                  value={label ?? value}
                   key={key}
                   className={className}
                   onClick={() => setPage(key)}
@@ -132,9 +171,18 @@ const Preferences = () => {
           <div>
             <button
               className={styles.back}
-              onClick={() =>
-                page === "lcd" ? setPage("network") : setPage(null)
-              }
+              onClick={() => {
+                switch (page) {
+                  case "lcd":
+                    setPage("network")
+                    break
+                  case "newidentity":
+                    setPage("identity")
+                    break
+                  default:
+                    setPage(null)
+                }
+              }}
             >
               <BackIcon width={18} height={18} />
             </button>

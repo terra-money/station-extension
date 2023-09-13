@@ -299,3 +299,28 @@ browser.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === "keep-alive-alarm") {
   }
 })
+
+/* For Polygon ID signing and verification */
+chrome.runtime.onMessage.addListener(async request => {
+  console.log(request);
+  if (request.type === "OpenAuth") {
+    if (tabId) {
+      await chrome.windows.remove(currentWindow.id);
+    }
+    const data = request.href.includes('?i_m=')
+      ? { type: 'base64', payload: request.href.split('?i_m=')[1] }
+      : { type: 'link', payload: decodeURIComponent(request.href.split('?request_uri=')[1]) };
+
+    chrome.windows.create({
+      url: chrome.runtime.getURL(`index.html#/identity/auth?type=${data.type}&payload=${data.payload}`),
+      type: "popup",
+      focused: true,
+      width: 390,
+      height: 600,
+      top: 0,
+      left: request.windowWidth - 390,
+    }, (tab) => {
+      tabId = tab;
+    });
+  }
+});

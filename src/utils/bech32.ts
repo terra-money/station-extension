@@ -19,6 +19,9 @@ export function getChainIDFromAddress(
 }
 
 export function addressFromWords(words: string, prefix = "terra") {
+  if (!words) {
+    console.log(words)
+  }
   return bech32.encode(prefix, Buffer.from(words, "hex"))
 }
 

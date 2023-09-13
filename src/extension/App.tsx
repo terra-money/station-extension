@@ -33,6 +33,7 @@ import { useNetworks } from "app/InitNetworks"
 import { useTheme } from "data/settings/Theme"
 import { useReplaceKeplr } from "utils/localStorage"
 import EnableCoinType from "app/sections/EnableCoinType"
+import { IdentityAuth } from "identity/components/IdentityAuth"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -81,6 +82,8 @@ const App = () => {
     { path: "/swap", element: <SwapTx /> },
     { path: "/multisig/sign", element: <SignMultisigTxPage /> },
     { path: "/multisig/post", element: <PostMultisigTxPage /> },
+
+    { path: "/identity/auth/*", element: <IdentityAuth /> },
 
     /* 404 */
     { path: "*", element: <Front /> },
