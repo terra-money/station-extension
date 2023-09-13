@@ -6,8 +6,7 @@ import { queryKey } from "../query"
 export const OSMOSIS_API_URL = "https://api-osmosis.imperator.co"
 
 export const GAMM_TOKEN_DECIMALS = 18
-export const OSMO_ICON =
-  "https://station-assets.terra.dev/img/chains/Osmosis.svg"
+export const OSMO_ICON = "https://assets.station.money/img/chains/Osmosis.svg"
 
 interface IOsmosisPoolAsset {
   symbol: string
