@@ -9,8 +9,6 @@ module.exports = {
   entry: {
     contentScript: path.join(__dirname, "contentScript.js"),
     background: path.join(__dirname, "background.js"),
-    inpage: path.join(__dirname, "inpage.js"),
-    keplr: path.join(__dirname, "keplr.js"),
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -22,18 +20,6 @@ module.exports = {
       },
     ]),
   ],
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        use: "ts-loader",
-        exclude: /node_modules/,
-      },
-    ],
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js"],
-  },
   output: {
     path: path.join(__dirname, "..", "build"),
     filename: "[name].js",
