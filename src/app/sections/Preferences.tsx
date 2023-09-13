@@ -1,33 +1,45 @@
 import { useTranslation } from "react-i18next"
 import SettingsIcon from "@mui/icons-material/Settings"
 import { ReactComponent as BackIcon } from "styles/images/icons/BackButton.svg"
-import { FlexColumn } from "components/layout"
+import { FlexColumn } from "station-ui"
 import { sandbox } from "auth/scripts/env"
 import HeaderIconButton from "../components/HeaderIconButton"
 import NetworkSetting from "./NetworkSetting"
 import LanguageSetting from "./LanguageSetting"
 import CurrencySetting from "./CurrencySetting"
-import { ModalButton } from "components/feedback"
-import SettingsButton from "components/layout/SettingsButton"
+import { ModalButton, NavButton } from "station-ui"
 import { useNetworkName } from "data/wallet"
 import { useCurrency } from "data/settings/Currency"
 import { Languages } from "config/lang"
 import { capitalize } from "@mui/material"
-import { useState } from "react"
+import { ReactElement, useState } from "react"
 import styles from "./Preferences.module.scss"
-import SelectTheme from "./SelectTheme"
+// import SelectTheme from "./SelectTheme"
 import LCDSetting from "./LCDSetting"
-import { useTheme } from "data/settings/Theme"
+// import { useTheme } from "data/settings/Theme"
 import AdvancedSettings from "./AdvancedSettings"
+import ContactsIcon from "@mui/icons-material/Contacts"
+import { ReactComponent as ManageAssets } from "styles/images/icons/ManageAssets.svg"
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 
-type Routes = "network" | "lang" | "currency" | "theme" | "lcd" | "advanced"
+type Routes =
+  | "network"
+  | "lang"
+  | "currency"
+  | "lcd"
+  | "advanced"
+  | "addressBook"
+  | "manageTokens"
+  | "lockWallet"
+  | "security"
 
 interface SettingsPage {
   key: Routes
   tab: string
   value?: string
-  disabled?: boolean
-  className?: string
+  hide?: boolean
+  icon?: ReactElement
+  seperator?: boolean
 }
 
 const Preferences = () => {
@@ -37,14 +49,31 @@ const Preferences = () => {
   const { i18n } = useTranslation()
   const { id: currencyId } = useCurrency()
   const networkName = useNetworkName()
-  const { name } = useTheme()
+  // const { name } = useTheme()
 
   const routes: Record<Routes, SettingsPage> = {
     network: {
       key: "network",
       tab: t("Network"),
       value: capitalize(networkName),
-      disabled: !sandbox,
+      hide: !sandbox,
+      seperator: true,
+    },
+    addressBook: {
+      key: "addressBook",
+      tab: t("Address Book"),
+      icon: <ContactsIcon />,
+    },
+    manageTokens: {
+      key: "manageTokens",
+      tab: t("Manage Tokens"),
+      icon: <ManageAssets />,
+    },
+    lockWallet: {
+      key: "lockWallet",
+      tab: t("Lock Wallet"),
+      icon: <LockOutlinedIcon />,
+      seperator: true,
     },
     lang: {
       key: "lang",
@@ -53,97 +82,90 @@ const Preferences = () => {
         Object.values(Languages ?? {}).find(
           ({ value }) => value === i18n.language
         )?.label ?? Languages.en.label,
-      disabled: false,
     },
     currency: {
       key: "currency",
       tab: t("Currency"),
       value: currencyId,
-      disabled: false,
     },
-    theme: {
-      key: "theme",
-      tab: t("Theme"),
-      value: capitalize(name),
-      disabled: false,
+    security: {
+      key: "security",
+      tab: t("Security"),
+      icon: <LockOutlinedIcon />,
+      seperator: true,
     },
+    // theme: {
+    //   key: "theme",
+    //   tab: t("Theme"),
+    //   value: capitalize(name),
+    // },
     advanced: {
       key: "advanced",
       tab: t("Advanced"),
-      value: "",
-      disabled: false,
-      className: styles.advanced,
     },
     lcd: {
       key: "lcd",
       tab: t("Custom LCD"),
-      // hide button on the main settings page
-      disabled: true,
+      hide: true,
     },
   }
 
-  function renderSettings() {
+  const SettingsMenu = () => (
+    <FlexColumn gap={8}>
+      {Object.values(routes)
+        .filter(({ hide }) => !hide)
+        .map(({ tab, value, key, icon, seperator }) => (
+          <>
+            <NavButton
+              label={tab}
+              value={value}
+              key={key}
+              icon={icon}
+              onClick={() => setPage(key)}
+            />
+            {seperator && <hr />}
+          </>
+        ))}
+    </FlexColumn>
+  )
+
+  const renderSettings = () => {
     switch (page) {
       case "network":
-        return (
-          <FlexColumn gap={16}>
-            <NetworkSetting />
-            <div className={styles.button__container}>
-              <SettingsButton
-                title="Custom LCD"
-                onClick={() => setPage("lcd")}
-              />
-            </div>
-          </FlexColumn>
-        )
+        return <NetworkSetting extraOnClick={() => setPage("lcd")} />
       case "currency":
         return <CurrencySetting />
       case "lang":
         return <LanguageSetting />
-      case "theme":
-        return <SelectTheme />
+      // case "theme":
+      //   return <SelectTheme />
       case "lcd":
         return <LCDSetting />
       case "advanced":
         return <AdvancedSettings />
       default:
-        return (
-          <FlexColumn gap={8}>
-            {Object.values(routes ?? {})
-              .filter(({ disabled }) => !disabled)
-              .map(({ tab, value, key, className }) => (
-                <SettingsButton
-                  title={tab}
-                  value={value}
-                  key={key}
-                  className={className}
-                  onClick={() => setPage(key)}
-                />
-              ))}
-          </FlexColumn>
-        )
+        return <SettingsMenu />
     }
   }
 
+  const renderTitle = () =>
+    page ? (
+      <div>
+        <button
+          className={styles.back}
+          onClick={() => (page === "lcd" ? setPage("network") : setPage(null))}
+        >
+          <BackIcon width={18} height={18} />
+        </button>
+        {routes[page].tab}
+      </div>
+    ) : (
+      t("Settings")
+    )
+
   return (
     <ModalButton
-      title={
-        page ? (
-          <div>
-            <button
-              className={styles.back}
-              onClick={() =>
-                page === "lcd" ? setPage("network") : setPage(null)
-              }
-            >
-              <BackIcon width={18} height={18} />
-            </button>
-            {routes[page].tab}
-          </div>
-        ) : (
-          t("Settings")
-        )
-      }
+      title={renderTitle()}
       renderButton={(open) => (
         <HeaderIconButton
           onClick={() => {
