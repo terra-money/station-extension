@@ -36,7 +36,7 @@ interface SettingsPage {
   key: Routes
   tab: string
   value?: string
-  hide?: boolean
+  hide?: boolean // hide from main menu if subpage
   icon?: ReactElement
   seperator?: boolean
 }
@@ -104,7 +104,7 @@ const Preferences = () => {
     // },
     lcd: {
       key: "lcd",
-      tab: t("Custom LCD"),
+      tab: t("Add LCD Endpoint"),
       hide: true,
     },
   }
@@ -131,7 +131,7 @@ const Preferences = () => {
   const renderSettings = () => {
     switch (page) {
       case "network":
-        return <NetworkSetting extraOnClick={() => setPage("lcd")} />
+        return <NetworkSetting subPageNav={() => setPage("lcd")} />
       case "currency":
         return <CurrencySetting />
       case "lang":
@@ -152,7 +152,7 @@ const Preferences = () => {
       <div>
         <button
           className={styles.back}
-          onClick={() => (page === "lcd" ? setPage("network") : setPage(null))}
+          onClick={() => setPage(page === "lcd" ? "network" : null)}
         >
           <BackIcon width={18} height={18} />
         </button>

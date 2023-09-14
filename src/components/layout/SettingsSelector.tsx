@@ -18,9 +18,7 @@ const SettingsSelector = ({
   // const { deleteCustomChain } = useCustomChains()
 
   const [openAcc, setOpenAcc] = useState<number>()
-
   const { networks } = useNetworks()
-  console.log("networks", Object.values(networks["mainnet"]))
 
   return (
     <RadioList>
@@ -32,10 +30,7 @@ const SettingsSelector = ({
           onClick={() => onChange(value)}
           {...(accordion && {
             isOpen: openAcc === index,
-            setOpenAcc:
-              openAcc === index
-                ? () => setOpenAcc(undefined)
-                : () => setOpenAcc(index),
+            setOpenAcc: () => setOpenAcc(openAcc === index ? undefined : index),
             accContent: Object.values(networks[value]).map(
               ({ name, icon }) => ({ name, icon })
             ),
