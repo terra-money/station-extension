@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import classNames from "classnames";
 import { ReactComponent as DropdownArrowIcon } from 'assets/icon/DropdownArrow.svg';
 import styles from "./Dropdown.module.scss";
@@ -16,13 +16,27 @@ const StandardDropdown = ({
 }: StandardDropdownProps) => {
   const [open, setOpen] = useState(false)
 
+  const ref = useRef<HTMLDivElement>(null)
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (ref.current && !ref.current.contains(event.target as Node)) {
+      setOpen(false)
+    }
+  }
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
+
   const optionsById = options.reduce((acc, option) => {
     acc[option.id] = option
     return acc
   }, {} as Record<string, { id: string; label: string; image?: string }>)
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} ref={ref}>
       <button
         type="button"
         className={styles.selector}

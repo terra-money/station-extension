@@ -1,5 +1,7 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from '@storybook/react';
 import StandardDropdown, { StandardDropdownProps } from './Dropdown';
+import { useState } from 'react';
 
 const meta: Meta<StandardDropdownProps> = {
   title: 'Components/Inputs/Dropdown/Stories',
@@ -21,11 +23,13 @@ export const Default: StoryObj<StandardDropdownProps> = {
       { id: "mars", label: "Mars", image: 'https://station-assets.terra.dev/img/chains/Mars.svg' },
     ];
 
+    const [selectedId, setSelectedId] = useState('terra');
+
     return (
       <StandardDropdown
         options={options}
-        onChange={() => {}}
-        selectedId="terra"
+        onChange={(id) => setSelectedId(id)}
+        selectedId={selectedId}
       />
     )
   },
@@ -44,11 +48,13 @@ export const DefaultTextOnly: StoryObj<StandardDropdownProps> = {
       { id: "mars", label: "Mars" },
     ];
 
+    const [selectedId, setSelectedId] = useState('terra');
+
     return (
       <StandardDropdown
         options={options}
-        onChange={() => {}}
-        selectedId="terra"
+        onChange={(id) => setSelectedId(id)}
+        selectedId={selectedId}
       />
     )
   },
