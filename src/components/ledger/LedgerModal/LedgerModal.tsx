@@ -47,13 +47,15 @@ const LedgerModal = (props: PropsWithChildren<Props>) => {
   }
 
   return (
-    <Modal isOpen={true} closeIcon={<></>} onRequestClose={onRequestClose}>
+    <Modal isOpen={true} onRequestClose={onRequestClose}>
       <section className={styles.ledger__modal}>
-        <Lottie
-          animationData={animations[device][action]}
-          className={styles.animation}
-        />
-        {renderText()}
+        <div className={styles.ledger__container}>
+          <Lottie
+            animationData={animations[device][action]}
+            className={styles.animation}
+          />
+          {renderText()}
+        </div>
       </section>
     </Modal>
   )

@@ -1,16 +1,28 @@
-@import "scss/mixins";
-@import "scss/font_mixins";
+@import 'scss/mixins';
+@import 'scss/font_mixins';
 
 .ledger__modal {
-  p {
-    width: 100%;
-    text-align: center;
-    @include Medium;
-  }
+  height: 100%;
+  overflow-y: hidden;
 
-  .animation {
-    width: 500px;
-    margin: 0 auto;
-    margin-bottom: .6rem;
+  .ledger__container {
+    @include extension {
+      margin-top: 50%;
+      transform: translate(0, -50%);
+    }
+
+    padding-top: 1rem;
+
+    p {
+      width: 100%;
+      text-align: center;
+      @include Medium;
+    }
+
+    .animation {
+      width: 500px;
+      max-width: 100%;
+      margin: 1rem auto;
+    }
   }
 }
