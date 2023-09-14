@@ -1,11 +1,6 @@
 import type { StoryObj, Meta } from '@storybook/react'
 import LedgerModal, { LedgerModalProps } from './LedgerModal'
 // import { FormItem, Input } from 'components/Form Components';
-import { InputWrapper } from 'components/form helpers/wrappers/InputWrapper/InputWrapper'
-import { Input } from 'components/inputs'
-import { SubmitButton } from 'components'
-
-import styles from './Modal.module.scss'
 
 const meta: Meta<LedgerModalProps> = {
   title: 'Components/Ledger/LedgerModal',
