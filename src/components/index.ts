@@ -57,3 +57,8 @@ export type {
   RadioListProps,
   RadioListItemProps,
 } from './displays'
+
+export {
+  CheckBox,
+  Dropdown
+} from './inputs'
