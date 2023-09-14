@@ -27,7 +27,7 @@ import { useInterchainAddresses } from "auth/hooks/useAddress"
 import shuffle from "utils/shuffle"
 
 interface TxValues {
-  input?: number
+  input: number
 }
 
 interface Props {
