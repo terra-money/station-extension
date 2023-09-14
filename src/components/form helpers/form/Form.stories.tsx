@@ -8,7 +8,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 // import { Submit } from 'components/General';
 
 import Form from './Form';
-import { InputWrapper } from '../wrappers/InputWrapper/InputWrapper';
+import { InputWrapper } from '../index';
 import { Input } from 'components/inputs'
 
 // Form

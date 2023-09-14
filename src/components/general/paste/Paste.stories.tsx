@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Paste, { PasteProps } from './Paste';
-// import { Input, FormItem } from 'components/Form Components'
 import { Input } from 'components/inputs';
-import { InputWrapper } from 'components/form helpers/wrappers/InputWrapper/InputWrapper';
+import { InputWrapper } from 'components/form helpers';
 import Copy from 'components/general/copy/Copy';
 import { useState } from 'react';
 

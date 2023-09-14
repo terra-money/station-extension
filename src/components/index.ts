@@ -62,3 +62,9 @@ export {
   CheckBox,
   Dropdown
 } from './inputs'
+
+export {
+  Form,
+  InputWrapper,
+  MultiInputWrapper
+} from './form helpers'
