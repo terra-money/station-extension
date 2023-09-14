@@ -17,7 +17,7 @@ import styles from "./Preferences.module.scss"
 // import SelectTheme from "./SelectTheme"
 import LCDSetting from "./LCDSetting"
 // import { useTheme } from "data/settings/Theme"
-import AdvancedSettings from "./AdvancedSettings"
+// import AdvancedSettings from "./AdvancedSettings"
 import ContactsIcon from "@mui/icons-material/Contacts"
 import { ReactComponent as ManageAssets } from "styles/images/icons/ManageAssets.svg"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
@@ -27,7 +27,6 @@ type Routes =
   | "lang"
   | "currency"
   | "lcd"
-  | "advanced"
   | "addressBook"
   | "manageTokens"
   | "lockWallet"
@@ -99,10 +98,10 @@ const Preferences = () => {
     //   tab: t("Theme"),
     //   value: capitalize(name),
     // },
-    advanced: {
-      key: "advanced",
-      tab: t("Advanced"),
-    },
+    // advanced: {
+    //   key: "advanced",
+    //   tab: t("Advanced"),
+    // },
     lcd: {
       key: "lcd",
       tab: t("Custom LCD"),
@@ -141,8 +140,8 @@ const Preferences = () => {
       //   return <SelectTheme />
       case "lcd":
         return <LCDSetting />
-      case "advanced":
-        return <AdvancedSettings />
+      // case "advanced":
+      //   return <AdvancedSettings />
       default:
         return <SettingsMenu />
     }

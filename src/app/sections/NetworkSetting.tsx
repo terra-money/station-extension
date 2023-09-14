@@ -17,6 +17,7 @@ const NetworkSetting = (props: Props) => {
   return (
     <FlexColumn gap={16}>
       <SettingsSelector
+        accordion
         options={networkOptions}
         value={network}
         onChange={setNetwork}
