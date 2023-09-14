@@ -16,6 +16,7 @@ export interface CopyProps {
   iconOnly?: boolean
   beforeCopyLabel?: string
   afterCopyLabel?: string
+  fillColor?: string
 }
 
 const Copy = ({
@@ -25,13 +26,16 @@ const Copy = ({
   iconOnly = false,
   beforeCopyLabel = 'Copy',
   afterCopyLabel = 'Copied',
+  fillColor = 'var(--token-primary-500)'
 }: CopyProps) => {
   const [copied, setCopied] = useState(false);
+  const iconSize = !iconOnly ? 16 : iconOnlySize ? iconOnlySize : 18;
 
   return (
     <button
       type='button'
       className={cx(styles.button, className)}
+      style={{ color: fillColor }}
       onClick={() => {
         navigator.clipboard.writeText(copyText);
         setCopied(true);
@@ -40,14 +44,20 @@ const Copy = ({
     >
       {copied ? (
         <>
-          <Check style={{ fontSize: !iconOnly ? 16 : iconOnlySize ? iconOnlySize : 18 }} />
+          <Check
+            style={{ fontSize: iconSize }}
+            height={iconSize}
+            width={iconSize}
+          />
           {iconOnly ? null : afterCopyLabel}
         </>
       ) : (
         <>
           <CopyIcon
-            style={{ fontSize: !iconOnly ? 16 : iconOnlySize ? iconOnlySize : 18 }}
-            fill='var(--token-primary-500)'
+            style={{ fontSize: iconSize }}
+            fill={fillColor}
+            height={iconSize}
+            width={iconSize}
           />
           {iconOnly ? null : beforeCopyLabel}
         </>

@@ -1,30 +1,15 @@
-import { useState } from "react"
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
-import classNames from "classnames"
-import styles from "./Dropdown.module.scss"
-
-// interface StandardDropdownProps {
-//   onChange: (chain: string) => void
-//   setNetworkIndex: (index: number) => void
-//   value: string
-//   small?: boolean
-//   networkOptions: { value: string; label: string }[]
-//   networkIndex: number
-// }
+import { useState } from "react";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import classNames from "classnames";
+import styles from "./Dropdown.module.scss";
 
 export interface StandardDropdownProps {
-  options: { id: string; label: string; image: string }[]
+  options: { id: string; label: string; image?: string }[]
   onChange: (id: string) => void
   selectedId: string
 }
 
 const StandardDropdown = ({
-  // networkOptions,
-  // onChange,
-  // value,
-  // small,
-  // networkIndex,
-  // setNetworkIndex,
   options,
   onChange,
   selectedId,
@@ -34,8 +19,7 @@ const StandardDropdown = ({
   const optionsById = options.reduce((acc, option) => {
     acc[option.id] = option
     return acc
-  }, {} as Record<string, { id: string; label: string; image: string }>)
-  console.log("🚀 ~ file: Dropdown.tsx:25 ~ optionsById ~ optionsById:", optionsById)
+  }, {} as Record<string, { id: string; label: string; image?: string }>)
 
   return (
     <div className={styles.container}>
@@ -48,7 +32,15 @@ const StandardDropdown = ({
           setOpen((o) => !o)
         }}
       >
-        <span>{optionsById[selectedId].label}</span>{" "}
+        <span className={styles.selected__wrapper}>
+          {optionsById[selectedId].image && (
+            <img
+              src={optionsById[selectedId].image}
+              alt={optionsById[selectedId].label}
+            />
+          )}
+          <span>{optionsById[selectedId].label}</span>
+        </span>
         <ArrowDropDownIcon style={{ fontSize: 20 }} className={styles.caret} />
       </button>
       {open && (
@@ -58,22 +50,6 @@ const StandardDropdown = ({
               styles.options__container
             )}
           >
-            {/* {networkOptions.map((option, index) => (
-              <button
-                className={option.value === value ? styles.active : ""}
-                key={option.value}
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  onChange(option.value)
-                  setNetworkIndex(index)
-                  setOpen(false)
-                }}
-              >
-                {option.label}
-              </button>
-            ))} */}
-
             {options.map((option) => (
               <button
                 className={option.id === selectedId ? styles.active : ""}
@@ -85,7 +61,15 @@ const StandardDropdown = ({
                   setOpen(false)
                 }}
               >
-                {option.label}
+                <span className={styles.selected__wrapper}>
+                  {option.image && (
+                    <img
+                      src={option.image}
+                      alt={option.label}
+                    />
+                  )}
+                  <span>{option.label}</span>
+                </span>
               </button>
             ))}
           </div>

@@ -17,6 +17,12 @@
   appearance: none;
   width: 100%;
 
+  .selected__wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
   span {
     display: flex;
     @include Medium;
@@ -24,7 +30,6 @@
     img {
       width: 18px;
       height: 18px;
-      margin-right: 8px;
     }
   }
 }
@@ -32,39 +37,39 @@
 .options {
   position: absolute;
   width: 100%;
-  padding: 4px 0;
+  padding: 8px 8px;
   background-color: var(--token-dark-500);
   border: 1px solid var(--token-dark-700);
   border-radius: 8px;
   z-index: 10;
   max-height: 180px;
   box-shadow: 0px 5px 7px 0px #0000009c;
+  top: calc(56px + 8px);
 
   .options__container {
-    margin-left: 6px;
     height: 100%;
     overflow-y: scroll;
-    max-height: 125px;
+    max-height: 150px;
     margin-top: 0;
 
     .active {
       background-color: var(--token-dark-700);
     }
 
-    &::-webkit-scrollbar {
-      width: 12px;
-      display: block;
-    }
+    // &::-webkit-scrollbar {
+    //   width: 12px;
+    //   display: block;
+    // }
 
-    &::-webkit-scrollbar-thumb {
-      border-radius: 16px;
-      background-color: var(--token-dark-700);
-      border: 2px solid var(--token-dark-500);
-    }
+    // &::-webkit-scrollbar-thumb {
+    //   border-radius: 16px;
+    //   background-color: var(--token-dark-700);
+    //   border: 2px solid var(--token-dark-500);
+    // }
 
-    &::-webkit-scrollbar-track {
-      background-color: transparent;
-    }
+    // &::-webkit-scrollbar-track {
+    //   background-color: transparent;
+    // }
   }
 
   button {
@@ -74,16 +79,22 @@
     transition: all .25s;
 
     @include MediumLH;
+    color: var(--token-light-500);
 
     display: flex;
     align-items: center;
     justify-content: flex-start;
     border-radius: 8px;
 
+    .selected__wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     img {
       width: 18px;
       height: 18px;
-      margin-right: 8px;
     }
 
     &:hover {
