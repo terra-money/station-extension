@@ -18,7 +18,7 @@ export const Default: StoryObj<TokenListItemProps> = {
         balance={"420.00"}
         chains={["terra", "axelar"]}
         currency={{ id: 'usd', symbol: '$', name: 'USD' }}
-        tokenImg={"https://c05ccb16.station-assets.pages.dev/img/coins/Luna.svg"}
+        tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
         symbol={"LUNA"}
         price={1}
         change={0.1}
@@ -36,7 +36,7 @@ export const DefaultSingleChain: StoryObj<TokenListItemProps> = {
         balance={"420.00"}
         chains={["terra"]}
         currency={{ id: 'usd', symbol: '$', name: 'USD' }}
-        tokenImg={"https://c05ccb16.station-assets.pages.dev/img/coins/Luna.svg"}
+        tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
         symbol={"LUNA"}
         price={1}
         change={0.1}
@@ -53,11 +53,11 @@ export const ChainDisplay: StoryObj<TokenSingleChainListItemProps> = {
       <TokenSingleChainListItem
         balance={"420.00"}
         currency={{ id: 'usd', symbol: '$', name: 'USD' }}
-        tokenImg={"https://c05ccb16.station-assets.pages.dev/img/coins/Luna.svg"}
+        tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
         symbol={"LUNA"}
         price={1}
         amountNode={<span>420.00</span>}
-        chain={{ icon: "https://c05ccb16.station-assets.pages.dev/img/chains/Terra.svg", label: "Terra" }}
+        chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
       />
     )
   },
@@ -70,11 +70,11 @@ export const SendBack: StoryObj<TokenSingleChainListItemProps> = {
       <TokenSingleChainListItem
         balance={"420.00"}
         currency={{ id: 'usd', symbol: '$', name: 'USD' }}
-        tokenImg={"https://c05ccb16.station-assets.pages.dev/img/coins/Luna.svg"}
+        tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
         symbol={"LUNA"}
         price={1}
         amountNode={<span>420.00</span>}
-        chain={{ icon: "https://c05ccb16.station-assets.pages.dev/img/chains/Terra.svg", label: "Terra" }}
+        chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
         isSendBack
       />
     )
@@ -86,9 +86,9 @@ export const WithChainCheckbox: StoryObj<TokenCheckboxListItemProps> = {
   render: () => {
     return (
       <TokenCheckboxListItem
-        tokenImg={"https://c05ccb16.station-assets.pages.dev/img/coins/Luna.svg"}
+        tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
         symbol={"LUNA"}
-        chain={{ icon: "https://c05ccb16.station-assets.pages.dev/img/chains/Terra.svg", label: "Terra" }}
+        chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
       />
     )
   },

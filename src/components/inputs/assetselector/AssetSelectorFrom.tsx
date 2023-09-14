@@ -1,5 +1,5 @@
-
 import { InputHTMLAttributes, ReactNode } from 'react';
+import { ReactComponent as DropdownArrowIcon } from 'assets/icon/DropdownArrow.svg';
 import styles from './AssetSelector.module.scss';
 
 export interface AssetSelectorFromProps {
@@ -23,7 +23,6 @@ const AssetSelectorFrom = ({
   amountInputAttrs,
   currencyAmount,
 }: AssetSelectorFromProps) => {
-  console.log("🚀 ~ file: AssetSelectorFrom.tsx:26 ~ currencyAmount:", currencyAmount)
   return (
     <div className={styles.asset__selector_wrapper}>
       <div className={styles.header}>
@@ -43,6 +42,7 @@ const AssetSelectorFrom = ({
                 }}
               >
                 {symbol}
+                <DropdownArrowIcon fill="var(--token-light-white)" />
               </button>
             </div>
             <div className={styles.chain__wrapper}>

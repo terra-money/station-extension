@@ -1,6 +1,6 @@
 import { useState } from "react";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import classNames from "classnames";
+import { ReactComponent as DropdownArrowIcon } from 'assets/icon/DropdownArrow.svg';
 import styles from "./Dropdown.module.scss";
 
 export interface StandardDropdownProps {
@@ -41,7 +41,7 @@ const StandardDropdown = ({
           )}
           <span>{optionsById[selectedId].label}</span>
         </span>
-        <ArrowDropDownIcon style={{ fontSize: 20 }} className={styles.caret} />
+        <DropdownArrowIcon className={styles.caret} fill="var(--token-light-white)" />
       </button>
       {open && (
         <div className={styles.options}>

@@ -16,7 +16,7 @@ export const WithChainImg: StoryObj<AddressSelectableListItemProps> = {
         label={"Terra"}
         subLabel={"terra1hod3...pazdy5"}
         active={false}
-        chain={{ icon: "https://c05ccb16.station-assets.pages.dev/img/chains/Terra.svg", label: "Terra" }}
+        chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
         onClick={() => console.log("clicked!")}
       />
     )
@@ -31,7 +31,7 @@ export const ActiveWithChainImg: StoryObj<AddressSelectableListItemProps> = {
         label={"Terra"}
         subLabel={"terra1hod3...pazdy5"}
         active={true}
-        chain={{ icon: "https://c05ccb16.station-assets.pages.dev/img/chains/Terra.svg", label: "Terra" }}
+        chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
         onClick={() => console.log("clicked!")}
       />
     )

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import ProgressTracker, { ProgressTrackerProps } from './ProgressTracker';
 
 const meta: Meta<ProgressTrackerProps> = {
-  title: 'Components/Displays/Progress/ProgressTracker',
+  title: 'Components/Displays/Progress Tracker',
   component: ProgressTracker,
   argTypes: {},
 } as Meta;

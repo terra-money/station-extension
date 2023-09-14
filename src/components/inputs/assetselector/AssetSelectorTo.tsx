@@ -1,6 +1,6 @@
-
 import { ReactNode } from 'react';
 import classNames from 'classnames/bind';
+import { ReactComponent as DropdownArrowIcon } from 'assets/icon/DropdownArrow.svg';
 import { ReactComponent as RoughlyEquals } from 'assets/icon/RoughlyEquals.svg';
 import styles from './AssetSelector.module.scss';
 
@@ -44,6 +44,7 @@ const AssetSelectorTo = ({
                 onClick={onSymbolClick}
               >
                 {symbol}
+                <DropdownArrowIcon fill="var(--token-light-white)" />
               </button>
             </div>
             <div className={styles.chain__wrapper}>
