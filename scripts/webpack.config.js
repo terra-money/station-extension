@@ -9,6 +9,8 @@ module.exports = {
   entry: {
     contentScript: path.join(__dirname, "contentScript.js"),
     background: path.join(__dirname, "background.js"),
+    inpage: path.join(__dirname, "inpage.js"),
+    keplr: path.join(__dirname, "keplr.js"),
   },
   plugins: [
     new webpack.DefinePlugin({
