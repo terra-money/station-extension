@@ -14,7 +14,7 @@ export interface InputWrapperProps {
 }
 
 // Replaces FormItem
-export const InputWrapper = (props: PropsWithChildren<InputWrapperProps>) => {
+const InputWrapper = (props: PropsWithChildren<InputWrapperProps>) => {
   const { label, extra, error, warning, children } = props;
 
   return (
@@ -31,3 +31,5 @@ export const InputWrapper = (props: PropsWithChildren<InputWrapperProps>) => {
     </Grid>
   );
 };
+
+export default InputWrapper
