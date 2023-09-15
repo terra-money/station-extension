@@ -51,11 +51,13 @@ export type {
 export {
   RadioList,
   RadioListItem,
+  WalletListItem
 } from './displays'
 
 export type {
   RadioListProps,
   RadioListItemProps,
+  WalletListItemProps
 } from './displays'
 
 export {
@@ -68,3 +70,7 @@ export {
   InputWrapper,
   MultiInputWrapper
 } from './form helpers'
+
+export {
+  SectionHeader
+} from './headers'

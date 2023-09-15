@@ -15,21 +15,22 @@ const StandardDropdown = ({
   value,
 }: StandardDropdownProps) => {
   const [open, setOpen] = useState(false)
-  if (!options.length) return null
 
-  const ref = useRef<HTMLDivElement>(null)
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (ref.current && !ref.current.contains(event.target as Node)) {
-      setOpen(false)
-    }
-  }
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside)
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [])
+  const ref = useRef<HTMLDivElement>(null)
+
+  if (!options.length) return null
+  const handleClickOutside = (event: MouseEvent) => {
+    if (ref.current && !ref.current.contains(event.target as Node)) {
+      setOpen(false)
+    }
+  }
+
 
   const optionsById = options.reduce((acc, option) => {
     acc[option.value] = option

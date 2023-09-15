@@ -22,6 +22,7 @@ const Input = ({ actionIcon, emoji, ...attrs }: InputProps) => {
         autoFocus={attrs.autoFocus ?? false}
         onWheel={(e) => e.currentTarget.blur()}
         {...attrs}
+        ref={null}
       />
       {actionIcon && (
         <button
