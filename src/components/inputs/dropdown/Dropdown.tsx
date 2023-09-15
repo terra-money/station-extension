@@ -4,22 +4,23 @@ import classNames from "classnames";
 import styles from "./Dropdown.module.scss";
 
 export interface StandardDropdownProps {
-  options: { id: string; label: string; image?: string }[]
-  onChange: (id: string) => void
-  selectedId: string
+  options: { value: string; label: string; image?: string }[]
+  onChange: (value: string) => void
+  value: string
 }
 
 const StandardDropdown = ({
   options,
   onChange,
-  selectedId,
+  value,
 }: StandardDropdownProps) => {
   const [open, setOpen] = useState(false)
+  if (!options.length) return null
 
   const optionsById = options.reduce((acc, option) => {
-    acc[option.id] = option
+    acc[option.value] = option
     return acc
-  }, {} as Record<string, { id: string; label: string; image?: string }>)
+  }, {} as Record<string, { value: string; label: string; image?: string }>)
 
   return (
     <div className={styles.container}>
@@ -33,13 +34,13 @@ const StandardDropdown = ({
         }}
       >
         <span className={styles.selected__wrapper}>
-          {optionsById[selectedId].image && (
+          {optionsById[value]?.image && (
             <img
-              src={optionsById[selectedId].image}
-              alt={optionsById[selectedId].label}
+              src={optionsById[value]?.image}
+              alt={optionsById[value]?.label}
             />
           )}
-          <span>{optionsById[selectedId].label}</span>
+          <span>{optionsById[value]?.label}</span>
         </span>
         <ArrowDropDownIcon style={{ fontSize: 20 }} className={styles.caret} />
       </button>
@@ -52,12 +53,12 @@ const StandardDropdown = ({
           >
             {options.map((option) => (
               <button
-                className={option.id === selectedId ? styles.active : ""}
-                key={option.id}
+                className={option.value === value ? styles.active : ""}
+                key={option.value}
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
-                  onChange(option.id)
+                  onChange(option.value)
                   setOpen(false)
                 }}
               >

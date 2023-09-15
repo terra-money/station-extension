@@ -16,22 +16,21 @@ const Input = ({ actionIcon, emoji, ...attrs }: InputProps) => {
   return (
     <div className={cx(styles.base__input)}>
       <input
-        {...attrs}
         className={styles.base__input__field}
-        type={attrs.type || 'text'}
+        type={attrs.type ?? 'text'}
         autoComplete='off'
-        autoFocus={attrs.autoFocus || false}
+        autoFocus={attrs.autoFocus ?? false}
+        onWheel={(e) => e.currentTarget.blur()}
+        {...attrs}
       />
-
       {actionIcon && (
         <button
           type='button'
           className={styles.base__input__action}
           onClick={(e) => {
-            if(!actionIcon.onClick) return;
             e.preventDefault();
             e.stopPropagation();
-            actionIcon.onClick();
+            actionIcon?.onClick?.();
           }}
         >
           {actionIcon.icon}
