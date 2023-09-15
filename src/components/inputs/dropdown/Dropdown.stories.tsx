@@ -1,17 +1,17 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from '@storybook/react';
-import StandardDropdown, { StandardDropdownProps } from './Dropdown';
+import Dropdown, { DropdownProps } from './Dropdown';
 import { useState } from 'react';
 
-const meta: Meta<StandardDropdownProps> = {
+const meta: Meta<DropdownProps> = {
   title: 'Components/Inputs/Dropdown/Stories',
-  component: StandardDropdown,
+  component: Dropdown,
   argTypes: {},
 } as Meta;
 
 export default meta;
 
-export const Default: StoryObj<StandardDropdownProps> = {
+export const Default: StoryObj<DropdownProps> = {
   render: () => {
     const options = [
       { value: "terra", label: "Terra", image: 'https://station-assets.terra.dev/img/chains/Terra.svg' },
@@ -26,7 +26,7 @@ export const Default: StoryObj<StandardDropdownProps> = {
     const [selectedValue, setSelectedValue] = useState('terra');
 
     return (
-      <StandardDropdown
+      <Dropdown
         options={options}
         onChange={(value) => setSelectedValue(value)}
         value={selectedValue}
@@ -36,7 +36,7 @@ export const Default: StoryObj<StandardDropdownProps> = {
   argTypes: {},
 };
 
-export const DefaultTextOnly: StoryObj<StandardDropdownProps> = {
+export const DefaultTextOnly: StoryObj<DropdownProps> = {
   render: () => {
     const options = [
       { value: "terra", label: "Terra" },
@@ -51,7 +51,7 @@ export const DefaultTextOnly: StoryObj<StandardDropdownProps> = {
     const [selectedValue, setSelectedValue] = useState('terra');
 
     return (
-      <StandardDropdown
+      <Dropdown
         options={options}
         onChange={(value) => setSelectedValue(value)}
         value={selectedValue}
