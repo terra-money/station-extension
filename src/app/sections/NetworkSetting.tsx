@@ -5,7 +5,7 @@ import { FlexColumn } from "components/layout"
 import AddIcon from "@mui/icons-material/Add"
 
 interface Props {
-  subPageNav: (page: string) => void
+  subPageNav: () => void
 }
 
 const NetworkSetting = (props: Props) => {
@@ -25,7 +25,7 @@ const NetworkSetting = (props: Props) => {
       <NavButton
         icon={<AddIcon />}
         label="Add Custom LCD Endpoint"
-        onClick={() => props.subPageNav("lcd")}
+        onClick={() => props.subPageNav()}
       />
     </FlexColumn>
   )

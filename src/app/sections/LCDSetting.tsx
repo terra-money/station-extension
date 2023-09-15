@@ -149,7 +149,7 @@ const LCDSetting = () => {
             lcd || !isSaved
               ? {
                   icon: (
-                    <span className="loading">
+                    <span className={styles.loading}>
                       <DeleteIcon />
                     </span>
                   ),

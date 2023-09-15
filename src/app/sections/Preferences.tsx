@@ -6,6 +6,7 @@ import { sandbox } from "auth/scripts/env"
 import HeaderIconButton from "../components/HeaderIconButton"
 import NetworkSetting from "./NetworkSetting"
 import LanguageSetting from "./LanguageSetting"
+import SecuritySetting from "./SecuritySetting"
 import CurrencySetting from "./CurrencySetting"
 import { ModalButton, NavButton } from "station-ui"
 import { useNetworkName } from "data/wallet"
@@ -21,19 +22,10 @@ import LCDSetting from "./LCDSetting"
 import ContactsIcon from "@mui/icons-material/Contacts"
 import { ReactComponent as ManageAssets } from "styles/images/icons/ManageAssets.svg"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
-
-type Routes =
-  | "network"
-  | "lang"
-  | "currency"
-  | "lcd"
-  | "addressBook"
-  | "manageTokens"
-  | "lockWallet"
-  | "security"
+import ChangePasswordForm from "auth/modules/manage/ChangePasswordForm"
 
 interface SettingsPage {
-  key: Routes
+  key: string
   tab: string
   value?: string
   hide?: boolean // hide from main menu if subpage
@@ -43,14 +35,14 @@ interface SettingsPage {
 
 const Preferences = () => {
   const { t } = useTranslation()
-  const [page, setPage] = useState<Routes | null>(null)
+  const [page, setPage] = useState<string | null>(null)
 
   const { i18n } = useTranslation()
   const { id: currencyId } = useCurrency()
   const networkName = useNetworkName()
   // const { name } = useTheme()
 
-  const routes: Record<Routes, SettingsPage> = {
+  const routes: Record<string, SettingsPage> = {
     network: {
       key: "network",
       tab: t("Network"),
@@ -107,6 +99,12 @@ const Preferences = () => {
       tab: t("Add LCD Endpoint"),
       hide: true,
     },
+    changePassword: {
+      key: "changePassword",
+      tab: t("Change Password"),
+      icon: <LockOutlinedIcon />,
+      hide: true,
+    },
   }
 
   const SettingsMenu = () => (
@@ -136,6 +134,10 @@ const Preferences = () => {
         return <CurrencySetting />
       case "lang":
         return <LanguageSetting />
+      case "changePassword":
+        return <ChangePasswordForm />
+      case "security":
+        return <SecuritySetting subPageNav={() => setPage("changePassword")} />
       // case "theme":
       //   return <SelectTheme />
       case "lcd":
