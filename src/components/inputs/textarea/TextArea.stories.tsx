@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import TextArea, { TextAreaProps } from './TextArea';
 import { useEffect, useState } from 'react';
-import { InputWrapper } from 'components/form helpers/wrappers/InputWrapper/InputWrapper';
+import { InputWrapper } from 'components/form helpers';
 import Copy from 'components/general/copy/Copy';
 
 const meta: Meta<TextAreaProps> = {
@@ -39,8 +39,8 @@ const ComponentForStorybook = (args: TextAreaProps) => {
       placeholder="We're proposing to spend 100,000 LUNA from the Community Pool to fund the creation of public goods for the Terra ecosystem"
       onChange={(e) => setValue(e.target.value)}
     />
-  )
-}
+  );
+};
 
 export const Playground: StoryObj<TextAreaProps> = {
   render: (args: TextAreaProps) => {
@@ -50,7 +50,7 @@ export const Playground: StoryObj<TextAreaProps> = {
   },
   args: {
     readOnly: false,
-  }
+  },
 };
 
 export const Default: StoryObj<TextAreaProps> = {
@@ -102,6 +102,6 @@ export const WithInputWrapperExample: StoryObj<TextAreaProps> = {
           value={value}
         />
       </InputWrapper>
-    )
-  }
+    );
+  },
 };

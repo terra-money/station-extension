@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { Modal } from 'components/feedback/modals';
 import { FlexColumn, Input } from 'components';
-import { InputWrapper } from 'components/form helpers/wrappers/InputWrapper/InputWrapper';
+import { InputWrapper } from 'components/form helpers';
 import StandardDropdown from '../dropdown/Dropdown';
 import SectionHeader from 'components/headers/section/SectionHeader';
 import TokenSingleChainListItem from 'components/displays/list items/token/single chain/TokenSingleChainListItem';
@@ -36,13 +36,13 @@ const StorybookExample = () => {
   }
 
   const options = [
-    { id: "terra", label: "Terra" },
-    { id: "axelar", label: "Axelar" },
-    { id: "carbon", label: "Carbon" },
-    { id: "cosmos", label: "Cosmos" },
-    { id: "crescent", label: "Crescent" },
-    { id: "juno", label: "Juno" },
-    { id: "mars", label: "Mars" },
+    { value: "terra", label: "Terra" },
+    { value: "axelar", label: "Axelar" },
+    { value: "carbon", label: "Carbon" },
+    { value: "cosmos", label: "Cosmos" },
+    { value: "crescent", label: "Crescent" },
+    { value: "juno", label: "Juno" },
+    { value: "mars", label: "Mars" },
   ];
 
   const handleTokenSelection = (token: string) => {
@@ -59,100 +59,97 @@ const StorybookExample = () => {
 
   return (
     <>
-    <Modal
-      isOpen={assetModalOpen}
-      onRequestClose={() => setAssetModalOpen(false)}
-      title='Select Asset'
-    >
-      <FlexColumn gap={24} style={{ width: '100%' }}>
-        <InputWrapper label="Chains">
-          <StandardDropdown
-            options={options}
-            onChange={() => {}}
-            selectedId="terra"
-          />
-        </InputWrapper>
-
-        <SectionHeader
-          title="Tokens"
-          withLine
-        />
-
-        <InputWrapper label="Search Tokens">
-          <Input
-            placeholder="Search Tokens"
-            onChange={() => {}}
-          />
-        </InputWrapper>
-
-        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          {Object.keys(tokensBySymbol).map((token, index) => (
-            <TokenSingleChainListItem
-              key={index}
-              balance={walletBalance[token] || "0"}
-              currency={{ id: 'usd', symbol: '$', name: 'USD' }}
-              tokenImg={tokensBySymbol[token].tokenIcon}
-              symbol={tokensBySymbol[token].symbol}
-              price={tokenPrices[token]}
-              amountNode={<span>{walletBalance[token]}</span>}
-              chain={{ icon: tokensBySymbol[token].chainIcon, label: tokensBySymbol[token].chainName }}
-              onClick={() => handleTokenSelection(token)}
+      <Modal
+        isOpen={assetModalOpen}
+        onRequestClose={() => setAssetModalOpen(false)}
+        title='Select Asset'
+      >
+        <FlexColumn gap={24} style={{ width: '100%' }}>
+          <InputWrapper label="Chains">
+            <StandardDropdown
+              options={options}
+              onChange={() => {}}
+              value="terra"
             />
-          ))}
-        </div>
+          </InputWrapper>
 
-      </FlexColumn>
-    </Modal>
-    <form onSubmit={onSubmit}>
-      <AssetSelectorFrom
-        extra={
-          <>
-            <WalletIcon width={12} height={12} fill='var(--token-dark-900)' />
-            <p>
-              {`${walletBalance[fromSymbol] || 0} ${fromSymbol}`}
-            </p>
-          </>
-        }
-        symbol={fromSymbol}
-        tokenIcon={tokensBySymbol[fromSymbol].tokenIcon}
-        onSymbolClick={() => handleFromSymbolClick('from')}
-        chainIcon={tokensBySymbol[fromSymbol].chainIcon}
-        chainName={tokensBySymbol[fromSymbol].chainName}
-        amountInputAttrs={{...register("fromAmount", { required: true, valueAsNumber: true })}}
-        currencyAmount={`$${(parseFloat(watch("fromAmount")) * tokenPrices[fromSymbol]).toFixed(6)}`}
-      />
-      <br />
-      <br />
-      <br />
-      <AssetSelectorTo
-        extra={
-          <>
-            <WalletIcon width={12} height={12} fill='var(--token-dark-900)' />
-            <p>
-              {`${walletBalance[toSymbol] || 0} ${toSymbol}`}
-            </p>
-          </>
-        }
-        symbol={toSymbol}
-        tokenIcon={tokensBySymbol[toSymbol].tokenIcon}
-        onSymbolClick={() => handleFromSymbolClick('to')}
-        chainIcon={tokensBySymbol[toSymbol].chainIcon}
-        chainName={tokensBySymbol[toSymbol].chainName}
-        amount={`${toAmount}`}
-        currencyAmount={`$${(toAmount * tokenPrices[toSymbol]).toFixed(6)}`}
-      />
-    </form>
+          <SectionHeader
+            title="Tokens"
+            withLine
+          />
+
+          <InputWrapper label="Search Tokens">
+            <Input
+              placeholder="Search Tokens"
+              onChange={() => {}}
+            />
+          </InputWrapper>
+
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            {Object.keys(tokensBySymbol).map((token, index) => (
+              <TokenSingleChainListItem
+                key={index}
+                balance={walletBalance[token] || "0"}
+                currency={{ id: 'usd', symbol: '$', name: 'USD' }}
+                tokenImg={tokensBySymbol[token].tokenIcon}
+                symbol={tokensBySymbol[token].symbol}
+                price={tokenPrices[token]}
+                amountNode={<span>{walletBalance[token]}</span>}
+                chain={{ icon: tokensBySymbol[token].chainIcon, label: tokensBySymbol[token].chainName }}
+                onClick={() => handleTokenSelection(token)}
+              />
+            ))}
+          </div>
+
+        </FlexColumn>
+      </Modal>
+      <form onSubmit={onSubmit}>
+        <AssetSelectorFrom
+          extra={
+            <>
+              <WalletIcon width={12} height={12} fill='var(--token-dark-900)' />
+              <p>
+                {`${walletBalance[fromSymbol] || 0} ${fromSymbol}`}
+              </p>
+            </>
+          }
+          symbol={fromSymbol}
+          tokenIcon={tokensBySymbol[fromSymbol].tokenIcon}
+          onSymbolClick={() => handleFromSymbolClick('from')}
+          chainIcon={tokensBySymbol[fromSymbol].chainIcon}
+          chainName={tokensBySymbol[fromSymbol].chainName}
+          amountInputAttrs={{...register("fromAmount", { required: true, valueAsNumber: true })}}
+          currencyAmount={`$${(parseFloat(watch("fromAmount")) * tokenPrices[fromSymbol]).toFixed(6)}`}
+        />
+        <br />
+        <br />
+        <br />
+        <AssetSelectorTo
+          extra={
+            <>
+              <WalletIcon width={12} height={12} fill='var(--token-dark-900)' />
+              <p>
+                {`${walletBalance[toSymbol] || 0} ${toSymbol}`}
+              </p>
+            </>
+          }
+          symbol={toSymbol}
+          tokenIcon={tokensBySymbol[toSymbol].tokenIcon}
+          onSymbolClick={() => handleFromSymbolClick('to')}
+          chainIcon={tokensBySymbol[toSymbol].chainIcon}
+          chainName={tokensBySymbol[toSymbol].chainName}
+          amount={`${toAmount}`}
+          currencyAmount={`$${(toAmount * tokenPrices[toSymbol]).toFixed(6)}`}
+        />
+      </form>
     </>
   );
-}
+};
 
 export const Example: StoryObj<AssetSelectorFromProps> = {
   render: () => (
     <StorybookExample />
   ),
-  argTypes: {
-
-  },
 };
 
 export const From: StoryObj<AssetSelectorFromProps> = {
@@ -179,9 +176,6 @@ export const From: StoryObj<AssetSelectorFromProps> = {
       />
     )
   },
-  argTypes: {
-
-  },
 };
 
 export const To: StoryObj<AssetSelectorFromProps> = {
@@ -207,8 +201,5 @@ export const To: StoryObj<AssetSelectorFromProps> = {
         currencyAmount={`$${(parseFloat(fromAmount) * tokenPrices.LUNA).toFixed(6)}`}
       />
     )
-  },
-  argTypes: {
-
   },
 };

@@ -15,12 +15,12 @@ const meta: Meta = {
         type: { summary: 'string' },
       }
     },
-    subLabel: {
+    value: {
       control: 'text',
-      defaultValue: 'Sub Label',
+      defaultValue: 'Value',
       description: 'The sub label of the Button on the right side.',
       table: {
-        defaultValue: { summary: 'Sub Label' },
+        defaultValue: { summary: 'Value' },
         type: { summary: 'string' },
       }
     },
@@ -41,15 +41,15 @@ interface NavButtonStoryObj extends NavButtonProps {
 }
 
 export const Playground: StoryObj<NavButtonStoryObj> = {
-  render: ({ label, subLabel, icon, displayIcon }: NavButtonStoryObj) =>
+  render: ({ label, value, icon, displayIcon }: NavButtonStoryObj) =>
     <NavButton
       label={label}
-      subLabel={subLabel}
+      value={value}
       icon={displayIcon && icon}
     />,
   args: {
     label: 'Nav Button',
-    subLabel: 'Sub Label',
+    value: 'Value',
     icon: <SmallCircleCheck fill='var(--token-light-white)' />,
     displayIcon: true,
   },
@@ -79,7 +79,7 @@ export const LabelOnly: StoryObj<NavButtonStoryObj> = {
         type: { summary: 'string' },
       }
     },
-    subLabel: {
+    value: {
       control: false,
     }
   },
@@ -104,22 +104,22 @@ export const IconAndLabel: StoryObj<NavButtonStoryObj> = {
         type: { summary: 'string' },
       }
     },
-    subLabel: {
+    value: {
       control: false,
     }
   },
 };
 
 export const IconAndLabelAndSubLabel: StoryObj<NavButtonStoryObj> = {
-  render: ({ label, subLabel }: NavButtonStoryObj) =>
+  render: ({ label, value }: NavButtonStoryObj) =>
     <NavButton
       label={label}
-      subLabel={subLabel}
+      value={value}
       icon={<SmallCircleCheck fill='var(--token-light-white)' />}
     />,
   args: {
     label: 'Nav Button',
-    subLabel: 'Sub Label',
+    value: 'Value',
   },
   argTypes: {
     label: {
@@ -131,7 +131,7 @@ export const IconAndLabelAndSubLabel: StoryObj<NavButtonStoryObj> = {
         type: { summary: 'string' },
       }
     },
-    subLabel: {
+    value: {
       control: 'text',
       defaultValue: '',
       description: 'The sub label of the Button.',
@@ -144,14 +144,14 @@ export const IconAndLabelAndSubLabel: StoryObj<NavButtonStoryObj> = {
 };
 
 export const LabelAndSubLabel: StoryObj<NavButtonStoryObj> = {
-  render: ({ label, subLabel }: NavButtonStoryObj) =>
+  render: ({ label, value }: NavButtonStoryObj) =>
     <NavButton
       label={label}
-      subLabel={subLabel}
+      value={value}
     />,
   args: {
     label: 'Nav Button',
-    subLabel: 'Sub Label',
+    value: 'Value',
   },
   argTypes: {
     label: {
@@ -163,7 +163,7 @@ export const LabelAndSubLabel: StoryObj<NavButtonStoryObj> = {
         type: { summary: 'string' },
       }
     },
-    subLabel: {
+    value: {
       control: 'text',
       defaultValue: '',
       description: 'The sub label of the Button.',
