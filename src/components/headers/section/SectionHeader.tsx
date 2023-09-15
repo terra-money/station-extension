@@ -30,16 +30,12 @@ const SectionHeader = ({
 
           {withLine && <div className={styles.line} />}
 
-          {title?.length !== 0 && (
-            <h3
-              className={
-                cx(styles.title, { indented })
-              }
-            >
+          {title?.length && (
+            <h3 className={cx(styles.title, { indented })}>
               {title}
             </h3>
           )}
-          {withLine && title?.length !== 0 && <div className={styles.line} />}
+          {withLine && title?.length && <div className={styles.line} />}
         </div>
         {extra}
       </div>
