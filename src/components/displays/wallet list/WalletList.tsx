@@ -1,4 +1,5 @@
 import WalletSelectableListItem from 'components/displays/list items/selectable/wallet/WalletSelectableListItem';
+import SectionHeader from 'components/headers/section/SectionHeader';
 import styles from './WalletList.module.scss';
 
 export interface WalletListProps {
@@ -19,7 +20,12 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
   return (
     <div className={styles.wallet__list__container}>
       <div className={styles.active__wallet}>
-        <h6 className={styles.active__title}><span />Active</h6>
+        <SectionHeader
+          title="Active"
+          indented
+          icon={<span className={styles.blue__dot} />}
+          className={styles.active__header}
+        />
         <WalletSelectableListItem
           label={activeWallet.name}
           subLabel={activeWallet.address}
@@ -30,7 +36,10 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
       </div>
 
       <div className={styles.other__wallets}>
-        <h6 className={styles.other__title}>Other Wallets</h6>
+        <SectionHeader
+          title="Other Wallets"
+          indented
+        />
         {otherWallets.map((wallet) => (
           <WalletSelectableListItem
             label={wallet.name}

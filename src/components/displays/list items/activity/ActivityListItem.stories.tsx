@@ -14,7 +14,7 @@ export const Successful: StoryObj<ActivityListItemProps> = {
     return (
       <ActivityListItem
         variant={"success"}
-        chain={{ icon: "https://c05ccb16.station-assets.pages.dev/img/chains/Terra.svg", label: "Terra" }}
+        chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
         msg={
           <div>
             Sent <span>420.00 LUNA</span> to <span>terra1...20k38v</span>
@@ -33,7 +33,7 @@ export const Failed: StoryObj<ActivityListItemProps> = {
     return (
       <ActivityListItem
         variant={"failed"}
-        chain={{ icon: "https://c05ccb16.station-assets.pages.dev/img/chains/Terra.svg", label: "Terra" }}
+        chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
         msg={
           <div>
             Sent <span>420.00 LUNA</span> to <span>terra1...20k38v</span>
@@ -52,7 +52,7 @@ export const Loading: StoryObj<ActivityListItemProps> = {
     return (
       <ActivityListItem
         variant={"loading"}
-        chain={{ icon: "https://c05ccb16.station-assets.pages.dev/img/chains/Terra.svg", label: "Terra" }}
+        chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
         msg={
           <div>
             Delegated <span>420.00 LUNA</span> to <span>Orbital Command</span>
@@ -71,7 +71,7 @@ export const Timeline: StoryObj<ActivityListItemProps> = {
     return (
       <ActivityListItem
         variant={"success"}
-        chain={{ icon: "https://c05ccb16.station-assets.pages.dev/img/chains/Terra.svg", label: "Terra" }}
+        chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
         msg={
           <div>
             Delegated <span>420.00 LUNA</span> to <span>Orbital Command</span>

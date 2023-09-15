@@ -35,6 +35,8 @@
 
         .symbol {
           .symbol__button {
+            display: flex;
+            gap: 8px;
             @include Large;
             color: var(--token-light-white);
           }

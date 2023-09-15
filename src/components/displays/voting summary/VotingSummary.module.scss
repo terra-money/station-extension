@@ -1,0 +1,47 @@
+@import "scss/font_mixins";
+
+.voting__summary__container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  .vote__details {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+
+    .vote {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .type {
+        @include X-Small;
+        text-transform: capitalize;
+
+        &.yes {
+          color: var(--token-success-500);
+        }
+        &.abstain {
+          color: var(--token-primary-500);
+        }
+        &.no {
+          color: var(--token-error-500);
+        }
+        &.noWithVeto {
+          color: var(--token-warning-500);
+        }
+      }
+
+      .percent {
+        @include Medium;
+        color: var(--token-light-white);
+      }
+
+      .amount {
+        @include X-Small;
+        color: var(--token-light-100);
+      }
+    }
+  }
+}
