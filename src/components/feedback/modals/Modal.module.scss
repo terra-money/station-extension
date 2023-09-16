@@ -1,7 +1,10 @@
+@import "scss/font_mixins";
 @import "scss/mixins";
 
 .overlay {
-  @include flex;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background: hsl(0 0% 0% / 0.8);
 
   position: fixed;
@@ -68,7 +71,7 @@
 }
 
 .title {
-  font-size: 20px;
+  @include Medium-Large;
 }
 
 .confirm {

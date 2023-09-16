@@ -1,0 +1,54 @@
+@import "scss/font_mixins";
+
+.section__header {
+  width: 100%;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &.indented {
+      padding: 0 8px;
+    }
+
+    &.has__line {
+      justify-content: center;
+    }
+
+    .title__wrapper {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      &.has__line {
+        gap: 16px;
+      }
+
+      .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 12px;
+        width: 12px;
+        font-size: 10px;
+      }
+
+      .line {
+        height: 1px;
+        width: 100%;
+        background-color: var(--token-dark-700);
+      }
+
+      .title {
+        @include Small;
+        color: var(--token-light-100);
+
+        &.indented {
+          @include X-Small;
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,3 @@
-
 import { PropsWithChildren, ReactNode } from 'react';
 import classNames from 'classnames/bind';
 import { Grid } from 'components/layout';
@@ -14,11 +13,11 @@ export interface InputWrapperProps {
 }
 
 // Replaces FormItem
-export const InputWrapper = (props: PropsWithChildren<InputWrapperProps>) => {
+const InputWrapper = (props: PropsWithChildren<InputWrapperProps>) => {
   const { label, extra, error, warning, children } = props;
 
   return (
-    <Grid gap={8} className={cx({ warning, error })}>
+    <Grid gap={8} className={cx(styles.input__wrapper, { warning, error })}>
       <header className={styles.header}>
         {label && <label className={styles.label}>{label}</label>}
         <aside className={styles.extra}>{extra}</aside>
@@ -31,3 +30,5 @@ export const InputWrapper = (props: PropsWithChildren<InputWrapperProps>) => {
     </Grid>
   );
 };
+
+export default InputWrapper;

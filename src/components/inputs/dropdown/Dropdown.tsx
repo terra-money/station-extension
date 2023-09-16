@@ -1,28 +1,43 @@
-import { useState } from "react";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { useEffect, useRef, useState } from "react";
 import classNames from "classnames";
+import { ReactComponent as DropdownArrowIcon } from 'assets/icon/DropdownArrow.svg';
 import styles from "./Dropdown.module.scss";
 
 export interface StandardDropdownProps {
-  options: { id: string; label: string; image?: string }[]
-  onChange: (id: string) => void
-  selectedId: string
+  options: { value: string; label: string; image?: string }[]
+  onChange: (value: string) => void
+  value: string
 }
 
 const StandardDropdown = ({
   options,
   onChange,
-  selectedId,
+  value,
 }: StandardDropdownProps) => {
   const [open, setOpen] = useState(false)
+  if (!options.length) return null
+
+  const ref = useRef<HTMLDivElement>(null)
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (ref.current && !ref.current.contains(event.target as Node)) {
+      setOpen(false)
+    }
+  }
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   const optionsById = options.reduce((acc, option) => {
-    acc[option.id] = option
+    acc[option.value] = option
     return acc
-  }, {} as Record<string, { id: string; label: string; image?: string }>)
+  }, {} as Record<string, { value: string; label: string; image?: string }>)
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} ref={ref}>
       <button
         type="button"
         className={styles.selector}
@@ -33,15 +48,15 @@ const StandardDropdown = ({
         }}
       >
         <span className={styles.selected__wrapper}>
-          {optionsById[selectedId].image && (
+          {optionsById[value]?.image && (
             <img
-              src={optionsById[selectedId].image}
-              alt={optionsById[selectedId].label}
+              src={optionsById[value]?.image}
+              alt={optionsById[value]?.label}
             />
           )}
-          <span>{optionsById[selectedId].label}</span>
+          <span>{optionsById[value]?.label}</span>
         </span>
-        <ArrowDropDownIcon style={{ fontSize: 20 }} className={styles.caret} />
+        <DropdownArrowIcon className={styles.caret} fill="var(--token-light-white)" />
       </button>
       {open && (
         <div className={styles.options}>
@@ -52,12 +67,12 @@ const StandardDropdown = ({
           >
             {options.map((option) => (
               <button
-                className={option.id === selectedId ? styles.active : ""}
-                key={option.id}
+                className={option.value === value ? styles.active : ""}
+                key={option.value}
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
-                  onChange(option.id)
+                  onChange(option.value)
                   setOpen(false)
                 }}
               >

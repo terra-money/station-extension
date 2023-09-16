@@ -1,7 +1,7 @@
 /**
  * Do not edit directly
- * Generated on Thu, 14 Sep 2023 12:42:56 GMT
-*/
+ * Generated on Thu, 14 Sep 2023 20:28:46 GMT
+ */
 
 export const Dark100 = "hsl(230, 8%, 8%)";
 export const Dark200 = "hsl(230, 8%, 10%)";
