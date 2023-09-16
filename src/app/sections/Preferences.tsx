@@ -8,13 +8,18 @@ import NetworkSetting from "./NetworkSetting"
 import LanguageSetting from "./LanguageSetting"
 import SecuritySetting from "./SecuritySetting"
 import CurrencySetting from "./CurrencySetting"
-import { ModalButton, NavButton } from "station-ui"
+import { ModalButton, NavButton, SectionHeader } from "station-ui"
 import { useNetworkName } from "data/wallet"
 import { useCurrency } from "data/settings/Currency"
 import { Languages } from "config/lang"
 import { capitalize } from "@mui/material"
+import { useAuth } from "auth"
+import { useNavigate } from "react-router-dom"
 import { ReactElement, useState } from "react"
+import AddressBookList from "txs/AddressBook/AddressBookList"
 import styles from "./Preferences.module.scss"
+import LockWallet from "auth/modules/manage/LockWallet"
+import { useManageWallet } from "auth/modules/manage/ManageWallets"
 // import SelectTheme from "./SelectTheme"
 import LCDSetting from "./LCDSetting"
 // import { useTheme } from "data/settings/Theme"
@@ -23,6 +28,7 @@ import ContactsIcon from "@mui/icons-material/Contacts"
 import { ReactComponent as ManageAssets } from "styles/images/icons/ManageAssets.svg"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import ChangePasswordForm from "auth/modules/manage/ChangePasswordForm"
+import ManageCustomTokens from "pages/custom/ManageCustomTokens"
 
 interface SettingsPage {
   key: string
@@ -31,6 +37,7 @@ interface SettingsPage {
   hide?: boolean // hide from main menu if subpage
   icon?: ReactElement
   seperator?: boolean
+  onClick?: () => void
 }
 
 const Preferences = () => {
@@ -40,7 +47,8 @@ const Preferences = () => {
   const { i18n } = useTranslation()
   const { id: currencyId } = useCurrency()
   const networkName = useNetworkName()
-  // const { name } = useTheme()
+  const { lock } = useAuth()
+  const navigate = useNavigate()
 
   const routes: Record<string, SettingsPage> = {
     network: {
@@ -65,6 +73,11 @@ const Preferences = () => {
       tab: t("Lock Wallet"),
       icon: <LockOutlinedIcon />,
       seperator: true,
+      onClick: () => {
+        lock()
+        setPage(null)
+        navigate("/", { replace: true })
+      },
     },
     lang: {
       key: "lang",
@@ -111,16 +124,16 @@ const Preferences = () => {
     <FlexColumn gap={8}>
       {Object.values(routes)
         .filter(({ hide }) => !hide)
-        .map(({ tab, value, key, icon, seperator }) => (
+        .map(({ tab, value, key, icon, seperator, onClick }) => (
           <>
             <NavButton
               label={tab}
               value={value}
               key={key}
               icon={icon}
-              onClick={() => setPage(key)}
+              onClick={() => onClick?.() ?? setPage(key)}
             />
-            {seperator && <hr />}
+            {seperator && <SectionHeader withLine />}
           </>
         ))}
     </FlexColumn>
@@ -140,6 +153,10 @@ const Preferences = () => {
         return <SecuritySetting subPageNav={() => setPage("changePassword")} />
       // case "theme":
       //   return <SelectTheme />
+      case "addressBook":
+        return <AddressBookList />
+      case "manageTokens":
+        return <ManageCustomTokens />
       case "lcd":
         return <LCDSetting />
       // case "advanced":

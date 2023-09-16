@@ -15,7 +15,7 @@ import styles from "./AddressBookList.module.scss"
 import { useNetwork } from "data/wallet"
 
 interface Props {
-  onClick: (item: AddressBook) => void
+  onClick?: (item: AddressBook) => void
 }
 
 const AddressBookList = ({ onClick }: Props) => {
@@ -37,7 +37,7 @@ const AddressBookList = ({ onClick }: Props) => {
                 <button
                   className={styles.address__button}
                   onClick={() => {
-                    onClick({ name: chain, recipient: address })
+                    onClick?.({ name: chain, recipient: address })
                     close()
                   }}
                   key={chain}
@@ -78,7 +78,7 @@ const AddressBookList = ({ onClick }: Props) => {
                 { title: t("Memo"), desc: memo ?? "" },
               ]}
               onClick={() => {
-                onClick(item)
+                onClick?.(item)
                 close()
               }}
               onDelete={() => remove(name)}

@@ -61,6 +61,7 @@ export const useManageWallet = () => {
       lock()
       navigate("/", { replace: true })
     },
+    id: "lock",
     children: t("Lock"),
     icon: <LockOutlinedIcon />,
   }

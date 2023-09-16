@@ -1,5 +1,4 @@
 import { StrictMode } from "react"
-import { render } from "react-dom"
 import { HashRouter } from "react-router-dom"
 import { ReactQueryDevtools } from "react-query/devtools"
 import { RecoilRoot } from "recoil"
@@ -20,10 +19,13 @@ import InitChains from "app/InitChains"
 import WithNodeInfo from "app/WithNodeInfo"
 import InitQueryClient from "app/InitQueryClient"
 import { initAnalytics } from "utils/analytics"
+import { createRoot } from "react-dom/client"
+
+const root = createRoot(document.getElementById("station")!)
 
 initAnalytics()
 
-render(
+root.render(
   <StrictMode>
     <RecoilRoot>
       <HashRouter>
@@ -44,6 +46,5 @@ render(
         {debug.query && <ReactQueryDevtools position="bottom-right" />}
       </HashRouter>
     </RecoilRoot>
-  </StrictMode>,
-  document.getElementById("station")
+  </StrictMode>
 )
