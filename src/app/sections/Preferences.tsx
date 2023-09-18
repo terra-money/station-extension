@@ -16,7 +16,7 @@ import { capitalize } from "@mui/material"
 import { useAuth } from "auth"
 import { useNavigate } from "react-router-dom"
 import { ReactElement, useState } from "react"
-import AddressBookList from "txs/AddressBook/AddressBookList"
+import AddressBookNew from "txs/AddressBook/AddressBookNew"
 import styles from "./Preferences.module.scss"
 import LockWallet from "auth/modules/manage/LockWallet"
 import { useManageWallet } from "auth/modules/manage/ManageWallets"
@@ -36,7 +36,6 @@ interface SettingsPage {
   value?: string
   hide?: boolean // hide from main menu if subpage
   icon?: ReactElement
-  seperator?: boolean
   onClick?: () => void
 }
 
@@ -47,10 +46,10 @@ const Preferences = () => {
   const { i18n } = useTranslation()
   const { id: currencyId } = useCurrency()
   const networkName = useNetworkName()
-  const { lock } = useAuth()
-  const navigate = useNavigate()
+  // const { lock } = useAuth()
+  // const navigate = useNavigate()
 
-  const routes: Record<string, SettingsPage> = {
+  const network = {
     network: {
       key: "network",
       tab: t("Network"),
@@ -58,6 +57,8 @@ const Preferences = () => {
       hide: !sandbox,
       seperator: true,
     },
+  }
+  const functions = {
     addressBook: {
       key: "addressBook",
       tab: t("Address Book"),
@@ -74,11 +75,14 @@ const Preferences = () => {
       icon: <LockOutlinedIcon />,
       seperator: true,
       onClick: () => {
-        lock()
-        setPage(null)
-        navigate("/", { replace: true })
+        // lock()
+        // setPage(null)
+        // navigate("/", { replace: true })
       },
     },
+  }
+
+  const settings = {
     lang: {
       key: "lang",
       tab: t("Language"),
@@ -96,17 +100,10 @@ const Preferences = () => {
       key: "security",
       tab: t("Security"),
       icon: <LockOutlinedIcon />,
-      seperator: true,
     },
-    // theme: {
-    //   key: "theme",
-    //   tab: t("Theme"),
-    //   value: capitalize(name),
-    // },
-    // advanced: {
-    //   key: "advanced",
-    //   tab: t("Advanced"),
-    // },
+  }
+
+  const subPages = {
     lcd: {
       key: "lcd",
       tab: t("Add LCD Endpoint"),
@@ -120,22 +117,39 @@ const Preferences = () => {
     },
   }
 
+  const routes: Record<string, SettingsPage> = {
+    ...network,
+    ...functions,
+    ...settings,
+    ...subPages,
+  }
+
+  const SettingsGroup = ({
+    settings,
+  }: {
+    settings: Record<string, SettingsPage>
+  }) => (
+    <>
+      <SectionHeader withLine />
+      {Object.values(settings).map(({ tab, key, icon, value }) => (
+        <NavButton
+          label={tab}
+          key={key}
+          value={value}
+          icon={icon}
+          onClick={() => setPage(key)}
+        />
+      ))}
+    </>
+  )
+
   const SettingsMenu = () => (
     <FlexColumn gap={8}>
-      {Object.values(routes)
-        .filter(({ hide }) => !hide)
-        .map(({ tab, value, key, icon, seperator, onClick }) => (
-          <>
-            <NavButton
-              label={tab}
-              value={value}
-              key={key}
-              icon={icon}
-              onClick={() => onClick?.() ?? setPage(key)}
-            />
-            {seperator && <SectionHeader withLine />}
-          </>
-        ))}
+      {sandbox && (
+        <NavButton label={t(routes.network.tab)} {...routes.network} />
+      )}
+      <SettingsGroup settings={functions} />
+      <SettingsGroup settings={settings} />
     </FlexColumn>
   )
 
@@ -154,7 +168,7 @@ const Preferences = () => {
       // case "theme":
       //   return <SelectTheme />
       case "addressBook":
-        return <AddressBookList />
+        return <AddressBookNew />
       case "manageTokens":
         return <ManageCustomTokens />
       case "lcd":
@@ -191,7 +205,7 @@ const Preferences = () => {
             setPage(null)
           }}
         >
-          <SettingsIcon style={{ fontSize: 18 }} />
+          <SettingsIcon style={{ fontSize: 20 }} />
         </HeaderIconButton>
       )}
     >

@@ -4,7 +4,7 @@ import { truncate } from "@terra-money/terra-utils"
 import { useAddressBook } from "data/settings/AddressBook"
 import { Button } from "components/general"
 import { Grid } from "components/layout"
-import AddAddressBookItem from "./AddAddressBookItem"
+import AddressBookForm from "./AddressBookForm"
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"
 import ContactsIcon from "@mui/icons-material/Contacts"
 import CustomItem from "./CustomItem"
@@ -64,7 +64,7 @@ const AddressBookList = ({ onClick }: Props) => {
   }
 
   return open ? (
-    <AddAddressBookItem close={() => setOpen(false)} />
+    <AddressBookForm close={() => setOpen(false)} />
   ) : (
     <section>
       <Grid gap={12}>
