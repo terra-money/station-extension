@@ -1,8 +1,6 @@
-// @import "scss/mixins";
-@import 'scss/font_mixins.scss';
+@import 'scss/font_mixins';
 
 .checkbox {
-  // @include inline-flex;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -16,7 +14,6 @@
   }
 
   &.disabled {
-    // @include disabled;
     cursor: not-allowed;
     opacity: 0.5;
   }
@@ -40,7 +37,6 @@
 }
 
 .track {
-  // @include flex;
   display: flex;
   justify-content: center;
   align-items: center;

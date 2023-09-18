@@ -1,8 +1,8 @@
+import { useState } from 'react';
 import classNames from 'classnames/bind';
 import { ReactComponent as CircleCheck } from 'assets/icon/SmallCircleCheck.svg';
 import { ReactComponent as AlertIcon } from 'assets/icon/Alert.svg';
 import styles from './TopLevelBanner.module.scss';
-import { useState } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -12,8 +12,6 @@ export interface TopLevelBannerProps {
   withRadio?: boolean;
   onRadioClick?: () => void;
 }
-
-
 
 const TopLevelBanner = ({
   title,
