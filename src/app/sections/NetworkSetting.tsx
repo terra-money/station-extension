@@ -3,14 +3,12 @@ import SettingsSelector from "components/layout/SettingsSelector"
 import { NavButton } from "station-ui"
 import { FlexColumn } from "components/layout"
 import AddIcon from "@mui/icons-material/Add"
+import { useSettingsPage } from "./Preferences"
 
-interface Props {
-  subPageNav: () => void
-}
-
-const NetworkSetting = (props: Props) => {
+const NetworkSetting = () => {
   const [network, setNetwork] = useNetworkState()
   const networkOptions = useNetworkOptions()
+  const { setPage } = useSettingsPage()
 
   if (!networkOptions) return null
 
@@ -25,7 +23,7 @@ const NetworkSetting = (props: Props) => {
       <NavButton
         icon={<AddIcon />}
         label="Add Custom LCD Endpoint"
-        onClick={() => props.subPageNav()}
+        onClick={() => setPage("lcd")}
       />
     </FlexColumn>
   )

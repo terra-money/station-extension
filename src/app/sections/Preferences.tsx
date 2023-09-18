@@ -15,11 +15,13 @@ import { Languages } from "config/lang"
 import { capitalize } from "@mui/material"
 import { useAuth } from "auth"
 import { useNavigate } from "react-router-dom"
-import { ReactElement, useState } from "react"
+import { ReactElement, useMemo, useState } from "react"
 import AddressBookNew from "txs/AddressBook/AddressBookNew"
 import styles from "./Preferences.module.scss"
 import LockWallet from "auth/modules/manage/LockWallet"
 import { useManageWallet } from "auth/modules/manage/ManageWallets"
+import createContext from "utils/createContext"
+
 // import SelectTheme from "./SelectTheme"
 import LCDSetting from "./LCDSetting"
 // import { useTheme } from "data/settings/Theme"
@@ -33,87 +35,93 @@ import ManageCustomTokens from "pages/custom/ManageCustomTokens"
 interface SettingsPage {
   key: string
   tab: string
+  component: ReactElement
   value?: string
-  hide?: boolean // hide from main menu if subpage
   icon?: ReactElement
-  onClick?: () => void
+  header?: ReactElement
+  parent?: string
 }
+
+export const [useSettingsPage, SettingsPageProvider] = createContext<{
+  page: string | undefined
+  setPage: (route: string) => void
+}>("useSettingsPage")
 
 const Preferences = () => {
   const { t } = useTranslation()
-  const [page, setPage] = useState<string | null>(null)
-
+  const [page, setPage] = useState<string | undefined>()
   const { i18n } = useTranslation()
   const { id: currencyId } = useCurrency()
   const networkName = useNetworkName()
-  // const { lock } = useAuth()
-  // const navigate = useNavigate()
 
   const network = {
     network: {
       key: "network",
       tab: t("Network"),
       value: capitalize(networkName),
-      hide: !sandbox,
-      seperator: true,
+      component: <NetworkSetting />,
     },
   }
+
   const functions = {
     addressBook: {
       key: "addressBook",
       tab: t("Address Book"),
+      component: <AddressBookNew />,
       icon: <ContactsIcon />,
     },
     manageTokens: {
       key: "manageTokens",
       tab: t("Manage Tokens"),
+      component: <ManageCustomTokens />,
       icon: <ManageAssets />,
     },
     lockWallet: {
       key: "lockWallet",
       tab: t("Lock Wallet"),
+      component: <LockWallet />,
       icon: <LockOutlinedIcon />,
-      seperator: true,
-      onClick: () => {
-        // lock()
-        // setPage(null)
-        // navigate("/", { replace: true })
-      },
     },
   }
+
+  const langLabel = Object.values(Languages ?? {}).find(
+    ({ value }) => value === i18n.language
+  )?.label
 
   const settings = {
     lang: {
       key: "lang",
       tab: t("Language"),
-      value:
-        Object.values(Languages ?? {}).find(
-          ({ value }) => value === i18n.language
-        )?.label ?? Languages.en.label,
+      component: <LanguageSetting />,
+      value: langLabel,
     },
     currency: {
       key: "currency",
       tab: t("Currency"),
+      component: <CurrencySetting />,
       value: currencyId,
     },
     security: {
       key: "security",
       tab: t("Security"),
+      component: <SecuritySetting />,
       icon: <LockOutlinedIcon />,
     },
   }
 
   const subPages = {
-    lcd: {
-      key: "lcd",
-      tab: t("Add LCD Endpoint"),
-      hide: true,
-    },
     changePassword: {
       key: "changePassword",
       tab: t("Change Password"),
+      component: <ChangePasswordForm />,
       icon: <LockOutlinedIcon />,
-      hide: true,
+      parent: "security",
+    },
+    lcd: {
+      key: "lcd",
+      component: <LCDSetting />,
+      tab: t("Add LCD Endpoint"),
+      parent: "network",
     },
   }
 
@@ -146,46 +154,23 @@ const Preferences = () => {
   const SettingsMenu = () => (
     <FlexColumn gap={8}>
       {sandbox && (
-        <NavButton label={t(routes.network.tab)} {...routes.network} />
+        <NavButton
+          label={t(routes.network.tab)}
+          {...routes.network}
+          onClick={() => setPage("network")}
+        />
       )}
       <SettingsGroup settings={functions} />
       <SettingsGroup settings={settings} />
     </FlexColumn>
   )
 
-  const renderSettings = () => {
-    switch (page) {
-      case "network":
-        return <NetworkSetting subPageNav={() => setPage("lcd")} />
-      case "currency":
-        return <CurrencySetting />
-      case "lang":
-        return <LanguageSetting />
-      case "changePassword":
-        return <ChangePasswordForm />
-      case "security":
-        return <SecuritySetting subPageNav={() => setPage("changePassword")} />
-      // case "theme":
-      //   return <SelectTheme />
-      case "addressBook":
-        return <AddressBookNew />
-      case "manageTokens":
-        return <ManageCustomTokens />
-      case "lcd":
-        return <LCDSetting />
-      // case "advanced":
-      //   return <AdvancedSettings />
-      default:
-        return <SettingsMenu />
-    }
-  }
-
-  const renderTitle = () =>
+  const renderHeader = () =>
     page ? (
       <div>
         <button
           className={styles.back}
-          onClick={() => setPage(page === "lcd" ? "network" : null)}
+          onClick={() => setPage(routes[page]?.parent ?? undefined)}
         >
           <BackIcon width={18} height={18} />
         </button>
@@ -197,19 +182,21 @@ const Preferences = () => {
 
   return (
     <ModalButton
-      title={renderTitle()}
+      title={renderHeader()}
       renderButton={(open) => (
         <HeaderIconButton
           onClick={() => {
             open()
-            setPage(null)
+            setPage(undefined)
           }}
         >
           <SettingsIcon style={{ fontSize: 20 }} />
         </HeaderIconButton>
       )}
     >
-      {renderSettings()}
+      <SettingsPageProvider value={{ page, setPage }}>
+        {page ? routes[page].component : <SettingsMenu />}
+      </SettingsPageProvider>
     </ModalButton>
   )
 }

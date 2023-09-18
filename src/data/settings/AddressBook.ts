@@ -30,8 +30,10 @@ export const useAddressBook = () => {
     updateList(newList)
   }
 
-  const remove = (name: string) => {
-    updateList(list.filter((item) => item.name !== name))
+  const remove = (index: number) => {
+    const newList = [...list]
+    newList.splice(index, 1)
+    updateList(newList)
   }
 
   return { list, add, remove, edit, walletExists }

@@ -1,23 +1,28 @@
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
-import PersonIcon from "@mui/icons-material/Person"
-import { truncate } from "@terra-money/terra-utils"
 import { useAddressBook } from "data/settings/AddressBook"
-import { InlineFlex } from "components/layout"
 import validate from "txs/validate"
 import { useEffect } from "react"
-import { Checkbox, Form, InputWrapper, Input, SubmitButton } from "station-ui"
+import {
+  Checkbox,
+  Form,
+  InputWrapper,
+  Input,
+  SubmitButton,
+  Flex,
+} from "station-ui"
+import DeleteButton from "components/form/DeleteButton"
 
 interface Props {
   item?: AddressBook
   close: () => void
-  index?: number
+  index?: number // exsisting item index for edit/remove
 }
 
 const AddressBookForm = (props: Props) => {
   const { t } = useTranslation()
-  const { edit, add } = useAddressBook()
-  const { item, close, index } = props
+  const { edit, add, list, remove } = useAddressBook()
+  const { close, index } = props
 
   /* form */
   const form = useForm<AddressBook>({ mode: "onChange" })
@@ -25,19 +30,24 @@ const AddressBookForm = (props: Props) => {
   const { errors } = formState
 
   useEffect(() => {
-    form.reset(item)
-  }, [item, form])
+    if (index !== undefined) form.reset(list[index])
+  }, [index, list, form])
 
   const submit = (values: AddressBook) => {
     if (index !== undefined) edit(values, index)
     else add(values)
     close()
   }
+  const deleteOnClick = () => {
+    if (index !== undefined) remove(index)
+    close()
+  }
 
   return (
     <Form onSubmit={handleSubmit(submit)}>
-      <InputWrapper label={t("Name")} error={errors.name?.message}>
+      <InputWrapper label={t("Wallet Name")} error={errors.name?.message}>
         <Input
+          placeholder="my-wallet"
           {...register("name", {
             required: true,
           })}
@@ -45,7 +55,10 @@ const AddressBookForm = (props: Props) => {
       </InputWrapper>
 
       <InputWrapper label={t("Address")} error={errors.recipient?.message}>
-        <Input {...register("recipient", { validate: validate.recipient() })} />
+        <Input
+          {...register("recipient", { validate: validate.recipient() })}
+          placeholder="terra1...fzxf"
+        />
       </InputWrapper>
 
       <InputWrapper
@@ -64,11 +77,10 @@ const AddressBookForm = (props: Props) => {
       <InputWrapper>
         <Checkbox label="Mark as Favorite" {...register("favorite")} />
       </InputWrapper>
-
-      <SubmitButton
-        label={t("Submit")}
-        disabled={!!Object.keys(errors).length}
-      />
+      <Flex gap={28}>
+        {index !== undefined && <DeleteButton onClick={deleteOnClick} />}
+        <SubmitButton label={t("Save")} />
+      </Flex>
     </Form>
   )
 }

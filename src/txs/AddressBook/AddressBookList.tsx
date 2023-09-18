@@ -68,7 +68,7 @@ const AddressBookList = ({ onClick }: Props) => {
   ) : (
     <section>
       <Grid gap={12}>
-        {list.map((item) => {
+        {list.map((item, index) => {
           const { name, recipient, memo } = item
           return (
             <CustomItem
@@ -81,7 +81,7 @@ const AddressBookList = ({ onClick }: Props) => {
                 onClick?.(item)
                 close()
               }}
-              onDelete={() => remove(name)}
+              onDelete={() => remove(index)}
               key={name}
             />
           )

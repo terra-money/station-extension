@@ -1,12 +1,7 @@
 import { useTranslation } from "react-i18next"
-import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined"
 import { useAddressBook } from "data/settings/AddressBook"
 import AddAddressBookItem from "./AddressBookForm"
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"
-import CustomItem from "./CustomItem"
 import { useState } from "react"
-import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { useNetwork } from "data/wallet"
 import {
   WalletSelectableListItem,
   Button,
@@ -22,7 +17,7 @@ const AddressBookNew = ({ onClick }: Props) => {
   const { t } = useTranslation()
   const { list } = useAddressBook()
   const [open, setOpen] = useState(false)
-  const [index, setIndex] = useState<number>()
+  const [index, setIndex] = useState<number | undefined>()
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -42,6 +37,7 @@ const AddressBookNew = ({ onClick }: Props) => {
         {items.map((w, i) => (
           <WalletSelectableListItem
             truncateSubLabel
+            key={w.name}
             settingsOnClick={() => {
               setIndex(i)
               handleOpen()
