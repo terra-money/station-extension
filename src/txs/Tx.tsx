@@ -40,6 +40,7 @@ import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { getShouldTax, useTaxCap, useTaxRate } from "data/queries/treasury"
 import { useNativeDenoms } from "data/token"
+import { useCarbonFees } from "data/queries/tx"
 
 const cx = classNames.bind(styles)
 
@@ -100,6 +101,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const setLatestTx = useSetRecoilState(latestTxState)
   const isBroadcasting = useRecoilValue(isBroadcastingState)
   const readNativeDenom = useNativeDenoms()
+  const { data: carbonFees } = useCarbonFees()
 
   /* taxes */
   const isClassic = networks[chain]?.isClassic
@@ -137,6 +139,12 @@ function Tx<TxValues>(props: Props<TxValues>) {
       if (!wallet) return 0
       if (!simulationTx || !simulationTx.msgs.length) return 0
       try {
+        if (chain.startsWith("carbon-")) {
+          return Number(
+            carbonFees?.costs[key.msgs?.[0] ?? ""] ??
+              carbonFees?.costs["default_fee"]
+          )
+        }
         const unsignedTx = await lcd.tx.create([{ address: key.address }], {
           ...simulationTx,
           feeDenoms: [gasDenom],
@@ -161,14 +169,16 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
   const getGasAmount = useCallback(
     (denom: CoinDenom) => {
-      const gasPrice = networks[chain]?.gasPrices[denom]
+      const gasPrice = chain?.startsWith("carbon-")
+        ? carbonFees?.prices[denom]
+        : networks[chain]?.gasPrices[denom]
       if (isNil(estimatedGas) || !gasPrice) return "0"
       return new BigNumber(estimatedGas)
         .times(gasPrice)
         .integerValue(BigNumber.ROUND_CEIL)
         .toString()
     },
-    [estimatedGas, chain, networks]
+    [estimatedGas, chain, networks, carbonFees]
   )
 
   const gasAmount = getGasAmount(gasDenom)
