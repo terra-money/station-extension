@@ -34,3 +34,7 @@ export {
   InputWrapper,
   MultiInputWrapper
 } from './form helpers'
+
+export {
+  SectionHeader
+} from './headers'
