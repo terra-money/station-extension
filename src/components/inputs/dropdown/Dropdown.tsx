@@ -23,7 +23,7 @@ const Dropdown = ({
     };
   }, []);
 
-  if (!options.length) return null;
+  if (!options?.length) return null;
 
   const handleClickOutside = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as Node)) {
