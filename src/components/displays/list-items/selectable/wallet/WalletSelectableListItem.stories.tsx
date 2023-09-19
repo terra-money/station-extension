@@ -16,6 +16,7 @@ export const ActiveWallet: StoryObj<WalletSelectableListItemProps> = {
         label={"lots-of-money-here"}
         subLabel={"terra1hod3...pazdy5"}
         active={true}
+        copyValue={"terra1u28fgu0p99eh9xc4623k6cw6qmfdnl9un23yxs"}
         onClick={() => console.log("clicked!")}
         settingsOnClick={() => console.log('settings clicked!')}
       />
@@ -29,6 +30,7 @@ export const NonActiveWallet: StoryObj<WalletSelectableListItemProps> = {
     return (
       <WalletSelectableListItem
         label={"lots-of-money-here"}
+        copyValue={"terra1u28fgu0p99eh9xc4623k6cw6qmfdnl9un23yxs"}
         subLabel={"terra1hod3...pazdy5"}
         active={false}
         onClick={() => {}}
