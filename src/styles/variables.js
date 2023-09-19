@@ -1,6 +1,6 @@
 /**
  * Do not edit directly
- * Generated on Fri, 15 Sep 2023 22:07:08 GMT
+ * Generated on Tue, 19 Sep 2023 17:47:14 GMT
  */
 
 export const Dark100 = "hsl(230, 8%, 8%)";

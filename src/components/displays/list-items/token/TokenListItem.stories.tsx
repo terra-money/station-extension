@@ -4,7 +4,7 @@ import TokenSingleChainListItem, { TokenSingleChainListItemProps } from './singl
 import TokenCheckboxListItem, { TokenCheckboxListItemProps } from './single chain checkbox/TokenCheckboxListItem';
 
 const meta: Meta<TokenListItemProps> = {
-  title: 'Components/List Items/Token',
+  title: 'Components/list-items/Token',
   component: TokenListItem,
   argTypes: {},
 } as Meta;

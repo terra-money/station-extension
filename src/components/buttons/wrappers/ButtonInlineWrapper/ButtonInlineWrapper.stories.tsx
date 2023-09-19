@@ -22,41 +22,34 @@ export default meta;
 
 export const CancelWithSubmit: StoryObj<ButtonInlineWrapperProps> = {
   render: () => (
-    <ButtonInlineWrapper
-      buttons={[
+    <ButtonInlineWrapper>
         <SubmitButton variant='secondary' label='Cancel' />,
         <SubmitButton variant='primary' label='Submit'/>
-      ]}
-    />
+      </ButtonInlineWrapper>
   ),
 };
 
 export const CancelWithDelete: StoryObj<ButtonInlineWrapperProps> = {
   render: () => (
-    <ButtonInlineWrapper
-      buttons={[
+    <ButtonInlineWrapper>
         <SubmitButton variant='secondary' label='Cancel' />,
         <SubmitButton
           variant='warning'
           label='Delete'
-          icon={<TrashCan fill='var(--token-error-500)' stroke='var(--token-error-500)' />}
-        />
-      ]}
-    />
+          icon={<TrashCan fill='var(--token-error-500)' stroke='var(--token-error-500)' />}/>
+        </ButtonInlineWrapper>
   ),
 };
 
 export const StakeExample: StoryObj<ButtonInlineWrapperProps> = {
   render: () => (
-    <ButtonInlineWrapper
-      buttons={[
+    <ButtonInlineWrapper>
         <SubmitButton variant='secondary' label='Claim Rewards' />,
         <SubmitButton
           variant='primary'
           label='Stake'
           icon={<Stake fill='var(--token-light-white)' />}
         />
-    ]}
-    />
+        </ButtonInlineWrapper>
   ),
 };
