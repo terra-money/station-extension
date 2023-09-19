@@ -2,7 +2,6 @@ import classNames from 'classnames/bind';
 import { ReactComponent as CogIcon } from 'assets/icon/Cog.svg';
 import Copy from 'components/general/copy/Copy';
 import styles from '../SelectableListItem.module.scss';
-import {truncate} from "@terra-money/terra-utils"
 
 const cx = classNames.bind(styles);
 
@@ -10,7 +9,7 @@ export interface WalletSelectableListItemProps {
   label: string
   subLabel: string
   active?: boolean
-  truncateSubLabel?: boolean
+  copyValue: string
   onClick?: () => void
   settingsOnClick: () => void
 }
@@ -20,7 +19,7 @@ const WalletSelectableListItem = ({
   subLabel,
   active,
   onClick,
-  truncateSubLabel,
+  copyValue,
   settingsOnClick,
 }: WalletSelectableListItemProps) => {
   const iconFill = active ? 'var(--token-light-white)' : 'var(--token-light-300)';
@@ -33,12 +32,12 @@ const WalletSelectableListItem = ({
             {label}
           </h2>
           <h5 className={styles.selectable__address}>
-            {truncateSubLabel? truncate(subLabel) : subLabel}
+            {subLabel}
           </h5>
         </div>
         <div className={styles.selectable__settings}>
           <Copy
-            copyText={subLabel}
+            copyText={copyValue}
             iconOnlySize={20}
             fillColor={iconFill}
             iconOnly
