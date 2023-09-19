@@ -9,32 +9,14 @@ export type * from './displays';
 export * from './inputs';
 export type * from './inputs';
 
-export {
-  Flex,
-  FlexColumn,
-  InlineFlex
-} from './layout'
+export * from './feedback';
+export type * from './feedback';
 
-export type {
-  FlexProps,
-} from './layout'
+export * from './layout';
+export type * from './layout';
 
-export {
-  Modal,
-  ModalButton,
-} from './feedback/modals'
+export * from './form helpers';
+export type * from './form helpers';
 
-export type {
-  ModalProps,
-  ModalButtonProps,
-} from './feedback/modals'
-
-export {
-  Form,
-  InputWrapper,
-  MultiInputWrapper
-} from './form helpers'
-
-export {
-  SectionHeader
-} from './headers'
+export * from './headers';
+export type * from './headers';
