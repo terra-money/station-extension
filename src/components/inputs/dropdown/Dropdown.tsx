@@ -1,40 +1,40 @@
 import { useEffect, useRef, useState } from "react";
-import classNames from "classnames";
 import { ReactComponent as DropdownArrowIcon } from 'assets/icon/DropdownArrow.svg';
 import styles from "./Dropdown.module.scss";
 
-export interface StandardDropdownProps {
+export interface DropdownProps {
   options: { value: string; label: string; image?: string }[]
   onChange: (value: string) => void
   value: string
 }
 
-const StandardDropdown = ({
+const Dropdown = ({
   options,
   onChange,
   value,
-}: StandardDropdownProps) => {
-  const [open, setOpen] = useState(false)
-  if (!options.length) return null
+}: DropdownProps) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
-  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  if (!options?.length) return null;
 
   const handleClickOutside = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as Node)) {
-      setOpen(false)
+      setOpen(false);
     }
-  }
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
+  };
 
   const optionsById = options.reduce((acc, option) => {
-    acc[option.value] = option
-    return acc
-  }, {} as Record<string, { value: string; label: string; image?: string }>)
+    acc[option.value] = option;
+    return acc;
+  }, {} as Record<string, { value: string; label: string; image?: string }>);
 
   return (
     <div className={styles.container} ref={ref}>
@@ -60,11 +60,7 @@ const StandardDropdown = ({
       </button>
       {open && (
         <div className={styles.options}>
-          <div
-            className={classNames(
-              styles.options__container
-            )}
-          >
+          <div className={styles.options__container}>
             {options.map((option) => (
               <button
                 className={option.value === value ? styles.active : ""}
@@ -94,4 +90,4 @@ const StandardDropdown = ({
   );
 };
 
-export default StandardDropdown;
+export default Dropdown;

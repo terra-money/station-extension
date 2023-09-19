@@ -63,3 +63,14 @@ import 'station-ui/dist/style.css';
 ```
 import { Button } from 'station-ui';
 ```
+
+## Linking local with .tgz
+
+1. Build the package:
+```
+npm run build
+```
+2. Pack the build:
+```
+npm pack
+```

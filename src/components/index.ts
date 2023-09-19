@@ -1,70 +1,22 @@
 import '../styles/index.scss';
 
-export {
-  Button,
-  SubmitButton,
-  ButtonInlineWrapper,
-  Checked,
-  NavButton,
-  RoundedActionButton,
-  RoundedButton,
-  FlipButton,
-  Tabs,
-  ValidatorButton,
-} from './buttons';
+export * from './buttons';
+export type * from './buttons';
 
-export type {
-  ButtonConfig,
-  SubmitButtonProps,
-  ButtonInlineWrapperProps,
-  CheckedButtonProps,
-  NavButtonProps,
-  RoundedButtonConfig,
-  TabsProps,
-  ValidatorButtonProps
-} from './buttons';
+export * from './displays';
+export type * from './displays';
 
-export {
-  Flex,
-  FlexColumn,
-  InlineFlex
-} from './layout'
+export * from './inputs';
+export type * from './inputs';
 
-export type { 
-  FlexProps,
-} from './layout'
+export * from './feedback';
+export type * from './feedback';
 
-export {
-  Input,
-} from './inputs'
+export * from './layout';
+export type * from './layout';
 
-export {
-  Modal,
-  ModalButton,
-} from './feedback/modals'
+export * from './form helpers';
+export type * from './form helpers';
 
-export type {
-  ModalProps,
-  ModalButtonProps,
-} from './feedback/modals'
-
-export {
-  RadioList,
-  RadioListItem,
-} from './displays'
-
-export type {
-  RadioListProps,
-  RadioListItemProps,
-} from './displays'
-
-export {
-  CheckBox,
-  Dropdown
-} from './inputs'
-
-export {
-  Form,
-  InputWrapper,
-  MultiInputWrapper
-} from './form helpers'
+export * from './headers';
+export type * from './headers';

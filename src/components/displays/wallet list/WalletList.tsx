@@ -1,4 +1,4 @@
-import WalletSelectableListItem from 'components/displays/list items/selectable/wallet/WalletSelectableListItem';
+import WalletSelectableListItem from 'components/displays/list-items/selectable/wallet/WalletSelectableListItem';
 import SectionHeader from 'components/headers/section/SectionHeader';
 import styles from './WalletList.module.scss';
 

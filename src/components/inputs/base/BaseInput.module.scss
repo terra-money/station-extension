@@ -1,4 +1,4 @@
-@import 'scss/font_mixins.scss';
+@import 'scss/font_mixins';
 
 .base__input {
   display: flex;
@@ -19,10 +19,6 @@
     &::placeholder {
       color: var(--token-dark-900);
     }
-  }
-
-  .base__input__action {
-
   }
 
   .base__input__emoji {

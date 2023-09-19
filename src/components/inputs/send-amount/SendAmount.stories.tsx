@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from '@storybook/react';
 import SendAmount, { SendAmountProps } from './SendAmount';
-import { tokensBySymbol, tokenPrices } from '../assetselector/fakedata';
+import { tokensBySymbol, tokenPrices } from '../asset-selector/fakedata';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -32,7 +32,7 @@ export const TokenLarge: StoryObj<SendAmountProps> = {
           price={tokenPrices[sendToken]}
         />
       </form>
-    )
+    );
   },
 };
 
@@ -55,6 +55,6 @@ export const ValueLarge: StoryObj<SendAmountProps> = {
           price={tokenPrices[sendToken]}
         />
       </form>
-    )
+    );
   },
 };
