@@ -23,7 +23,6 @@ const Dropdown = ({
     };
   }, []);
 
-  if (!options?.length) return null;
 
   const handleClickOutside = (event: MouseEvent) => {
     if (ref.current && !ref.current.contains(event.target as Node)) {
@@ -31,7 +30,7 @@ const Dropdown = ({
     }
   };
 
-  const optionsById = options.reduce((acc, option) => {
+  const optionsById = options?.reduce((acc, option) => {
     acc[option.value] = option;
     return acc;
   }, {} as Record<string, { value: string; label: string; image?: string }>);
