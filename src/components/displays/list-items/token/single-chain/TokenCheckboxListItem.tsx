@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import classNames from 'classnames/bind';
 import { ReactComponent as CircleCheck } from 'assets/icon/SmallCircleCheck.svg';
@@ -26,7 +25,7 @@ const TokenCheckboxListItem = ({
     if (onClick) {
       onClick();
     }
-  }
+  };
 
   return (
     <div className={styles.token__container} onClick={handleClicked}>
@@ -40,17 +39,17 @@ const TokenCheckboxListItem = ({
         </div>
         <div className={styles.details__container__lr}>
           <div className={styles.left}>
-            <h1 className={styles.symbol}>
+            <h2 className={styles.symbol}>
               <span className={styles.symbol__name}>{symbol}</span>
-            </h1>
-            <h2 className={styles.chain__label}>
+            </h2>
+            <h3 className={styles.chain__label}>
               <img
                 src={chain.icon}
                 alt={chain.label}
                 className={styles.chain__icon}
               />
               {chain.label}
-            </h2>
+            </h3>
           </div>
           <div className={styles.right}>
             <div className={cx(styles.checkbox__container, { active })}>

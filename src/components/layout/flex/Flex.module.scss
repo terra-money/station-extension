@@ -1,29 +1,28 @@
 // @import "scss/mixins";
 
 .flex {
-  // @include flex;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 
 .column {
-  // @include flex-column;
   display: flex;
   justify-content: center;
   align-items: center;
 
   flex-direction: column;
+  width: 100%;
 }
 
 .inline {
-  // @include inline-flex;
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 
-/* align */
 .start {
   justify-content: flex-start;
 }

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import TextArea, { TextAreaProps } from './TextArea';
 import { useEffect, useState } from 'react';
-import { InputWrapper } from 'components/form helpers';
+import { InputWrapper } from 'components/form-helpers';
 import Copy from 'components/general/copy/Copy';
 
 const meta: Meta<TextAreaProps> = {

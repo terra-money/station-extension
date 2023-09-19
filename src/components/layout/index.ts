@@ -1,5 +1,5 @@
-export { default as Flex } from './Flex';
-export * from './Flex';
+export { default as Flex } from './flex/Flex';
+export * from './flex/Flex';
 
-export { default as Grid } from './Grid';
-export * from './Grid';
+export { default as Grid } from './grid/Grid';
+export * from './grid/Grid';

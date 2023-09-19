@@ -1,6 +1,6 @@
 import type { StoryObj, Meta } from '@storybook/react';
 import Modal, { ModalProps } from './Modal';
-import { InputWrapper } from 'components/form helpers';
+import { InputWrapper } from 'components/form-helpers';
 import { Input } from 'components/inputs';
 import { SubmitButton } from 'components';
 

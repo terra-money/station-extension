@@ -1,10 +1,7 @@
-// import ContentCopy from '@mui/icons-material/ContentCopy';
 import { useState } from 'react';
 import Check from '@mui/icons-material/Check';
 import classNames from 'classnames';
-// import { ReactComponent as Copy } from 'assets/icon/Copy.svg';
 import { ReactComponent as CopyIcon } from 'assets/icon/Copy.svg';
-
 import styles from './Copy.module.scss';
 
 const cx = classNames.bind(styles);

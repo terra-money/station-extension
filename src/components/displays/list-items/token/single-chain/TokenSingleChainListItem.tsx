@@ -40,31 +40,31 @@ const TokenSingleChainListItem = ({
         </div>
         <div className={styles.details__container}>
           <div className={styles.top__row}>
-            <h1 className={styles.symbol}>
+            <h2 className={styles.symbol}>
               <span className={styles.symbol__name}>{symbol}</span>
               {isSendBack && <Pill variant='warning' text="Send Back" />}
-            </h1>
-            <h1 className={styles.amount}>
+            </h2>
+            <h3 className={styles.amount}>
               {amountNode}
-            </h1>
+            </h3>
           </div>
           <div className={styles.bottom__row}>
-            <h2 className={styles.chain__label}>
+            <h5 className={styles.chain__label}>
               <img
                 src={chain.icon}
                 alt={chain.label}
                 className={styles.chain__icon}
               />
               {chain.label}
-            </h2>
-            <h2 className={styles.price}>
+            </h5>
+            <h5 className={styles.price}>
               {currency.symbol}
               {coinPrice ? (
                 <div>{walletPrice}</div>
               ) : (
                 <span>—</span>
               )}
-            </h2>
+            </h5>
           </div>
         </div>
       </div>

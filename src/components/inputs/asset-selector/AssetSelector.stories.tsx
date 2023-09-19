@@ -7,10 +7,10 @@ import { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { Modal } from 'components/feedback/modals';
 import { FlexColumn, Input } from 'components';
-import { InputWrapper } from 'components/form helpers';
+import { InputWrapper } from 'components/form-helpers';
 import StandardDropdown from '../dropdown/Dropdown';
 import SectionHeader from 'components/headers/section/SectionHeader';
-import TokenSingleChainListItem from 'components/displays/list-items/token/single chain/TokenSingleChainListItem';
+import TokenSingleChainListItem from 'components/displays/list-items/token/single-chain/TokenSingleChainListItem';
 
 const meta: Meta<AssetSelectorFromProps> = {
   title: 'Components/Inputs/AssetSelector/Stories',

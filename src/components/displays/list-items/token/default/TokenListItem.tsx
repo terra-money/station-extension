@@ -43,32 +43,32 @@ const TokenListItem = ({
         </div>
         <div className={styles.details__container}>
           <div className={styles.top__row}>
-            <h1 className={styles.symbol}>
+            <h2 className={styles.symbol}>
               <span className={styles.symbol__name}>{symbol}</span>
               {chains && chains.length > 1 ? (
                 <span className={styles.chain__num}>{chains.length}</span>
               ) : (
                 <span className={styles.single__chain__text}>{chains[0]}</span>
               )}
-            </h1>
-            <h1 className={styles.amount}>
+            </h2>
+            <h3 className={styles.amount}>
               {amountNode}
-            </h1>
+            </h3>
           </div>
           <div className={styles.bottom__row}>
-            <h2
+            <h5
               className={token24hrChange >= 0 ? styles.change__up : styles.change__down}
             >
               {token24hrChange >= 0 ? <PriceUp /> : <PriceDown />} {token24hrChange.toFixed(2)}%
-            </h2>
-            <h2 className={styles.price}>
+            </h5>
+            <h5 className={styles.price}>
               {currency.symbol}{" "}
               {coinPrice ? (
                 <div>{walletPrice}</div>
               ) : (
                 <span>—</span>
               )}
-            </h2>
+            </h5>
           </div>
         </div>
       </div>

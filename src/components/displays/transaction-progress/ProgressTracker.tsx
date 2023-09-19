@@ -33,7 +33,7 @@ const ProgressTracker = ({ steps, stepLabels }: ProgressTrackerProps) => {
     if (steps.includes('failed')) return 'var(--token-error-500)';
 
     return 'var(--token-warning-500)';
-  }
+  };
 
   return (
     <div className={styles.progress__container}>
