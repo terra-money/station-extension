@@ -44,7 +44,8 @@ interface SettingsPage {
 
 export const [useSettingsPage, SettingsPageProvider] = createContext<{
   page: string | undefined
-  setPage: (route: string) => void
+  setPage: (route: string, params?: any) => void
+  setHeader?: (header: ReactElement) => void
 }>("useSettingsPage")
 
 const Preferences = () => {
@@ -137,8 +138,7 @@ const Preferences = () => {
   }: {
     settings: Record<string, SettingsPage>
   }) => (
-    <>
-      <SectionHeader withLine />
+    <FlexColumn gap={18}>
       {Object.values(settings).map(({ tab, key, icon, value }) => (
         <NavButton
           label={tab}
@@ -148,11 +148,11 @@ const Preferences = () => {
           onClick={() => setPage(key)}
         />
       ))}
-    </>
+    </FlexColumn>
   )
 
   const SettingsMenu = () => (
-    <FlexColumn gap={8}>
+    <FlexColumn gap={16}>
       {sandbox && (
         <NavButton
           label={t(routes.network.tab)}
@@ -160,14 +160,16 @@ const Preferences = () => {
           onClick={() => setPage("network")}
         />
       )}
+      <SectionHeader withLine />
       <SettingsGroup settings={functions} />
+      <SectionHeader withLine />
       <SettingsGroup settings={settings} />
     </FlexColumn>
   )
 
   const renderHeader = () =>
     page ? (
-      <div>
+      <>
         <button
           className={styles.back}
           onClick={() => setPage(routes[page]?.parent ?? undefined)}
@@ -175,7 +177,7 @@ const Preferences = () => {
           <BackIcon width={18} height={18} />
         </button>
         {routes[page].tab}
-      </div>
+      </>
     ) : (
       t("Settings")
     )

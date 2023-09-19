@@ -144,7 +144,7 @@ export const useSavedNetwork = () => {
 
 export const useCustomLCDs = () => {
   const [customLCDs, setCustomLCDs] = useRecoilState(customLCDState)
-  function changeCustomLCDs(chainID: string, lcd: string | undefined) {
+  const changeCustomLCDs = (chainID: string, lcd: string | undefined) => {
     const newLCDs = { ...customLCDs, [chainID]: lcd }
     setLocalSetting(SettingKey.CustomLCD, newLCDs)
     setCustomLCDs(newLCDs)

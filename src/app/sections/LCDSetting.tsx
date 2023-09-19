@@ -14,6 +14,7 @@ import { useCustomLCDs } from "utils/localStorage"
 import { Dropdown, Button, Input, Form, InputWrapper } from "station-ui"
 import classNames from "classnames"
 import DeleteIcon from "@mui/icons-material/Delete"
+import { useSettingsPage } from "./Preferences"
 
 const cx = classNames.bind(styles)
 interface FormValues {
@@ -22,12 +23,17 @@ interface FormValues {
   lcd?: string
 }
 
-const LCDSetting = () => {
+interface Props {
+  selectedChainID?: string // for edit
+}
+
+const LCDSetting = (props: Props) => {
   const networkName = useNetworkName()
   const networkOptions = useNetworkOptions()
   const { networks } = useNetworks()
   const { t } = useTranslation()
   const { customLCDs, changeCustomLCDs } = useCustomLCDs()
+  const { setPage } = useSettingsPage()
   const form = useForm<FormValues>({ mode: "onChange" })
   const {
     register,
@@ -37,6 +43,7 @@ const LCDSetting = () => {
     formState: { errors },
   } = form
   const { network, chainID, lcd } = watch()
+  const { selectedChainID } = props
   const networksList = useMemo(
     () =>
       Object.values(networks[network] ?? {})
@@ -58,12 +65,12 @@ const LCDSetting = () => {
 
   useEffect(() => {
     if (!networksList.length) return
-    setValue("chainID", networksList[0].value)
-  }, [setValue, networksList])
+    setValue("chainID", selectedChainID ?? networksList[0].value)
+  }, [setValue, networksList, selectedChainID])
 
   useEffect(() => {
-    setValue("lcd", customLCDs[chainID] ?? "")
-  }, [setValue, customLCDs, chainID])
+    setValue("lcd", customLCDs[selectedChainID ?? chainID] ?? "")
+  }, [setValue, customLCDs, chainID, selectedChainID])
 
   const { data: errorMessage, isLoading } = useValidateLCD(
     lcd,
@@ -112,6 +119,7 @@ const LCDSetting = () => {
   const submit = ({ chainID, lcd }: FormValues) => {
     if (isDisabled) return
     changeCustomLCDs(chainID, lcd)
+    setPage("network")
   }
 
   const reset = (chainID: string) => {

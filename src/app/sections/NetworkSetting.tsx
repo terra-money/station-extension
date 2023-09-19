@@ -1,19 +1,42 @@
 import { useNetworkOptions, useNetworkState } from "data/wallet"
 import SettingsSelector from "components/layout/SettingsSelector"
-import { NavButton } from "station-ui"
+import { NavButton, SectionHeader, AddressSelectableListItem } from "station-ui"
 import { FlexColumn } from "components/layout"
 import AddIcon from "@mui/icons-material/Add"
-import { useSettingsPage } from "./Preferences"
+import { useCustomLCDs } from "utils/localStorage"
+import { useNetwork } from "data/wallet"
+import { useState } from "react"
+import LCDSetting from "./LCDSetting"
 
 const NetworkSetting = () => {
   const [network, setNetwork] = useNetworkState()
   const networkOptions = useNetworkOptions()
-  const { setPage } = useSettingsPage()
+  const { customLCDs } = useCustomLCDs()
+  const networks = useNetwork()
+  const [open, setOpen] = useState(false)
+  const [chain, setChain] = useState<string | undefined>()
+
+  const handleOpen = (id?: string) => {
+    setChain(id)
+    setOpen(true)
+  }
+
+  const list = Object.keys(customLCDs ?? {}).map((chainID) => {
+    const { name, icon } = networks[chainID]
+    return {
+      name,
+      chainID,
+      chain: { icon, label: name },
+      lcd: customLCDs[chainID]!,
+    }
+  })
 
   if (!networkOptions) return null
 
-  return (
-    <FlexColumn gap={16}>
+  return open ? (
+    <LCDSetting selectedChainID={chain} />
+  ) : (
+    <FlexColumn gap={30}>
       <SettingsSelector
         accordion
         options={networkOptions}
@@ -23,8 +46,22 @@ const NetworkSetting = () => {
       <NavButton
         icon={<AddIcon />}
         label="Add Custom LCD Endpoint"
-        onClick={() => setPage("lcd")}
+        onClick={() => handleOpen()}
       />
+      {!!list.length && (
+        <>
+          <SectionHeader title="Custom LCD Endpoints" withLine />
+          {list.map((i) => (
+            <AddressSelectableListItem
+              active
+              subLabel={i.lcd}
+              chain={i.chain}
+              label={i.name}
+              onClick={() => handleOpen(i.chainID)}
+            />
+          ))}
+        </>
+      )}
     </FlexColumn>
   )
 }

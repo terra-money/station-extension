@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next"
 import { useAddressBook } from "data/settings/AddressBook"
 import AddAddressBookItem from "./AddressBookForm"
+import { truncate } from "@terra-money/terra-utils"
 import { useState } from "react"
 import {
   WalletSelectableListItem,
@@ -20,7 +21,10 @@ const AddressBookNew = ({ onClick }: Props) => {
   const [index, setIndex] = useState<number | undefined>()
 
   const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
+  const handleClose = () => {
+    setOpen(false)
+    setIndex(undefined)
+  }
 
   const WalletList = ({
     items,
@@ -36,14 +40,14 @@ const AddressBookNew = ({ onClick }: Props) => {
         <SectionHeader withLine title={title} />
         {items.map((w, i) => (
           <WalletSelectableListItem
-            truncateSubLabel
+            copyValue={w.recipient}
             key={w.name}
             settingsOnClick={() => {
               setIndex(i)
               handleOpen()
             }}
             label={w.name}
-            subLabel={w.recipient}
+            subLabel={truncate(w.recipient)}
           />
         ))}
       </Grid>
