@@ -1,25 +1,25 @@
-import { PropsWithChildren } from 'react'
-import Lottie from 'lottie-react'
-import styles from './LedgerModal.module.scss'
-import { Modal } from 'components/feedback/modals'
-import animations from './animations'
+import { PropsWithChildren } from "react"
+import Lottie from "lottie-react"
+import styles from "./LedgerModal.module.scss"
+import { Modal } from "../feedback/modals"
+import animations from "./animations"
 
-enum LedgerModel {
-  NANOX = 'nanox',
-  NANOS = 'nanos',
-  NANOSP = 'nanosp',
+export enum LedgerDeviceModel {
+  NANOX = "nanox",
+  NANOS = "nanos",
+  NANOSP = "nanosp",
 }
 
-enum Action {
-  CONNECT = 'connect',
-  OPEN_APP = 'openApp',
-  CONFIRM = 'confirm',
-  UNLOCK = 'unlock',
+export enum LedgerDeviceAction {
+  CONNECT = "connect",
+  OPEN_APP = "openApp",
+  CONFIRM = "confirm",
+  UNLOCK = "unlock",
 }
 
 export interface LedgerModalProps {
-  device?: LedgerModel
-  action: Action
+  device?: LedgerDeviceModel
+  action: LedgerDeviceAction
   appName: string
   onRequestClose?: () => void
 }
@@ -27,21 +27,26 @@ export interface LedgerModalProps {
 interface Props extends LedgerModalProps {}
 
 const LedgerModal = (props: PropsWithChildren<Props>) => {
-  const { device = LedgerModel.NANOX, action, appName, onRequestClose } = props
+  const {
+    device = LedgerDeviceModel.NANOX,
+    action,
+    appName,
+    onRequestClose,
+  } = props
 
   function renderText() {
     switch (action) {
-      case Action.CONNECT:
+      case LedgerDeviceAction.CONNECT:
         return <p>Connect and unlock your Ledger device.</p>
-      case Action.UNLOCK:
+      case LedgerDeviceAction.UNLOCK:
         return <p>Turn on and unlock your Ledger device.</p>
-      case Action.OPEN_APP:
+      case LedgerDeviceAction.OPEN_APP:
         return (
           <p>
             Open the <b>{appName}</b> app on your Ledger device.
           </p>
         )
-      case Action.CONFIRM:
+      case LedgerDeviceAction.CONFIRM:
         return <p>Confirm the transaction on your Ledger device.</p>
     }
   }
