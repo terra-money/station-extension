@@ -28,6 +28,7 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
         />
         <WalletSelectableListItem
           label={activeWallet.name}
+          copyValue={activeWallet.address}
           subLabel={activeWallet.address}
           active
           onClick={() => {}}
@@ -43,6 +44,7 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
         {otherWallets.map((wallet) => (
           <WalletSelectableListItem
             label={wallet.name}
+            copyValue={activeWallet.address}
             subLabel={wallet.address}
             onClick={wallet.onClick}
             settingsOnClick={wallet.settingsOnClick}
