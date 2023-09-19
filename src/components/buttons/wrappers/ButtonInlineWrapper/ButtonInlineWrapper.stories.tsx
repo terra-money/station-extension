@@ -32,7 +32,7 @@ export const CancelWithSubmit: StoryObj<ButtonInlineWrapperProps> = {
 export const CancelWithDelete: StoryObj<ButtonInlineWrapperProps> = {
   render: () => (
     <ButtonInlineWrapper>
-        <SubmitButton variant='secondary' label='Cancel' />,
+        <SubmitButton variant='secondary' label='Cancel' />
         <SubmitButton
           variant='warning'
           label='Delete'
@@ -44,7 +44,7 @@ export const CancelWithDelete: StoryObj<ButtonInlineWrapperProps> = {
 export const StakeExample: StoryObj<ButtonInlineWrapperProps> = {
   render: () => (
     <ButtonInlineWrapper>
-        <SubmitButton variant='secondary' label='Claim Rewards' />,
+        <SubmitButton variant='secondary' label='Claim Rewards' />
         <SubmitButton
           variant='primary'
           label='Stake'
