@@ -21,7 +21,7 @@ const ProgressBar = ({ data, threshold }: ProgressBarProps) => {
 
   const hasThresholdBeenMet = () => {
     const totalPercentage = data.reduce((sum, item) => {
-      return sum + parseFloat(item.percent.replace('%', ''))
+      return sum + parseFloat(item.percent.replace('%', ''));
     }, 0);
     return totalPercentage >= threshold;
   }

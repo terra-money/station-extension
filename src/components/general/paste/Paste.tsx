@@ -13,7 +13,6 @@ export interface PasteProps {
 }
 
 const Paste = ({ onPaste, textOverride, withIcon, className }: PasteProps) => {
-
   const handleClick = async () => {
     const text = await navigator.clipboard.readText();
     const lines = text
@@ -21,7 +20,7 @@ const Paste = ({ onPaste, textOverride, withIcon, className }: PasteProps) => {
       .filter((str) => str)
       .map((str) => str.trim());
 
-      onPaste(lines[0]);
+    onPaste(lines[0]);
   };
 
   return (

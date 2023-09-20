@@ -1,4 +1,3 @@
-
 import styles from './WalletListItem.module.scss';
 
 export interface WalletListItemProps {

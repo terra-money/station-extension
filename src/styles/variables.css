@@ -1,0 +1,50 @@
+/**
+ * Do not edit directly
+ * Generated on Tue, 19 Sep 2023 20:36:44 GMT
+ */
+
+:root {
+  --token-dark-100: hsl(230, 8%, 8%);
+  --token-dark-200: hsl(230, 8%, 10%);
+  --token-dark-300: hsl(230, 8%, 12%);
+  --token-dark-500: hsl(230, 8%, 14%);
+  --token-dark-600: hsl(230, 8%, 16%);
+  --token-dark-700: hsl(230, 8%, 18%);
+  --token-dark-900: hsl(230, 8%, 40%);
+  --token-light-100: hsl(230, 8%, 58%);
+  --token-light-300: hsl(230, 8%, 72%);
+  --token-light-500: hsl(230, 8%, 80%);
+  --token-light-white: hsl(0, 0%, 100%);
+  --token-primary-300: hsl(218, 94%, 40%);
+  --token-primary-500: hsl(218, 94%, 48%);
+  --token-primary-600: hsl(218, 94%, 52%);
+  --token-primary-900: hsl(218, 94%, 76%);
+  --token-error-100: hsl(0, 19%, 14%);
+  --token-error-500: hsl(2, 67%, 58%);
+  --token-warning-100: hsl(37, 32%, 13%);
+  --token-warning-500: hsl(33, 84%, 58%);
+  --token-success-100: hsl(164, 17%, 12%);
+  --token-success-500: hsl(168, 71%, 39%);
+  --token-font-family-default: EuclidSquare;
+  --token-line-height-xx-sm-default: 10px;
+  --token-line-height-x-sm-default: 12px;
+  --token-line-height-x-sm-larger: 14px;
+  --token-line-height-sm-default: 14px;
+  --token-line-height-sm-larger: 18px;
+  --token-line-height-md-default: 16px;
+  --token-line-height-md-larger: 20px;
+  --token-line-height-mdlg-default: 26px;
+  --token-line-height-lg-default: 24px;
+  --token-line-height-x-lg-default: 32px;
+  --token-line-height-xx-lg-default: 40px;
+  --token-font-size-xx-sm: 10px;
+  --token-font-size-x-sm: 12px;
+  --token-font-size-sm: 14px;
+  --token-font-size-md: 16px;
+  --token-font-size-mdlg: 20px;
+  --token-font-size-lg: 24px;
+  --token-font-size-x-lg: 32px;
+  --token-font-size-xx-lg: 40px;
+  --token-font-weight-medium: 500;
+  --token-font-weight-bold: bold;
+}

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import TokenListItem, { TokenListItemProps } from './default/TokenListItem';
-import TokenSingleChainListItem, { TokenSingleChainListItemProps } from './single chain/TokenSingleChainListItem';
-import TokenCheckboxListItem, { TokenCheckboxListItemProps } from './single chain checkbox/TokenCheckboxListItem';
+import TokenSingleChainListItem, { TokenSingleChainListItemProps } from './single-chain/TokenSingleChainListItem';
+import TokenCheckboxListItem, { TokenCheckboxListItemProps } from './single-chain/TokenCheckboxListItem';
 
 const meta: Meta<TokenListItemProps> = {
   title: 'Components/list-items/Token',

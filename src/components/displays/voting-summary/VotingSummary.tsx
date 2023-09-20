@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import classNames from 'classnames/bind';
-import ProgressBar from '../progress bar/ProgressBar';
+import ProgressBar from '../progress-bar/ProgressBar';
 import styles from './VotingSummary.module.scss';
 
 const cx = classNames.bind(styles);
@@ -19,7 +19,7 @@ export type VotingSummaryProps = {
 const VotingSummary = ({ data, threshold }: VotingSummaryProps) => {
   const getCategory = (type: string) => {
     return type === 'noWithVeto' ? 'No (Veto)' : type;
-  }
+  };
 
   return (
     <div className={styles.voting__summary__container}>

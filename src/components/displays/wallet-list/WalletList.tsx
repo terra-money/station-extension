@@ -30,6 +30,7 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
           label={activeWallet.name}
           copyValue={activeWallet.address}
           subLabel={activeWallet.address}
+          copyValue={activeWallet.address}
           active
           onClick={() => {}}
           settingsOnClick={activeWallet.settingsOnClick}
@@ -46,6 +47,7 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
             label={wallet.name}
             copyValue={activeWallet.address}
             subLabel={wallet.address}
+            copyValue={activeWallet.address}
             onClick={wallet.onClick}
             settingsOnClick={wallet.settingsOnClick}
           />
