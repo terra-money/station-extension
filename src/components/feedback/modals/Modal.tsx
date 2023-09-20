@@ -1,13 +1,13 @@
-import { PropsWithChildren, ReactNode } from "react";
-import ReactModal from "react-modal";
-import classNames from "classnames/bind";
-import CloseIcon from "@mui/icons-material/Close";
-import { getMaxHeightStyle } from "utils/style";
-import styles from "./Modal.module.scss";
+import { PropsWithChildren, ReactNode } from "react"
+import ReactModal from "react-modal"
+import classNames from "classnames/bind"
+import CloseIcon from "@mui/icons-material/Close"
+import { getMaxHeightStyle } from "utils/style"
+import styles from "./Modal.module.scss"
 
-const cx = classNames.bind(styles);
+const cx = classNames.bind(styles)
 
-export interface ModalProps {
+export interface ModalProps extends ReactModal.Props {
   /* content */
   title?: ReactNode
   footer?: (close: ReactModal.Props["onRequestClose"]) => ReactNode
@@ -22,11 +22,9 @@ export interface ModalProps {
   rootID?: string
 }
 
-interface Props extends ModalProps, ReactModal.Props {}
-
-const Modal = (props: PropsWithChildren<Props>) => {
-  const { title, children, footer, rootID = "station" } = props;
-  const { icon, closeIcon, onRequestClose, confirm, maxHeight, minimal } = props;
+const Modal = (props: PropsWithChildren<ModalProps>) => {
+  const { title, children, footer, rootID = "station" } = props
+  const { icon, closeIcon, onRequestClose, confirm, maxHeight, minimal } = props
 
   return (
     <ReactModal
@@ -61,7 +59,7 @@ const Modal = (props: PropsWithChildren<Props>) => {
         <footer className={styles.footer}>{footer(onRequestClose)}</footer>
       )}
     </ReactModal>
-  );
-};
+  )
+}
 
-export default Modal;
+export default Modal
