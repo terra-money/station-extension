@@ -4,7 +4,7 @@ import TokenSingleChainListItem, { TokenSingleChainListItemProps } from './singl
 import TokenCheckboxListItem, { TokenCheckboxListItemProps } from './single-chain/TokenCheckboxListItem';
 
 const meta: Meta<TokenListItemProps> = {
-  title: 'Components/List Items/Token',
+  title: 'Components/list-items/Token',
   component: TokenListItem,
   argTypes: {},
 } as Meta;
@@ -88,6 +88,7 @@ export const WithChainCheckbox: StoryObj<TokenCheckboxListItemProps> = {
       <TokenCheckboxListItem
         tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
         symbol={"LUNA"}
+        onClick={() => { }}
         chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
       />
     )

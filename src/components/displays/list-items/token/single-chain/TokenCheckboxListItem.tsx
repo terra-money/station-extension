@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import classNames from 'classnames/bind';
 import { ReactComponent as CircleCheck } from 'assets/icon/SmallCircleCheck.svg';
 import styles from '../TokenListItem.module.scss';
@@ -9,7 +8,8 @@ export interface TokenCheckboxListItemProps {
   tokenImg: string
   symbol: string
   chain: { icon: string, label: string }
-  onClick?: () => void
+  onClick: () => void
+  checked?: boolean
 }
 
 const TokenCheckboxListItem = ({
@@ -17,18 +17,11 @@ const TokenCheckboxListItem = ({
   symbol,
   chain,
   onClick,
+  checked
 }: TokenCheckboxListItemProps) => {
-  const [active, setActive] = useState(false);
-
-  const handleClicked = () => {
-    setActive(!active);
-    if (onClick) {
-      onClick();
-    }
-  };
 
   return (
-    <div className={styles.token__container} onClick={handleClicked}>
+    <div className={styles.token__container} onClick={onClick}>
       <div className={styles.details}>
         <div className={styles.token__icon__container}>
           <img
@@ -52,9 +45,9 @@ const TokenCheckboxListItem = ({
             </h3>
           </div>
           <div className={styles.right}>
-            <div className={cx(styles.checkbox__container, { active })}>
+            <div className={cx(styles.checkbox__container)}>
               <input type='checkbox' hidden />
-              {active ? (
+              {checked ? (
                 <CircleCheck fill='var(--token-light-white)' />
               ) : (
                 <span className={styles.track} />

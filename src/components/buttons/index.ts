@@ -6,7 +6,7 @@ export * from './submit/SubmitButton/SubmitButton';
 export { default as ButtonInlineWrapper } from './wrappers/ButtonInlineWrapper/ButtonInlineWrapper';
 export * from './wrappers/ButtonInlineWrapper/ButtonInlineWrapper';
 
-export { default as Checked } from './checked/CheckedButton';
+export { default as CheckedButton } from './checked/CheckedButton';
 export * from './checked/CheckedButton';
 
 export { default as NavButton } from './navigation/button/NavButton';

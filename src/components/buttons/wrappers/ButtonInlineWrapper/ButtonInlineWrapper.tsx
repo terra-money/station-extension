@@ -1,14 +1,14 @@
-import { ReactElement } from 'react';
+import { ReactNode } from 'react';
 import styles from './ButtonInlineWrapper.module.scss';
 
 export interface ButtonInlineWrapperProps {
-  buttons: ReactElement[]
+  children?: ReactNode
 }
 
-const ButtonInlineWrapper = ({ buttons }: ButtonInlineWrapperProps) => {
+const ButtonInlineWrapper = (props: ButtonInlineWrapperProps) => {
   return (
     <div className={styles.wrapper}>
-      {buttons}
+      {props.children}
     </div>
   );
 };
