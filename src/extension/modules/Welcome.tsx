@@ -5,7 +5,6 @@ import ExtensionPage from "extension/components/ExtensionPage"
 import { Button } from "station-ui"
 import CreateWalletModal from "auth/modules/create/CreateWalletModal"
 import { useAuth } from "auth"
-import SelectWallets from "extension/auth/SelectWallets"
 import SwitchWallet from "extension/auth/SwitchWallet"
 
 const Welcome = () => {
