@@ -80,11 +80,9 @@ const CoinTypePasswordForm = ({ close }: { close: () => void }) => {
     <Form onSubmit={handleSubmit(submit)}>
       <FormItem>
         <FormHelp>
-          <p>Station now supports Injective!</p>
           <p>
-            Adding Injective support will allow Station users to be able to
-            carry out transactions utilizing an Injective address tied to their
-            Station wallet.
+            Provide your password to generate an injective address for this
+            wallet.
           </p>
         </FormHelp>
       </FormItem>
