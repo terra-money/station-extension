@@ -15,6 +15,7 @@ import { Languages } from "config/lang"
 import { capitalize } from "@mui/material"
 import AddressBookNew from "txs/AddressBook/AddressBookNew"
 import { useTranslation } from "react-i18next"
+import { SettingsPage } from "./Preferences"
 
 export const useSettingsRoutes = () => {
   const { i18n, t } = useTranslation()

@@ -10,7 +10,7 @@ import styles from "./Preferences.module.scss"
 import createContext from "utils/createContext"
 import { useSettingsRoutes } from "./routes"
 
-interface SettingsPage {
+export interface SettingsPage {
   key: string
   tab: string
   component: ReactElement
