@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 *.tgz
+
+# variable files generated at build time
+src/styles/variables.css
+src/styles/variables.js
