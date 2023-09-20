@@ -16,11 +16,6 @@ const NetworkSetting = () => {
   const [open, setOpen] = useState(false)
   const [chain, setChain] = useState<string | undefined>()
 
-  const handleOpen = (id?: string) => {
-    setChain(id)
-    setOpen(true)
-  }
-
   const list = Object.keys(customLCDs ?? {}).map((chainID) => {
     const { name, icon } = networks[chainID]
     return {
@@ -46,7 +41,7 @@ const NetworkSetting = () => {
       <NavButton
         icon={<AddIcon />}
         label="Add Custom LCD Endpoint"
-        onClick={() => handleOpen()}
+        onClick={() => setOpen(true)}
       />
       {!!list.length && (
         <>
@@ -57,7 +52,10 @@ const NetworkSetting = () => {
               subLabel={i.lcd}
               chain={i.chain}
               label={i.name}
-              onClick={() => handleOpen(i.chainID)}
+              onClick={() => {
+                setChain(i.chainID)
+                setOpen(true)
+              }}
             />
           ))}
         </>

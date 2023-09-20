@@ -3,7 +3,7 @@ import SettingsIcon from "@mui/icons-material/Settings"
 import { ReactComponent as BackIcon } from "styles/images/icons/BackButton.svg"
 import { FlexColumn } from "station-ui"
 import { sandbox } from "auth/scripts/env"
-import HeaderIconButton from "../components/HeaderIconButton"
+import HeaderIconButton from "../../components/HeaderIconButton"
 import NetworkSetting from "./NetworkSetting"
 import LanguageSetting from "./LanguageSetting"
 import SecuritySetting from "./SecuritySetting"
@@ -13,24 +13,17 @@ import { useNetworkName } from "data/wallet"
 import { useCurrency } from "data/settings/Currency"
 import { Languages } from "config/lang"
 import { capitalize } from "@mui/material"
-import { useAuth } from "auth"
-import { useNavigate } from "react-router-dom"
-import { ReactElement, useMemo, useState } from "react"
+import { ReactElement, useState } from "react"
 import AddressBookNew from "txs/AddressBook/AddressBookNew"
 import styles from "./Preferences.module.scss"
-import LockWallet from "auth/modules/manage/LockWallet"
-import { useManageWallet } from "auth/modules/manage/ManageWallets"
 import createContext from "utils/createContext"
-
-// import SelectTheme from "./SelectTheme"
 import LCDSetting from "./LCDSetting"
-// import { useTheme } from "data/settings/Theme"
-// import AdvancedSettings from "./AdvancedSettings"
 import ContactsIcon from "@mui/icons-material/Contacts"
 import { ReactComponent as ManageAssets } from "styles/images/icons/ManageAssets.svg"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import ChangePasswordForm from "auth/modules/manage/ChangePasswordForm"
 import ManageCustomTokens from "pages/custom/ManageCustomTokens"
+import { ManageWalletList } from "auth/modules/manage/ManageWallets"
 
 interface SettingsPage {
   key: string
@@ -77,24 +70,22 @@ const Preferences = () => {
       component: <ManageCustomTokens />,
       icon: <ManageAssets />,
     },
-    lockWallet: {
-      key: "lockWallet",
-      tab: t("Lock Wallet"),
-      component: <LockWallet />,
+    manageWallet: {
+      key: "manageWallet",
+      tab: t("Manage Wallet"),
+      component: <ManageWalletList />,
       icon: <LockOutlinedIcon />,
     },
   }
-
-  const langLabel = Object.values(Languages ?? {}).find(
-    ({ value }) => value === i18n.language
-  )?.label
 
   const settings = {
     lang: {
       key: "lang",
       tab: t("Language"),
       component: <LanguageSetting />,
-      value: langLabel,
+      value: Object.values(Languages ?? {}).find(
+        ({ value }) => value === i18n.language
+      )?.label,
     },
     currency: {
       key: "currency",
@@ -138,7 +129,7 @@ const Preferences = () => {
   }: {
     settings: Record<string, SettingsPage>
   }) => (
-    <FlexColumn gap={18}>
+    <FlexColumn gap={6}>
       {Object.values(settings).map(({ tab, key, icon, value }) => (
         <NavButton
           label={tab}

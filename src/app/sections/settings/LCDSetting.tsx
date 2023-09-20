@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { useNetworks } from "app/InitNetworks"
 import { useEffect, useMemo } from "react"
-// import { Input } from "components/form"
 import styles from "./LCDSetting.module.scss"
 import { useValidateLCD } from "data/queries/tendermint"
 import { LoadingCircular } from "components/feedback"
@@ -11,10 +10,17 @@ import ClearIcon from "@mui/icons-material/Clear"
 import CheckIcon from "@mui/icons-material/Check"
 import { Flex } from "components/layout"
 import { useCustomLCDs } from "utils/localStorage"
-import { Dropdown, Button, Input, Form, InputWrapper } from "station-ui"
+import {
+  Dropdown,
+  Input,
+  Form,
+  InputWrapper,
+  ButtonInlineWrapper,
+  SubmitButton,
+} from "station-ui"
 import classNames from "classnames"
-import DeleteIcon from "@mui/icons-material/Delete"
 import { useSettingsPage } from "./Preferences"
+import DeleteButton from "components/form/DeleteButton"
 
 const cx = classNames.bind(styles)
 interface FormValues {
@@ -122,9 +128,9 @@ const LCDSetting = (props: Props) => {
     setPage("network")
   }
 
-  const reset = (chainID: string) => {
+  const handleDelete = () => {
     changeCustomLCDs(chainID, undefined)
-    setValue("lcd", undefined)
+    setPage("network")
   }
 
   return (
@@ -153,39 +159,31 @@ const LCDSetting = (props: Props) => {
         <Input
           type="text"
           placeholder={networks[network]?.[chainID]?.lcd}
-          actionIcon={
-            lcd || !isSaved
-              ? {
-                  icon: (
-                    <span className={styles.loading}>
-                      <DeleteIcon />
-                    </span>
-                  ),
-                  onClick: () => reset(chainID),
-                }
-              : undefined
-          }
+          // actionIcon={
+          //   lcd || !isSaved
+          //     ? {
+          //         icon: (
+          //           <span className={styles.loading}>
+          //             <DeleteIcon />
+          //           </span>
+          //         ),
+          //         onClick: () => handleDelete(),
+          //       }
+          //     : undefined
+          // }
           {...register("lcd", {
             value: customLCDs[chainID] ?? "",
           })}
         />
       </InputWrapper>
-      <div className={styles.button__padding} />
-      <section className={styles.button__conainer}>
-        <Button
-          variant="primary"
+      <ButtonInlineWrapper>
+        {selectedChainID && <DeleteButton onClick={handleDelete} />}
+        <SubmitButton
+          loading={isLoading}
           disabled={isDisabled || isSaved}
-          type="submit"
-        >
-          {isLoading ? (
-            <>
-              <LoadingCircular size={18} /> Loading...
-            </>
-          ) : (
-            <>Create Custom RPC</>
-          )}
-        </Button>
-      </section>
+          label="Create Custom RPC"
+        />
+      </ButtonInlineWrapper>
     </Form>
   )
 }

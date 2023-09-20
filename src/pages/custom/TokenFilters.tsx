@@ -1,26 +1,17 @@
-import { Checkbox } from "components/form"
+import { Checkbox } from "station-ui"
 import { useTokenFilters } from "utils/localStorage"
 import { useTranslation } from "react-i18next"
-import { Flex } from "components/layout"
 
 const TokenFilters = () => {
-  const {
-    hideNoWhitelist,
-    hideLowBal,
-    toggleHideNoWhitelist,
-    toggleHideLowBal,
-  } = useTokenFilters()
+  const { hideNoWhitelist, toggleHideNoWhitelist } = useTokenFilters()
   const { t } = useTranslation()
 
   return (
-    <Flex gap={20} start>
-      <Checkbox onChange={toggleHideNoWhitelist} checked={hideNoWhitelist}>
-        {t("Hide non-whitelisted")}
-      </Checkbox>
-      <Checkbox onChange={toggleHideLowBal} checked={hideLowBal}>
-        {t("Hide low-balance")}
-      </Checkbox>
-    </Flex>
+    <Checkbox
+      label={t("Hide non-whitelisted")}
+      onChange={toggleHideNoWhitelist}
+      checked={hideNoWhitelist}
+    />
   )
 }
 
