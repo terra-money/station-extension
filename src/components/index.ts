@@ -20,3 +20,6 @@ export type * from './form helpers';
 
 export * from './headers';
 export type * from './headers';
+
+export * from './general';
+export type * from './general';
