@@ -1,8 +1,33 @@
-.component {
-  padding-top: 20px;
-}
+.welcome__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 
-.content {
-  font-size: 16px;
-  font-weight: var(--bold);
+  .welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    height: 100%;
+
+    .title {
+      font-size: 28pt;
+      font-weight: 800;
+    }
+
+    .content {
+      font-size: 18px;
+      font-weight: var(--bold);
+      text-align: center;
+      padding: 0 1rem;
+    }
+  }
+
+  .connect__options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
 }

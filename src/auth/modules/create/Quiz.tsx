@@ -3,13 +3,11 @@ import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
 import update from "immutability-helper"
 import numeral from "numeral"
-import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined"
 import shuffle from "utils/shuffle"
 import { Form, FormItem, Submit } from "components/form"
-import AuthButton from "../../components/AuthButton"
 import { useCreateWallet } from "./CreateWalletWizard"
 import styles from "./Quiz.module.scss"
-import ConfirmModal from "../manage/ConfirmModal"
+import { Banner, Button, CheckedButton, Flex } from "station-ui"
 
 export interface QuizItem {
   index: number
@@ -33,15 +31,6 @@ const Quiz = () => {
 
   return (
     <Form onSubmit={handleSubmit(submit)}>
-      {incorrect && (
-        <ConfirmModal
-          onRequestClose={() => setIncorrect(false)}
-          icon={<DangerousOutlinedIcon fontSize="inherit" className="danger" />}
-        >
-          {t("Write down the mnemonic and choose the correct word")}
-        </ConfirmModal>
-      )}
-
       {quiz.map(({ index }, i) => (
         <FormItem
           // do not translate this unless you find a simple way to handle ordinal
@@ -56,24 +45,34 @@ const Quiz = () => {
               }
 
               return (
-                <AuthButton
-                  className={styles.item}
-                  onClick={handleClick}
+                <CheckedButton
                   active={answers[i] === word}
+                  onClick={handleClick}
                   key={word}
                 >
                   {word}
-                </AuthButton>
+                </CheckedButton>
               )
             })}
           </section>
         </FormItem>
       ))}
 
-      <Submit disabled={answers.some((answer) => !answer)} />
-      <button className={styles.reset} onClick={reset}>
-        {t("I haven't written down the mnemonic")}
-      </button>
+      {incorrect && (
+        <Banner
+          variant="error"
+          title={t("Write down the mnemonic and choose the correct word")}
+        />
+      )}
+
+      <Flex gap={12} style={{ marginTop: 20 }}>
+        <Button variant="secondary" onClick={reset} block>
+          {t("Back")}
+        </Button>
+        <Submit disabled={answers.some((answer) => !answer)} noMargin>
+          {t("Confirm")}
+        </Submit>
+      </Flex>
     </Form>
   )
 }

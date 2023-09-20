@@ -1,11 +1,13 @@
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import DoneAllIcon from "@mui/icons-material/DoneAll"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 import { Grid } from "components/layout"
 import { Submit } from "components/form"
 import { Details } from "components/display"
 import useAuth from "../../hooks/useAuth"
 import { addressFromWords } from "utils/bech32"
+import { FlexColumn } from "station-ui"
+import styles from "./CreatedWallet.module.scss"
 
 const CreatedWallet = ({ name, words }: SingleWallet) => {
   const { t } = useTranslation()
@@ -19,25 +21,25 @@ const CreatedWallet = ({ name, words }: SingleWallet) => {
   }
 
   return (
-    <article>
+    <FlexColumn justify="space-between" style={{ height: "100%" }}>
       <Grid gap={28}>
-        <header className="center">
-          <DoneAllIcon className="success" style={{ fontSize: 56 }} />
-          <h1>{t("Wallet generated successfully")}</h1>
+        <header className={styles.header}>
+          <CheckCircleIcon className="success" style={{ fontSize: 56 }} />
+          <h1>{t("Success!")}</h1>
+          <p>{t("The wallet was created")}</p>
         </header>
 
         <Details>
-          <article>
-            <h1>{name}</h1>
+          <section className={styles.address}>
+            <h4>{name}</h4>
             <p>{address}</p>
-          </article>
+          </section>
         </Details>
-
-        <Submit type="button" onClick={submit}>
-          {t("Connect")}
-        </Submit>
       </Grid>
-    </article>
+      <Submit type="button" onClick={submit}>
+        {t("Done")}
+      </Submit>
+    </FlexColumn>
   )
 }
 

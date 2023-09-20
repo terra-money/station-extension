@@ -36,7 +36,7 @@ const AddressBookNew = ({ onClick }: Props) => {
         <SectionHeader withLine title={title} />
         {items.map((w, i) => (
           <WalletSelectableListItem
-            truncateSubLabel
+            copyValue={w.recipient}
             key={w.name}
             settingsOnClick={() => {
               setIndex(i)

@@ -2,11 +2,11 @@ import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
 import { Grid } from "components/layout"
-import { Form, FormItem, FormWarning, Submit, Value } from "components/form"
-import { Checkbox, Input } from "components/form"
+import { Form, Submit, Value } from "components/form"
 import validate from "auth/scripts/validate"
 import { TooltipIcon } from "components/display"
 import { useCreateWallet, Values as DefaultValues } from "./CreateWalletWizard"
+import { Banner, Copy, InputWrapper, Input, Checkbox } from "station-ui"
 
 interface Values extends DefaultValues {
   confirm: string
@@ -38,18 +38,21 @@ const CreateWalletForm = () => {
 
   return (
     <Form onSubmit={handleSubmit(submit)}>
-      <FormItem label={t("Wallet name")} error={errors.name?.message}>
+      <InputWrapper label={t("Wallet Name")} error={errors.name?.message}>
         <Input {...register("name", { validate: validate.name })} autoFocus />
-      </FormItem>
+      </InputWrapper>
 
-      <FormItem label={t("Password")} error={errors.password?.message}>
+      <InputWrapper label={t("Password")} error={errors.password?.message}>
         <Input
           {...register("password", { validate: validate.password })}
           type="password"
         />
-      </FormItem>
+      </InputWrapper>
 
-      <FormItem label={t("Confirm password")} error={errors.confirm?.message}>
+      <InputWrapper
+        label={t("Confirm password")}
+        error={errors.confirm?.message}
+      >
         <Input
           {...register("confirm", {
             validate: (confirm) => validate.confirm(password, confirm),
@@ -57,9 +60,13 @@ const CreateWalletForm = () => {
           onFocus={() => form.trigger("confirm")}
           type="password"
         />
-      </FormItem>
+      </InputWrapper>
 
-      <FormItem label={t("Mnemonic seed")} error={errors.mnemonic?.message}>
+      <InputWrapper
+        label={t("Mnemonic seed")}
+        error={errors.mnemonic?.message}
+        extra={generated && <Copy copyText={mnemonic} />}
+      >
         {generated ? (
           <Value>{mnemonic}</Value>
         ) : (
@@ -68,10 +75,10 @@ const CreateWalletForm = () => {
             {...register("mnemonic", { validate: validate.mnemonic })}
           />
         )}
-      </FormItem>
+      </InputWrapper>
 
       {!generated && (
-        <FormItem /* do not translate this */
+        <InputWrapper /* do not translate this */
           label="Index"
           error={errors.index?.message}
           extra={
@@ -86,30 +93,34 @@ const CreateWalletForm = () => {
               validate: validate.index,
             })}
           />
-          {index !== 0 && <FormWarning>{t("Default index is 0")}</FormWarning>}
-        </FormItem>
+          {index !== 0 && (
+            <Banner variant="info" title={t("Default index is 0")} />
+          )}
+        </InputWrapper>
       )}
 
       {generated && (
         <>
           <Grid gap={4}>
-            <FormWarning>
-              {t(
+            <Banner
+              variant="warning"
+              title={t(
                 "Never share the mnemonic with others or enter it in unverified sites"
               )}
-            </FormWarning>
+            />
           </Grid>
 
           <Checkbox
             {...register("checked", { required: true })}
             checked={checked}
-          >
-            {t("I have written down the mnemonic")}
-          </Checkbox>
+            label={t("I have written down the mnemonic")}
+          />
         </>
       )}
 
-      <Submit disabled={!isValid} />
+      <Submit disabled={!isValid} variant="secondary">
+        {t("Create Wallet")}
+      </Submit>
     </Form>
   )
 }

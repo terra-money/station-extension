@@ -7,6 +7,15 @@
   // padding here to position progress bar
 }
 
+.main__bg__color {
+  background-color: var(--button-primary-bg);
+}
+
+.full__height {
+  height: 100vh;
+  padding-bottom: 0;
+}
+
 .title_container {
   display: flex;
   align-items: center;

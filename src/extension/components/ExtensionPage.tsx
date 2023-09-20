@@ -6,16 +6,27 @@ import { ReactComponent as BackIcon } from "styles/images/icons/BackButton.svg"
 import { useNavigate } from "react-router-dom"
 import Container from "../layouts/Container"
 import { Card } from "components/layout"
+import classNames from "classnames"
 
 interface Props extends QueryState {
   header?: ReactNode
   title?: string
   backButtonPath?: string
+  backgroundColor?: "main"
+  fullHeight?: boolean
 }
 
 const ExtensionPage = (props: PropsWithChildren<Props>) => {
   const navigate = useNavigate()
-  const { header, title, backButtonPath, children } = props
+  const {
+    header,
+    title,
+    backButtonPath,
+    children,
+    backgroundColor,
+    fullHeight,
+  } = props
+  const cx = classNames.bind(styles)
 
   return (
     <WithFetching {...props}>
@@ -23,7 +34,13 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
         <>
           {progress}
 
-          <article className={styles.page}>
+          <article
+            className={cx(
+              styles.page,
+              backgroundColor === "main" && styles.main__bg__color,
+              fullHeight && styles.full__height
+            )}
+          >
             {header && (
               <header className={styles.header}>
                 <Container className={styles.container}>{header}</Container>
@@ -54,7 +71,12 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
             )}
 
             <section className={styles.main}>
-              <Container className={styles.container}>
+              <Container
+                className={cx(
+                  styles.container,
+                  fullHeight && styles.full__height
+                )}
+              >
                 {wrong ? (
                   <Card>{wrong}</Card>
                 ) : (

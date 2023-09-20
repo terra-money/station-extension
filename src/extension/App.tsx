@@ -35,6 +35,7 @@ import { useReplaceKeplr } from "utils/localStorage"
 import EnableCoinType from "app/sections/EnableCoinType"
 import UpdateNotification from "./update/UpdateNotification"
 import ChangeLogModal from "./update/ChangeLogModal"
+import Welcome from "./modules/Welcome"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -88,23 +89,34 @@ const App = () => {
     { path: "*", element: <Front /> },
   ])
 
+  function render() {
+    if (!wallet) {
+      //{wallets.length ? <SwitchWallet /> : <Welcome />}
+      return <Welcome />
+    }
+    // main page
+    return (
+      <>
+        <Header>
+          <ManageWallets />
+          <Flex gap={5}>
+            <LatestTx />
+            <EnableCoinType />
+            <NetworkHeader />
+            <NetworkStatus />
+            <Preferences />
+          </Flex>
+        </Header>
+
+        <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
+      </>
+    )
+  }
+
   return (
     <ErrorBoundary fallback={fallback}>
       <InitBankBalance>
-        <RequestContainer>
-          <Header>
-            <ManageWallets />
-            <Flex gap={5}>
-              <LatestTx />
-              <EnableCoinType />
-              <NetworkHeader />
-              <NetworkStatus />
-              <Preferences />
-            </Flex>
-          </Header>
-
-          <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
-        </RequestContainer>
+        <RequestContainer>{render()}</RequestContainer>
       </InitBankBalance>
       <ChangeLogModal />
       <UpdateNotification />

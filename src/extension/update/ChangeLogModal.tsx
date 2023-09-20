@@ -29,10 +29,10 @@ const useChangeLogInfo = (version?: string) => {
 }
 
 export default function ChangeLogModal() {
-  const currentVersion = browser.runtime?.getManifest()?.version
+  const currentVersion = browser.runtime?.getManifest?.()?.version
   const lastVersionShown = localStorage.getItem(LOCALSTORAGE_CHANGELOG_KEY)
   const [showChangelog, setShowChangelog] = useState<boolean>(
-    currentVersion !== lastVersionShown
+    !!currentVersion && currentVersion !== lastVersionShown
   )
 
   const { data: changeLogText } = useChangeLogInfo(currentVersion)
@@ -51,7 +51,7 @@ export default function ChangeLogModal() {
           setShowChangelog(false)
           localStorage.setItem(
             LOCALSTORAGE_CHANGELOG_KEY,
-            browser.runtime?.getManifest()?.version
+            browser.runtime?.getManifest?.()?.version
           )
         }}
       >
