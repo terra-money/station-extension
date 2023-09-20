@@ -18,7 +18,8 @@
 
 .modal {
   max-height: calc(100% - 40px);
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 32px;
 
   background: var(--token-dark-200);
