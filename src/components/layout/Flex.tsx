@@ -9,15 +9,16 @@ export interface FlexProps {
   className?: string
   wrap?: boolean
   style?: CSSProperties
+  start?: boolean
   justify?: 'center' | 'flex-start' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly'
   align?: 'center' | 'flex-start' | 'flex-end' | 'baseline' | 'stretch'
 }
 
 export const InlineFlex = (props: PropsWithChildren<FlexProps>) => {
-  const { gap, wrap, className, children, style, justify, align } = props;
+  const { gap, wrap, className, children, style, justify, align, start } = props;
   return (
     <span
-      className={cx(styles.inline, { wrap }, className)}
+      className={cx(styles.inline, { wrap, start }, className)}
       style={{ ...style, gap, justifyContent: justify, alignItems: align }}
     >
       {children}
@@ -26,10 +27,10 @@ export const InlineFlex = (props: PropsWithChildren<FlexProps>) => {
 };
 
 export const FlexColumn = (props: PropsWithChildren<FlexProps>) => {
-  const { gap, wrap, className, children, style, justify, align } = props;
+  const { gap, wrap, className, children, style, justify, align, start } = props;
   return (
     <div
-      className={cx(styles.column, { wrap }, className)}
+      className={cx(styles.column, { start, wrap }, className)}
       style={{ ...style, gap, justifyContent: justify, alignItems: align }}
     >
       {children}
@@ -38,10 +39,10 @@ export const FlexColumn = (props: PropsWithChildren<FlexProps>) => {
 };
 
 const Flex = (props: PropsWithChildren<FlexProps>) => {
-  const { gap, wrap, className, children, style, justify, align } = props;
+  const { gap, wrap, className, children, style, justify, align, start } = props;
   return (
     <div
-      className={cx(styles.flex, { wrap }, className)}
+      className={cx(styles.flex, { wrap, start }, className)}
       style={{ ...style, gap, justifyContent: justify, alignItems: align }}
     >
       {children}

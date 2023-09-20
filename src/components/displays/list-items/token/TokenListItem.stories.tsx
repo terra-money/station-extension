@@ -88,6 +88,7 @@ export const WithChainCheckbox: StoryObj<TokenCheckboxListItemProps> = {
       <TokenCheckboxListItem
         tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
         symbol={"LUNA"}
+        onClick={() => { }}
         chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
       />
     )

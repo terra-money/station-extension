@@ -8,3 +8,4 @@ export { default as WalletListItem } from './list-items/wallet/WalletListItem';
 export type { WalletListItemProps } from './list-items/wallet/WalletListItem';
 export { default as WalletSelectableListItem } from './list-items/selectable/wallet/WalletSelectableListItem';
 export { default as AddressSelectableListItem } from './list-items/selectable/address/AddressSelectableListItem';
+export { default as TokenCheckboxListItem } from './list-items/token/single chain checkbox/TokenCheckboxListItem';
