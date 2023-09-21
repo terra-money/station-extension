@@ -1,10 +1,8 @@
 import { ForwardedRef, forwardRef, InputHTMLAttributes, ReactNode } from "react"
 import classNames from "classnames/bind"
-import SearchIcon from "@mui/icons-material/Search"
 import { WithTokenItem } from "data/token"
 import { Flex } from "../layout"
 import styles from "./Input.module.scss"
-import { Input as StationUiInput } from "station-ui"
 
 const cx = classNames.bind(styles)
 
@@ -86,7 +84,7 @@ export const SearchInput = forwardRef(
         )}
         style={attrs.padding ? {} : { margin: 0 }}
       >
-        <StationUiInput
+        <input
           {...attrs}
           className={cx(styles.input, attrs.small && styles.input__small)}
           inputMode="search"
