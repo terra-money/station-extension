@@ -6,7 +6,7 @@ const cx = classNames.bind(styles);
 
 export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string
-  checked: boolean
+  checked?: boolean
 }
 
 const Checkbox = forwardRef(
