@@ -8,12 +8,11 @@ import { ReactComponent as ManageAssets } from "styles/images/icons/ManageAssets
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import ChangePasswordForm from "auth/modules/manage/ChangePasswordForm"
 import ManageCustomTokens from "pages/custom/ManageCustomTokens"
-import { ManageWalletList } from "auth/modules/manage/ManageWallets"
 import { useNetworkName } from "data/wallet"
 import { useCurrency } from "data/settings/Currency"
 import { Languages } from "config/lang"
 import { capitalize } from "@mui/material"
-import AddressBookNew from "txs/AddressBook/AddressBookNew"
+import AddressBook from "txs/AddressBook/AddressBook"
 import { useTranslation } from "react-i18next"
 import { SettingsPage } from "./Preferences"
 
@@ -34,7 +33,7 @@ export const useSettingsRoutes = () => {
     addressBook: {
       key: "addressBook",
       tab: t("Address Book"),
-      component: <AddressBookNew />,
+      component: <AddressBook />,
       icon: <ContactsIcon />,
     },
     manageTokens: {
@@ -42,12 +41,6 @@ export const useSettingsRoutes = () => {
       tab: t("Manage Tokens"),
       component: <ManageCustomTokens />,
       icon: <ManageAssets />,
-    },
-    manageWallet: {
-      key: "manageWallet",
-      tab: t("Manage Wallet"),
-      component: <ManageWalletList />,
-      icon: <LockOutlinedIcon />,
     },
   }
 

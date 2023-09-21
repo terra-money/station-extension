@@ -8,17 +8,19 @@ import {
   Button,
   Grid,
   SectionHeader,
+  Tabs,
 } from "station-ui"
 
 interface Props {
   onClick?: (item: AddressBook) => void
 }
 
-const AddressBookNew = ({ onClick }: Props) => {
+const AddressBook = ({ onClick }: Props) => {
   const { t } = useTranslation()
-  const { list } = useAddressBook()
+  const { list: addressList } = useAddressBook()
   const [open, setOpen] = useState(false)
   const [index, setIndex] = useState<number | undefined>()
+  const [tabKey, setTabKey] = useState("addressBook")
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => {
@@ -54,6 +56,19 @@ const AddressBookNew = ({ onClick }: Props) => {
     )
   }
 
+  const tabs = [
+    {
+      key: "addressBook",
+      label: "Address Book",
+      onClick: () => setTabKey("addressBook"),
+    },
+    {
+      key: "myWallets",
+      label: "My Wallets",
+      onClick: () => setTabKey("myWallets"),
+    },
+  ]
+
   return open ? (
     <AddAddressBookItem index={index} close={handleClose} />
   ) : (
@@ -61,10 +76,23 @@ const AddressBookNew = ({ onClick }: Props) => {
       <Button variant="dashed" onClick={handleOpen}>
         {t("Add New Address")}
       </Button>
-      <WalletList title="Favorites" items={list.filter((i) => i.favorite)} />
-      <WalletList title="All" items={list.filter((i) => !i.favorite)} />
+      <Tabs activeTabKey={tabKey} tabs={tabs} />
+      {tabKey === "addressBook" ? (
+        <>
+          <WalletList
+            title="Favorites"
+            items={addressList.filter((i) => i.favorite)}
+          />
+          <WalletList
+            title="All"
+            items={addressList.filter((i) => !i.favorite)}
+          />
+        </>
+      ) : (
+        <p>Pending useAuth refactor</p>
+      )}
     </Grid>
   )
 }
 
-export default AddressBookNew
+export default AddressBook
