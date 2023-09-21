@@ -19,7 +19,7 @@ import { useInterchainAddresses } from "auth/hooks/useAddress"
 
 interface TxValues {
   source?: ValAddress
-  input?: number
+  input: number
 }
 
 export enum StakeAction {
@@ -141,6 +141,7 @@ const StakeForm = (props: Props) => {
   return (
     <Tx {...tx}>
       {({ max, fee, submit }) => (
+        // @ts-expect-error
         <Form onSubmit={handleSubmit(submit.fn)}>
           {
             {

@@ -16,6 +16,7 @@ export const EXTENSION =
 export const DOCUMENTATION =
   "https://docs-terra.pages.dev/learn/terra-station/Download/terra-station-desktop.html"
 export const SETUP = "https://setup.station.money/"
+export const CARBON_API = "https://api.carbon.network/"
 
 /* website: fiat ramp */
 export const FIAT_RAMP = "https://app.kado.money/"

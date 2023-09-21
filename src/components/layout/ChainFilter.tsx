@@ -4,6 +4,8 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import styles from "./ChainFilter.module.scss"
 
+const cx = classNames.bind(styles)
+
 const ChainFilter = ({
   children,
   all,
@@ -29,13 +31,7 @@ const ChainFilter = ({
 
   return (
     <div className={outside ? styles.chainfilter__out : styles.chainfilter}>
-      <div
-        className={classNames(
-          className,
-          styles.header,
-          swap ? styles.swap : ""
-        )}
-      >
+      <div className={cx(className, styles.header, swap ? styles.swap : "")}>
         {title && <h1>{title}</h1>}
         <div className={styles.pills}>
           {all && (

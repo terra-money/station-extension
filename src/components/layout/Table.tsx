@@ -121,7 +121,7 @@ function Table<T>({ dataSource, filter, rowKey, ...props }: Props<T>) {
 
   return (
     <div
-      className={classNames(cx(styles.container, { bordered }), className)}
+      className={cx(styles.container, className, { bordered })}
       style={style}
     >
       <table className={cx(styles.table, size)}>
