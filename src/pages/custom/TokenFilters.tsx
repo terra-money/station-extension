@@ -3,14 +3,14 @@ import { useTokenFilters } from "utils/localStorage"
 import { useTranslation } from "react-i18next"
 
 const TokenFilters = () => {
-  const { hideNoWhitelist, toggleHideNoWhitelist } = useTokenFilters()
+  const { onlyShowWhitelist, toggleOnlyShowWhitelist } = useTokenFilters()
   const { t } = useTranslation()
 
   return (
     <Checkbox
-      label={t("Hide non-whitelisted")}
-      onChange={toggleHideNoWhitelist}
-      checked={hideNoWhitelist}
+      label={t("Only show whitelisted tokens")}
+      onChange={toggleOnlyShowWhitelist}
+      checked={onlyShowWhitelist}
     />
   )
 }

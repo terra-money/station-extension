@@ -4,6 +4,7 @@ import SearchIcon from "@mui/icons-material/Search"
 import { WithTokenItem } from "data/token"
 import { Flex } from "../layout"
 import styles from "./Input.module.scss"
+import { Input as StationUiInput } from "station-ui"
 
 const cx = classNames.bind(styles)
 
@@ -85,15 +86,13 @@ export const SearchInput = forwardRef(
         )}
         style={attrs.padding ? {} : { margin: 0 }}
       >
-        <input
+        <StationUiInput
           {...attrs}
           className={cx(styles.input, attrs.small && styles.input__small)}
           inputMode="search"
           autoComplete="off"
           ref={ref}
         />
-
-        <SearchIcon className={styles.icon} />
         {attrs.extra}
       </div>
     )
