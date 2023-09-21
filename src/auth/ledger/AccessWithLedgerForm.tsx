@@ -5,27 +5,25 @@ import { useForm } from "react-hook-form"
 import UsbIcon from "@mui/icons-material/Usb"
 import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import { LedgerKey } from "@terra-money/ledger-station-js"
-import {
-  Form,
-  FormError,
-  FormHelp,
-  FormItem,
-  FormWarning,
-} from "components/form"
-import { Checkbox, Input, Submit } from "components/form"
+import { Submit } from "components/form"
 import validate from "../scripts/validate"
 import useAuth from "../hooks/useAuth"
 import { createBleTransport, isBleAvailable } from "utils/ledger"
 import { wordsFromAddress } from "utils/bech32"
 
-import Lottie from "lottie-react"
-import connect from "./assets/connect.json"
-import openApp from "./assets/openApp.json"
-import { Button } from "components/general"
-
 import styles from "./AccessWithLedger.module.scss"
 import { FlexColumn } from "components/layout"
 import { TooltipIcon } from "components/display"
+import {
+  Banner,
+  LedgerDeviceAction,
+  LedgerModal,
+  Checkbox,
+  InputWrapper,
+  Input,
+  Button,
+  Form,
+} from "station-ui"
 
 interface Values {
   index: number
@@ -142,7 +140,7 @@ const AccessWithLedgerForm = () => {
               )}
             </section>
 
-            <FormItem /* do not translate this */
+            <InputWrapper /* do not translate this */
               label="Index"
               error={errors.index?.message}
               extra={
@@ -157,115 +155,97 @@ const AccessWithLedgerForm = () => {
                   validate: validate.index,
                 })}
               />
+            </InputWrapper>
 
-              {index !== 0 && (
-                <FormWarning>{t("Default index is 0")}</FormWarning>
-              )}
+            {index !== 0 && (
+              <Banner variant="warning" title={t("Default index is 0")} />
+            )}
 
-              {bleAvailable && (
-                <Checkbox {...register("bluetooth")} checked={bluetooth}>
-                  Use Bluetooth
-                </Checkbox>
-              )}
-            </FormItem>
+            {bleAvailable && (
+              <Checkbox
+                {...register("bluetooth")}
+                checked={bluetooth}
+                label={t("Use Bluetooth")}
+              />
+            )}
 
-            {error && <FormError>{error.message}</FormError>}
-            <Button color="primary" onClick={connectTerra}>
+            {error && <Banner variant="error" title={error.message} />}
+
+            <Button variant="primary" onClick={connectTerra}>
               Connect
             </Button>
           </>
         )
       case Pages.connect:
         return (
-          <>
-            <section className="center">
-              <Lottie animationData={connect} />
-              <p>{t("Connect and unlock your device")}</p>
-            </section>
-          </>
+          <LedgerModal
+            action={
+              bluetooth ? LedgerDeviceAction.UNLOCK : LedgerDeviceAction.CONNECT
+            }
+            appName="Terra"
+          />
         )
       case Pages.openTerra:
         return (
-          <>
-            <>
-              <section className="center">
-                <Lottie animationData={openApp} />
-                <p>
-                  Open the <strong>Terra app</strong> on the Ledger device.
-                </p>
-              </section>
-            </>
-          </>
+          <LedgerModal action={LedgerDeviceAction.OPEN_APP} appName="Terra" />
         )
       case Pages.askCosmos:
         return (
-          <>
-            <>
-              <section className="center">
-                <p>{t("Do you want to import your Cosmos accounts?")}</p>
-                <FlexColumn gap={4} className={styles.warningContainer}>
-                  <FormHelp>
-                    {t(
-                      "You will need the Cosmos app installed on your Ledger."
-                    )}
-                    <br />
-                    {t(
-                      "The device will try to open the cosmos app automatically."
-                    )}
-                  </FormHelp>
-                  {error && <FormError>{error.message}, try again.</FormError>}
-                </FlexColumn>
+          <section className="center">
+            <p>{t("Do you want to import your Cosmos accounts?")}</p>
+            <FlexColumn gap={4} className={styles.warningContainer}>
+              <Banner
+                variant="info"
+                title={`${t(
+                  "You will need the Cosmos app installed on your Ledger."
+                )} ${t(
+                  "The device will try to open the cosmos app automatically."
+                )}`}
+              />
+              {error && (
+                <Banner
+                  variant="error"
+                  title={`${error.message}, try again.`}
+                />
+              )}
+            </FlexColumn>
 
-                <Button
-                  className={styles.mainButton}
-                  color="primary"
-                  onClick={connectCosmos}
-                >
-                  {t("Yes")}
-                </Button>
-                <p>
-                  <button
-                    className={styles.smallButton}
-                    onClick={() => setPage(Pages.complete)}
-                  >
-                    {t("No, I'll use only Terra")}
-                  </button>
-                </p>
-              </section>
-            </>
-          </>
+            <Button
+              className={styles.mainButton}
+              variant="primary"
+              onClick={connectCosmos}
+            >
+              {t("Yes")}
+            </Button>
+            <p>
+              <button
+                className={styles.smallButton}
+                onClick={() => setPage(Pages.complete)}
+              >
+                {t("No, I'll use only Terra")}
+              </button>
+            </p>
+          </section>
         )
       case Pages.openCosmos:
         return (
-          <>
-            <>
-              <section className="center">
-                <Lottie animationData={openApp} />
-                <p>
-                  Open the <strong>Cosmos app</strong> on the Ledger device.
-                </p>
-              </section>
-            </>
-          </>
+          <LedgerModal action={LedgerDeviceAction.OPEN_APP} appName="Cosmos" />
         )
       case Pages.complete:
         return (
-          <>
-            <>
-              <section className="center">
-                <FormItem label={t("Wallet name")} error={errors.name?.message}>
-                  <Input
-                    {...register("name", { validate: validate.name })}
-                    placeholder="Ledger"
-                    autoFocus
-                  />
-                </FormItem>
-                <Submit disabled={!isValid} submitting={isSubmitting}>
-                  {t("Submit")}
-                </Submit>
-              </section>
-            </>
-          </>
+          <section className="center">
+            <InputWrapper label={t("Wallet name")} error={errors.name?.message}>
+              <Input
+                {...register("name", { validate: validate.name })}
+                placeholder="Ledger"
+                autoFocus
+              />
+            </InputWrapper>
+
+            <Submit disabled={!isValid} submitting={isSubmitting}>
+              {t("Done")}
+            </Submit>
+          </section>
         )
     }
   }

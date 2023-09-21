@@ -6,6 +6,7 @@ import { Button } from "station-ui"
 import CreateWalletModal from "auth/modules/create/CreateWalletModal"
 import { useAuth } from "auth"
 import SwitchWallet from "extension/auth/SwitchWallet"
+import ConnectLedgerModal from "auth/ledger/ConnectLedgerModal"
 
 const Welcome = () => {
   const { t } = useTranslation()
@@ -48,7 +49,16 @@ const Welcome = () => {
               />
             )}
           />
-          <Button variant="outlined" block label={t("Connect Ledger wallet")} />
+          <ConnectLedgerModal
+            renderButton={(open) => (
+              <Button
+                onClick={open}
+                variant="outlined"
+                block
+                label={t("Connect Ledger wallet")}
+              />
+            )}
+          />
         </section>
       </main>
     </ExtensionPage>

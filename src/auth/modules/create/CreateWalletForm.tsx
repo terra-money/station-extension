@@ -112,7 +112,7 @@ const CreateWalletForm = () => {
 
           <Checkbox
             {...register("checked", { required: true })}
-            checked={checked}
+            checked={!!checked}
             label={t("I have written down the mnemonic")}
           />
         </>
