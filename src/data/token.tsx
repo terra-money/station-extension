@@ -16,6 +16,8 @@ import { useWhitelist } from "./queries/chains"
 import { useNetworkName, useNetwork } from "./wallet"
 import { getChainIDFromAddress } from "utils/bech32"
 import { useBankBalance } from "./queries/bank"
+import { useMemo } from "react"
+import { useIBCBaseDenoms } from "data/queries/ibc"
 
 export const DEFAULT_NATIVE_DECIMALS = 6
 
@@ -249,4 +251,113 @@ export const usePortfolioValue = () => {
         10 ** decimals
     )
   }, 0)
+}
+
+export const useUnknownIBCDenoms = () => {
+  const readNativeDenom = useNativeDenoms()
+  const coins = useBankBalance()
+
+  const unknownIBCDenomsData = useIBCBaseDenoms(
+    coins
+      .map(({ denom, chain }) => ({ denom, chainID: chain }))
+      .filter(({ denom, chainID }) => {
+        const data = readNativeDenom(denom, chainID)
+        return denom.startsWith("ibc/") && data.symbol.endsWith("...")
+      })
+  )
+  const unknownIBCDenoms = unknownIBCDenomsData.reduce(
+    (acc: any, { data }: { data: any }) =>
+      data
+        ? {
+            ...acc,
+            [[data.ibcDenom, data.chainIDs[data.chainIDs.length - 1]].join(
+              "*"
+            )]: {
+              baseDenom: data.baseDenom,
+              chainID: data?.chainIDs[0],
+              chainIDs: data?.chainIDs,
+            },
+          }
+        : acc,
+    {} as Record<
+      string,
+      { baseDenom: string; chainID: string; chainIDs: string[] }
+    >
+  )
+  return unknownIBCDenoms
+}
+
+export const useParsedAssetList = () => {
+  const coins = useBankBalance()
+  const { data: prices } = useExchangeRates()
+  const readNativeDenom = useNativeDenoms()
+  const networks = useNetwork()
+  const networkName = useNetworkName()
+  const unknownIBCDenoms = useUnknownIBCDenoms()
+
+  const list: any = useMemo(
+    () => [
+      ...Object.values(
+        coins.reduce((acc, { denom, amount, chain }) => {
+          const data = readNativeDenom(
+            unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom ?? denom,
+            unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs[0] ?? chain
+          )
+
+          const key = [
+            unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs[0] ??
+              // @ts-expect-error
+              data?.chainID ??
+              chain,
+            data.token,
+          ].join("*")
+
+          if (acc[key]) {
+            acc[key].balance = `${
+              parseInt(acc[key].balance) + parseInt(amount)
+            }`
+            acc[key].chains.push(chain)
+            return acc
+          } else if (key === "columbus-5*uluna" && networkName !== "classic") {
+            return {
+              ...acc,
+              [key]: {
+                denom: data.token,
+                balance: amount,
+                icon: "https://assets.terra.dev/icon/svg/LUNC.svg",
+                symbol: "LUNC",
+                price: prices?.["uluna:classic"]?.price ?? 0,
+                change: prices?.["uluna:classic"]?.change ?? 0,
+                chains: [chain],
+                id: key,
+                whitelisted: true,
+              },
+            }
+          } else {
+            return {
+              ...acc,
+              [key]: {
+                denom: data.token,
+                balance: amount,
+                icon: data.icon,
+                symbol: data.symbol,
+                price: prices?.[data.token]?.price ?? 0,
+                change: prices?.[data.token]?.change ?? 0,
+                chains: [chain],
+                id: key,
+                whitelisted: !(
+                  data.isNonWhitelisted ||
+                  unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs.find(
+                    (c: any) => !networks[c]
+                  )
+                ),
+              },
+            }
+          }
+        }, {} as Record<string, any>) ?? {}
+      ),
+    ],
+    [coins, readNativeDenom, unknownIBCDenoms, networkName, prices, networks]
+  )
+  return list
 }

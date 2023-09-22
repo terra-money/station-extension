@@ -3,7 +3,6 @@
 .assetlist {
   background-color: var(--card-bg-muted);
   padding-inline: 10px;
-  grid-area: list;
   display: grid;
   grid-template-areas: "title" "list";
   grid-template-rows: min-content auto;

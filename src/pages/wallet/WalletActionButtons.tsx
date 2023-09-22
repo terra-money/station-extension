@@ -51,11 +51,7 @@ const WalletActionButtons = () => {
     {
       icon: <Swap />,
       label: t("swap"),
-      onClick: () =>
-        setRoute({
-          path: Path.send,
-          previousPage: route,
-        }),
+      onClick: () => {},
     },
     {
       icon: <ReceiveIcon />,

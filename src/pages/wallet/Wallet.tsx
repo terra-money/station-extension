@@ -7,6 +7,8 @@ import createContext from "utils/createContext"
 import AssetPage from "./AssetPage"
 import ReceivePage from "./ReceivePage"
 import SendPage from "./SendPage"
+import { Tabs } from "station-ui"
+import { useTranslation } from "react-i18next"
 
 enum Path {
   wallet = "wallet",
@@ -36,8 +38,10 @@ export { useWalletRoute, Path }
 
 const Wallet = () => {
   const [route, setRoute] = useState<Route>({ path: Path.wallet })
+  const [tabKey, setTabKey] = useState("assets")
+  const { t } = useTranslation()
 
-  function BackButton() {
+  const BackButton = () => {
     if (route.path === Path.wallet) return null
 
     return (
@@ -49,14 +53,27 @@ const Wallet = () => {
       </button>
     )
   }
+  const tabs = [
+    {
+      key: "assets",
+      label: t("Assets"),
+      onClick: () => setTabKey("assets"),
+    },
+    {
+      key: "activity",
+      label: t("Activity"),
+      onClick: () => setTabKey("activity"),
+    },
+  ]
 
-  function render() {
+  const render = () => {
     switch (route.path) {
       case Path.wallet:
         return (
           <>
             <NetWorth />
-            <AssetList />
+            <Tabs activeTabKey={tabKey} tabs={tabs} />
+            {tabKey === "assets" ? <AssetList /> : <p> Activty component</p>}
           </>
         )
       case Path.coin:
