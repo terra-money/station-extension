@@ -133,7 +133,7 @@ const ManageCustomTokens = () => {
     })
 
     return (
-      <WithSearchInput>
+      <WithSearchInput label="Search Tokens">
         {(input) => (
           <Component
             whitelist={{
