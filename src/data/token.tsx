@@ -5,6 +5,7 @@ import { AccAddress } from "@terra-money/feather.js"
 import { ASSETS } from "config/constants"
 import { useTokenInfoCW20 } from "./queries/wasm"
 import { useCustomTokensCW20 } from "./settings/CustomTokens"
+import { useExchangeRates } from "data/queries/coingecko"
 import {
   useGammTokens,
   GAMM_TOKEN_DECIMALS,
@@ -14,6 +15,7 @@ import { useCW20Whitelist, useIBCWhitelist } from "./Terra/TerraAssets"
 import { useWhitelist } from "./queries/chains"
 import { useNetworkName, useNetwork } from "./wallet"
 import { getChainIDFromAddress } from "utils/bech32"
+import { useBankBalance } from "./queries/bank"
 
 export const DEFAULT_NATIVE_DECIMALS = 6
 
@@ -231,4 +233,20 @@ export const readIBCDenom = (item: IBCTokenItem): TokenItem => {
     icon: getIcon(path),
     decimals: item.decimals ?? 6,
   }
+}
+
+export const usePortfolioValue = () => {
+  const readNativeDenom = useNativeDenoms()
+  const coins = useBankBalance()
+  const { data: prices } = useExchangeRates()
+
+  return coins?.reduce((acc, { amount, denom }) => {
+    const { token, decimals, symbol } = readNativeDenom(denom)
+    return (
+      acc +
+      (parseInt(amount) *
+        (symbol?.endsWith("...") ? 0 : prices?.[token]?.price ?? 0)) /
+        10 ** decimals
+    )
+  }, 0)
 }
