@@ -1,0 +1,18 @@
+@import 'scss/font_mixins';
+
+.send__header__container {
+  .heading {
+    @include Small;
+    color: var(--token-light-100);
+  }
+
+  .label {
+    @include X-Large;
+    color: var(--token-light-white);
+  }
+
+  .subLabel {
+    @include Medium;
+    color: var(--token-light-100);
+  }
+}
