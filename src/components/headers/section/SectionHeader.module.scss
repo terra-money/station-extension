@@ -48,6 +48,8 @@
         &.indented {
           @include X-Small;
         }
+
+        white-space: nowrap;
       }
     }
   }
