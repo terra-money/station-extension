@@ -1,0 +1,30 @@
+@import "scss/font_mixins";
+
+.proposal__header__container {
+  .meta__container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    img {
+      height: 12px;
+      width: 12px;
+      border-radius: 50%;
+    }
+
+    .meta__text {
+      @include X-Small;
+      color: var(--token-light-100);
+    }
+  }
+
+  .title {
+    @include Medium-Large;
+    color: var(--token-light-white);
+  }
+
+  .submitted__date {
+    @include X-Small;
+    color: var(--token-light-100);
+  }
+}

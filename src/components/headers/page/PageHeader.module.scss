@@ -1,0 +1,30 @@
+@import "scss/font_mixins";
+
+.page__header__container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 32px 24px;
+  background-color: var(--token-dark-500);
+
+  .title__container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .icon__container {
+      height: 24px;
+      width: 24px;
+    }
+
+    .title {
+      @include Large;
+      color: var(--token-light-white);
+    }
+  }
+
+  .description {
+    @include SmallLH;
+    color: var(--token-light-100);
+  }
+}
