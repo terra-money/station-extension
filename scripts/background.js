@@ -31,37 +31,35 @@ const connectRemote = (remotePort) => {
 
           if (oldValue && newValue) {
             const changed = newValue.find(
-              (post, index) =>
-                oldValue[index] &&
-                typeof oldValue[index].success === "undefined" &&
-                typeof post.success === "boolean"
+                (post, index) =>
+                    oldValue[index] &&
+                    typeof oldValue[index].success === "undefined" &&
+                    typeof post.success === "boolean"
             )
 
             changed &&
-              changed.origin === origin &&
-              sendResponse("on" + capitalize(key), changed)
+            changed.origin === origin &&
+            sendResponse("on" + capitalize(key), changed)
 
             if (changed.uuid) {
               browser.storage.local.set({
-                key,
-                value: newValue.filter((tx) => tx.uuid !== changed.uuid)
+                [key]: newValue.filter((tx) => tx.uuid !== changed.uuid)
               })
             } else {
               browser.storage.local.set({
-                key,
-                value: newValue.filter((tx) => tx.id !== changed.id)
+                [key]: newValue.filter((tx) => tx.id !== changed.id)
               })
             }
 
             browser.storage.local
-              .get(["sign", "post"])
-              .then(({ sign = [], post = [] }) => {
-                const getRequest = ({ success }) => typeof success !== "boolean"
-                const nextRequest =
-                  sign.some(getRequest) || post.some(getRequest)
+                .get(["sign", "post"])
+                .then(({ sign = [], post = [] }) => {
+                  const getRequest = ({ success }) => typeof success !== "boolean"
+                  const nextRequest =
+                      sign.some(getRequest) || post.some(getRequest)
 
-                !nextRequest && closePopup()
-              })
+                  !nextRequest && closePopup()
+                })
           }
         }
       }
@@ -73,16 +71,16 @@ const connectRemote = (remotePort) => {
         const list = storage[key] || []
 
         const alreadyRequested =
-          list.findIndex(
-            (req) => req.id === payload.id && req.origin === origin
-          ) !== -1
+            list.findIndex(
+                (req) => req.id === payload.id && req.origin === origin
+            ) !== -1
 
         !alreadyRequested &&
-          browser.storage.local.set({
-            [key]: payload.purgeQueue
+        browser.storage.local.set({
+          [key]: payload.purgeQueue
               ? [{ ...payload, origin }]
               : [...list, { ...payload, origin }],
-          })
+        })
 
         openPopup()
         browser.storage.onChanged.addListener(handleChange)
@@ -112,21 +110,21 @@ const connectRemote = (remotePort) => {
             const { newValue, oldValue } = changes.connect
 
             const denied =
-              oldValue &&
-              oldValue.request.length - 1 === newValue.request.length &&
-              oldValue.allowed.length === newValue.allowed.length
+                oldValue &&
+                oldValue.request.length - 1 === newValue.request.length &&
+                oldValue.allowed.length === newValue.allowed.length
 
             if (!denied)
               browser.storage.local
-                .get(["connect", "wallet"])
-                .then(handleGetConnect)
+                  .get(["connect", "wallet"])
+                  .then(handleGetConnect)
           }
         }
 
         const handleGetConnect = ({
-          connect = { request: [], allowed: [] },
-          wallet = {},
-        }) => {
+                                    connect = { request: [], allowed: [] },
+                                    wallet = {},
+                                  }) => {
           // 1. If the address is authorized and the wallet exists
           //    - send back the response and close the popup.
           // 2. If not,
@@ -144,9 +142,9 @@ const connectRemote = (remotePort) => {
             browser.storage.onChanged.removeListener(handleChangeConnect)
           } else {
             !alreadyRequested &&
-              browser.storage.local.set({
-                connect: { ...connect, request: [origin, ...connect.request] },
-              })
+            browser.storage.local.set({
+              connect: { ...connect, request: [origin, ...connect.request] },
+            })
 
             openPopup()
             browser.storage.onChanged.addListener(handleChangeConnect)
@@ -166,8 +164,8 @@ const connectRemote = (remotePort) => {
 
             if (hasPubKey) {
               browser.storage.local
-                .get(["connect", "wallet"])
-                .then(handleGetPubkey)
+                  .get(["connect", "wallet"])
+                  .then(handleGetPubkey)
             } else {
               browser.storage.local.get(["pubkey"]).then(({ pubkey }) => {
                 // pubkey terminated
@@ -182,9 +180,9 @@ const connectRemote = (remotePort) => {
         }
 
         const handleGetPubkey = ({
-          connect = { request: [], allowed: [] },
-          wallet = {},
-        }) => {
+                                   connect = { request: [], allowed: [] },
+                                   wallet = {},
+                                 }) => {
           // 1. If the address is authorized and the wallet exists
           //    - send back the response and close the popup.
           // 2. If not,
@@ -274,20 +272,20 @@ const openPopup = () => {
     isPopupOpen = true
 
     browser.tabs
-      .create({ url: browser.runtime.getURL("index.html"), active: false })
-      .then((tab) => {
-        tabId = tab.id
-        browser.windows.getCurrent().then((window) => {
-          const center = getCenter(window)
-          const top = Math.max(center.top, 0) || 0
-          const left = Math.max(center.left, 0) || 0
+        .create({ url: browser.runtime.getURL("index.html"), active: false })
+        .then((tab) => {
+          tabId = tab.id
+          browser.windows.getCurrent().then((window) => {
+            const center = getCenter(window)
+            const top = Math.max(center.top, 0) || 0
+            const left = Math.max(center.left, 0) || 0
 
-          const config = { ...popup, tabId: tab.id, top, left }
+            const config = { ...popup, tabId: tab.id, top, left }
 
-          // type error here, it might cause problems
-          browser.windows.create(config)
+            // type error here, it might cause problems
+            browser.windows.create(config)
+          })
         })
-      })
   }
 }
 
