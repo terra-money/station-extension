@@ -2,7 +2,7 @@
 @import "scss/_mixins";
 
 .token__container {
-  @include flex(start, center);
+  @include flex(flex-start, center);
   // padding: 20px;
   border-radius: 8px;
   position: relative;
@@ -39,7 +39,7 @@
         gap: 16px;
 
         .symbol {
-          @include flex(start, center);
+          @include flex(flex-start, center);
           gap: 6px;
           overflow: hidden;
 
@@ -101,7 +101,7 @@
         }
 
         .price {
-          @include flex(end, center);
+          @include flex(flex-end, center);
           @include Small;
           color: var(--token-light-100);
         }
@@ -118,7 +118,7 @@
         flex-direction: column;
 
         .symbol {
-          @include flex(start, center);
+          @include flex(flex-start, center);
           overflow: hidden;
 
           .symbol__name {
@@ -176,7 +176,7 @@
   padding: 10px;
 
   .container {
-    @include flex(start, center);
+    @include flex(flex-start, center);
     gap: 10px;
 
     .balance {
