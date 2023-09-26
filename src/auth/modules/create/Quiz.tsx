@@ -8,6 +8,7 @@ import { Form, FormItem, Submit } from "components/form"
 import { useCreateWallet } from "./CreateWalletWizard"
 import styles from "./Quiz.module.scss"
 import { Banner, Button, CheckedButton, Flex } from "station-ui"
+import { FlexColumn } from "components/layout"
 
 export interface QuizItem {
   index: number
@@ -30,49 +31,53 @@ const Quiz = () => {
   const reset = () => setStep(1)
 
   return (
-    <Form onSubmit={handleSubmit(submit)}>
-      {quiz.map(({ index }, i) => (
-        <FormItem
-          // do not translate this unless you find a simple way to handle ordinal
-          label={`${numeral(index + 1).format("0o")} word`}
-          key={index}
-        >
-          <section className={styles.hint}>
-            {hint.map((word) => {
-              const handleClick = () => {
-                const next = update(answers, { [i]: { $set: word } })
-                setAnswers(next)
-              }
+    <Form onSubmit={handleSubmit(submit)} className={styles.quiz}>
+      <FlexColumn gap={18} className={styles.hints__container}>
+        {quiz.map(({ index }, i) => (
+          <FormItem
+            // do not translate this unless you find a simple way to handle ordinal
+            label={`${numeral(index + 1).format("0o")} word`}
+            key={index}
+          >
+            <section className={styles.hint}>
+              {hint.map((word) => {
+                const handleClick = () => {
+                  const next = update(answers, { [i]: { $set: word } })
+                  setAnswers(next)
+                }
 
-              return (
-                <CheckedButton
-                  active={answers[i] === word}
-                  onClick={handleClick}
-                  key={word}
-                >
-                  {word}
-                </CheckedButton>
-              )
-            })}
-          </section>
-        </FormItem>
-      ))}
+                return (
+                  <CheckedButton
+                    active={answers[i] === word}
+                    onClick={handleClick}
+                    key={word}
+                  >
+                    {word}
+                  </CheckedButton>
+                )
+              })}
+            </section>
+          </FormItem>
+        ))}
+      </FlexColumn>
 
-      {incorrect && (
-        <Banner
-          variant="error"
-          title={t("Write down the mnemonic and choose the correct word")}
-        />
-      )}
+      <FlexColumn gap={12} className={styles.footer}>
+        {incorrect && (
+          <Banner
+            variant="error"
+            title={t("Write down the mnemonic and choose the correct word")}
+          />
+        )}
 
-      <Flex gap={12} style={{ marginTop: 20 }}>
-        <Button variant="secondary" onClick={reset} block>
-          {t("Back")}
-        </Button>
-        <Submit disabled={answers.some((answer) => !answer)} noMargin>
-          {t("Confirm")}
-        </Submit>
-      </Flex>
+        <Flex gap={12}>
+          <Button variant="secondary" onClick={reset} block>
+            {t("Back")}
+          </Button>
+          <Submit disabled={answers.some((answer) => !answer)} noMargin>
+            {t("Confirm")}
+          </Submit>
+        </Flex>
+      </FlexColumn>
     </Form>
   )
 }
