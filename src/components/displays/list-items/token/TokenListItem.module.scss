@@ -1,8 +1,10 @@
 @import "scss/font_mixins";
-@import "scss/_mixins";
 
 .token__container {
-  @include flex(flex-start, center);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
   // padding: 20px;
   border-radius: 8px;
   position: relative;
@@ -14,7 +16,9 @@
   // }
 
   .details {
-    @include flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 16px;
     width: 100%;
 
@@ -35,11 +39,15 @@
       gap: 8px;
 
       .top__row {
-        @include flex;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         gap: 16px;
 
         .symbol {
-          @include flex(flex-start, center);
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
           gap: 6px;
           overflow: hidden;
 
@@ -53,25 +61,29 @@
           }
 
           .chain__details {
-            @include flex;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             @include XX-Small;
             color: var(--token-light-white);
             background-color: var(--token-dark-700);
             border-radius: 4px;
-            
-            &.num {
+
+            .num {
               width: 20px;
               height: 16px;
             }
-  
-            &.single {
+
+            .single {
               padding: 0 8px;
               height: 16px;
               text-transform: capitalize;
             }
+  
           }
 
-        
+          
+
         }
 
         .amount {
@@ -81,7 +93,9 @@
       }
 
       .bottom__row {
-        @include flex;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         gap: 16px;
 
         .change__down,
@@ -101,7 +115,10 @@
         }
 
         .price {
-          @include flex(flex-end, center);
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+
           @include Small;
           color: var(--token-light-100);
         }
@@ -110,7 +127,9 @@
 
     .details__container__lr {
       width: 100%;
-      @include flex(space-betwen);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
       .left {
         display: flex;
@@ -118,7 +137,8 @@
         flex-direction: column;
 
         .symbol {
-          @include flex(flex-start, center);
+          display: flex;
+          justify-content: flex-start;
           overflow: hidden;
 
           .symbol__name {
@@ -142,7 +162,10 @@
           }
 
           .track {
-            @include flex;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
             border: solid 2px var(--token-dark-900);
             border-radius: 50%;
             width: 26px;
@@ -153,7 +176,8 @@
     }
 
     .chain__label {
-      @include flex;
+      display: flex;
+      align-items: center;
       gap: 8px;
 
       @include Small;
@@ -168,7 +192,6 @@
   }
 }
 
-
 .tooltip {
   background-color: var(--token-dark-700);
   border-radius: 3px;
@@ -176,12 +199,9 @@
   padding: 10px;
 
   .container {
-    @include flex(flex-start, center);
+    display: flex;
+    justify-content: flex-start;
     gap: 10px;
-
-    .balance {
-      justify-self: end;
-    }
 
     img {
       height: 12px;
