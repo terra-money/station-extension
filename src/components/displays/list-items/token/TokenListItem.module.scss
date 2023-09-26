@@ -1,10 +1,8 @@
 @import "scss/font_mixins";
+@import "scss/_mixins";
 
 .token__container {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-
+  @include flex(start, center);
   // padding: 20px;
   border-radius: 8px;
   position: relative;
@@ -16,9 +14,7 @@
   // }
 
   .details {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    @include flex;
     gap: 16px;
     width: 100%;
 
@@ -39,15 +35,11 @@
       gap: 8px;
 
       .top__row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        @include flex;
         gap: 16px;
 
         .symbol {
-          display: flex;
-          justify-content: flex-start;
-          align-items: center;
+          @include flex(start, center);
           gap: 6px;
           overflow: hidden;
 
@@ -60,30 +52,26 @@
             text-overflow: ellipsis;
           }
 
-          .chain__num {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+          .chain__details {
+            @include flex;
             @include XX-Small;
             color: var(--token-light-white);
             background-color: var(--token-dark-700);
             border-radius: 4px;
-            width: 20px;
-            height: 16px;
+            
+            &.num {
+              width: 20px;
+              height: 16px;
+            }
+  
+            &.single {
+              padding: 0 8px;
+              height: 16px;
+              text-transform: capitalize;
+            }
           }
 
-          .single__chain__text {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            @include XX-Small;
-            color: var(--token-light-white);
-            background-color: var(--token-dark-700);
-            border-radius: 4px;
-            padding: 0 8px;
-            height: 16px;
-            text-transform: capitalize;
-          }
+        
         }
 
         .amount {
@@ -93,9 +81,7 @@
       }
 
       .bottom__row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        @include flex;
         gap: 16px;
 
         .change__down,
@@ -115,10 +101,7 @@
         }
 
         .price {
-          display: flex;
-          align-items: center;
-          justify-content: flex-end;
-
+          @include flex(end, center);
           @include Small;
           color: var(--token-light-100);
         }
@@ -127,9 +110,7 @@
 
     .details__container__lr {
       width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      @include flex(space-betwen);
 
       .left {
         display: flex;
@@ -137,8 +118,7 @@
         flex-direction: column;
 
         .symbol {
-          display: flex;
-          justify-content: flex-start;
+          @include flex(start, center);
           overflow: hidden;
 
           .symbol__name {
@@ -162,10 +142,7 @@
           }
 
           .track {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
+            @include flex;
             border: solid 2px var(--token-dark-900);
             border-radius: 50%;
             width: 26px;
@@ -176,8 +153,7 @@
     }
 
     .chain__label {
-      display: flex;
-      align-items: center;
+      @include flex;
       gap: 8px;
 
       @include Small;
@@ -191,3 +167,17 @@
     }
   }
 }
+
+
+.tooltip {
+  @include flex;
+
+  .container {
+
+    img {
+      height: 12px;
+      width: 12px;
+    }
+  }
+}
+

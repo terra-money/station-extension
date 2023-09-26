@@ -1,11 +1,14 @@
 import { ReactComponent as PriceUp } from "assets/icon/PriceUp.svg";
+import classNames from "classnames";
 import { ReactComponent as PriceDown } from "assets/icon/PriceDown.svg";
-
 import styles from '../TokenListItem.module.scss';
+import { Tooltip } from "components";
+
+const cx = classNames.bind(styles);
 
 export interface TokenListItemProps {
   balance?: string
-  chains: string[]
+  chains: { name: string, img: string, balance: string }[]
   currency: { id: string, symbol: string, name: string }
   tokenImg: string
   symbol: string
@@ -21,15 +24,25 @@ const TokenListItem = ({
   currency,
   tokenImg,
   symbol,
-  price,
-  change,
+  price = 0,
+  change = 0,
   amountNode,
   onClick,
 }: TokenListItemProps) => {
-  const coinPrice = price ?? 0
-  const token24hrChange = change ?? 0
 
-  const walletPrice = coinPrice * parseInt(balance ?? "0")
+  const walletPrice = price * parseInt(balance ?? "0")
+
+  const TooltipContent = () => (
+    <>
+      {chains.map((c, index) => (
+        <div key={index} className={styles.container}>
+          <span className={styles.chain}>{c.name}</span>
+          <img src={c.img}/>
+          <span>{c.balance}</span>
+        </div>
+      ))}
+    </>
+  );
 
   return (
     <div className={styles.token__container} onClick={onClick}>
@@ -45,10 +58,12 @@ const TokenListItem = ({
           <div className={styles.top__row}>
             <h2 className={styles.symbol}>
               <span className={styles.symbol__name}>{symbol}</span>
-              {chains && chains.length > 1 ? (
-                <span className={styles.chain__num}>{chains.length}</span>
+              {chains?.length > 1 ? (
+                <Tooltip className={styles.tooltip} content={<TooltipContent/>}>
+                  <span className={cx(styles.chain__details, styles.num)}>{chains.length}</span>
+                </Tooltip>
               ) : (
-                <span className={styles.single__chain__text}>{chains[0]}</span>
+                <span className={cx(styles.chain__details, styles.single)}>{chains[0].name}</span>
               )}
             </h2>
             <h3 className={styles.amount}>
@@ -57,13 +72,13 @@ const TokenListItem = ({
           </div>
           <div className={styles.bottom__row}>
             <h5
-              className={token24hrChange >= 0 ? styles.change__up : styles.change__down}
+              className={change >= 0 ? styles.change__up : styles.change__down}
             >
-              {token24hrChange >= 0 ? <PriceUp /> : <PriceDown />} {token24hrChange.toFixed(2)}%
+              {change >= 0 ? <PriceUp /> : <PriceDown />} {change.toFixed(2)}%
             </h5>
             <h5 className={styles.price}>
               {currency.symbol}{" "}
-              {coinPrice ? (
+              {price ? (
                 <div>{walletPrice}</div>
               ) : (
                 <span>—</span>
