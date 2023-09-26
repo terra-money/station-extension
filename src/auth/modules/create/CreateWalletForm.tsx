@@ -15,7 +15,9 @@ import {
   SectionHeader,
   Paste,
   Tabs,
+  FlexColumn,
 } from "station-ui"
+import styles from "./CreateWalletForm.module.scss"
 
 interface Values extends DefaultValues {
   confirm: string
@@ -163,93 +165,97 @@ const CreateWalletForm = () => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(submit)}>
-      <InputWrapper label={t("Wallet Name")} error={errors.name?.message}>
-        <Input
-          {...register("name", { validate: validate.name })}
-          autoFocus
-          placeholder="e.g. 'my-wallet'"
-        />
-      </InputWrapper>
+    <Form onSubmit={handleSubmit(submit)} className={styles.form}>
+      <FlexColumn gap={18} className={styles.form__content}>
+        <InputWrapper label={t("Wallet Name")} error={errors.name?.message}>
+          <Input
+            {...register("name", { validate: validate.name })}
+            autoFocus
+            placeholder="e.g. 'my-wallet'"
+          />
+        </InputWrapper>
 
-      {generated ? (
-        <>
-          <InputWrapper label={t("Password")} error={errors.password?.message}>
-            <Input
-              {...register("password", { validate: validate.password })}
-              type="password"
-            />
-          </InputWrapper>
-
-          <InputWrapper
-            label={t("Confirm password")}
-            error={errors.confirm?.message}
-          >
-            <Input
-              {...register("confirm", {
-                validate: (confirm) => validate.confirm(password, confirm),
-              })}
-              onFocus={() => form.trigger("confirm")}
-              type="password"
-            />
-          </InputWrapper>
-
-          <InputWrapper
-            label={t("Mnemonic phrase")}
-            error={errors.mnemonic?.message}
-            extra={generated && <Copy copyText={mnemonic} />}
-          >
-            <Value>{mnemonic}</Value>
-          </InputWrapper>
-
-          {generated && (
-            <>
-              <Grid gap={4}>
-                <Banner
-                  variant="warning"
-                  title={t(
-                    "Never share the mnemonic with others or enter it in unverified sites"
-                  )}
-                />
-              </Grid>
-
-              <Checkbox
-                {...register("checked", { required: true })}
-                checked={!!checked}
-                label={t("I have written down the mnemonic")}
+        {generated ? (
+          <>
+            <InputWrapper
+              label={t("Password")}
+              error={errors.password?.message}
+            >
+              <Input
+                {...register("password", { validate: validate.password })}
+                type="password"
               />
-            </>
-          )}
+            </InputWrapper>
 
+            <InputWrapper
+              label={t("Confirm password")}
+              error={errors.confirm?.message}
+            >
+              <Input
+                {...register("confirm", {
+                  validate: (confirm) => validate.confirm(password, confirm),
+                })}
+                onFocus={() => form.trigger("confirm")}
+                type="password"
+              />
+            </InputWrapper>
+
+            <InputWrapper
+              label={t("Mnemonic phrase")}
+              error={errors.mnemonic?.message}
+              extra={generated && <Copy copyText={mnemonic} />}
+            >
+              <Value>{mnemonic}</Value>
+            </InputWrapper>
+
+            <Grid gap={4}>
+              <Banner
+                variant="warning"
+                title={t(
+                  "Never share the mnemonic with others or enter it in unverified sites"
+                )}
+              />
+            </Grid>
+
+            <Checkbox
+              {...register("checked", { required: true })}
+              checked={!!checked}
+              label={t("I have written down the mnemonic")}
+            />
+          </>
+        ) : (
+          <>
+            <SectionHeader title={t("Import Wallet Options")} withLine />
+
+            <Tabs
+              tabs={[
+                {
+                  key: ImportOptions.MNEMONIC,
+                  label: t("Mnemonic Phrase"),
+                  onClick: () => setImportOption(ImportOptions.MNEMONIC),
+                },
+                {
+                  key: ImportOptions.PRIVATE_KEY,
+                  label: t("Private Key"),
+                  onClick: () => setImportOption(ImportOptions.PRIVATE_KEY),
+                },
+              ]}
+              activeTabKey={importOption}
+            />
+
+            {renderImportOption()}
+          </>
+        )}
+      </FlexColumn>
+      <section className={styles.form__footer}>
+        {generated ? (
           <Submit disabled={!isValid} variant="secondary">
             {t("Create Wallet")}
           </Submit>
-        </>
-      ) : (
-        <>
-          <SectionHeader title={t("Import Wallet Options")} withLine />
-
-          <Tabs
-            tabs={[
-              {
-                key: ImportOptions.MNEMONIC,
-                label: t("Mnemonic Phrase"),
-                onClick: () => setImportOption(ImportOptions.MNEMONIC),
-              },
-              {
-                key: ImportOptions.PRIVATE_KEY,
-                label: t("Private Key"),
-                onClick: () => setImportOption(ImportOptions.PRIVATE_KEY),
-              },
-            ]}
-            activeTabKey={importOption}
-          />
-
-          {renderImportOption()}
-
+        ) : (
           <Submit disabled={!isValid}>{t("Import")}</Submit>
-        </>
-      )}
+        )}
+      </section>
     </Form>
   )
 }
