@@ -67,5 +67,6 @@
     margin-top: 8px;
 
     @include XX-Small;
+    color: var(--token-light-white);
   }
 }

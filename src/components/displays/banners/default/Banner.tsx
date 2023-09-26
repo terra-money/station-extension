@@ -13,11 +13,13 @@ export interface BannerProps {
 const Banner = ({ title, variant }: BannerProps) => {
   return (
     <div className={cx(styles.banner, variant)}>
-      {variant === 'success' ? (
-        <SmallCircleCheck className={styles.alert__icon} />
-      ) : (
-        <AlertIcon className={styles.alert__icon} />
-      )}
+      <div className={styles.svg__wrapper}>
+        {variant === 'success' ? (
+          <SmallCircleCheck className={styles.alert__icon} />
+        ) : (
+          <AlertIcon className={styles.alert__icon} />
+        )}
+      </div>
       <h3 className={styles.title}>{title}</h3>
     </div>
   );

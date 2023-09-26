@@ -86,3 +86,18 @@ export const OnRightEdge: StoryObj<ProgressBarProps> = {
     threshold: 99,
   },
 };
+
+export const Small: StoryObj<ProgressBarProps> = {
+  render: (args) => <ProgressBar {...args} />,
+  args: {
+    data: [
+      { type: 'yes', percent: '5%' },
+      { type: 'abstain', percent: '10%' },
+      { type: 'no', percent: '2%' },
+      { type: 'noWithVeto', percent: '0.5%' },
+    ],
+    threshold: 50,
+    isSmall: true,
+    labelOverride: 'PT'
+  },
+};

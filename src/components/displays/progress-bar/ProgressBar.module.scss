@@ -24,7 +24,7 @@
       background-color: var(--token-error-500);
     }
 
-    .abstain {
+    .abstain, .deposit {
       background-color: var(--token-primary-500);
     }
 
@@ -55,6 +55,25 @@
 
       .label {
         color: var(--token-light-white);
+      }
+    }
+  }
+
+  &.small {
+    height: 22px;
+
+    .progress__bar {
+      height: 8px;
+      border-radius: 0px 0px 8px 8px;
+    }
+
+    .threshold {
+      top: unset;
+      height: 8px;
+
+      .label {
+        top: -14px;
+        @include XX-Small;
       }
     }
   }

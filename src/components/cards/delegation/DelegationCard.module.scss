@@ -1,0 +1,45 @@
+@import "scss/font_mixins";
+
+.card__container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background-color: var(--token-dark-600);
+  padding: 24px;
+  border-radius: 8px;
+  width: 100%;
+
+  .validator {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .top__row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .title__wrapper {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+
+        img {
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+        }
+
+        h3 {
+          @include Medium;
+          color: var(--token-light-white);
+        }
+      }
+    }
+
+    .description {
+      @include X-SmallLH;
+      color: var(--token-light-100);
+    }
+  }
+}

@@ -31,7 +31,9 @@ const TopLevelBanner = ({
   return (
     <div className={cx(styles.banner, variant, { has__radio: withRadio })} onClick={handleRadioClick}>
       <div className={styles.left__wrapper}>
-        <AlertIcon className={styles.alert__icon} />
+        <div className={styles.svg__wrapper}>
+          <AlertIcon className={styles.alert__icon} />
+        </div>
         <h3 className={styles.title}>{title}</h3>
       </div>
       {withRadio && (
