@@ -9,14 +9,22 @@ import { addressFromWords } from "utils/bech32"
 import { FlexColumn } from "station-ui"
 import styles from "./CreatedWallet.module.scss"
 
-const CreatedWallet = ({ name, words }: SingleWallet) => {
+interface Props extends SingleWallet {
+  onConfirm?: () => void
+}
+
+const CreatedWallet = ({ name, words, onConfirm }: Props) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { connect } = useAuth()
 
   const address = addressFromWords(words["330"])
   const submit = () => {
-    connect(name)
+    if (onConfirm) {
+      onConfirm()
+    } else {
+      connect(name)
+    }
     navigate("/", { replace: true })
   }
 

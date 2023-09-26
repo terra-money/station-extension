@@ -3,10 +3,9 @@ import { useThemeFavicon } from "data/settings/Theme"
 import styles from "./Welcome.module.scss"
 import ExtensionPage from "extension/components/ExtensionPage"
 import { Button } from "station-ui"
-import CreateWalletModal from "auth/modules/create/CreateWalletModal"
 import { useAuth } from "auth"
 import SwitchWallet from "extension/auth/SwitchWallet"
-import ConnectLedgerModal from "auth/ledger/ConnectLedgerModal"
+import { openURL } from "extension/storage"
 
 const Welcome = () => {
   const { t } = useTranslation()
@@ -35,29 +34,22 @@ const Welcome = () => {
         )}
         <section className={styles.connect__options}>
           <Button
+            onClick={() => openURL("/auth/recover")}
             variant="white-filled"
             block
             label={t("Import existing wallet")}
           />
-          <CreateWalletModal
-            renderButton={(open) => (
-              <Button
-                onClick={open}
-                variant="outlined"
-                block
-                label={t("Create new wallet")}
-              />
-            )}
+          <Button
+            onClick={() => openURL("/auth/new")}
+            variant="outlined"
+            block
+            label={t("Create new wallet")}
           />
-          <ConnectLedgerModal
-            renderButton={(open) => (
-              <Button
-                onClick={open}
-                variant="outlined"
-                block
-                label={t("Connect Ledger wallet")}
-              />
-            )}
+          <Button
+            onClick={() => openURL("/auth/ledger")}
+            variant="outlined"
+            block
+            label={t("Connect Ledger wallet")}
           />
         </section>
       </main>

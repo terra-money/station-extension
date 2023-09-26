@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useRoutes } from "react-router-dom"
+import { useRoutes, useLocation } from "react-router-dom"
 import { useAddress, useChainID, useNetworkName } from "data/wallet"
 import { ErrorBoundary } from "components/feedback"
 import { fallback } from "app/App"
@@ -89,24 +89,28 @@ const App = () => {
     { path: "*", element: <Front /> },
   ])
 
+  const location = useLocation()
+
   function render() {
-    if (!wallet) {
+    if (!wallet && !location.pathname.startsWith("/auth/")) {
       //{wallets.length ? <SwitchWallet /> : <Welcome />}
       return <Welcome />
     }
     // main page
     return (
       <>
-        <Header>
-          <ManageWallets />
-          <Flex gap={5}>
-            <LatestTx />
-            <EnableCoinType />
-            <NetworkHeader />
-            <NetworkStatus />
-            <Preferences />
-          </Flex>
-        </Header>
+        {!location.pathname.startsWith("/auth/") && (
+          <Header>
+            <ManageWallets />
+            <Flex gap={5}>
+              <LatestTx />
+              <EnableCoinType />
+              <NetworkHeader />
+              <NetworkStatus />
+              <Preferences />
+            </Flex>
+          </Header>
+        )}
 
         <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
       </>

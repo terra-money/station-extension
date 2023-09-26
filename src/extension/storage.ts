@@ -60,8 +60,14 @@ export const clearStoredPassword = () => {
 
 /* open */
 export const getOpenURL = (url = "") => {
-  if (!browser.runtime) return
-  if (!browser.runtime.getURL) return
+  // test environment
+  if (!browser?.runtime?.getURL) return () => (window.location.href = `#${url}`)
+
+  // extension environment, open url in new tab
   return () =>
     window.open(browser.runtime.getURL(["index.html", url].join("#")))
+}
+
+export const openURL = (url = "") => {
+  getOpenURL(url)()
 }

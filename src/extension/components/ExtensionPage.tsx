@@ -3,10 +3,10 @@ import { PropsWithChildren, ReactNode } from "react"
 import styles from "./ExtensionPage.module.scss"
 import { ReactComponent as BackIcon } from "styles/images/icons/BackButton.svg"
 
-import { useNavigate } from "react-router-dom"
 import Container from "../layouts/Container"
 import { Card } from "components/layout"
 import classNames from "classnames"
+import { openURL } from "extension/storage"
 
 interface Props extends QueryState {
   header?: ReactNode
@@ -17,7 +17,6 @@ interface Props extends QueryState {
 }
 
 const ExtensionPage = (props: PropsWithChildren<Props>) => {
-  const navigate = useNavigate()
   const {
     header,
     title,
@@ -55,13 +54,15 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                       <BackIcon
                         width={18}
                         height={18}
-                        onClick={() => navigate(backButtonPath)}
+                        onClick={() => openURL(backButtonPath)}
+                        fill="currentColor"
                       />
-                    )}{" "}
+                    )}
                     <h1
-                      className={`${styles.title} ${
-                        backButtonPath ? styles.skew_title : ""
-                      }`}
+                      className={cx(
+                        styles.title,
+                        backButtonPath && styles.skew_title
+                      )}
                     >
                       {title}
                     </h1>
@@ -70,11 +71,16 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
               </Container>
             )}
 
-            <section className={styles.main}>
+            <section
+              className={cx(
+                styles.main,
+                fullHeight && styles.full__height__body
+              )}
+            >
               <Container
                 className={cx(
                   styles.container,
-                  fullHeight && styles.full__height
+                  fullHeight && styles.full__height__body
                 )}
               >
                 {wrong ? (
