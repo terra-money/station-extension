@@ -30,18 +30,21 @@ body {
       color: var(--token-dark-900);
     }
   }
-
 }
 
 .sbdocs {
   h1 {
-    @include X-Large;
-    margin-top: 40px !important;
+    &.css-wzniqs {
+      @include X-Large;
+      margin-top: 40px !important;
+    }
   }
 
   h2 {
-    @include Large;
-    margin-top: 40px !important;
+    &.css-wzniqs {
+      @include Large;
+      margin-top: 40px !important;
+    }
   }
 
   :where(div:not(.sb-anchor, .sb-unstyled, .sb-unstyled div)) {
@@ -86,7 +89,7 @@ body {
 
     position: relative;
 
-    p {
+    .p {
       position: absolute;
       right: 20px;
       margin: 0;
@@ -105,7 +108,7 @@ body {
         text-decoration: none;
       }
 
-      h6 {
+      .h6 {
         position: absolute;
         left: 14px;
         margin: 0;
@@ -114,7 +117,7 @@ body {
         @include Medium;
       }
 
-      p {
+      .p {
         position: absolute;
         right: 14px;
         margin: 0;
@@ -131,7 +134,7 @@ body {
         align-items: center;
         margin: 5px 0px;
 
-        h6 {
+        .h6 {
           margin: 0;
           color: var(--token-dark-700);
           @include Medium;

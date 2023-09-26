@@ -4,17 +4,19 @@ import styles from './ProgressBar.module.scss';
 
 const cx = classNames.bind(styles);
 
-type ProgressBarData = {
-  type: 'yes' | 'abstain' | 'no' | 'noWithVeto';
+export type ProgressBarData = {
+  type: 'yes' | 'abstain' | 'no' | 'noWithVeto' | 'deposit';
   percent: string;
 };
 
 export type ProgressBarProps = {
   data: ProgressBarData[];
   threshold: number;
+  isSmall?: boolean;
+  labelOverride?: string;
 };
 
-const ProgressBar = ({ data, threshold }: ProgressBarProps) => {
+const ProgressBar = ({ data, threshold, isSmall, labelOverride }: ProgressBarProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
   const [labelPosition, setLabelPosition] = useState({ transform: 'translateX(-50%)' });
@@ -45,7 +47,7 @@ const ProgressBar = ({ data, threshold }: ProgressBarProps) => {
   }, [threshold]);
 
   return (
-    <div className={styles.progress__bar__container} ref={containerRef}>
+    <div className={cx(styles.progress__bar__container, { small: isSmall })} ref={containerRef}>
       <div className={styles.progress__bar}>
         {data.map((bar, index) => (
           <div
@@ -60,7 +62,7 @@ const ProgressBar = ({ data, threshold }: ProgressBarProps) => {
         style={{ left: `${threshold}%` }}
       >
         <span className={styles.label} style={labelPosition} ref={labelRef}>
-          {hasThresholdBeenMet() ? 'Pass Threshold' : 'Quorum'}
+          {labelOverride ? labelOverride : hasThresholdBeenMet() ? 'Pass Threshold' : 'Quorum'}
         </span>
       </div>
     </div>
