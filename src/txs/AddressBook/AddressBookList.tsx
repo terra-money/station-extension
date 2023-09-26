@@ -4,7 +4,7 @@ import { truncate } from "@terra-money/terra-utils"
 import { useAddressBook } from "data/settings/AddressBook"
 import { Button } from "components/general"
 import { Grid } from "components/layout"
-import AddAddressBookItem from "./AddAddressBookItem"
+import AddressBookForm from "./AddressBookForm"
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"
 import ContactsIcon from "@mui/icons-material/Contacts"
 import CustomItem from "./CustomItem"
@@ -15,7 +15,7 @@ import styles from "./AddressBookList.module.scss"
 import { useNetwork } from "data/wallet"
 
 interface Props {
-  onClick: (item: AddressBook) => void
+  onClick?: (item: AddressBook) => void
 }
 
 const AddressBookList = ({ onClick }: Props) => {
@@ -37,7 +37,7 @@ const AddressBookList = ({ onClick }: Props) => {
                 <button
                   className={styles.address__button}
                   onClick={() => {
-                    onClick({ name: chain, recipient: address })
+                    onClick?.({ name: chain, recipient: address })
                     close()
                   }}
                   key={chain}
@@ -64,11 +64,11 @@ const AddressBookList = ({ onClick }: Props) => {
   }
 
   return open ? (
-    <AddAddressBookItem close={() => setOpen(false)} />
+    <AddressBookForm close={() => setOpen(false)} />
   ) : (
     <section>
       <Grid gap={12}>
-        {list.map((item) => {
+        {list.map((item, index) => {
           const { name, recipient, memo } = item
           return (
             <CustomItem
@@ -78,10 +78,10 @@ const AddressBookList = ({ onClick }: Props) => {
                 { title: t("Memo"), desc: memo ?? "" },
               ]}
               onClick={() => {
-                onClick(item)
+                onClick?.(item)
                 close()
               }}
-              onDelete={() => remove(name)}
+              onDelete={() => remove(index)}
               key={name}
             />
           )

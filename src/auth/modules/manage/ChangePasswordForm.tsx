@@ -2,11 +2,12 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
-import { Form, FormItem, Input, Submit } from "components/form"
+// import { Input } from "components/form"
 import { changePassword } from "../../scripts/keystore"
 import validate from "auth/scripts/validate"
 import useAuth from "../../hooks/useAuth"
 import ConfirmModal from "./ConfirmModal"
+import { Form, InputWrapper, SubmitButton, Input } from "station-ui"
 
 interface Values {
   current: string
@@ -41,22 +42,28 @@ const ChangePasswordForm = () => {
       )}
 
       <Form onSubmit={handleSubmit(submit)}>
-        <FormItem label={t("Current password")} error={errors.current?.message}>
+        <InputWrapper
+          label={t("Current password")}
+          error={errors.current?.message}
+        >
           <Input
             {...register("current", { validate: validatePassword })}
             type="password"
             autoFocus
           />
-        </FormItem>
+        </InputWrapper>
 
-        <FormItem label={t("New password")} error={errors.password?.message}>
+        <InputWrapper
+          label={t("New password")}
+          error={errors.password?.message}
+        >
           <Input
             {...register("password", { validate: validate.password })}
             type="password"
           />
-        </FormItem>
+        </InputWrapper>
 
-        <FormItem
+        <InputWrapper
           label={t("Confirm new password")}
           error={errors.confirm?.message}
         >
@@ -67,9 +74,11 @@ const ChangePasswordForm = () => {
             onFocus={() => form.trigger("confirm")}
             type="password"
           />
-        </FormItem>
-
-        <Submit />
+        </InputWrapper>
+        <SubmitButton
+          label={t("Submit")}
+          disabled={!!Object.values(errors).length}
+        />
       </Form>
     </>
   )

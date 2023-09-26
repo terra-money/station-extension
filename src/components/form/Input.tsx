@@ -1,9 +1,9 @@
 import { ForwardedRef, forwardRef, InputHTMLAttributes, ReactNode } from "react"
 import classNames from "classnames/bind"
-import SearchIcon from "@mui/icons-material/Search"
 import { WithTokenItem } from "data/token"
 import { Flex } from "../layout"
 import styles from "./Input.module.scss"
+import { InputWrapper } from "station-ui"
 
 const cx = classNames.bind(styles)
 
@@ -72,30 +72,31 @@ export const SearchInput = forwardRef(
       small?: boolean
       inline?: boolean
       extra?: ReactNode
+      label?: string
     },
     ref: ForwardedRef<HTMLInputElement>
   ) => {
     return (
-      <div
-        className={cx(
-          styles.wrapper,
-          styles.search,
-          attrs.small && styles.search__small,
-          attrs.inline && styles.search__inline
-        )}
-        style={attrs.padding ? {} : { margin: 0 }}
-      >
-        <input
-          {...attrs}
-          className={cx(styles.input, attrs.small && styles.input__small)}
-          inputMode="search"
-          autoComplete="off"
-          ref={ref}
-        />
-
-        <SearchIcon className={styles.icon} />
-        {attrs.extra}
-      </div>
+      <InputWrapper label={attrs.label}>
+        <div
+          className={cx(
+            styles.wrapper,
+            styles.search,
+            attrs.small && styles.search__small,
+            attrs.inline && styles.search__inline
+          )}
+          style={attrs.padding ? {} : { margin: 0 }}
+        >
+          <input
+            {...attrs}
+            className={cx(styles.input, attrs.small && styles.input__small)}
+            inputMode="search"
+            autoComplete="off"
+            ref={ref}
+          />
+          {attrs.extra}
+        </div>
+      </InputWrapper>
     )
   }
 )

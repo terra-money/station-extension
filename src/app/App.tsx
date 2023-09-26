@@ -16,7 +16,7 @@ import Aside from "./sections/Aside"
 /* header */
 import NetworkHeader from "./sections/NetworkHeader"
 import Refresh from "./sections/Refresh"
-import Preferences from "./sections/Preferences"
+import Preferences from "./sections/settings/Preferences"
 import ConnectWallet from "./sections/ConnectWallet"
 
 /* extra */
