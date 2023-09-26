@@ -37,8 +37,8 @@ const TokenListItem = ({
       {chains.map((c, index) => (
         <div key={index} className={styles.container}>
           <span className={styles.chain}>{c.name}</span>
-          <img src={c.img}/>
-          <span>{c.balance}</span>
+          <img src={c.img} alt={c.name} />
+          <span className={styles.balance}>{c.balance}</span>
         </div>
       ))}
     </>
