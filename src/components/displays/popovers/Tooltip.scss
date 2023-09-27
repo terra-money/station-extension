@@ -1,0 +1,20 @@
+@import "scss/font_mixins";
+
+.tooltip__container {
+  background-color: var(--token-dark-700) !important;
+  border-radius: 8px !important;
+  color: var(--token-light-white) !important;
+  @include Small;
+  font-size: var(--token-font-size-sm) !important;
+  line-height: var(--token-line-height-sm-default) !important;
+  width: 180px !important;
+  padding: 16px !important;
+
+  .tippy-content {
+    padding: 0 !important;
+  }
+
+  .tippy-arrow {
+    color: var(--token-dark-700) !important;
+  }
+}

@@ -2,6 +2,7 @@ import type { Preview, StoryObj } from "@storybook/react";
 import React from 'react';
 
 import "scss/index.scss";
+import "tippy.js/dist/tippy.css";
 
 const preview: Preview = {
   parameters: {
