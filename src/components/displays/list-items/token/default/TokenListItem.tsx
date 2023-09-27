@@ -7,43 +7,36 @@ import { Tooltip } from "components";
 const cx = classNames.bind(styles);
 
 export interface TokenListItemProps {
-  balance?: string
   chains: { name: string, img: string, balance: string }[]
-  currency: { id: string, symbol: string, name: string }
   tokenImg: string
   symbol: string
   price?: number
   change?: number
   amountNode: React.ReactNode
+  priceNode: React.ReactNode
   onClick?: () => void
 }
 
 const TokenListItem = ({
-  balance,
+  priceNode,
   chains,
-  currency,
   tokenImg,
   symbol,
-  price = 0,
   change = 0,
   amountNode,
   onClick,
 }: TokenListItemProps) => {
 
-  const walletPrice = price * parseInt(balance ?? "0")
-
   const TooltipContent = () => (
-    <div className={styles.chains__list}>
+    <>
       {chains.map((c, index) => (
         <div key={index} className={styles.container}>
+          <span className={styles.chain}>{c.name}</span>
           <img src={c.img} alt={c.name} />
-          <div className={styles.text__container}>
-            <span className={styles.chain}>{c.name}</span>
-            <span className={styles.balance}>{c.balance}</span>
-          </div>
+          <span className={styles.balance}>{c.balance}</span>
         </div>
       ))}
-    </div>
+    </>
   );
 
   return (
@@ -61,11 +54,11 @@ const TokenListItem = ({
             <h2 className={styles.symbol}>
               <span className={styles.symbol__name}>{symbol}</span>
               {chains?.length > 1 ? (
-                <Tooltip className={styles.tooltip} content={<TooltipContent/>} placement='top'>
+                <Tooltip className={styles.tooltip} content={<TooltipContent/>}>
                   <span className={cx(styles.chain__details, styles.num)}>{chains.length}</span>
                 </Tooltip>
               ) : (
-                <span className={cx(styles.chain__details, styles.single)}>{chains[0].name}</span>
+                <span className={cx(styles.chain__details, styles.single)}>{chains?.[0]?.name ?? ""}</span>
               )}
             </h2>
             <h3 className={styles.amount}>
@@ -79,12 +72,7 @@ const TokenListItem = ({
               {change >= 0 ? <PriceUp /> : <PriceDown />} {change.toFixed(2)}%
             </h5>
             <h5 className={styles.price}>
-              {currency.symbol}{" "}
-              {price ? (
-                <div>{walletPrice}</div>
-              ) : (
-                <span>—</span>
-              )}
+              {priceNode}
             </h5>
           </div>
         </div>
