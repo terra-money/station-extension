@@ -14,16 +14,18 @@ export default meta;
 export const Default: StoryObj<TokenListItemProps> = {
   render: () => {
     return (
-      <TokenListItem
-        balance={"420.00"}
-        chains={["terra", "axelar"]}
-        currency={{ id: 'usd', symbol: '$', name: 'USD' }}
-        tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
-        symbol={"LUNA"}
-        price={1}
-        change={0.1}
-        amountNode={<span>420.00</span>}
-      />
+      <div style={{ height: "150px", display: "flex", alignItems: "flex-end" }}>
+        <TokenListItem
+          balance={"420.00"}
+          chains={[{name: "terra",  img: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }, { balance: '320' , name: "axelar", img: "https://station-assets.terra.dev/img/chains/Axelar.svg"}]}
+          currency={{ id: 'usd', symbol: '$', name: 'USD' }}
+          tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
+          symbol={"LUNA"}
+          price={1}
+          change={0.1}
+          amountNode={<span>420.00</span>}
+        />
+      </div>
     )
   },
   argTypes: {},
@@ -34,7 +36,7 @@ export const DefaultSingleChain: StoryObj<TokenListItemProps> = {
     return (
       <TokenListItem
         balance={"420.00"}
-        chains={["terra"]}
+        chains={[{name: "terra",  img: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }]}
         currency={{ id: 'usd', symbol: '$', name: 'USD' }}
         tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
         symbol={"LUNA"}

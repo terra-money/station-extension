@@ -1,19 +1,14 @@
 @import "scss/font_mixins";
 
 .token__container {
+  flex: 1;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-
-  // padding: 20px;
   border-radius: 8px;
   position: relative;
   cursor: pointer;
   transition: 300ms;
-
-  // &:hover {
-  //   background-color: var(--token-dark-700);
-  // }
 
   .details {
     display: flex;
@@ -60,7 +55,7 @@
             text-overflow: ellipsis;
           }
 
-          .chain__num {
+          .chain__details {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -68,21 +63,17 @@
             color: var(--token-light-white);
             background-color: var(--token-dark-700);
             border-radius: 4px;
-            width: 20px;
-            height: 16px;
-          }
 
-          .single__chain__text {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            @include XX-Small;
-            color: var(--token-light-white);
-            background-color: var(--token-dark-700);
-            border-radius: 4px;
-            padding: 0 8px;
-            height: 16px;
-            text-transform: capitalize;
+            &.num {
+              width: 20px;
+              height: 16px;
+            }
+
+            &.single {
+              padding: 0 8px;
+              height: 16px;
+              text-transform: capitalize;
+            }
           }
         }
 
@@ -187,6 +178,42 @@
         width: 14px;
         height: 14px;
         border-radius: 50%;
+      }
+    }
+  }
+}
+
+.tooltip {
+  .chains__list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    img {
+      height: 12px;
+      width: 12px;
+    }
+
+    .text__container {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+
+      .chain {
+        text-transform: capitalize;
+        @include X-Small;
+        color: var(--token-light-white);
+      }
+
+      .balance {
+        @include X-Small;
+        color: var(--token-light-white);
       }
     }
   }

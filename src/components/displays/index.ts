@@ -21,3 +21,5 @@ export * from './voting-summary/VotingSummary';
 
 export { default as WalletList } from './wallet-list/WalletList';
 export * from './wallet-list/WalletList';
+
+export { default as Tooltip } from './popovers/Tooltip';
