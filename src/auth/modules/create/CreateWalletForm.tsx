@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
 import { Grid } from "components/layout"
-import { Form, Submit, Value } from "components/form"
+import { Form, Value } from "components/form"
 import validate from "auth/scripts/validate"
 import { TooltipIcon } from "components/display"
 import { useCreateWallet, Values as DefaultValues } from "./CreateWalletWizard"
@@ -16,6 +16,7 @@ import {
   Paste,
   Tabs,
   FlexColumn,
+  SubmitButton,
 } from "station-ui"
 import styles from "./CreateWalletForm.module.scss"
 
@@ -249,11 +250,11 @@ const CreateWalletForm = () => {
       </FlexColumn>
       <section className={styles.form__footer}>
         {generated ? (
-          <Submit disabled={!isValid} variant="secondary">
+          <SubmitButton disabled={!isValid} variant="secondary">
             {t("Create Wallet")}
-          </Submit>
+          </SubmitButton>
         ) : (
-          <Submit disabled={!isValid}>{t("Import")}</Submit>
+          <SubmitButton disabled={!isValid}>{t("Import")}</SubmitButton>
         )}
       </section>
     </Form>

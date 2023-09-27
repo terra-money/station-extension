@@ -23,7 +23,7 @@ const Welcome = () => {
           <SwitchWallet />
         ) : (
           <section className={styles.welcome}>
-            <img src={icon} alt="Station" width={70} />
+            <img src={icon} alt="Station" width={60} />
             <h1 className={styles.title}>{t("Welcome!")}</h1>
             <p className={styles.content}>
               {t(

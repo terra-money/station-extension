@@ -36,6 +36,7 @@ import EnableCoinType from "app/sections/EnableCoinType"
 import UpdateNotification from "./update/UpdateNotification"
 import ChangeLogModal from "./update/ChangeLogModal"
 import Welcome from "./modules/Welcome"
+import Login, { useLogin } from "extension/modules/Login"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -91,7 +92,13 @@ const App = () => {
 
   const location = useLocation()
 
+  const { isLoggedIn } = useLogin()
+
   function render() {
+    if (!isLoggedIn) {
+      return <Login />
+    }
+
     if (!wallet && !location.pathname.startsWith("/auth/")) {
       //{wallets.length ? <SwitchWallet /> : <Welcome />}
       return <Welcome />
