@@ -33,15 +33,17 @@ const TokenListItem = ({
   const walletPrice = price * parseInt(balance ?? "0")
 
   const TooltipContent = () => (
-    <>
+    <div className={styles.chains__list}>
       {chains.map((c, index) => (
         <div key={index} className={styles.container}>
-          <span className={styles.chain}>{c.name}</span>
           <img src={c.img} alt={c.name} />
-          <span className={styles.balance}>{c.balance}</span>
+          <div className={styles.text__container}>
+            <span className={styles.chain}>{c.name}</span>
+            <span className={styles.balance}>{c.balance}</span>
+          </div>
         </div>
       ))}
-    </>
+    </div>
   );
 
   return (
@@ -59,7 +61,7 @@ const TokenListItem = ({
             <h2 className={styles.symbol}>
               <span className={styles.symbol__name}>{symbol}</span>
               {chains?.length > 1 ? (
-                <Tooltip className={styles.tooltip} content={<TooltipContent/>}>
+                <Tooltip className={styles.tooltip} content={<TooltipContent/>} placement='top'>
                   <span className={cx(styles.chain__details, styles.num)}>{chains.length}</span>
                 </Tooltip>
               ) : (

@@ -1,19 +1,14 @@
 @import "scss/font_mixins";
 
 .token__container {
+  flex: 1;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-
-  // padding: 20px;
   border-radius: 8px;
   position: relative;
   cursor: pointer;
   transition: 300ms;
-
-  // &:hover {
-  //   background-color: var(--token-dark-700);
-  // }
 
   .details {
     display: flex;
@@ -69,21 +64,17 @@
             background-color: var(--token-dark-700);
             border-radius: 4px;
 
-            .num {
+            &.num {
               width: 20px;
               height: 16px;
             }
 
-            .single {
+            &.single {
               padding: 0 8px;
               height: 16px;
               text-transform: capitalize;
             }
-  
           }
-
-          
-
         }
 
         .amount {
@@ -193,20 +184,37 @@
 }
 
 .tooltip {
-  background-color: var(--token-dark-700);
-  border-radius: 3px;
-  width: 150px;
-  padding: 10px;
+  .chains__list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
 
   .container {
     display: flex;
-    justify-content: flex-start;
-    gap: 10px;
+    align-items: center;
+    gap: 8px;
 
     img {
       height: 12px;
       width: 12px;
     }
+
+    .text__container {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+
+      .chain {
+        text-transform: capitalize;
+        @include X-Small;
+        color: var(--token-light-white);
+      }
+
+      .balance {
+        @include X-Small;
+        color: var(--token-light-white);
+      }
+    }
   }
 }
-
