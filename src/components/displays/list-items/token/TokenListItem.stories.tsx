@@ -1,10 +1,12 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from '@storybook/react';
 import TokenListItem, { TokenListItemProps } from './default/TokenListItem';
 import TokenSingleChainListItem, { TokenSingleChainListItemProps } from './single-chain/TokenSingleChainListItem';
 import TokenCheckboxListItem, { TokenCheckboxListItemProps } from './single-chain/TokenCheckboxListItem';
+import { useState } from 'react';
 
 const meta: Meta<TokenListItemProps> = {
-  title: 'Components/list-items/Token',
+  title: 'Components/List Items/Token',
   component: TokenListItem,
   argTypes: {},
 } as Meta;
@@ -84,11 +86,13 @@ export const SendBack: StoryObj<TokenSingleChainListItemProps> = {
 
 export const WithChainCheckbox: StoryObj<TokenCheckboxListItemProps> = {
   render: () => {
+    const [checked, setChecked] = useState(false);
     return (
       <TokenCheckboxListItem
         tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
         symbol={"LUNA"}
-        onClick={() => { }}
+        onClick={() => setChecked(!checked)}
+        checked={checked}
         chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
       />
     )
