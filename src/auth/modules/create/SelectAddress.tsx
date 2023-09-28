@@ -34,13 +34,16 @@ const SelectAddress = () => {
           const mk = new SeedKey({ seed, coinType: bip, index })
           const address = mk.accAddress("terra")
           const [balance] = await lcd.bank.balance(address)
-          const accountInfo = await lcd.auth.accountInfo(address)
+          // throws 404 if account doesn't exist
+          const accountInfo = await lcd.auth
+            .accountInfo(address)
+            .catch(() => {})
           return {
             address,
             bip,
             index,
             balance,
-            sequence: accountInfo.getSequenceNumber(),
+            sequence: accountInfo?.getSequenceNumber() ?? 0,
           }
         })
       )

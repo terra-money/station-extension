@@ -19,6 +19,7 @@ import {
   SubmitButton,
 } from "station-ui"
 import styles from "./CreateWalletForm.module.scss"
+import { isPasswordValid, passwordExists } from "auth/scripts/keystore"
 
 interface Values extends DefaultValues {
   confirm: string
@@ -45,7 +46,15 @@ const CreateWalletForm = () => {
     defaultValues: { ...values, confirm: "", checked: false },
   })
 
-  const { register, watch, handleSubmit, formState, reset, setValue } = form
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState,
+    reset,
+    setValue,
+    setError,
+  } = form
   const { errors, isValid } = formState
   const { password, mnemonic, index, checked } = watch()
 
@@ -54,8 +63,45 @@ const CreateWalletForm = () => {
   }, [reset])
 
   const submit = ({ name, password, mnemonic, index }: Values) => {
+    if (passwordExists() && !isPasswordValid(password)) {
+      setError(
+        "password",
+        { message: t("Invalid password") },
+        { shouldFocus: true }
+      )
+      return
+    }
     setValues({ name, password, mnemonic: mnemonic.trim(), index })
     setStep(2)
+  }
+
+  function renderPasswordInput() {
+    return (
+      <>
+        <InputWrapper label={t("Password")} error={errors.password?.message}>
+          <Input
+            {...register("password", {
+              validate: passwordExists() ? undefined : validate.password,
+            })}
+            type="password"
+          />
+        </InputWrapper>
+        {!passwordExists() && (
+          <InputWrapper
+            label={t("Confirm password")}
+            error={errors.confirm?.message}
+          >
+            <Input
+              {...register("confirm", {
+                validate: (confirm) => validate.confirm(password, confirm),
+              })}
+              onFocus={() => form.trigger("confirm")}
+              type="password"
+            />
+          </InputWrapper>
+        )}
+      </>
+    )
   }
 
   function renderImportOption() {
@@ -81,15 +127,7 @@ const CreateWalletForm = () => {
               />
             </InputWrapper>
 
-            <InputWrapper
-              label={t("Password")}
-              error={errors.password?.message}
-            >
-              <Input
-                {...register("password", { validate: validate.password })}
-                type="password"
-              />
-            </InputWrapper>
+            {renderPasswordInput()}
 
             <button
               onClick={(e) => {
@@ -151,15 +189,7 @@ const CreateWalletForm = () => {
               />
             </InputWrapper>
 
-            <InputWrapper
-              label={t("Password")}
-              error={errors.password?.message}
-            >
-              <Input
-                {...register("password", { validate: validate.password })}
-                type="password"
-              />
-            </InputWrapper>
+            {renderPasswordInput()}
           </>
         )
     }
@@ -178,28 +208,7 @@ const CreateWalletForm = () => {
 
         {generated ? (
           <>
-            <InputWrapper
-              label={t("Password")}
-              error={errors.password?.message}
-            >
-              <Input
-                {...register("password", { validate: validate.password })}
-                type="password"
-              />
-            </InputWrapper>
-
-            <InputWrapper
-              label={t("Confirm password")}
-              error={errors.confirm?.message}
-            >
-              <Input
-                {...register("confirm", {
-                  validate: (confirm) => validate.confirm(password, confirm),
-                })}
-                onFocus={() => form.trigger("confirm")}
-                type="password"
-              />
-            </InputWrapper>
+            {renderPasswordInput()}
 
             <InputWrapper
               label={t("Mnemonic phrase")}

@@ -1,8 +1,7 @@
 import { useEffect } from "react"
 import { useRoutes, useLocation } from "react-router-dom"
 import { useAddress, useChainID, useNetworkName } from "data/wallet"
-import { ErrorBoundary } from "components/feedback"
-import { fallback } from "app/App"
+import { ErrorBoundary, Wrong } from "components/feedback"
 import InitBankBalance from "app/InitBankBalance"
 import LatestTx from "app/sections/LatestTx"
 import NetworkHeader from "app/sections/NetworkHeader"
@@ -36,7 +35,8 @@ import EnableCoinType from "app/sections/EnableCoinType"
 import UpdateNotification from "./update/UpdateNotification"
 import ChangeLogModal from "./update/ChangeLogModal"
 import Welcome from "./modules/Welcome"
-import Login, { useLogin } from "extension/modules/Login"
+import ExtensionPage from "./components/ExtensionPage"
+import { getErrorMessage } from "utils/error"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -92,13 +92,7 @@ const App = () => {
 
   const location = useLocation()
 
-  const { isLoggedIn } = useLogin()
-
   function render() {
-    if (!isLoggedIn) {
-      return <Login />
-    }
-
     if (!wallet && !location.pathname.startsWith("/auth/")) {
       //{wallets.length ? <SwitchWallet /> : <Welcome />}
       return <Welcome />
@@ -134,5 +128,12 @@ const App = () => {
     </ErrorBoundary>
   )
 }
+
+/* error */
+export const fallback = (error: Error) => (
+  <ExtensionPage>
+    <Wrong>{getErrorMessage(error)}</Wrong>
+  </ExtensionPage>
+)
 
 export default App

@@ -50,18 +50,20 @@ const ImportWalletForm = () => {
       if (decryptedKey.accAddress("terra") !== address)
         throw new Error("Invalid private key")
 
-      addWallet({
-        name,
-        password,
-        words: {
-          "330": wordsFromAddress(address),
+      addWallet(
+        {
+          name,
+          words: {
+            "330": wordsFromAddress(address),
+          },
+          pubkey: {
+            // @ts-expect-error
+            "330": decryptedKey.publicKey.key,
+          },
+          key: { "330": Buffer.from(pk, "hex") },
         },
-        pubkey: {
-          // @ts-expect-error
-          "330": decryptedKey.publicKey.key,
-        },
-        key: { "330": Buffer.from(pk, "hex") },
-      })
+        password
+      )
       connect(name)
       navigate("/")
     } catch (error) {

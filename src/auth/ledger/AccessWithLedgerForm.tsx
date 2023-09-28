@@ -22,11 +22,14 @@ import {
   SectionHeader,
 } from "station-ui"
 import CreatedWallet from "auth/modules/create/CreatedWallet"
+import { isPasswordValid, passwordExists } from "auth/scripts/keystore"
 
 interface Values {
   index: number
   bluetooth: boolean
   name: string
+  password: string
+  confirm: string
 }
 
 enum Pages {
@@ -62,18 +65,32 @@ const AccessWithLedgerForm = () => {
     defaultValues: { index: 0, bluetooth: false },
   })
 
-  const { register, watch, handleSubmit, formState } = form
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState,
+    setError: setFormError,
+  } = form
   const { errors, isValid } = formState
-  const { index, bluetooth, name } = watch()
+  const { index, bluetooth, name, password } = watch()
 
-  const submit = async ({ index, bluetooth, name }: Values) => {
+  const submit = async ({ index, bluetooth, name, password }: Values) => {
     setError(undefined)
 
-    connectLedger(words, pubkey, index, bluetooth, name)
-    //navigate("/", { replace: true })
+    connectLedger(password, words, pubkey, index, bluetooth, name)
   }
 
   const connectTerra = async () => {
+    if (passwordExists() && !isPasswordValid(password)) {
+      setFormError(
+        "password",
+        { message: t("Invalid password") },
+        { shouldFocus: true }
+      )
+      return
+    }
+
     setError(undefined)
     try {
       // wait until ledger is connected
@@ -135,6 +152,34 @@ const AccessWithLedgerForm = () => {
                   autoFocus
                 />
               </InputWrapper>
+
+              <InputWrapper
+                label={t("Password")}
+                error={errors.password?.message}
+              >
+                <Input
+                  {...register("password", {
+                    validate: passwordExists() ? undefined : validate.password,
+                  })}
+                  type="password"
+                />
+              </InputWrapper>
+
+              {!passwordExists() && (
+                <InputWrapper
+                  label={t("Confirm password")}
+                  error={errors.confirm?.message}
+                >
+                  <Input
+                    {...register("confirm", {
+                      validate: (confirm) =>
+                        validate.confirm(password, confirm),
+                    })}
+                    onFocus={() => form.trigger("confirm")}
+                    type="password"
+                  />
+                </InputWrapper>
+              )}
 
               {bleAvailable && (
                 <Checkbox
@@ -266,7 +311,7 @@ const AccessWithLedgerForm = () => {
             name={name}
             words={words}
             onConfirm={() =>
-              connectLedger(words, pubkey, index, bluetooth, name)
+              connectLedger(password, words, pubkey, index, bluetooth, name)
             }
           />
         )

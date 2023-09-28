@@ -5,7 +5,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert"
 import UsbIcon from "@mui/icons-material/Usb"
 import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import { useAuth } from "auth"
-import { ModalButton, useModal } from "components/feedback"
+import { ModalButton, useModal } from "station-ui"
 import { Button } from "components/general"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
@@ -88,13 +88,16 @@ export default function ManageWallets() {
 function ManageWalletsModal() {
   const { t } = useTranslation()
   const [path, setPath] = useState(Path.select)
-  const close = useModal()
+  const { closeModal } = useModal()
 
   switch (path) {
     case Path.select:
       return (
         <>
-          <SwitchWallet manage={() => setPath(Path.manage)} onSwitch={close} />
+          <SwitchWallet
+            manage={() => setPath(Path.manage)}
+            onSwitch={closeModal}
+          />
           <Button
             className={styles.add__button}
             onClick={() => setPath(Path.add)}
@@ -106,17 +109,9 @@ function ManageWalletsModal() {
       )
 
     case Path.add:
-      return (
-        <>
-          <AddWallet />
-        </>
-      )
+      return <AddWallet />
 
     case Path.manage:
-      return (
-        <>
-          <ManageWallet />
-        </>
-      )
+      return <ManageWallet />
   }
 }

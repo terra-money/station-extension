@@ -5,10 +5,11 @@ import ExtensionPage from "extension/components/ExtensionPage"
 import { Input, InputWrapper, SubmitButton } from "station-ui"
 import { atom, useRecoilState } from "recoil"
 import { useRef, useState } from "react"
+import { isLoginNeeded, lockWallet, unlockWallets } from "auth/scripts/keystore"
 
 const loginState = atom<boolean>({
   key: "login-state",
-  default: sessionStorage.getItem("login-state") === "true",
+  default: !isLoginNeeded(),
 })
 
 export const useLogin = () => {
@@ -16,12 +17,12 @@ export const useLogin = () => {
 
   return {
     isLoggedIn,
-    login: () => {
-      sessionStorage.setItem("login-state", "true")
+    login: (password: string) => {
+      unlockWallets(password)
       setIsLoggedin(true)
     },
     logout: () => {
-      sessionStorage.setItem("login-state", "false")
+      lockWallet()
       setIsLoggedin(false)
     },
   }
@@ -33,12 +34,18 @@ const Login = () => {
 
   const { login } = useLogin()
   const password = useRef<HTMLInputElement>(null)
-  const [error, setError] = useState<boolean>(false)
+  const [error, setError] = useState<string | undefined>(undefined)
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
-  function submit() {
-    if (!password.current?.value) return setError(true)
-    // TODO: validate password
-    login()
+  async function submit() {
+    try {
+      if (!password.current?.value) return setError("Password is required")
+      login(password.current?.value)
+    } catch (e) {
+      setError("Invalid password")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -53,14 +60,21 @@ const Login = () => {
             )}
           </p>
         </section>
-        <form className={styles.password__container} onSubmit={submit}>
-          <InputWrapper
-            label={t("Password")}
-            error={error ? t("Invalid password") : undefined}
-          >
+        <form
+          className={styles.password__container}
+          onSubmit={() => {
+            setIsSubmitting(true)
+            submit()
+          }}
+        >
+          <InputWrapper label={t("Password")} error={error}>
             <Input type="password" ref={password} />
           </InputWrapper>
-          <SubmitButton variant="secondary" label={t("Sumbit")} />
+          <SubmitButton
+            variant="secondary"
+            label={t("Sumbit")}
+            loading={isSubmitting}
+          />
         </form>
       </main>
     </ExtensionPage>
