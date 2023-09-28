@@ -1,4 +1,4 @@
-type Bip = 118 | 330
+type Bip = 118 | 330 | 1237
 
 type LocalWallet = SingleWallet | LegacySingleWallet | MultisigWallet // wallet with name
 
@@ -22,11 +22,13 @@ interface SingleWallet {
     "330": string
     "118"?: string
     "60"?: string
+    "1237"?: string
   }
   pubkey?: {
-    "330": string
+    "330"?: string
     "118"?: string
     "60"?: string
+    "1237"?: string
   }
   name: string
   lock?: boolean

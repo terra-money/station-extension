@@ -101,20 +101,20 @@ export const testPassword = (params: Params) => {
 
 type AddWalletParams =
   | {
-      words: { "330": string; "118"?: string; "60"?: string }
+      words: { "330": string; "118"?: string; "60"?: string; "1237"?: string }
       password: string
       seed: Buffer
       name: string
       index: number
       legacy: boolean
-      pubkey: { "330": string; "118"?: string; "60"?: string }
+      pubkey: { "330": string; "118"?: string; "60"?: string; "1237"?: string }
     }
   | {
-      words: { "330": string; "118"?: string }
+      words: { "330": string; "118"?: string; "1237"?: string }
       password: string
       key: { "330": Buffer }
       name: string
-      pubkey?: { "330": string; "118"?: string }
+      pubkey?: { "330": string; "118"?: string; "1237"?: string }
     }
   | LedgerWallet
   | MultisigWallet
