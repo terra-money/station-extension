@@ -40,7 +40,7 @@ const preview: Preview = {
       toc: {
         contentsSelector: '.sbdocs-content',
         headingSelector: 'h1, h2',
-        ignoreSelector: '#primary',
+        ignoreSelector: '.story__decorator',
         title: 'Table of Contents',
         disable: false,
         unsafeTocbotOptions: {
