@@ -16,6 +16,10 @@
       justify-content: center;
     }
 
+    &.pointer {
+      cursor: pointer;
+    }
+
     .title__wrapper {
       width: 100%;
       display: flex;
