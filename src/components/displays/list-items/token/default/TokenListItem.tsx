@@ -7,7 +7,7 @@ import { Tooltip } from "components";
 const cx = classNames.bind(styles);
 
 export interface TokenListItemProps {
-  chains: { name: string, img: string, balance: string }[]
+  chains: { name: string, icon: string, balance: string }[]
   tokenImg: string
   symbol: string
   price?: number
@@ -32,7 +32,7 @@ const TokenListItem = ({
     <div className={styles.chains__list}>
       {chains.map((c, index) => (
         <div key={index} className={styles.container}>
-          <img src={c.img} alt={c.name} />
+          <img src={c.icon} alt={c.name} />
           <div className={styles.text__container}>
             <span className={styles.chain}>{c.name}</span>
             <span className={styles.balance}>{c.balance}</span>

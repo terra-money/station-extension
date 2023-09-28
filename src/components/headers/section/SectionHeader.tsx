@@ -12,6 +12,7 @@ export interface SectionHeaderProps {
   indented?: boolean;
   icon?: ReactNode;
   className?: string;
+  onClick?: () => void;
 }
 
 const SectionHeader = ({
@@ -20,10 +21,11 @@ const SectionHeader = ({
   withLine,
   indented,
   icon,
-  className
+  className,
+  onClick,
 }: SectionHeaderProps) => {
   return (
-    <div className={cx(styles.section__header, className)}>
+    <div className={cx(styles.section__header, className, { pointer: !!onClick })} onClick={onClick}>
       <div className={cx(styles.header, { indented, has__line: withLine })}>
         <div className={cx(styles.title__wrapper, { has__line: withLine })}>
           {icon && <div className={styles.icon}>{icon}</div>}
