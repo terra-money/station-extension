@@ -20,13 +20,14 @@ import { SectionHeader } from "station-ui"
 const AssetList = () => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
-  const { onlyShowWhitelist, hideLowBal } = useTokenFilters()
+  const { onlyShowWhitelist, hideLowBal, toggleHideLowBal } = useTokenFilters()
   const unknownIBCDenoms = useUnknownIBCDenoms()
   const coins = useBankBalance()
   const readNativeDenom = useNativeDenoms()
   const native = useCustomTokensNative()
   const cw20 = useCustomTokensCW20()
   const list = useParsedAssetList() as any[]
+  const hiddenList = [] as any[]
 
   const alwaysVisibleDenoms = useMemo(
     () =>
@@ -37,44 +38,80 @@ const AssetList = () => {
     [cw20.list, native.list]
   )
 
-  const sortedList = list
+  const assetList = list
     .filter((a) => (onlyShowWhitelist ? a.whitelisted : true))
     .filter((a) => {
       const { token } = readNativeDenom(a.denom)
-
-      if (!hideLowBal || a.price === 0 || alwaysVisibleDenoms.has(token))
-        return true
-
-      return a.price * toInput(a.balance) >= 1
+      const visible =
+        a.price * toInput(a.balance) >= 1 || alwaysVisibleDenoms.has(token)
+      if (!visible) hiddenList.push(a)
+      return visible
     })
     .sort(
       (a, b) => b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
     )
 
+  const LowBalList = () => {
+    if (!hiddenList.length) return null
+    return (
+      <>
+        <SectionHeader
+          title={t(`Show Low Balance Assets (${hiddenList.length})`)}
+          withLine
+          onClick={toggleHideLowBal}
+        />
+        {!hideLowBal && (
+          <section>
+            {hiddenList.map(({ denom, chainID, id, ...item }, i) => (
+              <Asset
+                denom={denom}
+                {...readNativeDenom(
+                  unknownIBCDenoms[[denom, chainID].join("*")]?.baseDenom ??
+                    denom,
+                  unknownIBCDenoms[[denom, chainID].join("*")]?.chainID ??
+                    chainID
+                )}
+                id={id}
+                {...item}
+                key={i}
+              />
+            ))}
+          </section>
+        )}
+      </>
+    )
+  }
+
+  const List = () => {
+    return (
+      <section>
+        {assetList.map(({ denom, chainID, id, ...item }, i) => (
+          <Asset
+            denom={denom}
+            {...readNativeDenom(
+              unknownIBCDenoms[[denom, chainID].join("*")]?.baseDenom ?? denom,
+              unknownIBCDenoms[[denom, chainID].join("*")]?.chainID ?? chainID
+            )}
+            id={id}
+            {...item}
+            key={i}
+          />
+        ))}
+      </section>
+    )
+  }
+
   const render = () => {
     if (!coins) return
 
     return (
-      <div>
+      <>
         {isWalletEmpty && (
           <FormError>{t("Coins required to post transactions")}</FormError>
         )}
-        <section>
-          {sortedList.map(({ denom, chainID, id, ...item }, i) => (
-            <Asset
-              denom={denom}
-              {...readNativeDenom(
-                unknownIBCDenoms[[denom, chainID].join("*")]?.baseDenom ??
-                  denom,
-                unknownIBCDenoms[[denom, chainID].join("*")]?.chainID ?? chainID
-              )}
-              id={id}
-              {...item}
-              key={i}
-            />
-          ))}
-        </section>
-      </div>
+        <List />
+        <LowBalList />
+      </>
     )
   }
 

@@ -4,6 +4,7 @@ import { useExchangeRates } from "data/queries/coingecko"
 import { combineState } from "data/query"
 import { useCurrency } from "data/settings/Currency"
 import { WithFetching } from "components/feedback"
+import { useMemo } from "react"
 
 import styles from "./Asset.module.scss"
 import { useWalletRoute, Path } from "./Wallet"
@@ -22,6 +23,13 @@ export interface Props extends TokenItem, QueryState {
   id: string
 }
 
+interface AssetInfo {
+  chain: string
+  name: string
+  img: string
+  balance: string
+}
+
 const Asset = (props: Props) => {
   const { icon, denom, decimals, id, balance, ...state } = props
   const { t } = useTranslation()
@@ -29,31 +37,6 @@ const Asset = (props: Props) => {
   const network = useNetwork()
   const coins = useBankBalance()
   const readNativeDenom = useNativeDenoms()
-
-  const chains = Array.from(
-    new Set(
-      props.chains
-        .filter((chain) => !!network[chain])
-        .map((chain) => {
-          const balance = coins.find((b) => {
-            const { token, symbol } = readNativeDenom(b.denom, b.chain)
-            return (
-              token === props.token &&
-              props.symbol === symbol &&
-              b.chain === chain
-            )
-          })
-          return {
-            chain,
-            name: network[chain].name,
-            img: network[chain].icon,
-            balance: (
-              Math.pow(10, -decimals) * Number(balance?.amount) ?? 0
-            ).toFixed(2),
-          }
-        })
-    )
-  )
 
   const { data: prices, ...pricesState } = useExchangeRates()
   const { route, setRoute } = useWalletRoute()
@@ -65,6 +48,41 @@ const Asset = (props: Props) => {
     if (route.path !== Path.coin)
       setRoute({ path: Path.coin, denom: id, previousPage: route })
   }
+
+  const chains = useMemo(() => {
+    return props.chains.reduce((acc, chain) => {
+      if (!network[chain] || acc.some((c) => c.chain === chain)) return acc
+
+      const coin = coins.find((b) => {
+        const { token, symbol } = readNativeDenom(b.denom, b.chain)
+        return (
+          token === props.token && props.symbol === symbol && b.chain === chain
+        )
+      })
+
+      const balanceVal = Number(coin?.amount) ?? 0
+      const bal = Math.pow(10, -decimals) * balanceVal
+
+      if (!isNaN(bal)) {
+        acc.push({
+          chain,
+          name: network[chain].name,
+          img: network[chain].icon,
+          balance: bal.toFixed(2),
+        })
+      }
+
+      return acc
+    }, [] as AssetInfo[])
+  }, [
+    props.chains,
+    props.token,
+    props.symbol,
+    readNativeDenom,
+    coins,
+    network,
+    decimals,
+  ])
 
   const AmountNode = () => {
     return (
