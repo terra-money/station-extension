@@ -1,0 +1,129 @@
+@import "mixins";
+
+.asset {
+  @include flex(space-between, flex-start);
+  padding: 10px;
+  border-radius: 10px;
+  position: relative; // to loading indicator
+  cursor: pointer;
+  transition: 300ms;
+
+  &:hover {
+    background-color: var(--card-bg);
+  }
+}
+
+.details {
+  @include flex(flex-start);
+  gap: 16px;
+  width: 100%;
+
+  .token__icon__container {
+    position: relative;
+
+    .chain__icon {
+      position: absolute;
+      bottom: -8px;
+      right: -10px;
+      width: 20px;
+      height: 20px;
+      padding: 2px;
+      border-radius: 50%;
+      background-color: var(--card-bg-muted);
+    }
+  }
+}
+
+.details__container {
+  width: 100%;
+  max-width: calc(100% - 40px);
+  display: flex;
+  flex-direction: column;
+
+  .top__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .bottom__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.symbol {
+  @include flex(flex-start);
+  gap: 6px;
+  font-size: 16px;
+  overflow: hidden;
+
+  .symbol__name {
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.chain__num {
+  background-color: var(--bg-muted);
+  padding: 2px 8px;
+  font-size: 12px;
+  line-height: 130%;
+  border-radius: 4px;
+}
+
+.chains {
+  display: none;
+}
+
+.amount {
+  font-size: 12px;
+  font-weight: var(--normal);
+  color: var(--text-muted);
+  text-align: right;
+  white-space: nowrap;
+  max-width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  flex-wrap: wrap;
+
+  .sub__amount {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+  }
+}
+
+.change__up,
+.change__down {
+  @include flex(flex-start);
+  font-weight: var(--normal);
+  gap: 4px;
+}
+
+.change__up {
+  color: var(--info);
+}
+
+.change__down {
+  color: var(--danger);
+}
+
+.price {
+  font-size: 16px;
+  font-weight: var(--bold);
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.value {
+  color: var(--text-muted);
+  font-size: var(--font-size-small);
+}

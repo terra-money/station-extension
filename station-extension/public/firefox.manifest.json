@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "name": "Station Wallet",
+  "version": "7.4.3",
+  "version_name": "7.4.3-rc-1",
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["browser-polyfill.js", "contentScript.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "browser_action": {
+    "default_popup": "index.html",
+    "default_icon": "icon-32.png"
+  },
+  "options_ui": {
+    "page": "index.html"
+  },
+  "web_accessible_resources": ["inpage.js", "keplr.js", "index.html"],
+  "icons": {
+    "128": "icon-128.png",
+    "180": "icon-180.png"
+  },
+  "permissions": ["storage", "alarms"],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}

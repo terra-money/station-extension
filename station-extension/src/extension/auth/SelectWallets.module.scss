@@ -1,0 +1,14 @@
+@import "mixins";
+
+.manage__wallets {
+  @include flex(flex-start);
+  gap: 8px;
+  padding-inline: 10px;
+}
+
+.add__button {
+  @include flex;
+  gap: 4px;
+  width: 100%;
+  margin-top: var(--grid-gap);
+}

@@ -1,0 +1,88 @@
+@import "mixins";
+@import "forms";
+
+.wrapper {
+  @include flex;
+  align-items: stretch;
+}
+
+.input {
+  @include border;
+  @include size;
+  flex: 1;
+}
+
+.symbol {
+  @include border;
+  @include size;
+}
+
+.before {
+  @include border;
+  border-right: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 0 12px;
+}
+
+.after {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* search */
+.search {
+  position: relative;
+  margin: 0 var(--main-padding-horizontal);
+
+  .input {
+    padding-left: 50px;
+    background-color: var(--card-bg-muted);
+    border: 0;
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+  }
+
+  .icon {
+    top: 50%;
+    left: 16px;
+    position: absolute;
+    transform: translate(0, -50%);
+    color: var(--text-muted);
+  }
+}
+
+.search__small {
+  font-size: small;
+
+  .icon {
+    width: 18px;
+    left: 10px;
+  }
+
+  .input {
+    padding-left: 36px;
+  }
+}
+
+.search__inline {
+  font-size: small;
+  width: calc(100% - 12px);
+  margin: 4px 6px !important;
+
+  .icon {
+    width: 18px;
+    left: 10px;
+  }
+
+  .input {
+    padding-left: 36px;
+    height: 35px;
+  }
+}
+
+.input__small {
+  height: 38px;
+}

@@ -1,0 +1,52 @@
+.page {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background-color: var(--card-bg-muted);
+  height: calc(100% - var(--header-height));
+  padding-bottom: 3rem;
+  // padding here to position progress bar
+}
+
+.title_container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.container {
+  padding: 20px;
+
+  .header & {
+    padding-top: 0;
+    padding-bottom: 12px;
+  }
+
+  .header > & {
+    padding-bottom: 16px;
+  }
+
+  svg {
+    z-index: 10;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.header {
+  padding-top: 20px;
+  color: var(--extension-text);
+  text-align: left;
+}
+
+.title {
+  font-size: 22px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  &.skew_title {
+    margin-left: -34px;
+  }
+}

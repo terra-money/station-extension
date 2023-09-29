@@ -1,0 +1,68 @@
+@import "mixins";
+
+.form {
+  display: grid;
+  max-height: calc(100vh - var(--header-height));
+  min-height: calc(100vh - var(--header-height));
+  grid-template-areas:
+    "sendlist"
+    "sendactions";
+  grid-template-rows: auto min-content;
+}
+
+.send {
+  background-color: var(--card-bg);
+  margin-top: 1.5rem;
+  padding-inline: 20px;
+  padding-bottom: 40px;
+  max-width: var(--extension-width);
+  box-sizing: border-box;
+  grid-area: sendlist;
+  background-color: var(--card-bg-muted);
+  height: 100%;
+  h1 {
+    font-size: 18pt;
+  }
+}
+
+.actions {
+  background-color: var(--card-bg);
+  padding: 1rem;
+  gap: 0.6rem;
+  grid-area: sendactions;
+  width: 100%;
+  z-index: 1;
+  border-top: var(--border-width) solid var(--card-border);
+
+  input {
+    margin-bottom: 16px;
+  }
+
+  button {
+    width: 100%;
+    padding-block: 20px;
+    height: fit-content;
+    margin-top: 0;
+  }
+}
+
+.form__container {
+  div + div {
+    margin-top: 1.2rem;
+  }
+  h1 {
+    margin-left: 2rem;
+  }
+}
+
+.destination {
+  color: var(--button-primary-bg);
+}
+
+.destination__error {
+  color: var(--danger);
+}
+
+.icon {
+  font-size: 16px;
+}

@@ -1,0 +1,15 @@
+@mixin border {
+  background: var(--card-bg);
+  border: var(--border-width) solid var(--card-border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+@mixin padding {
+  padding: 0 12px;
+}
+
+@mixin size {
+  @include padding;
+  height: var(--input-height);
+}

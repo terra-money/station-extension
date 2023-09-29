@@ -1,0 +1,26 @@
+@import "mixins";
+
+.moniker {
+  @include truncate;
+  color: var(--text);
+  font-weight: var(--bold);
+  max-width: 12rem;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: var(--bold);
+  text-transform: uppercase;
+}
+
+.filter {
+  padding-inline: var(--main-padding-horizontal);
+}
+
+.table {
+  background-color: var(--card-bg-muted);
+  padding: 20px var(--main-padding-horizontal);
+  border-top: var(--border-width) solid var(--card-border);
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+}

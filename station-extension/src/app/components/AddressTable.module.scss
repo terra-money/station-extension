@@ -1,0 +1,22 @@
+@import "mixins";
+
+.address {
+  @include flex(space-between);
+}
+
+.connect {
+  padding: 10px;
+}
+
+.chain {
+  text-transform: capitalize;
+  @include flex(align-items);
+}
+
+.chain .name {
+  margin-left: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 80px;
+  font-weight: var(--bold);
+}
