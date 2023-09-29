@@ -2,7 +2,8 @@
 
 .networth {
   @include flex-column;
-  padding: 1.6rem 4rem;
+  padding: 2rem 1.6rem;
+  width: var(--extension-width);
 
   p {
     color: var(--text-muted);
@@ -20,6 +21,6 @@
 .networth__buttons {
   @include flex;
   gap: 48px;
-  margin-top: 28px;
+  margin-top: 18px;
   width: 100%;
 }

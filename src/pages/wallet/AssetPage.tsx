@@ -10,8 +10,9 @@ import { Button } from "components/general"
 import { useTranslation } from "react-i18next"
 import { capitalize } from "@mui/material"
 import Vesting from "./Vesting"
-import { isTerraChain } from "utils/chain"
 import { useNetworkName } from "data/wallet"
+import { SectionHeader } from "station-ui"
+import WalletActionButtons from "./WalletActionButtons"
 
 const AssetPage = () => {
   const currency = useCurrency()
@@ -78,12 +79,13 @@ const AssetPage = () => {
         <p>
           <Read decimals={decimals} amount={totalBalance} fixed={2} /> {symbol}
         </p>
+        <WalletActionButtons />
       </section>
       <section className={styles.chainlist__container}>
         {filteredBalances.length > 0 && (
           <div className={styles.chainlist}>
             <div className={styles.chainlist__title}>
-              <h3>{t("Chains")}</h3>
+              <SectionHeader title={t("Balances")} withLine />
             </div>
             <div className={styles.chainlist__list}>
               {filteredBalances
@@ -98,18 +100,18 @@ const AssetPage = () => {
                       denom={b.denom}
                       decimals={decimals}
                     />
-                    {token === "uluna" &&
-                      symbol !== "LUNC" &&
-                      isTerraChain(b.chain) && <Vesting />}
                   </div>
                 ))}
+              {token === "uluna" && symbol !== "LUNC" && (
+                <Vesting token={token} chain={chain} />
+              )}
             </div>
           </div>
         )}
         {filteredUnsupportedBalances.length > 0 && (
           <div className={styles.chainlist}>
             <div className={styles.chainlist__title}>
-              <h3>{t("Unsupported Chains")}</h3>
+              <SectionHeader title={t("Unsupported")} withLine />
             </div>
             <div className={styles.chainlist__list}>
               {filteredUnsupportedBalances

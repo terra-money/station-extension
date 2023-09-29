@@ -15,6 +15,7 @@ interface Props extends QueryState {
 
 interface WithFetchingProps extends Props {
   children: (progress?: ReactNode, wrong?: ReactNode) => ReactNode
+  yOffset?: number
 }
 
 export const WithFetching = (props: WithFetchingProps) => {
@@ -33,7 +34,7 @@ export const WithFetching = (props: WithFetchingProps) => {
           <LinearProgress
             color="inherit"
             className={styles.progress}
-            style={{ height }}
+            style={{ height, top: props.yOffset }}
             sx={{ position: "absolute" /* to overwrite */ }}
           />
         ) : undefined,

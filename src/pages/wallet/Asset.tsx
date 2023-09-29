@@ -8,10 +8,10 @@ import { useMemo } from "react"
 
 import styles from "./Asset.module.scss"
 import { useWalletRoute, Path } from "./Wallet"
-import { useNetwork } from "data/wallet"
 import { TokenListItem } from "station-ui"
 import { useBankBalance } from "data/queries/bank"
 import { useNativeDenoms } from "data/token"
+import { useNetwork } from "data/wallet"
 
 export interface Props extends TokenItem, QueryState {
   balance?: Amount
@@ -26,7 +26,7 @@ export interface Props extends TokenItem, QueryState {
 interface AssetInfo {
   chain: string
   name: string
-  img: string
+  icon: string
   balance: string
 }
 
@@ -34,9 +34,9 @@ const Asset = (props: Props) => {
   const { icon, denom, decimals, id, balance, ...state } = props
   const { t } = useTranslation()
   const currency = useCurrency()
+  const readNativeDenom = useNativeDenoms()
   const network = useNetwork()
   const coins = useBankBalance()
-  const readNativeDenom = useNativeDenoms()
 
   const { data: prices, ...pricesState } = useExchangeRates()
   const { route, setRoute } = useWalletRoute()
@@ -63,11 +63,13 @@ const Asset = (props: Props) => {
       const balanceVal = Number(coin?.amount) ?? 0
       const bal = Math.pow(10, -decimals) * balanceVal
 
+      const { name, icon } = network[chain]
+
       if (!isNaN(bal)) {
         acc.push({
           chain,
-          name: network[chain].name,
-          img: network[chain].icon,
+          name,
+          icon,
           balance: bal.toFixed(2),
         })
       }
@@ -86,7 +88,11 @@ const Asset = (props: Props) => {
 
   const AmountNode = () => {
     return (
-      <WithFetching {...combineState(state, pricesState)} height={1}>
+      <WithFetching
+        {...combineState(state, pricesState)}
+        yOffset={-5}
+        height={1}
+      >
         {(progress, wrong) => (
           <>
             {progress}

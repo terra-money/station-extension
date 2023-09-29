@@ -18,6 +18,7 @@ interface WalletActionButton {
   onClick: () => void
   disabled?: boolean
   primary?: boolean
+  hide?: boolean
 }
 
 const WalletActionButtons = () => {
@@ -52,6 +53,7 @@ const WalletActionButtons = () => {
       icon: <Swap />,
       label: t("swap"),
       onClick: () => {},
+      hide: route.path !== Path.wallet,
     },
     {
       icon: <ReceiveIcon />,

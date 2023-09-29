@@ -27,7 +27,7 @@ const AssetList = () => {
   const native = useCustomTokensNative()
   const cw20 = useCustomTokensCW20()
   const list = useParsedAssetList() as any[]
-  const hiddenList = [] as any[]
+  const lowBal = [] as any[]
 
   const alwaysVisibleDenoms = useMemo(
     () =>
@@ -44,74 +44,64 @@ const AssetList = () => {
       const { token } = readNativeDenom(a.denom)
       const visible =
         a.price * toInput(a.balance) >= 1 || alwaysVisibleDenoms.has(token)
-      if (!visible) hiddenList.push(a)
+      if (!visible) lowBal.push(a)
       return visible
     })
     .sort(
       (a, b) => b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
     )
 
-  const LowBalList = () => {
-    if (!hiddenList.length) return null
-    return (
-      <>
-        <SectionHeader
-          title={t(`Show Low Balance Assets (${hiddenList.length})`)}
-          withLine
-          onClick={toggleHideLowBal}
-        />
-        {!hideLowBal && (
-          <section>
-            {hiddenList.map(({ denom, chainID, id, ...item }, i) => (
-              <Asset
-                denom={denom}
-                {...readNativeDenom(
-                  unknownIBCDenoms[[denom, chainID].join("*")]?.baseDenom ??
-                    denom,
-                  unknownIBCDenoms[[denom, chainID].join("*")]?.chainID ??
-                    chainID
-                )}
-                id={id}
-                {...item}
-                key={i}
-              />
-            ))}
-          </section>
-        )}
-      </>
-    )
-  }
-
-  const List = () => {
-    return (
-      <section>
-        {assetList.map(({ denom, chainID, id, ...item }, i) => (
-          <Asset
-            denom={denom}
-            {...readNativeDenom(
-              unknownIBCDenoms[[denom, chainID].join("*")]?.baseDenom ?? denom,
-              unknownIBCDenoms[[denom, chainID].join("*")]?.chainID ?? chainID
-            )}
-            id={id}
-            {...item}
-            key={i}
-          />
-        ))}
-      </section>
-    )
-  }
-
   const render = () => {
     if (!coins) return
 
     return (
-      <>
+      <div>
         {isWalletEmpty && (
           <FormError>{t("Coins required to post transactions")}</FormError>
         )}
-        <List />
-        <LowBalList />
-      </>
+        <section>
+          {assetList.map(({ denom, chainID, id, ...item }, i) => (
+            <Asset
+              denom={denom}
+              {...readNativeDenom(
+                unknownIBCDenoms[[denom, chainID].join("*")]?.baseDenom ??
+                  denom,
+                unknownIBCDenoms[[denom, chainID].join("*")]?.chainID ?? chainID
+              )}
+              id={id}
+              {...item}
+              key={i}
+            />
+          ))}
+        </section>
+        {lowBal.length > 0 && (
+          <>
+            <SectionHeader
+              title={t(`Show Low Balance Assets (${lowBal.length})`)}
+              withLine
+              onClick={toggleHideLowBal}
+            />
+            {!hideLowBal && (
+              <section>
+                {lowBal.map(({ denom, chainID, id, ...item }, i) => (
+                  <Asset
+                    denom={denom}
+                    {...readNativeDenom(
+                      unknownIBCDenoms[[denom, chainID].join("*")]?.baseDenom ??
+                        denom,
+                      unknownIBCDenoms[[denom, chainID].join("*")]?.chainID ??
+                        chainID
+                    )}
+                    id={id}
+                    {...item}
+                    key={i}
+                  />
+                ))}
+              </section>
+            )}
+          </>
+        )}
+      </div>
     )
   }
 
@@ -122,7 +112,7 @@ const AssetList = () => {
         <ManageTokens>
           {(open) => (
             <InternalButton onClick={open}>
-              <FilterListIcon />
+              <FilterListIcon className={styles.filter} />
             </InternalButton>
           )}
         </ManageTokens>
