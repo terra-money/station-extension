@@ -1,0 +1,17 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Gotham-Book.ttf",
+      "sha1": "a9e708d633fa87375aa0e7a8a588013141e8a3e0"
+    },
+    {
+      "path": "assets/fonts/Gotham-Medium.ttf",
+      "sha1": "64354c0519da349604fcd002ab3c9640bc1fc4c6"
+    },
+    {
+      "path": "assets/images/terra-station.png",
+      "sha1": "f664d77054e09197f100ee8621ab943dbe637bef"
+    }
+  ]
+}

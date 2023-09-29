@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "jsx": "react-native",
+        "moduleResolution": "node",
+        "noEmit": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true /* Report errors on unused parameters. */,
+        "noImplicitAny": true /* Raise error on expressions and declarations with an implied 'any' type. */,
+        "strictNullChecks": true /* Enable strict null checks. */,
+        "baseUrl": ".",
+        "paths": {
+            "components": ["src/components"],
+            "utils": ["src/utils"],
+            "icons": ["src/icons"],
+            "store": ["src/state"],
+            "constants": ["src/constants"]
+        }
+    },
+    "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js"]
+}

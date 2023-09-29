@@ -1,0 +1,602 @@
+{
+    "classic": {
+        "axelar-dojo-1": {
+            "chainID": "axelar-dojo-1",
+            "lcd": "https://lcd-axelar.imperator.co",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "uaxl": 0.007
+            },
+            "prefix": "axelar",
+            "coinType": "118",
+            "baseAsset": "uaxl",
+            "name": "Axelar",
+            "icon": "https://station-assets.terra.money/img/chains/Axelar.svg",
+            "ibc": {
+                "fromTerra": "channel-19",
+                "toTerra": "channel-0"
+            },
+            "explorer": {
+                "address": "https://www.mintscan.io/axelar/account/{}",
+                "tx": "https://www.mintscan.io/axelar/txs/{}",
+                "validator": "https://www.mintscan.io/axelar/validators/{}",
+                "block": "https://www.mintscan.io/axelar/blocks/id/{}"
+            },
+            "tokens": null
+        },
+        "crescent-1": {
+            "chainID": "crescent-1",
+            "lcd": "https://mainnet.crescent.network:1317",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "ucre": 0.01
+            },
+            "prefix": "cre",
+            "coinType": "118",
+            "baseAsset": "ucre",
+            "name": "Crescent",
+            "icon": "https://station-assets.terra.money/img/chains/Crescent.svg",
+            "ibc": {
+                "fromTerra": "channel-49",
+                "toTerra": "channel-0"
+            },
+            "explorer": {
+                "address": "https://www.mintscan.io/crescent/account/{}",
+                "tx": "https://www.mintscan.io/crescent/txs/{}",
+                "validator": "https://www.mintscan.io/crescent/validators/{}",
+                "block": "https://www.mintscan.io/crescent/blocks/id/{}"
+            },
+            "tokens": null
+        },
+        "juno-1": {
+            "chainID": "juno-1",
+            "lcd": "https://lcd-juno.mib.tech",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "ujuno": 0.0025
+            },
+            "prefix": "juno",
+            "coinType": "118",
+            "baseAsset": "ujuno",
+            "name": "Juno",
+            "icon": "https://station-assets.terra.money/img/chains/Juno.svg",
+            "ibc": {
+                "fromTerra": "channel-20",
+                "toTerra": "channel-27"
+            },
+            "explorer": {
+                "address": "https://www.mintscan.io/juno/account/{}",
+                "tx": "https://www.mintscan.io/juno/txs/{}",
+                "validator": "https://www.mintscan.io/juno/validators/{}",
+                "block": "https://www.mintscan.io/juno/blocks/id/{}"
+            },
+            "tokens": null
+        },
+        "columbus-5": {
+            "chainID": "columbus-5",
+            "lcd": "https://terra-classic-lcd.publicnode.com",
+            "gasAdjustment": 5,
+            "gasPrices": {
+                "uluna": 28.325,
+                "usdr": 0.52469,
+                "uusd": 0.75,
+                "ukrw": 850,
+                "umnt": 2142.855,
+                "ueur": 0.625,
+                "ucny": 4.9,
+                "ujpy": 81.85,
+                "ugbp": 0.55,
+                "uinr": 54.4,
+                "ucad": 0.95,
+                "uchf": 0.7,
+                "uaud": 0.95,
+                "usgd": 1,
+                "uthb": 23.1,
+                "usek": 6.25,
+                "unok": 6.25,
+                "udkk": 4.5,
+                "uidr": 10900,
+                "uphp": 38,
+                "uhkd": 5.85,
+                "umyr": 3,
+                "utwd": 20
+            },
+            "prefix": "terra",
+            "coinType": "330",
+            "baseAsset": "uluna",
+            "name": "Terra Classic",
+            "icon": "https://assets.terra.money/icon/svg/TerraClassic.svg",
+            "isClassic": true,
+            "explorer": {
+                "address": "https://finder.terra.money/classic/address/{}",
+                "tx": "https://finder.terra.money/classic/tx/{}",
+                "validator": "https://finder.terra.money/classic/validator/{}",
+                "block": "https://finder.terra.money/classic/block/{}"
+            },
+            "tokens": null
+        }
+    },
+    "localterra": {
+        "localterra": {
+            "chainID": "localterra",
+            "lcd": "http://localhost:1317",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "uluna": 0.15
+            },
+            "prefix": "terra",
+            "coinType": "330",
+            "baseAsset": "uluna",
+            "name": "LocalTerra",
+            "icon": "https://station-assets.terra.money/img/chains/Terra.svg",
+            "explorer": {
+                "address": "https://finder.terra.money/localterra/address/{}",
+                "tx": "https://finder.terra.money/localterra/tx/{}",
+                "validator": "https://finder.terra.money/localterra/validator/{}",
+                "block": "https://finder.terra.money/localterra/block/{}"
+            },
+            "tokens": null
+        }
+    },
+    "mainnet": {
+        "akashnet-2": {
+            "chainID": "akashnet-2",
+            "lcd": "https://rest.cosmos.directory/akash",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "uakt": 0.025
+            },
+            "prefix": "akash",
+            "coinType": "118",
+            "baseAsset": "uakt",
+            "name": "Akash",
+            "icon": "https://station-assets.terra.money/img/chains/Akash.svg",
+            "ibc": {
+                "fromTerra": "channel-45",
+                "toTerra": "channel-56"
+            },
+            "explorer": {
+                "address": "https://www.mintscan.io/akash/account/{}",
+                "tx": "https://www.mintscan.io/akash/txs/{}",
+                "validator": "https://www.mintscan.io/akash/validators/{}",
+                "block": "https://www.mintscan.io/akash/blocks/id/{}"
+            },
+            "tokens": null
+        },
+        "axelar-dojo-1": {
+            "chainID": "axelar-dojo-1",
+            "lcd": "https://lcd-axelar.imperator.co",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "uaxl": 0.007
+            },
+            "prefix": "axelar",
+            "coinType": "118",
+            "baseAsset": "uaxl",
+            "name": "Axelar",
+            "icon": "https://station-assets.terra.money/img/chains/Axelar.svg",
+            "ibc": {
+                "fromTerra": "channel-6",
+                "toTerra": "channel-11"
+            },
+            "explorer": {
+                "address": "https://www.mintscan.io/axelar/account/{}",
+                "tx": "https://www.mintscan.io/axelar/txs/{}",
+                "validator": "https://www.mintscan.io/axelar/validators/{}",
+                "block": "https://www.mintscan.io/axelar/blocks/id/{}"
+            },
+            "tokens": null
+        },
+        "carbon-1": {
+            "chainID": "carbon-1",
+            "lcd": "https://query-api.carbon.network/",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "swth": 1000
+            },
+            "prefix": "swth",
+            "coinType": "118",
+            "baseAsset": "swth",
+            "name": "Carbon",
+            "icon": "https://switcheo-assets.s3.ap-southeast-1.amazonaws.com/Carbon.svg",
+            "ibc": {
+                "fromTerra": "channel-36",
+                "toTerra": "channel-12"
+            },
+            "explorer": {
+                "address": "https://scan.carbon.network/account/{}?net=main",
+                "tx": "https://scan.carbon.network/transaction/{}?net=main",
+                "validator": "https://scan.carbon.network/validator/{}?net=main",
+                "block": "https://scan.carbon.network/block/{}?net=main"
+            },
+            "tokens": null
+        },
+        "cheqd-mainnet-1": {
+            "chainID": "cheqd-mainnet-1",
+            "lcd": "https://api.cheqd.net",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "ncheq": 50
+            },
+            "prefix": "cheqd",
+            "coinType": "118",
+            "baseAsset": "ncheq",
+            "name": "cheqd",
+            "icon": "https://station-assets.terra.money/img/chains/Cheqd.svg",
+            "ibc": {
+                "fromTerra": "channel-89",
+                "toTerra": "channel-9"
+            },
+            "tokens": null
+        },
+        "chihuahua-1": {
+            "chainID": "chihuahua-1",
+            "lcd": "https://api.chihuahua.wtf",
+            "gasAdjustment": 2,
+            "gasPrices": {
+                "uhuahua": 1
+            },
+            "prefix": "chihuahua",
+            "coinType": "118",
+            "baseAsset": "uhuahua",
+            "name": "Chihuahua",
+            "icon": "https://station-assets.terra.money/img/chains/Huahua.png",
+            "ibc": {
+                "fromTerra": "channel-44",
+                "toTerra": "channel-34"
+            },
+            "explorer": {
+                "address": "https://www.mintscan.io/chihuahua/account/{}",
+                "tx": "https://www.mintscan.io/chihuahua/txs/{}",
+                "validator": "https://www.mintscan.io/chihuahua/validators/{}",
+                "block": "https://www.mintscan.io/chihuahua/blocks/id/{}"
+            },
+            "tokens": null
+        },
+        "comdex-1": {
+            "chainID": "comdex-1",
+            "lcd": "https://rest.comdex.one",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "ucmdx": 0.0025
+            },
+            "prefix": "comdex",
+            "coinType": "118",
+            "baseAsset": "ucmdx",
+            "name": "Comdex",
+            "icon": "https://station-assets.terra.money/img/chains/Comdex.svg",
+            "ibc": {
+                "fromTerra": "channel-39",
+                "toTerra": "channel-51"
+            },
+            "explorer": {
+                "address": "https://www.mintscan.io/comdex/account/{}",
+                "tx": "https://www.mintscan.io/comdex/txs/{}",
+                "validator": "https://www.mintscan.io/comdex/validators/{}",
+                "block": "https://www.mintscan.io/comdex/blocks/id/{}"
+            },
+            "tokens": null
+        },
+        "cosmoshub-4": {
+            "chainID": "cosmoshub-4",
+            "lcd": "https://cosmoshub-4.terra.dev",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "uatom": 0.025
+            },
+            "prefix": "cosmos",
+            "coinType": "118",
+            "baseAsset": "uatom",
+            "name": "Cosmos",
+            "icon": "https://station-assets.terra.money/img/chains/Cosmos.svg",
+            "ibc": {
+                "toTerra": "channel-339",
+                "fromTerra": "channel-0"
+            },
+            "explorer": {
+                "address": "https://www.mintscan.io/cosmos/account/{}",
+                "tx": "https://www.mintscan.io/cosmos/txs/{}",
+                "validator": "https://www.mintscan.io/cosmos/validators/{}",
+                "block": "https://www.mintscan.io/cosmos/blocks/id/{}"
+            },
+            "tokens": null
+        },
+        "crescent-1": {
+            "chainID": "crescent-1",
+            "lcd": "https://mainnet.crescent.network:1317",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "ucre": 0.01
+            },
+            "prefix": "cre",
+            "coinType": "118",
+            "baseAsset": "ucre",
+            "name": "Crescent",
+            "icon": "https://station-assets.terra.money/img/chains/Crescent.svg",
+            "ibc": {
+                "fromTerra": "channel-37",
+                "toTerra": "channel-27"
+            },
+            "explorer": {
+                "address": "https://www.mintscan.io/crescent/account/{}",
+                "tx": "https://www.mintscan.io/crescent/txs/{}",
+                "validator": "https://www.mintscan.io/crescent/validators/{}",
+                "block": "https://www.mintscan.io/crescent/blocks/id/{}"
+            },
+            "tokens": null
+        },
+        "juno-1": {
+            "chainID": "juno-1",
+            "lcd": "https://lcd-juno.mib.tech",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "ujuno": 0.0025
+            },
+            "prefix": "juno",
+            "coinType": "118",
+            "baseAsset": "ujuno",
+            "name": "Juno",
+            "icon": "https://station-assets.terra.money/img/chains/Juno.svg",
+            "ibc": {
+                "fromTerra": "channel-2",
+                "toTerra": "channel-86",
+                "ics": {
+                    "contract": "juno1v4887y83d6g28puzvt8cl0f3cdhd3y6y9mpysnsp3k8krdm7l6jqgm0rkn",
+                    "toTerra": "channel-154",
+                    "fromTerra": "channel-33"
+                },
+                "icsFromTerra": {
+                    "contract": "terra1e0mrzy8077druuu42vs0hu7ugguade0cj65dgtauyaw4gsl4kv0qtdf2au",
+                    "toTerra": "channel-153",
+                    "fromTerra": "channel-32"
+                }
+            },
+            "explorer": {
+                "address": "https://www.mintscan.io/juno/account/{}",
+                "tx": "https://www.mintscan.io/juno/txs/{}",
+                "validator": "https://www.mintscan.io/juno/validators/{}",
+                "block": "https://www.mintscan.io/juno/blocks/id/{}"
+            },
+            "tokens": null
+        },
+        "kaiyo-1": {
+            "chainID": "kaiyo-1",
+            "lcd": "https://lcd.kaiyo.kujira.setten.io",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "ukuji": 0.00119,
+                "ibc/DA59C009A0B3B95E0549E6BF7B075C8239285989FF457A8EDDBB56F10B2A6986": 0.000625,
+                "ibc/295548A78785A1007F232DE286149A6FF512F180AF5657780FC89C009E2C348F": 0.0015
+            },
+            "prefix": "kujira",
+            "coinType": "118",
+            "baseAsset": "ukuji",
+            "name": "Kujira",
+            "icon": "https://station-assets.terra.money/img/chains/Kujira.png",
+            "ibc": {
+                "fromTerra": "channel-10",
+                "toTerra": "channel-5",
+                "icsFromTerra": {
+                    "contract": "terra1e0mrzy8077druuu42vs0hu7ugguade0cj65dgtauyaw4gsl4kv0qtdf2au",
+                    "toTerra": "channel-36",
+                    "fromTerra": "channel-28"
+                }
+            },
+            "explorer": {
+                "address": "https://www.mintscan.io/kujira/account/{}",
+                "tx": "https://www.mintscan.io/kujira/txs/{}",
+                "validator": "https://www.mintscan.io/kujira/validators/{}",
+                "block": "https://www.mintscan.io/kujira/blocks/id/{}"
+            },
+            "tokens": null
+        },
+        "mars-1": {
+            "chainID": "mars-1",
+            "lcd": "https://rest.marsprotocol.io",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "umars": 0
+            },
+            "prefix": "mars",
+            "coinType": "330",
+            "baseAsset": "umars",
+            "name": "Mars",
+            "icon": "https://station-assets.terra.money/img/chains/Mars.svg",
+            "version": "0.46",
+            "ibc": {
+                "fromTerra": "channel-78",
+                "toTerra": "channel-2"
+            },
+            "explorer": {
+                "address": "https://explorer.marsprotocol.io/accounts/{}",
+                "tx": "https://explorer.marsprotocol.io/transactions/{}",
+                "validator": "https://explorer.marsprotocol.io/validators/{}",
+                "block": "https://explorer.marsprotocol.io/blocks/{}"
+            },
+            "tokens": null
+        },
+        "migaloo-1": {
+            "chainID": "migaloo-1",
+            "lcd": "https://ww-migaloo-rest.polkachu.com",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "uwhale": 0
+            },
+            "prefix": "migaloo",
+            "coinType": "118",
+            "baseAsset": "uwhale",
+            "name": "Migaloo",
+            "icon": "https://station-assets.terra.money/img/chains/Migaloo.svg",
+            "ibc": {
+                "fromTerra": "channel-86",
+                "toTerra": "channel-0",
+                "icsFromTerra": {
+                    "contract": "terra1e0mrzy8077druuu42vs0hu7ugguade0cj65dgtauyaw4gsl4kv0qtdf2au",
+                    "toTerra": "channel-2",
+                    "fromTerra": "channel-87"
+                }
+            },
+            "explorer": {
+                "address": "https://ping.pub/migaloo/account/{}",
+                "tx": "https://ping.pub/migaloo/txs/{}",
+                "validator": "https://ping.pub/migaloo/validators/{}",
+                "block": "https://ping.pub/migaloo/blocks/id/{}"
+            },
+            "tokens": null
+        },
+        "osmosis-1": {
+            "chainID": "osmosis-1",
+            "lcd": "https://osmosis-1.terra.dev",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "uosmo": 0.025
+            },
+            "prefix": "osmo",
+            "coinType": "118",
+            "baseAsset": "uosmo",
+            "name": "Osmosis",
+            "icon": "https://station-assets.terra.money/img/chains/Osmosis.svg",
+            "ibc": {
+                "toTerra": "channel-251",
+                "fromTerra": "channel-1",
+                "icsFromTerra": {
+                    "contract": "terra1e0mrzy8077druuu42vs0hu7ugguade0cj65dgtauyaw4gsl4kv0qtdf2au",
+                    "toTerra": "channel-341",
+                    "fromTerra": "channel-26"
+                }
+            },
+            "explorer": {
+                "address": "https://www.mintscan.io/osmosis/account/{}",
+                "tx": "https://www.mintscan.io/osmosis/txs/{}",
+                "validator": "https://www.mintscan.io/osmosis/validators/{}",
+                "block": "https://www.mintscan.io/osmosis/blocks/id/{}"
+            },
+            "tokens": null
+        },
+        "stride-1": {
+            "chainID": "stride-1",
+            "lcd": "https://stride-fleet.main.stridenet.co/api",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "ustrd": 0
+            },
+            "prefix": "stride",
+            "coinType": "118",
+            "baseAsset": "ustrd",
+            "name": "Stride",
+            "icon": "https://station-assets.terra.money/img/chains/Stride.png",
+            "ibc": {
+                "fromTerra": "channel-46",
+                "toTerra": "channel-52"
+            },
+            "explorer": {
+                "address": "https://www.mintscan.io/stride/account/{}",
+                "tx": "https://www.mintscan.io/stride/txs/{}",
+                "validator": "https://www.mintscan.io/stride/validators/{}",
+                "block": "https://www.mintscan.io/stride/blocks/id/{}"
+            },
+            "tokens": null
+        },
+        "phoenix-1": {
+            "chainID": "phoenix-1",
+            "lcd": "https://phoenix-lcd.terra.dev",
+            "gasAdjustment": 1.75,
+            "gasPrices": {
+                "uluna": 0.015
+            },
+            "prefix": "terra",
+            "coinType": "330",
+            "baseAsset": "uluna",
+            "name": "Terra",
+            "icon": "https://station-assets.terra.money/img/chains/Terra.svg",
+            "explorer": {
+                "address": "https://terrasco.pe/mainnet/address/{}",
+                "tx": "https://terrasco.pe/mainnet/tx/{}",
+                "validator": "https://terrasco.pe/mainnet/validator/{}",
+                "block": "https://terrasco.pe/mainnet/block/{}"
+            },
+            "tokens": null
+        }
+    },
+    "testnet": {
+        "uni-5": {
+            "chainID": "uni-5",
+            "lcd": "https://juno-testnet-api.polkachu.com",
+            "gasAdjustment": 2,
+            "gasPrices": {
+                "ujunox": 0.015
+            },
+            "prefix": "juno",
+            "coinType": "118",
+            "baseAsset": "ujunox",
+            "name": "Juno",
+            "icon": "https://station-assets.terra.money/img/chains/Juno.svg",
+            "explorer": {},
+            "tokens": null
+        },
+        "ares-1": {
+            "chainID": "ares-1",
+            "lcd": "https://testnet-rest.marsprotocol.io",
+            "gasAdjustment": 2,
+            "gasPrices": {
+                "umars": 0
+            },
+            "prefix": "mars",
+            "coinType": "330",
+            "baseAsset": "umars",
+            "name": "Mars",
+            "icon": "https://station-assets.terra.money/img/chains/Mars.svg",
+            "ibc": {
+                "toTerra": "channel-0",
+                "fromTerra": "channel-189"
+            },
+            "version": "0.46",
+            "explorer": {
+                "address": "https://testnet-explorer.marsprotocol.io/accounts/{}",
+                "tx": "https://testnet-explorer.marsprotocol.io/transactions/{}",
+                "validator": "https://testnet-explorer.marsprotocol.io/validators/{}",
+                "block": "https://testnet-explorer.marsprotocol.io/blocks/{}"
+            },
+            "tokens": null
+        },
+        "atlantic-1": {
+            "chainID": "atlantic-1",
+            "lcd": "https://sei-chain-incentivized.com/sei-chain-app",
+            "gasAdjustment": 2,
+            "gasPrices": {
+                "usei": 0.01
+            },
+            "prefix": "sei",
+            "coinType": "118",
+            "baseAsset": "usei",
+            "name": "Sei",
+            "icon": "https://station-assets.terra.money/img/chains/Sei.png",
+            "ibc": {
+                "fromTerra": "channel-100",
+                "toTerra": "channel-11"
+            },
+            "explorer": {},
+            "tokens": null
+        },
+        "pisco-1": {
+            "chainID": "pisco-1",
+            "lcd": "https://pisco-lcd.terra.dev",
+            "gasAdjustment": 3.5,
+            "gasPrices": {
+                "uluna": 0.015
+            },
+            "prefix": "terra",
+            "coinType": "330",
+            "baseAsset": "uluna",
+            "name": "Terra",
+            "icon": "https://station-assets.terra.money/img/chains/Terra.svg",
+            "explorer": {
+                "address": "https://terrasco.pe/testnet/address/{}",
+                "tx": "https://terrasco.pe/testnet/tx/{}",
+                "validator": "https://terrasco.pe/testnet/validator/{}",
+                "block": "https://terrasco.pe/testnet/block/{}"
+            },
+            "tokens": null
+        }
+    }
+}
