@@ -22,7 +22,7 @@
   "options_ui": {
     "page": "index.html"
   },
-  "web_accessible_resources": ["inpage.js", "keplr.js", "index.html"],
+  "web_accessible_resources": ["nostr-provider.js", "inpage.js", "keplr.js", "index.html"],
   "icons": {
     "128": "icon-128.png",
     "180": "icon-180.png"
