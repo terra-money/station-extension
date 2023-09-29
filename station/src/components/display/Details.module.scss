@@ -1,0 +1,8 @@
+.component {
+  background: var(--bg);
+  color: var(--text-muted);
+  border: var(--border-width) solid var(--card-border);
+  border-radius: var(--border-radius);
+  padding: var(--card-padding-small);
+  word-break: break-all;
+}

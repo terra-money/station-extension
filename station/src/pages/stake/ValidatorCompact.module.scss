@@ -1,0 +1,41 @@
+@import "mixins";
+
+.header {
+  @include flex(flex-start);
+  gap: 16px;
+
+  &.vertical {
+    display: grid;
+  }
+
+  @include mobile {
+    display: grid;
+  }
+}
+
+.moniker {
+  font-size: 24px;
+}
+
+.footer {
+  border-top: 1px solid var(--card-border);
+  margin-top: 12px;
+  padding-top: 20px;
+
+  h2 {
+    font-size: var(--font-size-small);
+  }
+}
+
+.validator__details__container {
+  margin-top: 1rem;
+  border-top: 1px solid var(--card-border);
+  padding-top: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+
+  dt {
+    color: var(--text-muted);
+  }
+}

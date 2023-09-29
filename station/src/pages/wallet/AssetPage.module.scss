@@ -1,0 +1,66 @@
+@import "mixins";
+
+.details {
+  @include flex(center);
+  flex-direction: column;
+  width: 100%;
+
+  padding: 1.6rem;
+  height: fit-content;
+  background-color: var(--card-bg);
+  grid-area: details;
+
+  h1 {
+    font-size: 20pt;
+    margin-top: 0.6rem;
+  }
+
+  p {
+    color: var(--text-muted);
+    font-size: 12pt;
+    margin-top: 0.2rem;
+  }
+}
+
+.chainlist__container {
+  padding-top: 25px;
+  padding-bottom: 1.6rem;
+  overflow-y: auto;
+}
+
+.chainlist {
+  background-color: var(--card-bg-muted);
+  padding-inline: 10px;
+  grid-area: list;
+  display: grid;
+  grid-template-areas: "title" "list";
+  grid-template-rows: min-content auto;
+  overflow-y: hidden;
+}
+
+.chainlist__title {
+  grid-area: title;
+  margin-bottom: 5px;
+  padding-left: 10px;
+}
+
+.chainlist__list {
+  overflow-y: auto;
+  grid-area: list;
+  padding-bottom: 1rem;
+}
+
+.actions {
+  @include flex(space-between);
+  background-color: var(--card-bg);
+  padding: 1.6rem;
+  gap: 0.6rem;
+  width: 100%;
+
+  button {
+    min-width: 0;
+    width: 100%;
+    padding-block: 20px;
+    height: fit-content;
+  }
+}

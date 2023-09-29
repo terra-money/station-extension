@@ -1,0 +1,115 @@
+@import "mixins";
+
+.wallet {
+  width: min(var(--wallet-width), 100vw);
+  grid-area: walletbar;
+  position: relative;
+  border-left: var(--border-width) solid var(--card-border);
+  height: calc(100vh - var(--header-height));
+  display: grid;
+  grid-template-areas: "details" "list" "actions";
+  grid-template-rows: min-content auto min-content;
+  transition: 400ms;
+  background-color: var(--card-bg-muted);
+  clip-path: inset(0px 0px 0px -100px);
+
+  @media (max-width: (1420px)) {
+    position: absolute;
+    right: 0;
+    box-shadow: var(--wallet-shadow);
+  }
+
+  @media (max-width: (420px)) {
+    box-shadow: none;
+    left: 0;
+    width: 100vw;
+  }
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  transform: translate(-100%, 0);
+  padding: 10px 8px;
+  background-color: var(--card-bg);
+  border-radius: 10px 0 0 10px;
+  border: var(--border-width) solid var(--card-border);
+  transition: 300ms;
+  @include flex(center);
+  flex-direction: column;
+  gap: 0.3rem;
+
+  &:hover {
+    background-color: var(--card-bg);
+  }
+
+  svg {
+    fill: currentColor;
+  }
+
+  span {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    font-weight: var(--bold);
+    font-size: 10pt;
+  }
+
+  @media (max-width: (1420px - 0.02)) {
+    box-shadow: var(--wallet-shadow);
+    clip-path: inset(-15px 0px -15px -15px);
+  }
+
+  .close__icon__mobile {
+    display: none;
+  }
+
+  @media (max-width: (420px)) {
+    box-shadow: none;
+    transform: translate(0, 0);
+    top: 12px;
+    right: 10px;
+    left: unset;
+    width: fit-content;
+    border: 0;
+    background-color: #0000;
+
+    .close__icon__mobile {
+      display: block;
+    }
+    .close__icon {
+      display: none;
+    }
+  }
+}
+
+.wallet__closed {
+  width: 0;
+  transform: translate(100%, 0);
+  left: unset;
+
+  .close {
+    @media (max-width: (420px)) {
+      position: fixed;
+      top: 10px;
+      left: 100%;
+      transform: translate(-100%, 0);
+      padding: 10px 8px;
+      background-color: var(--card-bg);
+      border-radius: 10px 0 0 10px;
+      border: var(--border-width) solid var(--card-border);
+    }
+  }
+}
+
+.back {
+  position: absolute;
+  top: 2rem;
+  left: 18px;
+  z-index: 99;
+
+  svg path {
+    fill: var(--text);
+  }
+}

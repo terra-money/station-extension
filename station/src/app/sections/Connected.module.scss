@@ -1,0 +1,15 @@
+.popover {
+  min-width: 260px;
+  background-color: var(--card-bg-muted);
+  border-radius: var(--border-radius);
+}
+
+.button {
+  min-width: 0;
+}
+
+.button__text {
+  @media (max-width: 500px) {
+    display: none;
+  }
+}

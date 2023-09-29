@@ -1,0 +1,84 @@
+@import "mixins";
+@import "forms";
+
+.container {
+  position: relative;
+}
+
+.selector {
+  @include border;
+  @include size;
+  @include flex(space-between);
+  appearance: none;
+  width: 100%;
+
+  span {
+    @include flex(flex-start);
+
+    img {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+    }
+  }
+}
+
+.options {
+  position: absolute;
+  width: 100%;
+  padding: 4px 0;
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  border: var(--border-width) solid var(--card-border);
+  z-index: 10;
+  max-height: 180px;
+  box-shadow: 0px 5px 7px 0px var(--wallet-shadow-color);
+
+  .options__container {
+    margin-left: 6px;
+    height: 100%;
+    overflow-y: scroll;
+    max-height: 125px;
+    margin-top: 0;
+
+    .active {
+      background-color: var(--bg-muted);
+    }
+
+    &::-webkit-scrollbar {
+      width: 12px;
+      display: block;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 16px;
+      background-color: var(--button-default-bg);
+      border: 2px solid var(--card-bg);
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+  }
+
+  .options__container__small {
+    max-height: 125px;
+  }
+
+  button {
+    padding: 6px 12px;
+    width: 100%;
+    @include flex(flex-start);
+    border-radius: var(--border-radius);
+
+    img {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+    }
+
+    &:hover {
+      background-color: var(--card-bg-muted);
+    }
+  }
+}

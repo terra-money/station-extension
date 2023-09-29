@@ -1,0 +1,54 @@
+@import "mixins";
+
+.card {
+  background: var(--bg);
+  border: solid 1px var(--card-border);
+}
+
+.target {
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 10px;
+}
+
+.validators {
+  max-height: 180px;
+  overflow: auto;
+}
+
+.button {
+  font-size: var(--font-size-small);
+  font-weight: var(--bold);
+  padding: 6px 0;
+}
+
+.checkbox {
+  @include flex(flex-start);
+  border-top: 1px solid var(--card-border);
+  padding: 12px 0;
+  width: 100%;
+}
+
+.item {
+  @include flex(space-between);
+  flex: 1;
+}
+
+.title {
+  padding-bottom: 10px;
+
+  dt,
+  dd {
+    font-weight: var(--bold);
+  }
+}
+
+.actions {
+  display: flex;
+
+  .button {
+    color: var(--button-primary-bg);
+    margin-left: auto;
+    order: 2;
+    padding: 0px 5px 0px 0px;
+  }
+}

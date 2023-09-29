@@ -1,0 +1,29 @@
+@import "mixins";
+
+.grid__override {
+  height: calc(100% - 56px);
+  position: relative;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+}
+
+.address {
+  @include flex(space-between);
+}
+
+.connect {
+  padding: 10px;
+}
+
+.chain {
+  text-transform: capitalize;
+  @include flex(align-items);
+}
+
+.chain .name {
+  margin-left: 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 80px;
+  font-weight: var(--bold);
+}

@@ -1,0 +1,132 @@
+@import "mixins";
+
+.layout {
+  display: grid;
+
+  @include desktop {
+    grid-template-columns: 220px 1fr;
+    grid-template-rows: auto var(--header-height) 1fr;
+    grid-template-areas:
+      "banner banner"
+      "sidebar header"
+      "sidebar main";
+  }
+
+  @include mobile {
+    grid-template-rows: auto var(--header-height) 1fr;
+    grid-template-areas:
+      "banner banner"
+      "sidebar header"
+      "main main";
+  }
+
+  height: 100vh;
+}
+
+.banner {
+  grid-area: banner;
+  -webkit-app-region: drag;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  grid-template-rows: 1fr auto;
+
+  display: grid;
+  background: var(--menu-bg);
+  overflow: hidden;
+  position: relative;
+}
+
+.maincontainer {
+  display: grid;
+
+  grid-template-columns: auto min-content;
+  grid-template-areas: "main walletbar";
+
+  /*@media (max-width: var(--wallet-width)) {
+    grid-template-rows: auto repeat(2, var(--header-height)) 1fr;
+    grid-template-areas:
+      "walletbar"
+      "page";
+  }*/
+
+  height: calc(100vh - var(--header-height));
+}
+
+.page {
+  grid-area: page;
+  grid-template-rows: 1fr auto;
+  display: grid;
+  background: var(--menu-bg); // TODO: change
+}
+
+@mixin border-left {
+  @include desktop {
+    border-left: var(--border-width) solid var(--card-border);
+  }
+}
+
+.header {
+  @include border-left;
+
+  grid-area: header;
+  display: grid;
+
+  background: var(--card-bg);
+  gap: 10px;
+  padding: 0 var(--main-padding-horizontal);
+  position: relative;
+  white-space: nowrap;
+
+  .wrapper {
+    @include flex(space-between);
+    width: 100%;
+    height: var(--header-height);
+  }
+
+  -webkit-app-region: drag;
+
+  button {
+    -webkit-app-region: no-drag;
+  }
+
+  @include mobile {
+    padding: 0;
+  }
+}
+
+.actions {
+  @include flex;
+  gap: 10px;
+  margin-left: auto;
+  z-index: 1;
+  color: var(--menu-text);
+
+  &.light,
+  &.whale {
+    color: var(--text);
+  }
+}
+
+.main {
+  @include border-left;
+
+  grid-area: main;
+  overflow: hidden;
+  border-top: var(--border-width) solid var(--card-border);
+  position: relative; // for progress bar from the page
+}
+
+/* menu open */
+@include mobile {
+  .menu {
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "banner" "sidebar";
+
+    .header,
+    .main {
+      display: none;
+    }
+  }
+}

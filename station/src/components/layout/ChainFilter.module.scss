@@ -1,0 +1,89 @@
+@use "sass:color";
+@import "mixins";
+
+.chainfilter,
+.chainfilter__out {
+  .header {
+    padding-block: var(--grid-gap);
+
+    &.swap {
+      padding-top: 0px;
+    }
+
+    h1 {
+      margin-bottom: 12px;
+    }
+
+    .pills {
+      @include flex(flex-start);
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      @include flex(center);
+      gap: 0.5rem;
+      min-width: 4rem;
+      border: var(--border-width) solid var(--card-border);
+      border-radius: 1rem;
+      padding: 0.1rem 1rem;
+      color: var(--text-muted);
+      box-shadow: inset 0px 0px 0 0.5px var(--card-border);
+      transition: all 0.1s;
+      opacity: 0.75;
+
+      img {
+        height: 1rem;
+      }
+
+      &:hover {
+        color: var(--text);
+        border-color: var(--button-default-text);
+        box-shadow: inset 0px 0px 0 0.5px var(--button-default-text);
+        opacity: 1;
+      }
+    }
+
+    .all {
+      margin-right: 0.75rem;
+    }
+
+    .active {
+      background-color: var(--button-primary-bg);
+      border: var(--border-width) solid var(--button-primary-bg);
+      color: var(--button-primary-text);
+      opacity: 1;
+      box-shadow: none;
+
+      &:hover {
+        cursor: default;
+        border-color: var(--button-primary-bg);
+        color: var(--button-primary-text);
+        box-shadow: none;
+      }
+    }
+  }
+}
+
+.chainfilter {
+  .header {
+    padding: var(--grid-gap);
+    background-color: var(--card-bg);
+    border: var(--border-width) solid var(--card-border);
+    border-bottom: none;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+
+    h1 {
+      margin-bottom: 16px;
+    }
+  }
+
+  .content {
+    padding: var(--grid-gap);
+    background-color: var(--card-bg-muted);
+    border: var(--border-width) solid var(--card-border);
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+  }
+}

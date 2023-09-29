@@ -1,0 +1,17 @@
+.component {
+  color: var(--text-muted);
+  font-size: var(--font-size-small);
+  align-self: flex-end;
+}
+
+.link {
+  font-size: var(--font-size-small);
+  line-height: 1;
+  opacity: 0.75;
+  padding: var(--gutter) 0;
+  transition: opacity var(--transition);
+
+  &:hover {
+    opacity: 1;
+  }
+}

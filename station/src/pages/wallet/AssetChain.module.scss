@@ -1,0 +1,82 @@
+@import "mixins";
+
+.chain {
+  @include flex(space-between, center);
+  gap: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  position: relative; // to loading indicator
+  transition: 300ms;
+  height: fit-content;
+}
+
+.details {
+  display: grid;
+  width: 100%;
+  max-width: 100%;
+  grid-template-areas:
+    "name price"
+    "name amount";
+}
+
+.name {
+  grid-area: name;
+  @include flex(center, flex-start);
+  flex-direction: column;
+  font-size: 15px;
+
+  p {
+    font-size: 13px;
+    font-weight: var(--normal);
+    color: var(--text-muted);
+    white-space: nowrap;
+
+    .copy__denom {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 5px;
+      color: hsl(
+        var(--button-primary-bg-h),
+        var(--button-primary-bg-s),
+        var(--button-primary-bg-l)
+      );
+    }
+  }
+
+  h4 {
+    @include flex(flex-start);
+    gap: 8px;
+    font-size: 16px;
+
+    .send__back__button {
+      color: var(--warning);
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .send__back__button__disabled {
+      color: var(--warning);
+      opacity: 0.6;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.price {
+  grid-area: price;
+  font-size: 16px;
+  text-align: end;
+}
+
+.amount {
+  grid-area: amount;
+  text-align: end;
+  font-size: 12px;
+  font-weight: var(--normal);
+  color: var(--text-muted);
+  white-space: nowrap;
+}

@@ -1,0 +1,35 @@
+@import "mixins";
+
+.button {
+  border: var(--border-width) solid var(--button-default-bg);
+  width: 38px;
+  height: 38px;
+}
+
+.status {
+  @include flex;
+  background: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  font-size: var(--font-size-small);
+  padding: 0 14px;
+  height: 38px;
+}
+
+.prev {
+  border-right: 0;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  background: var(--card-bg);
+}
+
+.next {
+  border-left: 0;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  background: var(--card-bg);
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background: var(--input-bg);
+  }
+}

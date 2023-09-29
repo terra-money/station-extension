@@ -1,0 +1,21 @@
+@import "mixins";
+
+.header {
+  @include flex(space-between);
+}
+
+.pre {
+  border: solid 1px var(--input-border);
+  border-radius: var(--border-radius);
+  padding: 12px;
+  overflow: auto;
+  background-color: var(--card-bg-muted);
+}
+
+.normal {
+  white-space: normal;
+}
+
+.break {
+  word-break: break-all;
+}

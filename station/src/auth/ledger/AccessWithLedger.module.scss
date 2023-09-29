@@ -1,0 +1,22 @@
+.warningContainer {
+  margin-top: 2.6rem;
+  margin-bottom: 1rem;
+  align-items: flex-start;
+}
+
+.mainButton {
+  min-width: 300px;
+}
+
+.smallButton {
+  margin-top: 0.8rem;
+  font-weight: var(--normal);
+  &:hover {
+    color: var(--button-primary-bg);
+  }
+}
+
+.completeAnimation {
+  width: min(400px, 80vw);
+  margin: 0 auto;
+}

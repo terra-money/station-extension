@@ -1,0 +1,34 @@
+@import "mixins";
+
+.flag {
+  position: relative;
+
+  .label,
+  .line {
+    transform: translate(var(--x-pos), 0);
+  }
+}
+
+.label {
+  display: inline-block;
+  font-size: var(--font-size-small);
+}
+
+.line {
+  display: block;
+  background: var(--text);
+  width: 1px;
+  height: 12px;
+}
+
+/* progress bar */
+.track {
+  background: var(--bg-muted);
+  overflow: hidden;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.item {
+  height: 10px;
+}

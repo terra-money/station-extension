@@ -1,0 +1,180 @@
+@import "mixins";
+
+.tabs {
+  white-space: nowrap;
+}
+
+.page {
+  background: var(--card-bg-muted);
+  border: var(--border-width) solid var(--card-border);
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  font-size: 13px;
+  font-weight: var(--bold);
+  overflow: hidden;
+
+  @include flex(space-between, center);
+
+  @include mobile {
+    display: flex;
+  }
+
+  @media (max-width: 600px) {
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+  }
+
+  @for $i from 1 through 20 {
+    .tab:first-child:nth-last-child(#{$i}),
+    .tab:first-child:nth-last-child(#{$i}) ~ .tab {
+      width: calc(100% / #{$i});
+    }
+  }
+
+  .tab:last-child {
+    border-right: 0;
+  }
+}
+
+.page .tab .title {
+  padding-right: 10px;
+}
+
+.page .tab {
+  height: 60px;
+  border-right: var(--border-width) solid var(--card-border);
+  color: var(--text-muted);
+
+  @media (max-width: 600px) {
+    &:last-child {
+      border-right: 0;
+    }
+  }
+
+  &:hover {
+    color: var(--text);
+  }
+
+  &.active {
+    background: var(--card-bg);
+    color: var(--text);
+  }
+
+  &.disabled {
+    color: var(--text-muted);
+  }
+
+  @include desktop {
+    padding: 0 30px;
+  }
+}
+
+.tabsContainer {
+  @include flex-column(unset, unset);
+}
+
+.content {
+  background: var(--card-bg);
+  border: var(--border-width) solid var(--card-border);
+  border-top: var(--border-width) solid transparent;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+.card {
+  background: var(--card-bg-muted);
+  border: var(--border-width) solid var(--card-border);
+  border-radius: var(--border-radius);
+  font-size: 13px;
+  font-weight: var(--bold);
+  margin-bottom: 20px;
+  overflow: hidden;
+
+  @include mobile {
+    display: flex;
+  }
+
+  @media (max-width: 600px) {
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+  }
+}
+
+.tab {
+  @include inline-flex;
+  color: inherit;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.card .tab {
+  height: 60px;
+  border-right: var(--border-width) solid var(--card-border);
+  color: var(--text-muted);
+
+  @media (max-width: 600px) {
+    &:last-child {
+      border-right: 0;
+    }
+  }
+
+  &:hover {
+    color: var(--text);
+  }
+
+  &.active {
+    background: var(--card-bg);
+    color: var(--text);
+  }
+
+  &.disabled {
+    color: var(--text-muted);
+  }
+
+  @include desktop {
+    padding: 0 30px;
+  }
+
+  @include mobile {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+.line {
+  --border-color: var(--text);
+
+  @for $i from 1 through 20 {
+    .tab:first-child:nth-last-child(#{$i}),
+    .tab:first-child:nth-last-child(#{$i}) ~ .tab {
+      width: calc(100% / #{$i});
+    }
+  }
+
+  margin-bottom: 1rem;
+}
+
+.reversed {
+  --border-color: var(--card-bg);
+}
+
+.line .tab {
+  border-bottom: 1px solid var(--text-muted);
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  font-weight: var(--bold);
+  padding: 0 14px;
+  padding-bottom: 0.6rem;
+
+  &.active {
+    color: var(--text);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: calc(0.6rem - 1px);
+  }
+}
+
+.disabled {
+  @include disabled;
+}

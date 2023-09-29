@@ -1,0 +1,158 @@
+@import "mixins";
+
+.container {
+  display: grid;
+  gap: 28px;
+  overflow: auto;
+}
+
+.table {
+  td {
+    background: var(--card-bg);
+  }
+
+  td {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  tr {
+    &:first-child {
+      border-top: none;
+    }
+    border-top: 1px solid var(--card-border);
+  }
+
+  thead {
+    th {
+      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      background: hsl(
+        var(--button-default-bg-h),
+        var(--button-default-bg-s),
+        var(--button-default-bg-l)
+      );
+    }
+
+    th:first-child {
+      border-top-left-radius: var(--border-radius);
+    }
+    th:last-child {
+      border-top-right-radius: var(--border-radius);
+    }
+  }
+}
+
+.default {
+  border-collapse: separate;
+  border-spacing: 0;
+
+  tr {
+    padding: 10px 20px;
+  }
+
+  tr:last-child {
+    td:first-child {
+      border-bottom-left-radius: var(--border-radius);
+    }
+    td:last-child {
+      border-bottom-right-radius: var(--border-radius);
+    }
+  }
+
+  td {
+    padding: 10px 16px;
+    border-top: 1px solid var(--card-border);
+  }
+}
+
+.small {
+  td {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}
+
+.bordered {
+  border-radius: 5px;
+  border: solid 1px var(--card-border);
+
+  th,
+  td {
+    background: var(--bg);
+  }
+
+  th {
+    padding-top: 12px;
+  }
+}
+
+/* align */
+.center {
+  text-align: center;
+}
+
+.right {
+  text-align: right;
+}
+
+/* sorter */
+.sorter {
+  @include inline-flex;
+  gap: 8px;
+}
+
+.caret {
+  fill: var(--text);
+  opacity: 0.3;
+
+  &.active {
+    opacity: 1;
+  }
+}
+
+/* pagination */
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.extra__tooltip {
+  width: 20px;
+  padding: 0;
+
+  button {
+    margin-right: -20px;
+    transition: 0.3s;
+  }
+
+  .active {
+    transform: rotateZ(90deg);
+  }
+}
+
+.extra__content {
+  transition: 0.3s;
+  td {
+    transition: 0.3s;
+  }
+  height: auto;
+}
+
+.extra__content__disabled {
+  height: 0;
+  overflow: hidden;
+  td {
+    padding: 0 20px;
+    border-top: 0px solid var(--card-border);
+  }
+}
+
+.actions {
+  padding-left: 100px !important;
+
+  @media (max-width: 1550px) and (min-width: 1420px) {
+    padding-left: 50px !important;
+  }
+}

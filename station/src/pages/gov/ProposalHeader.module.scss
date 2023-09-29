@@ -1,0 +1,35 @@
+@import "mixins";
+
+.header {
+  overflow: hidden;
+}
+
+.meta {
+  @include flex(space-between);
+  font-size: var(--font-size-small);
+  margin-bottom: 18px;
+
+  aside {
+    @include flex(flex-start);
+    gap: 8px;
+
+    img {
+      width: 34px;
+      height: 34px;
+      padding: 8px;
+      background-color: var(--button-default-bg);
+      border-radius: 50%;
+    }
+  }
+}
+
+.title {
+  font-size: 20px;
+  font-weight: var(--normal);
+  margin-bottom: 8px;
+}
+
+.date {
+  font-size: var(--font-size-small);
+  color: var(--text-muted);
+}
