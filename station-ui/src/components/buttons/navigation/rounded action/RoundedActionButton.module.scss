@@ -1,0 +1,198 @@
+@keyframes SwapArrow1In {
+  0% {
+    opacity: 0;
+    transform: translate(-50px, 50px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes SwapArrow1Out {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(50px, -50px);
+  }
+}
+
+@keyframes SwapArrow2In {
+  0% {
+    opacity: 0;
+    transform: translate(50px, -50px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes SwapArrow2Out {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50px, 50px);
+  }
+}
+
+.swap__arrow {
+  &.animateIn {
+    path:nth-child(1) {
+      animation: SwapArrow1In .75s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+    }
+    path:nth-child(2) {
+      animation: SwapArrow2In .75s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+    }
+  }
+
+  &.animateOut {
+    path:nth-child(1) {
+      animation: SwapArrow1Out .75s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+    }
+    path:nth-child(2) {
+      animation: SwapArrow2Out .75s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+    }
+  }
+}
+
+@keyframes CloseLine1In {
+  0% {
+    opacity: 0;
+    transform: translate(-50px, 50px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes CloseLine1Out {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(50px, -50px);
+  }
+}
+
+@keyframes CloseLine2In {
+  0% {
+    opacity: 0;
+    transform: translate(-50px, -50px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes CloseLine2Out {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(50px, 50px);
+  }
+}
+
+.close {
+	&.animateIn {
+		path:nth-child(1) {
+			animation: CloseLine1In .75s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+		}
+		path:nth-child(2) {
+			animation: CloseLine2In .75s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+		}
+	}
+
+	&.animateOut {
+		path:nth-child(1) {
+			animation: CloseLine1Out .75s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+		}
+		path:nth-child(2) {
+			animation: CloseLine2Out .75s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+		}
+	}
+}
+
+
+
+@keyframes SwapArrow1Out2 {
+  0% {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes SwapArrow2Out2 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50px, 50px);
+  }
+}
+
+.swap__arrow {
+  &.animateIn2 {
+    path:nth-child(1) {
+      animation: SwapArrow1In .5s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+    }
+    path:nth-child(2) {
+      animation: SwapArrow2In .5s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+    }
+  }
+
+  &.animateOut2 {
+		animation: SwapArrow1Out2 .5s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+  }
+}
+
+@keyframes CloseSpinIn {
+  0% {
+    opacity: 0;
+    transform: rotate(180deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+}
+
+.close {
+	&.animateIn2 {
+		animation: CloseSpinIn .5s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+	}
+
+	&.animateOut2 {
+		animation: SwapArrow1Out2 .5s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+	}
+}

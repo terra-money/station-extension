@@ -1,0 +1,60 @@
+@import "scss/font_mixins";
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px;
+  border-radius: 8px;
+
+  .alert__icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .svg__wrapper {
+    width: 14px;
+    height: 14px;
+  }
+
+  .title {
+    @include SmallLH;
+  }
+
+  &.info {
+    background-color: var(--token-primary-900);
+    color: var(--token-primary-300);
+
+    .alert__icon {
+      fill: var(--token-primary-300);
+    }
+  }
+
+  &.success {
+    background-color: var(--token-success-500);
+    color: var(--token-dark-300);
+
+    .alert__icon {
+      fill: var(--token-success-100);
+    }
+  }
+
+  &.warning {
+    background-color: var(--token-warning-500);
+    color: var(--token-warning-100);
+
+    .alert__icon {
+      fill: var(--token-warning-100);
+    }
+  }
+
+  &.error {
+    background-color: var(--token-error-500);
+    color: var(--token-error-100);
+
+    .alert__icon {
+      fill: var(--token-error-100);
+    }
+  }
+}

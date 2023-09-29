@@ -1,0 +1,154 @@
+import { useState, useCallback } from 'react';
+import { Meta, Story, Canvas, Controls, ArgTypes, Description, Source } from '@storybook/blocks';
+import { RightArrow, DocsLink, RequiredText } from '../DocsHelpers.tsx';
+import ColorRow from './components/ColorRow.tsx';
+import 'scss/storybookoverrides.scss';
+
+<Meta title='Colors'  />
+
+# Colors
+
+## Primary
+The primary colors are used to convey meaning and information to the user. They are used to create a unified look and feel across the application.<br />
+**Used for primary buttons, links, and other primary elements.**
+<ColorRow
+  label={'--token-primary-300'}
+  subLabel={''}
+  colorToken={'--token-primary-300'}
+  hslColorText={'hsl(218, 94%, 40%)'}
+  withHeader={true}
+/>
+<ColorRow
+  label={'--token-primary-500'}
+  subLabel={'BASE'}
+  colorToken={'--token-primary-500'}
+  hslColorText={'hsl(218, 94%, 48%)'}
+/>
+<ColorRow
+  label={'--token-primary-300'}
+  subLabel={''}
+  colorToken={'--token-primary-600'}
+  hslColorText={'hsl(218, 94%, 52%)'}
+/>
+<ColorRow
+  label={'--token-primary-900'}
+  subLabel={''}
+  colorToken={'--token-primary-900'}
+  hslColorText={'hsl(218, 94%, 76%)'}
+/>
+
+## Light
+The light colors are used mainly as text colors.<br />
+
+<ColorRow
+  label={'--token-light-100'}
+  subLabel={''}
+  colorToken={'--token-light-100'}
+  hslColorText={'hsl(230, 8%, 58%)'}
+  withHeader={true}
+/>
+<ColorRow
+  label={'--token-light-300'}
+  subLabel={''}
+  colorToken={'--token-light-300'}
+  hslColorText={'hsl(230, 8%, 72%)'}
+/>
+<ColorRow
+  label={'--token-light-500'}
+  subLabel={'BASE'}
+  colorToken={'--token-light-500'}
+  hslColorText={'hsl(230, 8%, 80%)'}
+/>
+<ColorRow
+  label={'--token-light-white'}
+  subLabel={''}
+  colorToken={'--token-light-white'}
+  hslColorText={'hsl(0, 0%, 100%)'}
+/>
+
+## Dark
+The dark colors are used mainly as background colors.
+<ColorRow
+  label={'--token-dark-100'}
+  subLabel={''}
+  colorToken={'--token-dark-100'}
+  hslColorText={'hsl(230, 8%, 8%)'}
+  withHeader={true}
+/>
+<ColorRow
+  label={'--token-dark-200'}
+  subLabel={''}
+  colorToken={'--token-dark-200'}
+  hslColorText={'hsl(230, 8%, 10%)'}
+/>
+<ColorRow
+  label={'--token-dark-300'}
+  subLabel={''}
+  colorToken={'--token-dark-300'}
+  hslColorText={'hsl(230, 8%, 12%)'}
+/>
+<ColorRow
+  label={'--token-dark-500'}
+  subLabel={'BASE'}
+  colorToken={'--token-dark-500'}
+  hslColorText={'hsl(230, 8%, 14%)'}
+/>
+<ColorRow
+  label={'--token-dark-600'}
+  subLabel={''}
+  colorToken={'--token-dark-600'}
+  hslColorText={'hsl(230, 8%, 16%)'}
+/>
+<ColorRow
+  label={'--token-dark-700'}
+  subLabel={''}
+  colorToken={'--token-dark-700'}
+  hslColorText={'hsl(230, 8%, 18%)'}
+/>
+<ColorRow
+  label={'--token-dark-900'}
+  subLabel={''}
+  colorToken={'--token-dark-900'}
+  hslColorText={'hsl(230, 8%, 40%)'}
+/>
+
+## Informative
+The informative colors are used to convey information to the user.<br />
+**Includes `error`, `warning`, and `success`**
+<ColorRow
+  label={'--token-error-100'}
+  subLabel={''}
+  colorToken={'--token-error-100'}
+  hslColorText={'hsl(0, 19%, 14%)'}
+  withHeader={true}
+/>
+<ColorRow
+  label={'--token-error-500'}
+  subLabel={''}
+  colorToken={'--token-error-500'}
+  hslColorText={'hsl(2, 67%, 58%)'}
+/>
+<ColorRow
+  label={'--token-warning-100'}
+  subLabel={''}
+  colorToken={'--token-warning-100'}
+  hslColorText={'hsl(37, 32%, 13%)'}
+/>
+<ColorRow
+  label={'--token-warning-500'}
+  subLabel={''}
+  colorToken={'--token-warning-500'}
+  hslColorText={'hsl(33, 84%, 58%)'}
+/>
+<ColorRow
+  label={'--token-success-100'}
+  subLabel={''}
+  colorToken={'--token-success-100'}
+  hslColorText={'hsl(164, 17%, 12%)'}
+/>
+<ColorRow
+  label={'--token-success-500'}
+  subLabel={''}
+  colorToken={'--token-success-500'}
+  hslColorText={'hsl(168, 71%, 39%)'}
+/>

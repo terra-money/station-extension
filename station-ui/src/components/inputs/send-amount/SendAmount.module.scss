@@ -1,0 +1,84 @@
+@import "scss/font_mixins";
+
+.send__amount__container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .input__amount {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    .input__container {
+      display: inline-grid;
+      vertical-align: top;
+      align-items: center;
+
+      &::after,
+      .input__label,
+      input {
+        width: auto;
+        grid-area: 1 / 2;
+        @include X-Large;
+        color: var(--token-light-white);
+        text-align: end;
+        font-feature-settings: normal;
+      }
+
+      .input__label {
+        visibility: hidden;
+        white-space: pre-wrap;
+      }
+
+      &::after {
+        content: attr(data-value);
+        visibility: hidden;
+        white-space: pre-wrap;
+        @include X-Large;
+        text-align: end;
+      }
+
+      input {
+        background: none;
+        width: unset;
+
+        &[type=number] {
+          -moz-appearance: textfield;
+        }
+
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+
+        &::placeholder,
+        &.amount__empty {
+          color: var(--token-light-white);
+        }
+      }
+    }
+
+    .amount__symbol {
+      @include X-Large;
+      color: var(--token-light-white);
+      text-align: center;
+    }
+  }
+
+  .currency {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    @include Medium;
+    color: var(--token-light-white);
+
+    svg:hover {
+      cursor: pointer;
+    }
+  }
+}

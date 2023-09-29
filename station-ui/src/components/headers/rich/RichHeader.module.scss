@@ -1,0 +1,53 @@
+@import "scss/font_mixins";
+
+.rich__header__container {
+  .image__container {
+    position: relative;
+
+    img {
+      height: 64px;
+      width: 64px;
+      border-radius: 50%;
+    }
+
+    .status__container {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      top: -4px;
+      right: -4px;
+      width: 24px;
+      height: 24px;
+
+      background-color: var(--token-dark-200);
+      border-radius: 50%;
+
+      .icon {
+        height: 16px;
+        width: 16px;
+      }
+    }
+  }
+
+  .title__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .title {
+      @include Large;
+      color: var(--token-light-white);
+    }
+
+    .link {
+      @include X-Small;
+      color: var(--token-primary-600);
+    }
+  }
+
+  .description {
+    @include X-SmallLH;
+    color: var(--token-light-100);
+  }
+}

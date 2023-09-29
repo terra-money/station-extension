@@ -1,0 +1,220 @@
+@import "scss/font_mixins";
+
+.token__container {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-radius: 8px;
+  position: relative;
+  cursor: pointer;
+  transition: 300ms;
+
+  .details {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+
+    .token__icon__container {
+      position: relative;
+
+      .token__icon {
+        border-radius: 50%;
+        height: 32px;
+        width: 32px;
+      }
+    }
+
+    .details__container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .top__row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+
+        .symbol {
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 6px;
+          overflow: hidden;
+
+          .symbol__name {
+            @include Medium;
+            color: var(--token-light-white);
+            white-space: nowrap;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .chain__details {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            @include XX-Small;
+            color: var(--token-light-white);
+            background-color: var(--token-dark-700);
+            border-radius: 4px;
+
+            &.num {
+              width: 20px;
+              height: 16px;
+            }
+
+            &.single {
+              padding: 0 8px;
+              height: 16px;
+              text-transform: capitalize;
+            }
+          }
+        }
+
+        .amount {
+          @include Medium;
+          color: var(--token-light-white);
+        }
+      }
+
+      .bottom__row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+
+        .change__down,
+        .change__up {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+
+          @include Small;
+        }
+
+        .change__up {
+          color: var(--token-success-500);
+        }
+        .change__down {
+          color: var(--token-danger-500);
+        }
+
+        .price {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+
+          @include Small;
+          color: var(--token-light-100);
+        }
+      }
+    }
+
+    .details__container__lr {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .left {
+        display: flex;
+        gap: 8px;
+        flex-direction: column;
+
+        .symbol {
+          display: flex;
+          justify-content: flex-start;
+          overflow: hidden;
+
+          .symbol__name {
+            @include Medium;
+            color: var(--token-light-white);
+            white-space: nowrap;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+
+      .right {
+        .checkbox__container {
+          display: flex;
+
+          svg {
+            height: 26px;
+            width: 26px;
+          }
+
+          .track {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            border: solid 2px var(--token-dark-900);
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+          }
+        }
+      }
+    }
+
+    .chain__label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      @include Small;
+      color: var(--token-light-100);
+
+      .chain__icon {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+      }
+    }
+  }
+}
+
+.tooltip {
+  .chains__list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    img {
+      height: 12px;
+      width: 12px;
+    }
+
+    .text__container {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+
+      .chain {
+        text-transform: capitalize;
+        @include X-Small;
+        color: var(--token-light-white);
+      }
+
+      .balance {
+        @include X-Small;
+        color: var(--token-light-white);
+      }
+    }
+  }
+}

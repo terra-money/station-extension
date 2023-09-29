@@ -1,0 +1,248 @@
+import { Meta, Story, Canvas, Controls, ArgTypes, Description, Source } from '@storybook/blocks';
+import FontRow from './components/FontRow.tsx';
+import 'scss/storybookoverrides.scss';
+import styles from './components/FontMixins.module.scss';
+
+<Meta title='Font Mixins'  />
+
+# Font Mixins
+
+## Usage
+These can all be used by importing the font mixins file into your scss file.
+> `@import "scss/font_mixins";` <br />
+
+and then using the mixin like so:
+>`@include XX-Large;`
+
+<FontRow
+  label={'XX-Small'}
+  subLabel={''}
+  mixinClass={styles.xx__small}
+  withHeader={true}
+  mixinValues={
+    <div style={{ display: 'flex' }}>
+      <div>
+        <p>font-family: <span>var(--token-font-family-default);</span></p>
+        <p>font-size: <span>var(--token-font-size-xx-sm);</span></p>
+        <p>line-height: <span>var(--token-line-height-xx-sm-default);</span></p>
+        <p>font-weight: <span>var(--token-font-weight-medium);</span></p>
+      </div>
+      <div style={{ marginLeft: '24px' }}>
+        <p>EuclidSquare</p>
+        <p>10px</p>
+        <p>10px</p>
+        <p>500</p>
+      </div>
+    </div>
+  }
+/>
+<FontRow
+  label={'X-Small'}
+  subLabel={''}
+  mixinClass={styles.x__small}
+  mixinValues={
+    <div style={{ display: 'flex' }}>
+      <div>
+        <p>font-family: <span>var(--token-font-family-default);</span></p>
+        <p>font-size: <span>var(--token-font-size-x-sm);</span></p>
+        <p>line-height: <span>var(--token-line-height-x-sm-default);</span></p>
+        <p>font-weight: <span>var(--token-font-weight-medium);</span></p>
+      </div>
+      <div style={{ marginLeft: '24px' }}>
+        <p>EuclidSquare</p>
+        <p>12px</p>
+        <p>12px</p>
+        <p>500</p>
+      </div>
+    </div>
+  }
+/>
+<FontRow
+  label={'X-SmallLH'}
+  subLabel={'Larger line-height over X-Small'}
+  mixinClass={styles.x__small__lh}
+  mixinValues={
+    <div style={{ display: 'flex' }}>
+      <div>
+        <p>font-family: <span>var(--token-font-family-default);</span></p>
+        <p>font-size: <span>var(--token-font-size-xx-sm);</span></p>
+        <p>line-height: <span>var(--token-line-height-xx-sm-larger);</span></p>
+        <p>font-weight: <span>var(--token-font-weight-medium);</span></p>
+      </div>
+      <div style={{ marginLeft: '24px' }}>
+        <p>EuclidSquare</p>
+        <p>12px</p>
+        <p>14px</p>
+        <p>500</p>
+      </div>
+    </div>
+  }
+/>
+<FontRow
+  label={'Small'}
+  subLabel={''}
+  mixinClass={styles.small}
+  mixinValues={
+    <div style={{ display: 'flex' }}>
+      <div>
+        <p>font-family: <span>var(--token-font-family-default);</span></p>
+        <p>font-size: <span>var(--token-font-size-sm);</span></p>
+        <p>line-height: <span>var(--token-line-height-sm-default);</span></p>
+        <p>font-weight: <span>var(--token-font-weight-medium);</span></p>
+      </div>
+      <div style={{ marginLeft: '24px' }}>
+        <p>EuclidSquare</p>
+        <p>14px</p>
+        <p>14px</p>
+        <p>500</p>
+      </div>
+    </div>
+  }
+/>
+<FontRow
+  label={'SmallLH'}
+  subLabel={'Larger line-height over Small'}
+  mixinClass={styles.small__lh}
+  mixinValues={
+    <div style={{ display: 'flex' }}>
+      <div>
+        <p>font-family: <span>var(--token-font-family-default);</span></p>
+        <p>font-size: <span>var(--token-font-size-sm);</span></p>
+        <p>line-height: <span>var(--token-line-height-sm-larger);</span></p>
+        <p>font-weight: <span>var(--token-font-weight-medium);</span></p>
+      </div>
+      <div style={{ marginLeft: '24px' }}>
+        <p>EuclidSquare</p>
+        <p>14px</p>
+        <p>18px</p>
+        <p>500</p>
+      </div>
+    </div>
+  }
+/>
+<FontRow
+  label={'Medium'}
+  subLabel={''}
+  mixinClass={styles.medium}
+  mixinValues={
+    <div style={{ display: 'flex' }}>
+      <div>
+        <p>font-family: <span>var(--token-font-family-default);</span></p>
+        <p>font-size: <span>var(--token-font-size-md);</span></p>
+        <p>line-height: <span>var(--token-line-height-md-default);</span></p>
+        <p>font-weight: <span>var(--token-font-weight-medium);</span></p>
+      </div>
+      <div style={{ marginLeft: '24px' }}>
+        <p>EuclidSquare</p>
+        <p>16px</p>
+        <p>16px</p>
+        <p>500</p>
+      </div>
+    </div>
+  }
+/>
+<FontRow
+  label={'MediumLH'}
+  subLabel={'Larger line-height over Medium'}
+  mixinClass={styles.medium__lh}
+  mixinValues={
+    <div style={{ display: 'flex' }}>
+      <div>
+        <p>font-family: <span>var(--token-font-family-default);</span></p>
+        <p>font-size: <span>var(--token-font-size-md);</span></p>
+        <p>line-height: <span>var(--token-line-height-md-larger);</span></p>
+        <p>font-weight: <span>var(--token-font-weight-medium);</span></p>
+      </div>
+      <div style={{ marginLeft: '24px' }}>
+        <p>EuclidSquare</p>
+        <p>16px</p>
+        <p>20px</p>
+        <p>500</p>
+      </div>
+    </div>
+  }
+/>
+<FontRow
+  label={'Medium-Large'}
+  subLabel={''}
+  mixinClass={styles.medium__large}
+  mixinValues={
+    <div style={{ display: 'flex' }}>
+      <div>
+        <p>font-family: <span>var(--token-font-family-default);</span></p>
+        <p>font-size: <span>var(--token-font-size-mdlg);</span></p>
+        <p>line-height: <span>var(--token-line-height-mdlg-default);</span></p>
+        <p>font-weight: <span>var(--token-font-weight-medium);</span></p>
+      </div>
+      <div style={{ marginLeft: '24px' }}>
+        <p>EuclidSquare</p>
+        <p>20px</p>
+        <p>26px</p>
+        <p>500</p>
+      </div>
+    </div>
+  }
+/>
+<FontRow
+  label={'Large'}
+  subLabel={''}
+  mixinClass={styles.large}
+  mixinValues={
+    <div style={{ display: 'flex' }}>
+      <div>
+        <p>font-family: <span>var(--token-font-family-default);</span></p>
+        <p>font-size: <span>var(--token-font-size-lg);</span></p>
+        <p>line-height: <span>var(--token-line-height-lg-default);</span></p>
+        <p>font-weight: <span>var(--token-font-weight-bold);</span></p>
+      </div>
+      <div style={{ marginLeft: '24px' }}>
+        <p>EuclidSquare</p>
+        <p>24px</p>
+        <p>24px</p>
+        <p>bold</p>
+      </div>
+    </div>
+  }
+/>
+<FontRow
+  label={'X-Large'}
+  subLabel={''}
+  mixinClass={styles.x__large}
+  mixinValues={
+    <div style={{ display: 'flex' }}>
+      <div>
+        <p>font-family: <span>var(--token-font-family-default);</span></p>
+        <p>font-size: <span>var(--token-font-size-x-lg);</span></p>
+        <p>line-height: <span>var(--token-line-height-x-lg-default);</span></p>
+        <p>font-weight: <span>var(--token-font-weight-bold);</span></p>
+      </div>
+      <div style={{ marginLeft: '24px' }}>
+        <p>EuclidSquare</p>
+        <p>32px</p>
+        <p>32px</p>
+        <p>bold</p>
+      </div>
+    </div>
+  }
+/>
+<FontRow
+  label={'XX-Large'}
+  subLabel={''}
+  mixinClass={styles.xx__large}
+  mixinValues={
+    <div style={{ display: 'flex' }}>
+      <div>
+        <p>font-family: <span>var(--token-font-family-default);</span></p>
+        <p>font-size: <span>var(--token-font-size-xx-lg);</span></p>
+        <p>line-height: <span>var(--token-line-height-xx-lg-default);</span></p>
+        <p>font-weight: <span>var(--token-font-weight-bold);</span></p>
+      </div>
+      <div style={{ marginLeft: '24px' }}>
+        <p>EuclidSquare</p>
+        <p>40px</p>
+        <p>40px</p>
+        <p>bold</p>
+      </div>
+    </div>
+  }
+/>

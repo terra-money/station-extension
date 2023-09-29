@@ -1,0 +1,22 @@
+@import "scss/font_mixins";
+
+.tabs__container {
+  height: 52px;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--token-dark-600);
+  background-color: var(--token-dark-500);
+  display: flex;
+  overflow: hidden;
+  @include Small;
+
+  button {
+    width: 100%;
+    color: var(--token-dark-900);
+  }
+
+  .active {
+    background-color: var(--token-dark-200);
+    color: var(--token-light-white);
+  }
+}

@@ -1,0 +1,13 @@
+@import 'scss/font_mixins.scss';
+
+.paste {
+  svg path {
+    fill: var(--token-primary-600);
+  }
+
+  .paste__text {
+    @include Small;
+
+    color: var(--token-primary-600);
+  }
+}

@@ -1,0 +1,152 @@
+import {
+  Meta,
+  Story,
+  Canvas,
+  Controls,
+  ArgTypes,
+  Description,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import Button from "./Button.tsx";
+import * as ButtonStories from "./Button.stories";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Buttons/Base" />
+
+# Base Buttons
+
+These are the Base buttons accessed through `<Button />`. It is used for all actions on the page. It has a few different variations that can be used depending on the action.
+
+## Import
+
+```jsx
+import { Button } from "@terra-money/station-ui/components/buttons";
+```
+
+## Props
+
+##### Used as the base for most buttons.
+
+- **`variant`** - <RequiredText /> - Sets the variant of the button.
+  - Options are `primary`, `secondary`, `warning`, `dashed`, `white-filled`, `outlined`.
+- **`label`** - <RequiredText /> - Sets the label of the button.
+- **`loading`** - Sets the button to a loading state (replaces icon while loading).
+- **`block`** - Sets the button to take up the full width of its container.
+- **`disabled`** - (included in `ButtonHTMLAttributes`) Sets the button to a disabled state.
+
+# Stories
+
+## Playground
+
+<div className="story_with_source_below">
+  <Canvas of={ButtonStories.Playground} />
+  <Controls of={ButtonStories.Playground} />
+</div>
+
+## Primary
+
+The `Primary` button is used for main actions on a page. The label will typically be 'Submit'.
+
+<div className="story_with_source_below">
+  <Canvas of={ButtonStories.Primary} />
+  <Source code={`<Button variant='primary' label='Primary' />`} />
+</div>
+
+## Primary With Icon
+
+This is the Primary button with an icon passed in.
+
+<div className="story_with_source_below">
+  <Canvas of={ButtonStories.PrimaryWithIcon} sourceState="none" />
+  <Source
+    code={`<Button
+  variant='primary'
+  label='Primary'
+  icon={<SmallCircleCheck fill='var(--token-light-white)' />}
+/>`}
+  />
+</div>
+
+## Secondary
+
+The `Secondary` button is used for secondary actions on a page. The label might be 'Back' or 'Cancel'.
+
+<div className="story_with_source_below">
+  <Canvas of={ButtonStories.Secondary} />
+  <Source code={`<Button variant='secondary' label='Secondary' />`} />
+</div>
+
+## Warning
+
+The `Warning` button is used for warning purposes such as Deleting accounts.
+
+<div className="story_with_source_below">
+  <Canvas of={ButtonStories.Warning} />
+  <Source code={`<Button variant='warning' label='Button' />`} />
+</div>
+
+## Dashed
+
+The `Dashed` button is used for actions that are not as important as the `Primary` or `Secondary` buttons.
+
+<div className="story_with_source_below">
+  <Canvas of={ButtonStories.Dashed} />
+  <Source
+    code={`
+    <Button variant='dashed' label='Button' />
+  `}
+  />
+</div>
+
+## White Filled
+
+The `White Filled` button is used in the Welcome flow.
+
+<div className="story_with_source_below">
+  <Canvas of={ButtonStories.WhiteFilled} />
+  <Source code={`<Button variant='white-filled' label='Button' />`} />
+</div>
+
+## Outlined
+
+The `Outlined` button is used in the Welcome flow.
+
+<div className="story_with_source_below">
+  <Canvas of={ButtonStories.Outlined} />
+  <Source
+    code={`
+    <Button variant='outlined' label='Button' />
+  `}
+  />
+</div>
+
+## Block
+
+Button that takes up the full width of its container.
+
+<div className="story_with_source_below">
+  <Canvas of={ButtonStories.Block} />
+  <Source code={`<Button variant='primary' label='Block' block />`} />
+</div>
+
+## Loading
+
+Display Button with an active loading state.
+
+- Requires `loading` prop to be set to `true`.
+- Button is disabled when `loading` is active.
+
+<div className="story_with_source_below">
+  <Canvas of={ButtonStories.Loading} />
+  <Source code={`<Button variant='primary' label='Loading' loading={true} />`} />
+</div>
+
+## Disabled
+
+Disables the Button.
+
+<div className="story_with_source_below">
+  <Canvas of={ButtonStories.Disabled} />
+  <Source code={`<Button variant='primary' label='Disabled' disabled />`} />
+</div>

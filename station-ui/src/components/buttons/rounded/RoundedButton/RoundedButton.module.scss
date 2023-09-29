@@ -1,0 +1,27 @@
+.rounded__button {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+
+  &.primary {
+    background-color: var(--token-primary-500);
+    box-shadow:
+      inset 0px 1px 0px 0px rgba(255, 255, 255, 0.20),
+      0px 4px 24px 0px rgba(36, 36, 40, 0.30);
+  }
+
+  &.secondary {
+    background-color: var(--token-dark-700);
+  }
+
+  &.small {
+    height: 42px;
+    width: 42px;
+  }
+
+  &.large {
+    height: 64px;
+    width: 64px;
+  }
+}

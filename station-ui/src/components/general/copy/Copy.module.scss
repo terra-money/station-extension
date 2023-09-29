@@ -1,0 +1,13 @@
+@import 'scss/font_mixins';
+
+.button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  @include Small;
+
+  color: var(--token-primary-500);
+  gap: 8px;
+  text-transform: uppercase;
+}

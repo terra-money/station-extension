@@ -1,0 +1,38 @@
+@import "scss/font_mixins";
+
+.nav__button {
+  height: 56px;
+  width: 100%;
+  padding: 20px 18px;
+  display: flex;
+  justify-content: space-between;
+
+  background-color: var(--token-dark-700);
+  border-radius: 8px;
+
+  .left__side,
+  .right__side {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .left__side {
+    svg {
+      height: 16px;
+      width: 16px;
+    }
+
+    .label {
+      @include Medium;
+      color: var(--token-light-white);
+    }
+  }
+
+  .right__side {
+    .sub__label {
+      @include Medium;
+      color: var(--token-light-100);
+    }
+  }
+}

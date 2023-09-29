@@ -1,0 +1,125 @@
+.color__row__container {
+  font-size: 14px;
+  line-height: 20px;
+  display: flex;
+  flex-direction: column;
+  color: var(--token-dark-500);
+
+  .color__headers {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 20px 0;
+    font-weight: 700;
+    color: rgba(51, 51, 51, 0.6);
+
+    .first {
+      min-width: 215px;
+      flex: 0 0 30%;
+    }
+    .second {
+      flex: 1 1 0%;
+    }
+  }
+
+  .display__section {
+    display: flex;
+    align-items: flex-start;
+
+    .label__container {
+      min-width: 215px;
+      flex: 0 0 30%;
+      line-height: 20px;
+      margin-top: 5px;
+
+      .label {
+        font-weight: 700;
+        color: rgb(51, 51, 51);
+      }
+
+      .subLabel {
+        color: rgba(51, 51, 51, 0.8);
+      }
+
+      .font__subLabel {
+        font-size: 12px;
+      }
+    }
+
+    .color__section {
+      flex: 1 1 0%;
+      display: flex;
+      flex-direction: row;
+
+      .font__container { margin-bottom: 15px !important; }
+      .color__container {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0%;
+        position: relative;
+        margin-bottom: 30px;
+
+        .color__display__container {
+          border-radius: 4px;
+          background: rgb(255, 255, 255);
+          box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          display: flex;
+          flex-direction: row;
+          height: 50px;
+          margin-bottom: 5px;
+          overflow: hidden;
+
+          .color__display {
+            flex: 1 1 0%;
+          }
+          .font__display {
+            color: var(--token-dark-500);
+            display: flex;
+            align-items: center;
+            padding: 0px 20px;
+          }
+        }
+
+        .color__text__container {
+          display: flex;
+          flex-direction: row;
+
+          .color__text {
+            flex: 1 1 0%;
+            text-align: center;
+            font-size: 12px;
+            line-height: 1;
+            overflow: hidden;
+            color: rgba(51, 51, 51, 0.6);
+          }
+        }
+      }
+    }
+
+    .mixin__display {
+      flex: 0 0 30%;
+      margin-left: 28px;
+
+      p {
+        color: var(--token-dark-900);
+        line-height: 120%;
+        margin: 0;
+
+        span {
+          font-size: 14px;
+          font-weight: 700;
+          color: rgb(51, 51, 51);
+          margin-left: 10px;
+        }
+      }
+    }
+
+    .token__display__button {
+      font-size: 12px;
+      color: var(--token-primary-600);
+      cursor: pointer;
+      margin-left: auto;
+    }
+  }
+}

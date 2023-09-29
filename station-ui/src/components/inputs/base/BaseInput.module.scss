@@ -1,0 +1,36 @@
+@import 'scss/font_mixins';
+
+.base__input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--token-dark-300);
+  border: 1px solid var(--token-dark-700);
+  border-radius: 8px;
+  gap: 18px;
+
+  .base__input__field {
+    @include Medium;
+    border-radius: 8px;
+    height: 56px;
+    overflow: hidden;
+    padding: 0 18px;
+
+    &::placeholder {
+      color: var(--token-dark-900);
+    }
+  }
+
+  .base__input__emoji {
+    font-size: 16px;
+    line-height: 16px;
+  }
+}
+
+.warning {
+  border-color: var(--token-warning-500);
+}
+
+.error {
+  border-color: var(--token-error-500);
+}

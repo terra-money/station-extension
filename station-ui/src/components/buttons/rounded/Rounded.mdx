@@ -1,0 +1,143 @@
+import {
+  Meta,
+  Story,
+  Canvas,
+  Controls,
+  ArgTypes,
+  Description,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import RoundedButton from "./RoundedButton/RoundedButton.tsx";
+import FlipButton from "./FlipButton/FlipButton.tsx";
+import * as RoundedButtonStories from "./RoundedButton/RoundedButton.stories";
+import * as FlipButtonStories from "./FlipButton/FlipButton.stories";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Buttons/Rounded" />
+
+# Rounded
+
+This is a round button.
+
+- **`RoundedButton`** - Used in Portfolio section actions.
+- **`FlipButton`** - Very specifically used in Swap to switch the To & From tokens.
+
+## Import
+
+```jsx
+import {
+  RoundedButton,
+  FlipButton,
+} from "@terra-money/station-ui/components/buttons";
+```
+
+# RoundedButton Props
+
+##### The `RoundedButton` Used in Portfolio section actions.
+
+##### Used for routing and not submitting.
+
+- **`color`** - <RequiredText /> - Sets the color of the button.
+  - Options are `primary`, `secondary`.
+- **`icon`** - <RequiredText /> - Sets the icon of the button.
+- **`size`** - Sets the size of the button.
+  - Options are `default`(50px, 50px), `small` (42px, 42px), `large` (64px, 64px).
+
+# RoundedButton Stories
+
+## Playground
+
+<div className="story_with_source_below">
+  <Canvas of={RoundedButtonStories.Playground} />
+  <Controls of={RoundedButtonStories.Playground} />
+</div>
+
+## Primary
+
+In the context of the Portfolio section, this will be used for the "Send" button.
+
+<div className="story_with_source_below">
+  <Canvas of={RoundedButtonStories.Primary} />
+  <Source
+    code={`
+    <RoundedButton
+  variant='primary'
+  size='default'
+  icon={<SendArrow fill='var(--token-light-white)' />}
+/>
+  `}
+  />
+</div>
+
+## Secondary
+
+In the context of the Portfolio section, this will be used for all buttons besides "Send".
+
+<div className="story_with_source_below">
+  <Canvas of={RoundedButtonStories.Secondary} />
+  <Source
+    code={`
+    <RoundedButton
+  variant='secondary'
+  size='default'
+  icon={<Receive fill='var(--token-light-white)' />}
+/>
+  `}
+  />
+</div>
+
+## Small
+
+A smaller version of the RoundedButton.
+
+<div className="story_with_source_below">
+  <Canvas of={RoundedButtonStories.Small} />
+  <Source
+    code={`
+    <RoundedButton
+  variant='secondary'
+  size='small'
+  icon={<FlipArrows fill='var(--token-light-100)' />}
+/>
+  `}
+  />
+</div>
+
+## Large
+
+A larger version of the RoundedButton.
+
+<div className="story_with_source_below">
+  <Canvas of={RoundedButtonStories.Large} />
+  <Source
+    code={`
+    <RoundedButton
+  variant='primary'
+  size='large'
+  icon={<SwapArrows fill='var(--token-light-white)' />}
+/>
+  `}
+  />
+</div>
+
+# FlipButton Props
+
+##### The `FlipButton` Very specifically used in Swap to switch the To & From tokens.
+
+- **`onClick`** - <RequiredText /> - Controls what happens when the button is clicked.
+
+# FlipButton Stories
+
+## FlipButton
+
+**Just for the Swap component**
+
+<div className="story_with_source_below">
+  <Canvas of={FlipButtonStories.Button} />
+  <Source
+    code={`
+    <FlipButton onClick={() => {}} />
+  `}
+  />
+</div>

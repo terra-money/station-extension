@@ -1,0 +1,33 @@
+@import 'scss/font_mixins';
+
+.inline__input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--token-dark-300);
+  border: 1px solid var(--token-dark-700);
+  border-radius: 8px;
+  padding: 0 18px;
+  gap: 16px;
+
+  .inline__input__label {
+    color: var(--token-light-100);
+    @include Medium;
+  }
+
+  .base__input__field {
+    @include Medium;
+    border-radius: 8px;
+    height: 56px;
+    overflow: hidden;
+
+    &::placeholder {
+      color: var(--token-dark-900);
+    }
+  }
+
+  .inline__input__extra {
+    color: var(--token-dark-900);
+    @include Medium;
+  }
+}

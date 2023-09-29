@@ -1,0 +1,9 @@
+.checked__button {
+  border-color: var(--token-dark-700);
+  color: var(--token-dark-900);
+
+  &.active {
+    border-color: var(--token-light-white);
+    color: var(--token-light-white);
+  }
+}

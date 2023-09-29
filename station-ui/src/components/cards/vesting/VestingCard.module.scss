@@ -1,0 +1,30 @@
+@import "scss/font_mixins";
+
+.token__container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background-color: var(--token-dark-600);
+  padding: 24px;
+  border-radius: 8px 8px 0 0;
+  width: 100%;
+}
+
+.vested__amount__container {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--token-dark-600);
+  padding: 24px;
+  border-radius: 0 0 8px 8px;
+  width: 100%;
+
+  h5 {
+    @include Small;
+    color: var(--token-dark-900);
+  }
+
+  h4 {
+    @include Small;
+    color: var(--token-light-white);
+  }
+}

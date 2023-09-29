@@ -1,0 +1,71 @@
+@import "scss/font_mixins";
+
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 24px;
+
+  .left__wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .svg__wrapper {
+      width: 14px;
+      height: 14px;
+    }
+
+    .alert__icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    .title {
+      @include SmallLH;
+    }
+  }
+
+  .checkbox__container {
+    display: flex;
+
+    svg {
+      height: 14px;
+      width: 14px;
+    }
+
+    .track {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      border: solid 2px var(--token-primary-300);
+      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &.has__radio:hover {
+    cursor: pointer;
+  }
+
+  &.info {
+    background-color: var(--token-primary-900);
+    color: var(--token-primary-300);
+
+    .alert__icon {
+      fill: var(--token-primary-300);
+    }
+  }
+
+  &.warning {
+    background-color: var(--token-warning-500);
+    color: var(--token-warning-100);
+
+    .alert__icon {
+      fill: var(--token-warning-100);
+    }
+  }
+}

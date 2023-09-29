@@ -1,0 +1,15 @@
+@import "scss/font_mixins";
+
+.proposal__card__container {
+  background-color: var(--token-dark-600);
+  padding: 24px 24px 38px 24px;
+  border-radius: 8px;
+  position: relative;
+
+  .progressbar__wrapper {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+  }
+}

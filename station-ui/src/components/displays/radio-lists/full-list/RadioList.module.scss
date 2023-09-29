@@ -1,0 +1,25 @@
+.radio__list {
+  background-color: var(--token-dark-500);
+  border-radius: 8px;
+  position: relative;
+
+  div:first-child {
+    button {
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+  }
+
+  div:not(:first-child) {
+    button {
+      border-top: none;
+    }
+  }
+
+  div:last-child {
+    button {
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+  }
+}

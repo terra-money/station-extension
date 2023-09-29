@@ -1,0 +1,90 @@
+@import 'scss/font_mixins';
+
+.asset__selector_wrapper {
+  background-color: var(--token-dark-300);
+  border: 1px solid var(--token-dark-700);
+  padding: 16px;
+  border-radius: 8px;
+
+  @include X-Small;
+  color: var(--token-light-100);
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .inputs {
+    display: flex;
+    justify-content: space-between;
+
+    .token__selector {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .token__wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .symbol {
+          .symbol__button {
+            display: flex;
+            gap: 8px;
+            @include Large;
+            color: var(--token-light-white);
+          }
+        }
+
+        .chain__wrapper {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+      }
+    }
+
+    .amounts__wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+
+      .input__amount {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+
+        .amount__token {
+          @include Large;
+          color: var(--token-light-white);
+          text-align: end;
+
+          /* Chrome, Safari, Edge, Opera */
+          &::-webkit-outer-spin-button,
+          &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
+
+          /* Firefox */
+          &[type=number] {
+            -moz-appearance: textfield;
+          }
+
+          &::placeholder,
+          &.amount__empty {
+            color: var(--token-dark-900);
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+@import "scss/font_mixins";
+
+.summary__header {
+  .summary__main {
+    svg {
+      height: 64px;
+      width: 64px;
+      border-radius: 50%;
+    }
+
+    .summary__main__text {
+      .title {
+        @include Large;
+        color: var(--token-light-white);
+      }
+
+      .description {
+        @include Small;
+        color: var(--token-light-100);
+      }
+    }
+  }
+
+  .summary__card {
+    background-color: var(--token-dark-300);
+    border-radius: 8px;
+    padding: 24px;
+    .summary__card__title {
+      @include Medium;
+      color: var(--token-light-white);
+    }
+
+    .summary__card__value {
+      @include SmallLH;
+      color: var(--token-light-100);
+    }
+  }
+}

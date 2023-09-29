@@ -1,0 +1,95 @@
+@import "scss/font_mixins";
+
+.wallet__summary__card__container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  border: 1px solid var(--token-dark-700);
+  border-radius: 8px;
+  padding: 24px;
+
+  &.isActive {
+    border: 1px solid var(--token-light-white);
+
+    .top {
+      .wallet__type {
+        color: var(--token-light-white);
+      }
+    }
+  }
+
+  .top {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .wallet__type {
+      @include Medium;
+      color: var(--token-light-100);
+    }
+
+    .wallet__address {
+      @include X-Small;
+      color: var(--token-light-100);
+    }
+  }
+
+  .line {
+    height: 1px;
+    width: 100%;
+    background-color: var(--token-dark-700);
+  }
+
+  .bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .wallet__balance {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+
+      h6 {
+        @include Small;
+        color: var(--token-light-100);
+      }
+
+      h5 {
+        @include Small;
+        color: var(--token-light-100);
+      }
+
+      &.not__zero {
+        h5 {
+          color: var(--token-light-white);
+        }
+      }
+    }
+
+    .wallet__prev__transactions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+
+      h6 {
+        @include Small;
+        color: var(--token-light-100);
+      }
+
+      h5 {
+        @include Small;
+        color: var(--token-light-100);
+      }
+
+      &.not__zero {
+        h5 {
+          color: var(--token-light-white);
+        }
+      }
+    }
+  }
+}

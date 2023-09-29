@@ -1,0 +1,131 @@
+import {
+  Meta,
+  Story,
+  Canvas,
+  Controls,
+  ArgTypes,
+  Description,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import NavButton from "./button/NavButton.tsx";
+import RoundedActionButton from "./rounded action/RoundedActionButton.tsx";
+import * as NavButtonStories from "./button/NavButton.stories";
+import * as RoundedActionButtonStories from "./rounded action/RoundedActionButton.stories";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Buttons/Navigation" />
+
+# Navigational Buttons
+
+These are buttons that are used for navigational purposes.
+
+- **`NavButton`** - Likely only used for navigating through settings pages or page routing.
+- **`RoundedActionButton`** - This button is used for the mobile bottom navigation bar.
+
+## Import
+
+```jsx
+import {
+  NavButton,
+  RoundedActionButton,
+} from "@terra-money/station-ui/components/buttons";
+```
+
+# NavButton Props
+
+##### The `NavButton` Used for navigating settings or page routing.
+
+- **`label`** - <RequiredText /> - Sets the label for the button.
+- **`value`** - Sets right side value
+- **`icon`** - Sets icon that is left of the `label`.
+
+# RoundedButton Stories
+
+## Playground
+
+<div className="story_with_source_below">
+  <Canvas of={NavButtonStories.Playground} />
+  <Controls of={NavButtonStories.Playground} />
+</div>
+
+## Label Only
+
+<div className="story_with_source_below">
+  <Canvas of={NavButtonStories.LabelOnly} />
+  <Source
+    code={`
+    <NavButton
+  label={'Nav Button'}
+/>
+  `}
+  />
+</div>
+
+## Icon And Label
+
+<div className="story_with_source_below">
+  <Canvas of={NavButtonStories.IconAndLabel} />
+  <Source
+    code={`
+    <NavButton
+  label={'Nav Button'}
+  icon={<SmallCircleCheck />}
+/>
+  `}
+  />
+</div>
+
+## Icon And Label And SubLabel
+
+<div className="story_with_source_below">
+  <Canvas of={NavButtonStories.IconAndLabelAndSubLabel} />
+  <Source
+    code={`
+    <NavButton
+  label={'Nav Button'}
+  value={'Value'}
+  icon={<SmallCircleCheck />}
+/>
+  `}
+  />
+</div>
+
+## Label And SubLabel
+
+A larger version of the RoundedButton.
+
+<div className="story_with_source_below">
+  <Canvas of={NavButtonStories.LabelAndSubLabel} />
+  <Source
+    code={`
+    <NavButton
+  label={'Nav Button'}
+  value={'Value'}
+/>
+  `}
+  />
+</div>
+
+# RoundedActionButton Props
+
+##### Used in the mobile bottom navigation.
+
+> **Built on top of the `RoundedButton` component.**
+
+- **_No Props for now_**
+
+# RoundedActionButton Stories
+
+## Default
+
+**_Testing out animations. Thats why there are 2_**
+
+<div className="story_with_source_below">
+  <Canvas of={RoundedActionButtonStories.Default} />
+  <Source
+    code={`
+    <RoundedActionButton />
+  `}
+  />
+</div>
