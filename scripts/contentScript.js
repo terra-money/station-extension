@@ -69,7 +69,7 @@ function injectScript() {
     const script = document.createElement('script')
     script.setAttribute('async', 'false')
     script.setAttribute('type', 'text/javascript')
-    script.setAttribute('src', chrome.runtime.getURL('nostr-provider.js'))
+    script.setAttribute('src', chrome.runtime.getURL('nostrProvider.js'))
     document.head.appendChild(script)
 
     browser.storage.local.get(["replaceKeplr"]).then(({ replaceKeplr }) => {

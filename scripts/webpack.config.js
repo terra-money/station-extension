@@ -9,7 +9,7 @@ module.exports = {
   entry: {
     contentScript: path.join(__dirname, "contentScript.js"),
     background: path.join(__dirname, "background.js"),
-    nostrProvider: path.join(__dirname, "nostr-provider.js"),
+    nostrProvider: path.join(__dirname, "nostrProvider.js"),
     inpage: path.join(__dirname, "inpage.js"),
     keplr: path.join(__dirname, "keplr.js"),
   },

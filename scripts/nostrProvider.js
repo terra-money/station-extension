@@ -42,24 +42,3 @@ window.nostr = {
     })
   }
 }
-
-window.addEventListener('message', message => {
-  if (
-    !message.data ||
-    message.data.response === null ||
-    message.data.response === undefined ||
-    message.data.ext !== 'Station' ||
-    !window.nostr._requests[message.data.id]
-  )
-    return
-
-  if (message.data.response.error) {
-    let error = new Error('Station: ' + message.data.response.error.message)
-    error.stack = message.data.response.error.stack
-    window.nostr._requests[message.data.id].reject(error)
-  } else {
-    window.nostr._requests[message.data.id].resolve(message.data.response)
-  }
-
-  delete window.nostr._requests[message.data.id]
-})

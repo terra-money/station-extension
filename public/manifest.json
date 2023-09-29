@@ -23,7 +23,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["nostr-provider.js", "inpage.js", "keplr.js", "index.html"],
+      "resources": ["nostrProvider.js", "inpage.js", "keplr.js", "index.html"],
       "matches": ["<all_urls>"]
     }
   ],
