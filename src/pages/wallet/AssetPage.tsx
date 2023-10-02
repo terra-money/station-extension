@@ -9,7 +9,7 @@ import AssetChain from "./AssetChain"
 import { Button } from "components/general"
 import { useTranslation } from "react-i18next"
 import { capitalize } from "@mui/material"
-import Vesting from "./Vesting"
+import AsseetVesting from "./AssetVesting"
 import { useNetworkName } from "data/wallet"
 import { SectionHeader } from "station-ui"
 import WalletActionButtons from "./WalletActionButtons"
@@ -103,7 +103,7 @@ const AssetPage = () => {
                   </div>
                 ))}
               {token === "uluna" && symbol !== "LUNC" && (
-                <Vesting token={token} chain={chain} />
+                <AsseetVesting token={token} chain={chain} />
               )}
             </div>
           </div>
