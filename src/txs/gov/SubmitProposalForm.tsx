@@ -402,6 +402,7 @@ const SubmitProposalForm = ({ chain }: { chain: string }) => {
     <Card {...state} inputCard>
       <Tx {...tx}>
         {({ max, fee, submit }) => (
+          // @ts-expect-error
           <Form onSubmit={handleSubmit(submit.fn)}>
             <Grid gap={4}>
               {networks[chain]?.prefix === "terra" && (

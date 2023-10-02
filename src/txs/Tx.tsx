@@ -40,6 +40,9 @@ import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { getShouldTax, useTaxCap, useTaxRate } from "data/queries/treasury"
 import { useNativeDenoms } from "data/token"
+import { useCarbonFees } from "data/queries/tx"
+
+const cx = classNames.bind(styles)
 
 const cx = classNames.bind(styles)
 
@@ -100,6 +103,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const setLatestTx = useSetRecoilState(latestTxState)
   const isBroadcasting = useRecoilValue(isBroadcastingState)
   const readNativeDenom = useNativeDenoms()
+  const { data: carbonFees } = useCarbonFees()
 
   /* taxes */
   const isClassic = networks[chain]?.isClassic
@@ -137,6 +141,12 @@ function Tx<TxValues>(props: Props<TxValues>) {
       if (!wallet) return 0
       if (!simulationTx || !simulationTx.msgs.length) return 0
       try {
+        if (chain.startsWith("carbon-")) {
+          return Number(
+            carbonFees?.costs[key.msgs?.[0] ?? ""] ??
+              carbonFees?.costs["default_fee"]
+          )
+        }
         const unsignedTx = await lcd.tx.create([{ address: key.address }], {
           ...simulationTx,
           feeDenoms: [gasDenom],
@@ -161,24 +171,35 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
   const getGasAmount = useCallback(
     (denom: CoinDenom) => {
-      const gasPrice = networks[chain]?.gasPrices[denom]
+      const gasPrice = chain?.startsWith("carbon-")
+        ? carbonFees?.prices[denom]
+        : networks[chain]?.gasPrices[denom]
       if (isNil(estimatedGas) || !gasPrice) return "0"
       return new BigNumber(estimatedGas)
         .times(gasPrice)
         .integerValue(BigNumber.ROUND_CEIL)
         .toString()
     },
-    [estimatedGas, chain, networks]
+    [estimatedGas, chain, networks, carbonFees]
   )
 
   const gasAmount = getGasAmount(gasDenom)
   const gasFee = { amount: gasAmount, denom: gasDenom }
 
+  /* tax */
+  const taxAmount =
+    token && amount && shouldTax
+      ? calcMinimumTaxAmount(amount, { rate: taxRate, cap: taxCap })
+      : undefined
+
   /* max */
   const getNativeMax = () => {
     if (!balance) return
     return gasFee.denom === token
-      ? (Number(balance) - Number(gasFee.amount)).toFixed(0)
+      ? new BigNumber(balance)
+          .minus(gasFee.amount)
+          .minus(taxAmount ?? 0)
+          .toString()
       : balance
   }
 
@@ -192,12 +213,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
   useEffect(() => {
     if (max && isMax && onChangeMax) onChangeMax(toInput(max, decimals))
   }, [decimals, isMax, max, onChangeMax])
-
-  /* tax */
-  const taxAmount =
-    token && amount && shouldTax
-      ? calcMinimumTaxAmount(amount, { rate: taxRate, cap: taxCap })
-      : undefined
 
   /* (effect): Log error on console */
   const failed = getErrorMessage(taxState.error ?? estimatedGasState.error)
@@ -289,7 +304,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
     amount &&
     new BigNumber(balance)
       .minus(amount)
-      .minus(taxAmount ?? 0)
+      .minus(taxAmount ? (gasFee.denom === token ? taxAmount : 0) : 0)
       .minus((gasFee.denom === token && gasFee.amount) || 0)
       .toString()
 
