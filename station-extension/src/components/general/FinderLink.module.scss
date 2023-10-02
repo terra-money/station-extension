@@ -1,0 +1,7 @@
+@import "mixins";
+
+.link {
+  @include inline-flex;
+  gap: 2px;
+  font-weight: var(--bold);
+}

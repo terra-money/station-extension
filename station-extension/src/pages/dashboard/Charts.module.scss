@@ -1,0 +1,17 @@
+@import "mixins";
+
+.charts {
+  display: grid;
+  gap: var(--grid-gap);
+
+  @include desktop {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+}
+
+.trisect {
+  > :first-child {
+    grid-column: 1 / span 2;
+  }
+}

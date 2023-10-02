@@ -1,0 +1,33 @@
+@import "mixins";
+
+.origin {
+  @include flex(flex-start);
+  gap: 20px;
+
+  background: var(--extension-bg);
+  border: var(--border-width) solid var(--card-border);
+  border-radius: 16px;
+  color: var(--button-primary-text);
+  padding: 20px 20px;
+  text-align: left;
+}
+
+.icon {
+  border-radius: 50%;
+  max-width: 50px;
+  max-height: 50px;
+}
+
+.details {
+  h2 {
+    font-size: 16pt;
+    font-weight: var(--bold);
+    color: var(--text);
+  }
+
+  p {
+    font-size: 11pt;
+    font-weight: var(--bold);
+    color: var(--button-primary-bg);
+  }
+}

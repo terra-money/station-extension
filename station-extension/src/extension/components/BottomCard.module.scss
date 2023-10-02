@@ -1,0 +1,9 @@
+.bottom__card {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--extension-bg);
+  border-top: var(--border-width) solid var(--card-border);
+  padding: 20px 20px;
+}

@@ -1,0 +1,23 @@
+@import "mixins";
+
+.wallet {
+  width: var(--extension-width);
+  position: relative;
+  margin: 0 auto;
+  height: calc(100vh - var(--header-height));
+  display: grid;
+  grid-template-areas: "details" "list" "actions";
+  grid-template-rows: min-content auto min-content;
+  transition: 400ms;
+  background-color: var(--card-bg-muted);
+}
+
+.back {
+  position: absolute;
+  top: 2rem;
+  left: 18px;
+
+  svg path {
+    fill: var(--text);
+  }
+}
