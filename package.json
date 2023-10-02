@@ -10,7 +10,7 @@
     "build-scripts": "webpack --config scripts/webpack.config.js",
     "build": "cross-env react-app-rewired build && npm run build-scripts",
     "test": "react-scripts test",
-    "prepare": "husky install",
+    "prepare": "cd .. && husky install station-extension/.husky",
     "pre-commit": "lint-staged",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
@@ -63,7 +63,6 @@
     "secp256k1": "^4.0.3",
     "semver": "^7.3.7",
     "sentence-case": "^3.0.4",
-    "station-ui": "file:../station-ui/station-ui-0.0.0.tgz",
     "xss": "1.0.11"
   },
   "devDependencies": {
