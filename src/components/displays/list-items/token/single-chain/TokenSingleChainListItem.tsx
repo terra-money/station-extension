@@ -34,10 +34,10 @@ const TokenSingleChainListItem = ({
         </div>
         <div className={styles.details__container}>
           <div className={styles.top__row}>
-            <h2 className={styles.symbol}>
+            <h3 className={styles.symbol}>
               <span className={styles.symbol__name}>{symbol}</span>
               {isSendBack && <Pill variant='warning' text="Send Back" />}
-            </h2>
+            </h3>
             <h3 className={styles.amount}>
               {amountNode}
             </h3>
