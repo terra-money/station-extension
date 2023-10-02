@@ -7,12 +7,16 @@ import createContext from "utils/createContext"
 import AssetPage from "./AssetPage"
 import ReceivePage from "./ReceivePage"
 import SendPage from "./SendPage"
+import VestingDetailsPage from "./VestingDetailsPage"
+import { PageTabs } from "station-ui"
+import { useTranslation } from "react-i18next"
 
 enum Path {
   wallet = "wallet",
   coin = "coin",
   receive = "receive",
   send = "send",
+  vesting = "vesting",
 }
 
 type Route =
@@ -21,7 +25,7 @@ type Route =
       denom?: string
     }
   | {
-      path: Path.coin | Path.receive | Path.send
+      path: Path.coin | Path.receive | Path.send | Path.vesting
       denom?: string
       previousPage: Route
     }
@@ -36,8 +40,10 @@ export { useWalletRoute, Path }
 
 const Wallet = () => {
   const [route, setRoute] = useState<Route>({ path: Path.wallet })
+  const [tab, setTab] = useState(0)
+  const { t } = useTranslation()
 
-  function BackButton() {
+  const BackButton = () => {
     if (route.path === Path.wallet) return null
 
     return (
@@ -49,14 +55,18 @@ const Wallet = () => {
       </button>
     )
   }
-
-  function render() {
+  const render = () => {
     switch (route.path) {
       case Path.wallet:
         return (
           <>
             <NetWorth />
-            <AssetList />
+            <PageTabs
+              activeTab={tab}
+              onClick={setTab}
+              tabs={[t("Assets"), t("Activity")]}
+            />
+            {tab === 0 ? <AssetList /> : <p> Activty component</p>}
           </>
         )
       case Path.coin:
@@ -78,6 +88,13 @@ const Wallet = () => {
           <>
             <BackButton />
             <SendPage />
+          </>
+        )
+      case Path.vesting:
+        return (
+          <>
+            <BackButton />
+            <VestingDetailsPage token={route.denom} />
           </>
         )
     }
