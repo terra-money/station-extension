@@ -17,8 +17,7 @@ export const Default: StoryObj<VestingCardProps> = {
         vestedAmount={"420.00"}
       >
         <TokenSingleChainListItem
-          balance={"2365.09"}
-          currency={{ id: 'usd', symbol: '$', name: 'USD' }}
+          priceNode={<span>$ 42000</span>}
           tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
           symbol={"LUNA"}
           price={1}

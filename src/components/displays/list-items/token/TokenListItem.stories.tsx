@@ -34,8 +34,8 @@ export const DefaultSingleChain: StoryObj<TokenListItemProps> = {
   render: () => {
     return (
       <TokenListItem
-      priceNode={<span>$ 421.00</span>}
-      chains={[{name: "terra",  icon: "https://station-assets.terra.dev/icon/chains/Terra.svg", balance: '100' }]}
+        priceNode={<span>$ 421.00</span>}
+        chains={[{name: "terra",  icon: "https://station-assets.terra.dev/icon/chains/Terra.svg", balance: '100' }]}
         tokenImg={"https://station-assets.terra.dev/icon/coins/Luna.svg"}
         symbol={"LUNA"}
         price={1}
@@ -51,8 +51,7 @@ export const ChainDisplay: StoryObj<TokenSingleChainListItemProps> = {
   render: () => {
     return (
       <TokenSingleChainListItem
-        balance={"420.00"}
-        currency={{ id: 'usd', symbol: '$', name: 'USD' }}
+        priceNode={<span>$42000</span>}
         tokenImg={"https://station-assets.terra.dev/icon/coins/Luna.svg"}
         symbol={"LUNA"}
         price={1}
@@ -68,8 +67,7 @@ export const SendBack: StoryObj<TokenSingleChainListItemProps> = {
   render: () => {
     return (
       <TokenSingleChainListItem
-        balance={"420.00"}
-        currency={{ id: 'usd', symbol: '$', name: 'USD' }}
+        priceNode={<span>$ 42000</span>}
         tokenImg={"https://station-assets.terra.dev/icon/coins/Luna.svg"}
         symbol={"LUNA"}
         price={1}
