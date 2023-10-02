@@ -18,9 +18,8 @@ export const Default: StoryObj<TokenListItemProps> = {
     return (
       <div style={{ height: "150px", display: "flex", alignItems: "flex-end" }}>
         <TokenListItem
-          balance={"420.00"}
-          chains={[{name: "terra",  img: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }, { balance: '320' , name: "axelar", img: "https://station-assets.terra.dev/img/chains/Axelar.svg"}]}
-          currency={{ id: 'usd', symbol: '$', name: 'USD' }}
+          priceNode={<span>$ 421.00</span>}
+          chains={[{name: "terra",  icon: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }, { balance: '320' , name: "axelar", icon: "https://station-assets.terra.dev/img/chains/Axelar.svg"}]}
           tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
           symbol={"LUNA"}
           price={1}
@@ -37,9 +36,8 @@ export const DefaultSingleChain: StoryObj<TokenListItemProps> = {
   render: () => {
     return (
       <TokenListItem
-        balance={"420.00"}
-        chains={[{name: "terra",  img: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }]}
-        currency={{ id: 'usd', symbol: '$', name: 'USD' }}
+        priceNode={<span>$ 421.00</span>}
+        chains={[{name: "terra",  icon: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }]}
         tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
         symbol={"LUNA"}
         price={1}
@@ -55,8 +53,7 @@ export const ChainDisplay: StoryObj<TokenSingleChainListItemProps> = {
   render: () => {
     return (
       <TokenSingleChainListItem
-        balance={"420.00"}
-        currency={{ id: 'usd', symbol: '$', name: 'USD' }}
+        priceNode={<span>$42000</span>}
         tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
         symbol={"LUNA"}
         price={1}
@@ -72,8 +69,7 @@ export const SendBack: StoryObj<TokenSingleChainListItemProps> = {
   render: () => {
     return (
       <TokenSingleChainListItem
-        balance={"420.00"}
-        currency={{ id: 'usd', symbol: '$', name: 'USD' }}
+        priceNode={<span>$ 42000</span>}
         tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
         symbol={"LUNA"}
         price={1}

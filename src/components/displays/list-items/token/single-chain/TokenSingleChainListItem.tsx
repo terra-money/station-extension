@@ -2,31 +2,25 @@ import Pill from 'components/general/pill/Pill';
 import styles from '../TokenListItem.module.scss';
 
 export interface TokenSingleChainListItemProps {
-  balance?: string
-  currency: { id: string, symbol: string, name: string }
   tokenImg: string
   symbol: string
   price?: number
   amountNode: React.ReactNode
+  priceNode: React.ReactNode
   chain: { icon: string, label: string }
   isSendBack?: boolean
   onClick?: () => void
 }
 
 const TokenSingleChainListItem = ({
-  balance,
-  currency,
   tokenImg,
   symbol,
-  price,
+  priceNode,
   amountNode,
   chain,
   isSendBack,
   onClick,
 }: TokenSingleChainListItemProps) => {
-  const coinPrice = price ?? 0;
-
-  const walletPrice = coinPrice * parseInt(balance ?? "0");
 
   return (
     <div className={styles.token__container} onClick={onClick}>
@@ -58,12 +52,7 @@ const TokenSingleChainListItem = ({
               {chain.label}
             </h5>
             <h5 className={styles.price}>
-              {currency.symbol}
-              {coinPrice ? (
-                <div>{walletPrice}</div>
-              ) : (
-                <span>—</span>
-              )}
+              {priceNode}
             </h5>
           </div>
         </div>
