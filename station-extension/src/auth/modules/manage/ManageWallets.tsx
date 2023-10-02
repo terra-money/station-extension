@@ -61,6 +61,7 @@ export const useManageWallet = () => {
       lock()
       navigate("/", { replace: true })
     },
+    id: "lock",
     children: t("Lock"),
     icon: <LockOutlinedIcon />,
   }
@@ -81,12 +82,10 @@ const ManageWallets = () => {
 
   return (
     <Page title={t("Manage wallets")}>
-      <Col>
-        <ConnectedWallet>
-          {list && <AuthList list={list} />}
-          {!!available.length && <AuthList list={available} />}
-        </ConnectedWallet>
-      </Col>
+      <ConnectedWallet>
+        {list && <AuthList list={list} />}
+        {!!available.length && <AuthList list={available} />}
+      </ConnectedWallet>
     </Page>
   )
 }

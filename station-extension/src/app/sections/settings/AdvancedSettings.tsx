@@ -8,7 +8,7 @@ import { TooltipIcon } from "components/display"
 import {
   DevModeTooltip,
   //ReplaceKeplrTooltip
-} from "./DevModeTooltips"
+} from "../DevModeTooltips"
 //import { FormWarning } from "components/form"
 
 const AdvancedSettings = () => {

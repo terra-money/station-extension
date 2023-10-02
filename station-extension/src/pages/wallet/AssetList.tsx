@@ -21,7 +21,7 @@ import { ReactComponent as ManageAssets } from "styles/images/icons/ManageAssets
 const AssetList = () => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
-  const { hideNoWhitelist, hideLowBal } = useTokenFilters()
+  const { onlyShowWhitelist, hideLowBal } = useTokenFilters()
   const networks = useNetwork()
   const networkName = useNetworkName()
 
@@ -134,7 +134,7 @@ const AssetList = () => {
         ),
       ]
         .filter(
-          (a) => (hideNoWhitelist ? a.whitelisted : true) // TODO: update and implement whitelist check
+          (a) => (onlyShowWhitelist ? a.whitelisted : true) // TODO: update and implement whitelist check
         )
         .filter((a) => {
           const { token } = readNativeDenom(a.denom)
@@ -152,7 +152,7 @@ const AssetList = () => {
       coins,
       readNativeDenom,
       prices,
-      hideNoWhitelist,
+      onlyShowWhitelist,
       hideLowBal,
       alwaysVisibleDenoms,
       unknownIBCDenoms,

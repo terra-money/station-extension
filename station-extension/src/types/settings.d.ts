@@ -3,6 +3,7 @@ interface AddressBook {
   name: string
   recipient: string
   memo?: string
+  favorite?: boolean
 }
 
 /* Tokens */

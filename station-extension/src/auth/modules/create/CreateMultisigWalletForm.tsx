@@ -125,7 +125,7 @@ const CreateMultisigWalletForm = ({ onCreated }: Props) => {
             <FormItem>
               <Input
                 {...register(`addresses.${index}.value`, {
-                  validate: AccAddress.validate,
+                  validate: validate.address,
                 })}
                 placeholder={SAMPLE_ADDRESS}
               />
