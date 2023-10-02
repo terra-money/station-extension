@@ -1,5 +1,4 @@
 import { SectionHeader, SummaryCard } from "station-ui"
-import { useWalletRoute } from "./Wallet"
 import VestingCard from "./VestingCard"
 import {
   isVestingAccount,
@@ -7,6 +6,7 @@ import {
   useAccount,
 } from "data/queries/vesting"
 import styles from "./VestingDetailsPage.module.scss"
+import { VestingScheduleItem } from "data/queries/vesting"
 
 interface Props {
   token?: string
@@ -14,15 +14,17 @@ interface Props {
 }
 
 const AssetVesting = (props: Props) => {
-  const { route, setRoute } = useWalletRoute()
   const { data } = useAccount()
-  const { token, chain } = props
-
   if (!data) return null
   if (!isVestingAccount(data)) return null
 
-  const { schedule, amount } = parseVestingSchedule(data)
-  console.log("schedule", schedule)
+  const { schedule } = parseVestingSchedule(data)
+
+  const getDateRange = (item: VestingScheduleItem) => {
+    return [item.start?.toLocaleString(), item.end.toLocaleDateString()]
+      .filter(Boolean)
+      .join(" - ")
+  }
 
   return (
     <>
@@ -31,12 +33,20 @@ const AssetVesting = (props: Props) => {
         <>
           <SectionHeader title={`Period ${index + 1}`} />
           <SummaryCard className={styles.wrapper}>
-            {Object.keys(item).map((p, index) => (
-              <>
-                <div className={styles.label}>{JSON.stringify(p)}</div>
-                {/* <div className={styles.value}>{Number(amount.total) * item[p].ratio}</div> */}
-              </>
-            ))}
+            <>
+              <div className={styles.row}>
+                <div className={styles.label}>Release Date</div>
+                <div className={styles.value}>{getDateRange(item)}</div>
+              </div>
+              <div className={styles.row}>
+                <div className={styles.label}>Amount</div>
+                <div className={styles.value}>{item.amount}</div>
+              </div>
+              <div className={styles.row}>
+                <div className={styles.label}>Ratio</div>
+                <div className={styles.value}>{item.ratio}</div>
+              </div>
+            </>
           </SummaryCard>
         </>
       ))}
