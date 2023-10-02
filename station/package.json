@@ -10,7 +10,7 @@
     "start": "echo \"$CF_PAGES_COMMIT_SHA\" > public/commit_hash && react-scripts start",
     "build": "echo \"$CF_PAGES_COMMIT_SHA\" > public/commit_hash && react-scripts build",
     "test": "react-scripts test",
-    "prepare": "husky install",
+    "prepare": "cd .. && husky install station/.husky",
     "pre-commit": "lint-staged",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "dc:up": "docker-compose up --build -d",
