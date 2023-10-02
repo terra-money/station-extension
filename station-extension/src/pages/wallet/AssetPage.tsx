@@ -1,4 +1,4 @@
-import { useNativeDenoms } from "data/token"
+import { useNativeDenoms, useUnknownIBCDenoms } from "data/token"
 import { useWalletRoute, Path } from "./Wallet"
 import styles from "./AssetPage.module.scss"
 import { Read, TokenIcon } from "components/token"
@@ -9,10 +9,10 @@ import AssetChain from "./AssetChain"
 import { Button } from "components/general"
 import { useTranslation } from "react-i18next"
 import { capitalize } from "@mui/material"
-import Vesting from "./Vesting"
-import { isTerraChain } from "utils/chain"
-import { useIBCBaseDenoms } from "data/queries/ibc"
+import AsseetVesting from "./AssetVesting"
 import { useNetworkName } from "data/wallet"
+import { SectionHeader } from "station-ui"
+import WalletActionButtons from "./WalletActionButtons"
 
 const AssetPage = () => {
   const currency = useCurrency()
@@ -27,6 +27,7 @@ const AssetPage = () => {
     ? routeDenom.split("*")
     : [undefined, routeDenom]
   const { token, symbol, icon, decimals } = readNativeDenom(denom, chain)
+  const unknownIBCDenoms = useUnknownIBCDenoms()
 
   const isLuncOffClassic = symbol === "LUNC" && networkName !== "classic"
 
@@ -38,31 +39,6 @@ const AssetPage = () => {
   } else {
     price = 0
   }
-
-  const unknownIBCDenomsData = useIBCBaseDenoms(
-    balances
-      .map(({ denom, chain }) => ({ denom, chainID: chain }))
-      .filter(({ denom, chainID }) => {
-        const data = readNativeDenom(denom, chainID)
-        return denom.startsWith("ibc/") && data.symbol.endsWith("...")
-      })
-  )
-
-  const unknownIBCDenoms = unknownIBCDenomsData.reduce(
-    (acc, { data }) =>
-      data
-        ? {
-            ...acc,
-            [[data.ibcDenom, data.chainIDs[data.chainIDs.length - 1]].join(
-              "*"
-            )]: {
-              baseDenom: data.baseDenom,
-              chains: data?.chainIDs,
-            },
-          }
-        : acc,
-    {} as Record<string, { baseDenom: string; chains: string[] }>
-  )
 
   const filteredBalances = balances.filter((b) => {
     return (
@@ -103,12 +79,13 @@ const AssetPage = () => {
         <p>
           <Read decimals={decimals} amount={totalBalance} fixed={2} /> {symbol}
         </p>
+        <WalletActionButtons />
       </section>
       <section className={styles.chainlist__container}>
         {filteredBalances.length > 0 && (
           <div className={styles.chainlist}>
             <div className={styles.chainlist__title}>
-              <h3>{t("Chains")}</h3>
+              <SectionHeader title={t("Balances")} withLine />
             </div>
             <div className={styles.chainlist__list}>
               {filteredBalances
@@ -123,18 +100,18 @@ const AssetPage = () => {
                       denom={b.denom}
                       decimals={decimals}
                     />
-                    {token === "uluna" &&
-                      symbol !== "LUNC" &&
-                      isTerraChain(b.chain) && <Vesting />}
                   </div>
                 ))}
+              {token === "uluna" && symbol !== "LUNC" && (
+                <AsseetVesting token={token} chain={chain} />
+              )}
             </div>
           </div>
         )}
         {filteredUnsupportedBalances.length > 0 && (
           <div className={styles.chainlist}>
             <div className={styles.chainlist__title}>
-              <h3>{t("Unsupported Chains")}</h3>
+              <SectionHeader title={t("Unsupported")} withLine />
             </div>
             <div className={styles.chainlist__list}>
               {filteredUnsupportedBalances
