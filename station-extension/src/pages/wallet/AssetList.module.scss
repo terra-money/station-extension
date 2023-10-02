@@ -3,7 +3,6 @@
 .assetlist {
   background-color: var(--card-bg-muted);
   padding-inline: 10px;
-  grid-area: list;
   display: grid;
   grid-template-areas: "title" "list";
   grid-template-rows: min-content auto;
@@ -16,23 +15,12 @@
   grid-area: title;
 }
 
-.manage__button {
-  display: flex;
-  gap: 8px;
-
-  svg {
-    width: 16px;
-    height: 16px;
-
-    path {
-      fill: var(--button-primary-bg);
-      stroke: var(--button-primary-bg);
-    }
-  }
-}
-
 .assetlist__list {
   overflow-y: auto;
   grid-area: list;
   padding-bottom: 1.6rem;
+}
+
+.filter {
+  fill: var(--token-dark-500);
 }
