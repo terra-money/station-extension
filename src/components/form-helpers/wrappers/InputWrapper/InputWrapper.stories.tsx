@@ -110,17 +110,13 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       }
     },
     error: {
-      control: false,
-      description: 'Error message to be displayed below the input',
       table: {
-        type: { summary: 'string' },
+        disable: true,
       }
     },
     warning: {
-      control: false,
-      description: 'Warning message to be displayed below the input',
       table: {
-        type: { summary: 'string' },
+        disable: true,
       }
     },
   },

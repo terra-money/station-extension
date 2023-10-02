@@ -1,0 +1,272 @@
+import { Meta, Story, Canvas, Controls } from "@storybook/blocks";
+import { RightArrow, DocsLink, RequiredText } from "../../DocsHelpers.tsx";
+import * as BaseInputStories from "./base/BaseInput.stories.tsx";
+import * as InputWrapperStories from "../form-helpers/wrappers/InputWrapper/InputWrapper.stories.tsx";
+import * as InLineInputStories from "./inline/InputInLine.stories.tsx";
+import * as CheckboxStories from "./checkbox/Checkbox.stories.tsx";
+import * as DropdownStories from "./dropdown/Dropdown.stories.tsx";
+import * as TextAreaStories from "./textarea/TextArea.stories.tsx";
+import * as SendAmountStories from "./send-amount/SendAmount.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Inputs" />
+
+# Inputs
+Different types of user input components.
+* Should typically be wrapper in `<Form />` with [useForm] from react-hook-form.
+
+# Base Input
+
+##### Basic Input component.
+* To add a label and error message, wrap this component in `<InputWrapper />`.
+
+## Props
+- **`actionIcon`** - `**object below**` - This will add a icon to the right side of the input.
+  - **`icon`** - <RequiredText /> - `ReactNode` - The icon to display.
+  - **`onClick`** - `() => void` - The function to run when the icon is clicked.
+- **`emoji`** - `string` - Adds an emoji to the right side of the input.
+  - ***This is not locked to just emojis. Any string can be passed in (for now)***
+
+## Import
+```jsx
+import { Input } from "station-ui";
+```
+
+## Variants
+<div className="sub__items">
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/Base" linkToID="default">
+      <h6 className="h6">Default</h6>
+      <Story of={BaseInputStories.Default} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/Base" linkToID="sub-icon">
+      <h6 className="h6">Sub Icon</h6>
+      <Story of={BaseInputStories.SubIcon} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/Base" linkToID="emoji">
+      <h6 className="h6">Emoji</h6>
+      <Story of={BaseInputStories.Emoji} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+</div>
+
+## InputWrapper Example
+<div className="story_with_source_below">
+  <Canvas of={InputWrapperStories.Playground}></Canvas>
+  <Controls of={InputWrapperStories.Playground} />
+</div>
+
+<br />
+<br />
+<br />
+
+# InputInLine
+
+##### An inpit with a label inline (inside) with the input.
+
+## Props
+- **`label`** - <RequiredText /> - `string` - The label next to the checkbox.
+- **`extra`** - `ReactNode` - Adds anything on the right side of the input.
+
+## Import
+```jsx
+import { InputInLine } from "station-ui";
+```
+
+## Variants
+<div className="sub__items">
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/Inline" linkToID="default">
+      <h6 className="h6">Default</h6>
+      <Story of={InLineInputStories.Default} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/Inline" linkToID="with-text-extra">
+      <h6 className="h6">With Text Extra</h6>
+      <Story of={InLineInputStories.WithTextExtra} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/Inline" linkToID="example-with-extra-paste">
+      <h6 className="h6">Example With Extra {"<Paste />"}</h6>
+      <Story of={InLineInputStories.ExampleWithExtraPaste} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+</div>
+
+<br />
+<br />
+<br />
+
+# Checkbox
+
+##### This is a checkbox component.
+
+## Props
+- **`label`** - <RequiredText /> - `string` - The label next to the checkbox.
+- **`checked`** - `boolean` - Displays a filled checkbox if true.
+
+## Import
+```jsx
+import { Checkbox } from "station-ui";
+```
+
+## Variants
+<div className="sub__items">
+  <div className="story__wrapper">
+    <DocsLink linkToRoute="Components/Inputs/Checkbox" linkToID="unchecked-checkbox">
+      <h6 className="h6">Unchecked</h6>
+      <Story of={CheckboxStories.UncheckedCheckbox} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+  <div className="story__wrapper">
+    <DocsLink linkToRoute="Components/Inputs/Checkbox" linkToID="checked-checkbox">
+      <h6 className="h6">Checked</h6>
+      <Story of={CheckboxStories.CheckedCheckbox} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+  <div className="story__wrapper">
+    <DocsLink linkToRoute="Components/Inputs/Checkbox" linkToID="disabled-checkbox">
+      <h6 className="h6">Disabled</h6>
+      <Story of={CheckboxStories.DisabledCheckbox} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+</div>
+
+<br />
+<br />
+<br />
+
+# Dropdown
+
+##### A dropdown component with icons or text only.
+
+## Props
+- **`options`** - <RequiredText /> - `**object below[]**` - Options for the Dropdown.
+  - **`value`** - <RequiredText /> - `string` - The value of the option.
+  - **`label`** - <RequiredText /> - `string` - The label of the option.
+  - **`image`** - `string` - The image of the option.
+- **`onChange`** - <RequiredText /> - `(value: string) => void` - The function to run when the value changes.
+- **`value`** - <RequiredText /> - `string` - The value of the selected option.
+
+## Import
+```jsx
+import { Dropdown } from "station-ui";
+```
+
+## Variants
+<div className="sub__items">
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/Dropdown" linkToID="default-text-only">
+      <h6 className="h6">Default Text Only</h6>
+      <Story of={DropdownStories.DefaultTextOnly} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "100%", height: "300px" }}>
+    <DocsLink linkToRoute="Components/Inputs/Dropdown" linkToID="default">
+      <h6 className="h6">Default</h6>
+      <Story of={DropdownStories.Default} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+</div>
+
+# TextArea
+
+##### Component for textarea. Has a "readOnly" option.
+
+## Props
+- **`TextareaHTMLAttributes<HTMLTextAreaElement>`**
+
+## Import
+```jsx
+import { TextArea } from "station-ui";
+```
+
+## Variants
+<div className="sub__items">
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/TextArea" linkToID="default">
+      <h6 className="h6">Default</h6>
+      <Story of={TextAreaStories.Default} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/TextArea" linkToID="read-only">
+      <h6 className="h6">Read Only</h6>
+      <Story of={TextAreaStories.ReadOnly} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/TextArea" linkToID="with-input-wrapper-example">
+      <h6 className="h6">With Input Wrapper Example</h6>
+      <Story of={TextAreaStories.WithInputWrapperExample} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+</div>
+
+<br />
+<br />
+<br />
+
+# SendAmount
+
+##### This is a component for send input.
+It has a dynamic width input... so it will grow and shrink based on the amount of text in the input.
+It is incredible. It was dificult to make. I am proud of it.
+
+## Props
+- **`displayType`** - <RequiredText /> - Determines if token or currency are the large input.
+  - Options are `token`, `currency`.
+- **`amount`** - <RequiredText /> - `number` - The number a user put in the input.
+- **`symbol`** - <RequiredText /> - `string` - The symbol of the token.
+- **`tokenIcon`** - <RequiredText /> - `string` - The icon of the token.
+- **`secondaryAmount`** - <RequiredText /> - `number` - The smaller amount on the bottom.
+- **`amountInputAttrs`** - <RequiredText /> - `InputHTMLAttributes<HTMLInputElement>` - Attributes from react-hook-form or others.
+- **`currencySymbol`** - <RequiredText /> - `string` - The symbol for the users currency.
+- **`price`** - <RequiredText /> - `number` - The price of the token.
+
+## Import
+```jsx
+import { SendAmount } from "station-ui";
+```
+
+## Variants
+<div className="sub__items">
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/Send Amount" linkToID="token-large">
+      <h6 className="h6">Token Large</h6>
+      <Story of={SendAmountStories.TokenLarge} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/Send Amount" linkToID="value-large">
+      <h6 className="h6">Value Large</h6>
+      <Story of={SendAmountStories.ValueLarge} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+</div>
+
+<br />
+<br />
+<br />
