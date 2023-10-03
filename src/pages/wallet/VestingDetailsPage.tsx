@@ -1,4 +1,4 @@
-import { SectionHeader, SummaryCard } from "station-ui"
+import { SectionHeader, SummaryCard, SendHeader } from "station-ui"
 import VestingCard from "./VestingCard"
 import {
   isVestingAccount,
@@ -7,46 +7,47 @@ import {
 } from "data/queries/vesting"
 import styles from "./VestingDetailsPage.module.scss"
 import { VestingScheduleItem } from "data/queries/vesting"
+import { ReadPercent, Read } from "components/token"
 
 interface Props {
   token?: string
   chain?: string
 }
 
-const AssetVesting = (props: Props) => {
+const AssetVesting = ({ token = "uluna" }: Props) => {
   const { data } = useAccount()
-  if (!data) return null
-  if (!isVestingAccount(data)) return null
+
+  if (!data || !isVestingAccount(data)) return null
 
   const { schedule } = parseVestingSchedule(data)
 
-  const getDateRange = (item: VestingScheduleItem) => {
-    return [item.start?.toLocaleString(), item.end.toLocaleDateString()]
-      .filter(Boolean)
-      .join(" - ")
+  const renderSummaryRows = (item: VestingScheduleItem) => {
+    const rows = [
+      { label: "Release Date", value: item.end.toLocaleDateString() },
+      { label: "Amount", value: <Read amount={item.amount} /> },
+      { label: "Ratio", value: <ReadPercent>{item.ratio}</ReadPercent> },
+    ]
+
+    return rows.map((row) => (
+      <div className={styles.row}>
+        <div className={styles.label}>{row.label}</div>
+        <div className={styles.value}>{row.value}</div>
+      </div>
+    ))
   }
 
   return (
     <>
-      <VestingCard token={props.token ?? "uluna"} />
+      <SendHeader heading="" label="Vesting Details" subLabel="" />
+      <VestingCard token={token} />
       {schedule.map((item, index) => (
         <>
-          <SectionHeader title={`Period ${index + 1}`} />
+          <SectionHeader
+            title={`Period ${index + 1}`}
+            className={styles.header}
+          />
           <SummaryCard className={styles.wrapper}>
-            <>
-              <div className={styles.row}>
-                <div className={styles.label}>Release Date</div>
-                <div className={styles.value}>{getDateRange(item)}</div>
-              </div>
-              <div className={styles.row}>
-                <div className={styles.label}>Amount</div>
-                <div className={styles.value}>{item.amount}</div>
-              </div>
-              <div className={styles.row}>
-                <div className={styles.label}>Ratio</div>
-                <div className={styles.value}>{item.ratio}</div>
-              </div>
-            </>
+            {renderSummaryRows(item)}
           </SummaryCard>
         </>
       ))}

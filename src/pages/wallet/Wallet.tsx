@@ -7,7 +7,6 @@ import createContext from "utils/createContext"
 import AssetPage from "./AssetPage"
 import ReceivePage from "./ReceivePage"
 import SendPage from "./SendPage"
-import VestingDetailsPage from "./VestingDetailsPage"
 import { PageTabs } from "station-ui"
 import { useTranslation } from "react-i18next"
 
@@ -16,7 +15,6 @@ enum Path {
   coin = "coin",
   receive = "receive",
   send = "send",
-  vesting = "vesting",
 }
 
 type Route =
@@ -25,7 +23,7 @@ type Route =
       denom?: string
     }
   | {
-      path: Path.coin | Path.receive | Path.send | Path.vesting
+      path: Path.coin | Path.receive | Path.send
       denom?: string
       previousPage: Route
     }
@@ -66,7 +64,7 @@ const Wallet = () => {
               onClick={setTab}
               tabs={[t("Assets"), t("Activity")]}
             />
-            {tab === 0 ? <AssetList /> : <p> Activty component</p>}
+            {tab === 0 ? <AssetList /> : <p>Activty component</p>}
           </>
         )
       case Path.coin:
@@ -88,13 +86,6 @@ const Wallet = () => {
           <>
             <BackButton />
             <SendPage />
-          </>
-        )
-      case Path.vesting:
-        return (
-          <>
-            <BackButton />
-            <VestingDetailsPage token={route.denom} />
           </>
         )
     }
