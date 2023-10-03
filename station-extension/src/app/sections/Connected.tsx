@@ -18,7 +18,7 @@ import PopoverNone from "../components/PopoverNone"
 import WalletQR from "./WalletQR"
 import styles from "./Connected.module.scss"
 import { ModalButton } from "components/feedback"
-import AddressTable from "app/components/AddressTable"
+import Addresses from "pages/wallet/Addresses"
 
 const Connected = () => {
   const { t } = useTranslation()
@@ -55,7 +55,7 @@ const Connected = () => {
                     </Tooltip>
                   )}
                 >
-                  <AddressTable finderLink />
+                  <Addresses />
                 </ModalButton>
               </section>
               <Flex gap={4} start>

@@ -22,8 +22,9 @@ const AssetVesting = ({ token = "uluna" }: Props) => {
   const { schedule } = parseVestingSchedule(data)
 
   const renderSummaryRows = (item: VestingScheduleItem) => {
+    const dateRange = `${item.start?.toLocaleDateString()} - ${item.end.toLocaleDateString()}`
     const rows = [
-      { label: "Release Date", value: item.end.toLocaleDateString() },
+      { label: "Release Date", value: dateRange },
       { label: "Amount", value: <Read amount={item.amount} /> },
       { label: "Ratio", value: <ReadPercent>{item.ratio}</ReadPercent> },
     ]
@@ -37,7 +38,7 @@ const AssetVesting = ({ token = "uluna" }: Props) => {
   }
 
   return (
-    <>
+    <div className={styles.container}>
       <SendHeader heading="" label="Vesting Details" subLabel="" />
       <VestingCard token={token} />
       {schedule.map((item, index) => (
@@ -51,7 +52,7 @@ const AssetVesting = ({ token = "uluna" }: Props) => {
           </SummaryCard>
         </>
       ))}
-    </>
+    </div>
   )
 }
 
