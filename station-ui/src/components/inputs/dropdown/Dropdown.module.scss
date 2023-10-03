@@ -26,6 +26,7 @@
   span {
     display: flex;
     @include Medium;
+    color: var(--token-light-white);
 
     img {
       width: 18px;

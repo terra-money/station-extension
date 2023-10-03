@@ -1,0 +1,225 @@
+import {
+  Meta,
+  Story,
+  Canvas,
+  Controls,
+  ArgTypes,
+  Description,
+  Source,
+} from "@storybook/blocks";
+import { RightArrow, DocsLink, RequiredText } from "../../DocsHelpers.tsx";
+import * as DelegationStories from "./delegation/Delegation.stories.tsx";
+import * as ProposalCardStories from "./proposal/ProposalCard.stories.tsx";
+import * as SummaryCardStories from "./summary/SummaryCard.stories.tsx";
+import * as VestingCardStories from "./vesting/VestingCard.stories.tsx";
+import * as WalletSummaryCardStories from "./wallet-summary/WalletSummaryCard.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Cards" />
+
+# Cards
+Cards are used to display information in a structured way. Will likely contain other components.
+
+# DelegationCard
+
+##### This is used to show a wallets individual delegation information.
+
+## Props
+- **`validator`** - <RequiredText /> - `**object below**` - Data for the validator to display.
+  - `{ name: string; img: string; description: string }`
+- **`onClick`** - <RequiredText /> - `() => void` - OnClick function for the card.
+- **`className`** - `string` - ClassName override for the card.
+- **`children`** - `ReactNode` - Children to display on the card below the validator.
+  - Should be `<TokenSingleChainListItem />` for this component.
+
+## Import
+```jsx
+import { DelegationCard } from "station-ui";
+```
+
+## Variants
+<div className="sub__items">
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Cards/DelegationCard" linkToID="default">
+      <h6 className="h6">Default</h6>
+      <Story of={DelegationStories.Default} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+</div>
+
+<br />
+<br />
+<br />
+
+# ProposalCard
+
+##### This is used to show a wallets individual delegation information.
+
+## Props
+- **`proposal`** - <RequiredText /> - `**object below**` - Data for the proposal to display.
+  - `{ metaText: string; metaImage: string; title: string; submittedDate: string; }`
+- **`progressData`** - <RequiredText /> - `ProgressBarData[]` - Data for the `<ProgressBar />`.
+  - **`ProgressBarData`** = `{`
+    - **`type`**: `'yes' | 'abstain' | 'no' | 'noWithVeto' | 'deposit'`
+    - **`percent`**: `string`
+  - `}`
+- **`threshold`** - <RequiredText /> - `number` - The threshold for the ProgressBar.
+- **`progressLabelOverride`** - `string` - Override for the progress label.
+- **`className`** - `string` - ClassName override for the card.
+
+## Import
+```jsx
+import { ProposalCard } from "station-ui";
+```
+
+## Variants
+<div className="sub__items">
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Cards/ProposalCard" linkToID="default">
+      <h6 className="h6">Default</h6>
+      <Story of={ProposalCardStories.Default} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Cards/ProposalCard" linkToID="deposit">
+      <h6 className="h6">Deposit</h6>
+      <Story of={ProposalCardStories.Deposit} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+</div>
+
+<br />
+<br />
+<br />
+
+# SummaryCard
+
+##### This card is a very low level card. Basically just a background with a border radius and padding.
+
+## Props
+- **`children`** - `ReactNode` - The content to be displayed on this card.
+- **`className`** - `string` - ClassName override for the card.
+
+## Import
+```jsx
+import { SummaryCard } from "station-ui";
+```
+
+## Variants
+<div className="sub__items">
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Cards/SummaryCard" linkToID="default">
+      <h6 className="h6">Default</h6>
+      <Story of={SummaryCardStories.Default} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+</div>
+
+<br />
+<br />
+<br />
+
+# VestingCard
+
+##### A Card to display vesting information.
+
+## Props
+- **`vestedAmount`** - <RequiredText /> - `string` - The threshold for the ProgressBar.
+- **`children`** - `ReactNode` - The content to be displayed on this card.
+  - Should be **`<TokenSingleChainListItem />`** for this component.
+- **`className`** - `string` - ClassName override for the card.
+
+## Import
+```jsx
+import { VestingCard } from "station-ui";
+```
+
+## Variants
+<div className="sub__items">
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Cards/VestingCard" linkToID="default">
+      <h6 className="h6">Default</h6>
+      <Story of={VestingCardStories.Default} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+</div>
+
+<br />
+<br />
+<br />
+
+# Wallet Summary Card
+
+##### A Card to display Wallet Summary information.
+
+## Props
+- **`walletType`** - <RequiredText /> - `string` - To display the wallet type.
+- **`walletAddress`** - <RequiredText /> - `string` - The address of the wallet.
+- **`walletBalance`** - <RequiredText /> - `string` - The balance of the wallet.
+- **`prevTransactions`** - <RequiredText /> - `string` - The 'number' of transactions (as a string).
+- **`isActive`** - `boolean` - Set if the card is active.
+- **`className`** - `string` - ClassName override for the card.
+- **`onClick`** - `() => void` - A function of what to do when this card is clicked.
+
+## Import
+```jsx
+import { WalletSummaryCard } from "station-ui";
+```
+
+## Variants
+<div className="sub__items">
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/Cards/WalletSummaryCard" linkToID="default">
+      <h6 className="h6">Default</h6>
+      <Story of={WalletSummaryCardStories.Default} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/Cards/WalletSummaryCard" linkToID="has-values">
+      <h6 className="h6">Has Values</h6>
+      <Story of={WalletSummaryCardStories.HasValues} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/Cards/WalletSummaryCard" linkToID="is-active">
+      <h6 className="h6">Is Active</h6>
+      <Story of={WalletSummaryCardStories.IsActive} />
+      {/* See More<RightArrow /> */}
+    </DocsLink>
+  </div>
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

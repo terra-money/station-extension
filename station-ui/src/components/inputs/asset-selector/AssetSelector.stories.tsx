@@ -89,8 +89,7 @@ const StorybookExample = () => {
             {Object.keys(tokensBySymbol).map((token, index) => (
               <TokenSingleChainListItem
                 key={index}
-                balance={walletBalance[token] || "0"}
-                currency={{ id: 'usd', symbol: '$', name: 'USD' }}
+                priceNode={<span>$ {tokenPrices[token]}</span>}
                 tokenImg={tokensBySymbol[token].tokenIcon}
                 symbol={tokensBySymbol[token].symbol}
                 price={tokenPrices[token]}
