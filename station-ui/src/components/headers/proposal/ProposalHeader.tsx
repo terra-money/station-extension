@@ -20,7 +20,7 @@ const ProposalHeader = ({
         <img src={metaImage} alt="Proposal Meta" />
         <h6 className={styles.meta__text}>{metaText}</h6>
       </div>
-      <h1 className={styles.title}>{title}</h1>
+      <h3 className={styles.title}>{title}</h3>
       <h6 className={styles.submitted__date}>Submitted {submittedDate}</h6>
     </FlexColumn>
   );
