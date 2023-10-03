@@ -1,15 +1,14 @@
 .wrapper {
   display: flex;
-  justify-content: space-between;
-  gap: 16px;
+  flex-direction: column;
 }
 
 .label {
-  color: var(--token-light-white);
+  color: var(--token-light-100);
 }
 
 .value {
-  color: var(--token-light-100);
+  color: var(--token-light-white);
 }
 
 .row {
@@ -18,4 +17,8 @@
   align-items: center;
   gap: 16px;
   margin-bottom: 16px;
+}
+
+.header {
+  margin: 10px 0px;
 }
