@@ -44,8 +44,6 @@ import { useCarbonFees } from "data/queries/tx"
 
 const cx = classNames.bind(styles)
 
-const cx = classNames.bind(styles)
-
 interface Props<TxValues> {
   /* Only when the token is paid out of the balance held */
   token?: Token
