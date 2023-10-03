@@ -65,6 +65,13 @@ function injectScript() {
     container.insertBefore(scriptTag, container.children[0])
     container.removeChild(scriptTag)
 
+    // inject the script that will provide window.nostr
+    const script = document.createElement('script')
+    script.setAttribute('async', 'false')
+    script.setAttribute('type', 'text/javascript')
+    script.setAttribute('src', chrome.runtime.getURL('nostrProvider.js'))
+    document.head.appendChild(script)
+
     browser.storage.local.get(["replaceKeplr"]).then(({ replaceKeplr }) => {
       if (replaceKeplr) {
         const keplrScriptTag = document.createElement("script")

@@ -59,6 +59,11 @@ const CoinTypeMnemonicForm = ({ close }: { close: () => void }) => {
         coinType: 60,
         index,
       })
+      const key1237 = new SeedKey({
+        seed,
+        coinType: 1237,
+        index,
+      })
 
       const isLegacy =
         wordsFromAddress(key118.accAddress("terra")) === wallet.words["330"]
@@ -81,6 +86,7 @@ const CoinTypeMnemonicForm = ({ close }: { close: () => void }) => {
           ),
           "118": wordsFromAddress(key118.accAddress("terra")),
           "60": wordsFromAddress(key60.accAddress("terra")),
+          "1237": wordsFromAddress(key1237.accAddress("npub")),
         },
         pubkey: {
           // @ts-expect-error
@@ -89,6 +95,8 @@ const CoinTypeMnemonicForm = ({ close }: { close: () => void }) => {
           "118": key118.publicKey.key,
           // @ts-expect-error
           "60": key60.publicKey.key,
+          // @ts-expect-error
+          "1237": key1237.publicKey.key,
         },
         seed,
         password,

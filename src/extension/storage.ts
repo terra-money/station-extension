@@ -31,7 +31,7 @@ export const storeWalletAddress = (wallet: {
   addresses: Record<ChainID, AccAddress>
   name?: string
   ledger?: boolean
-  pubkey?: { "330": string; "118"?: string }
+  pubkey?: { "330"?: string; "118"?: string; "1237"?: string }
   network: string
 }) => {
   browser.storage?.local.set({

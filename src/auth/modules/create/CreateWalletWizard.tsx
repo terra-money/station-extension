@@ -59,10 +59,12 @@ const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
     const key330 = new SeedKey({ seed, coinType, index })
     const key118 = new SeedKey({ seed, coinType: 118, index })
     const key60 = new SeedKey({ seed, coinType: 60, index })
+    const key1237 = new SeedKey({ seed, coinType: 1237, index })
     const words = {
       "330": wordsFromAddress(key330.accAddress("terra")),
       "118": wordsFromAddress(key118.accAddress("terra")),
       "60": wordsFromAddress(key60.accAddress("inj")),
+      "1237": wordsFromAddress(key1237.accAddress("npub")),
     }
 
     const pubkey = {
@@ -72,6 +74,8 @@ const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
       "118": key118.publicKey.key,
       // @ts-expect-error
       "60": key60.publicKey.key,
+      // @ts-expect-error
+      "1237": key1237.publicKey.key,
     }
 
     addWallet({
