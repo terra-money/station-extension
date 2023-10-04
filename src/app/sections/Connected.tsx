@@ -18,7 +18,7 @@ import PopoverNone from "../components/PopoverNone"
 import WalletQR from "./WalletQR"
 import styles from "./Connected.module.scss"
 import { ModalButton } from "components/feedback"
-import Addresses from "pages/wallet/Addresses"
+import Addresses from "pages/wallet/ReceivePage"
 
 const Connected = () => {
   const { t } = useTranslation()

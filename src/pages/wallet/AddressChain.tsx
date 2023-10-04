@@ -1,14 +1,12 @@
 import { Grid } from "components/layout"
 import QRCode from "auth/components/QRCode"
-import { PageHeader, InputWrapper } from "station-ui"
-import { TextArea } from "components/form"
+import { InputWrapper, Copy, TextArea } from "station-ui"
 
 const AddressChain = ({ address }: { address: string }) => {
   return (
     <Grid gap={20}>
-      <PageHeader title="recieve" description="" icon="" />
       <QRCode value={address} />
-      <InputWrapper extra={"BUTTON"}>
+      <InputWrapper label="Address" extra={<Copy copyText={address} />}>
         <TextArea readOnly value={address} />
       </InputWrapper>
     </Grid>
