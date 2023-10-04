@@ -9,6 +9,7 @@ import ReceivePage from "./ReceivePage"
 import SendPage from "./SendPage"
 import { PageTabs } from "station-ui"
 import { useTranslation } from "react-i18next"
+import { capitalize } from "@mui/material"
 
 enum Path {
   wallet = "wallet",
@@ -17,16 +18,11 @@ enum Path {
   send = "send",
 }
 
-type Route =
-  | {
-      path: Path.wallet
-      denom?: string
-    }
-  | {
-      path: Path.coin | Path.receive | Path.send
-      denom?: string
-      previousPage: Route
-    }
+type Route = {
+  path: Path.coin | Path.receive | Path.send | Path.wallet
+  denom?: string
+  previousPage?: Route
+}
 
 // Handle routing inside Wallet
 const [useWalletRoute, WalletRouter] = createContext<{
@@ -41,16 +37,21 @@ const Wallet = () => {
   const [tab, setTab] = useState(0)
   const { t } = useTranslation()
 
-  const BackButton = () => {
+  const Header = () => {
     if (route.path === Path.wallet) return null
+    const title =
+      route.path === Path.receive || route.path === Path.send ? route.path : ""
 
     return (
-      <button
-        className={styles.back}
-        onClick={() => setRoute(route.previousPage)}
-      >
-        <BackIcon width={18} height={18} data-testid="BackIcon" />
-      </button>
+      <div className={styles.header}>
+        <button
+          className={styles.back}
+          onClick={() => setRoute(route.previousPage ?? { path: Path.wallet })}
+        >
+          <BackIcon data-testid="BackIcon" />
+        </button>
+        {title && <h1>{capitalize(title)}</h1>}
+      </div>
     )
   }
   const render = () => {
@@ -70,21 +71,21 @@ const Wallet = () => {
       case Path.coin:
         return (
           <>
-            <BackButton />
+            <Header />
             <AssetPage />
           </>
         )
       case Path.receive:
         return (
           <>
-            <BackButton />
+            <Header />
             <ReceivePage />
           </>
         )
       case Path.send:
         return (
           <>
-            <BackButton />
+            <Header />
             <SendPage />
           </>
         )

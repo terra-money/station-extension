@@ -19,9 +19,10 @@ interface WalletActionButton {
   disabled?: boolean
   primary?: boolean
   hide?: boolean
+  denom?: string
 }
 
-const WalletActionButtons = () => {
+const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
   const networks = useNetwork()
@@ -46,6 +47,7 @@ const WalletActionButtons = () => {
         setRoute({
           path: Path.send,
           previousPage: route,
+          denom,
         }),
       disabled: sendButtonDisabled,
     },

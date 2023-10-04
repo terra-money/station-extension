@@ -7,7 +7,7 @@ const QRCode = ({ value }: { value: string }) => {
     <Flex>
       <QRCodeReact
         value={value}
-        size={320}
+        size={200}
         bgColor={variable("--card-bg")}
         fgColor={variable("--text")}
         renderAs="svg"
