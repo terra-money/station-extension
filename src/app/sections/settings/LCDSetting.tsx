@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { useNetworks } from "app/InitNetworks"
 import { useEffect, useMemo } from "react"
-// import { Input } from "components/form"
 import styles from "./LCDSetting.module.scss"
 import { useValidateLCD } from "data/queries/tendermint"
 import { LoadingCircular } from "components/feedback"
@@ -11,9 +10,17 @@ import ClearIcon from "@mui/icons-material/Clear"
 import CheckIcon from "@mui/icons-material/Check"
 import { Flex } from "components/layout"
 import { useCustomLCDs } from "utils/localStorage"
-import { Dropdown, Button, Input, Form, InputWrapper } from "station-ui"
+import {
+  Dropdown,
+  Input,
+  Form,
+  InputWrapper,
+  ButtonInlineWrapper,
+  SubmitButton,
+} from "station-ui"
 import classNames from "classnames"
-import DeleteIcon from "@mui/icons-material/Delete"
+import { useSettingsPage } from "./Preferences"
+import DeleteButton from "components/form/DeleteButton"
 
 const cx = classNames.bind(styles)
 interface FormValues {
@@ -22,12 +29,17 @@ interface FormValues {
   lcd?: string
 }
 
-const LCDSetting = () => {
+interface Props {
+  selectedChainID?: string // for edit
+}
+
+const LCDSetting = (props: Props) => {
   const networkName = useNetworkName()
   const networkOptions = useNetworkOptions()
   const { networks } = useNetworks()
   const { t } = useTranslation()
   const { customLCDs, changeCustomLCDs } = useCustomLCDs()
+  const { setPage } = useSettingsPage()
   const form = useForm<FormValues>({ mode: "onChange" })
   const {
     register,
@@ -37,6 +49,7 @@ const LCDSetting = () => {
     formState: { errors },
   } = form
   const { network, chainID, lcd } = watch()
+  const { selectedChainID } = props
   const networksList = useMemo(
     () =>
       Object.values(networks[network] ?? {})
@@ -58,12 +71,12 @@ const LCDSetting = () => {
 
   useEffect(() => {
     if (!networksList.length) return
-    setValue("chainID", networksList[0].value)
-  }, [setValue, networksList])
+    setValue("chainID", selectedChainID ?? networksList[0].value)
+  }, [setValue, networksList, selectedChainID])
 
   useEffect(() => {
-    setValue("lcd", customLCDs[chainID] ?? "")
-  }, [setValue, customLCDs, chainID])
+    setValue("lcd", customLCDs[selectedChainID ?? chainID] ?? "")
+  }, [setValue, customLCDs, chainID, selectedChainID])
 
   const { data: errorMessage, isLoading } = useValidateLCD(
     lcd,
@@ -112,11 +125,12 @@ const LCDSetting = () => {
   const submit = ({ chainID, lcd }: FormValues) => {
     if (isDisabled) return
     changeCustomLCDs(chainID, lcd)
+    setPage("network")
   }
 
-  const reset = (chainID: string) => {
+  const handleDelete = () => {
     changeCustomLCDs(chainID, undefined)
-    setValue("lcd", undefined)
+    setPage("network")
   }
 
   return (
@@ -145,39 +159,31 @@ const LCDSetting = () => {
         <Input
           type="text"
           placeholder={networks[network]?.[chainID]?.lcd}
-          actionIcon={
-            lcd || !isSaved
-              ? {
-                  icon: (
-                    <span className={styles.loading}>
-                      <DeleteIcon />
-                    </span>
-                  ),
-                  onClick: () => reset(chainID),
-                }
-              : undefined
-          }
+          // actionIcon={
+          //   lcd || !isSaved
+          //     ? {
+          //         icon: (
+          //           <span className={styles.loading}>
+          //             <DeleteIcon />
+          //           </span>
+          //         ),
+          //         onClick: () => handleDelete(),
+          //       }
+          //     : undefined
+          // }
           {...register("lcd", {
             value: customLCDs[chainID] ?? "",
           })}
         />
       </InputWrapper>
-      <div className={styles.button__padding} />
-      <section className={styles.button__conainer}>
-        <Button
-          variant="primary"
+      <ButtonInlineWrapper>
+        {selectedChainID && <DeleteButton onClick={handleDelete} />}
+        <SubmitButton
+          loading={isLoading}
           disabled={isDisabled || isSaved}
-          type="submit"
-        >
-          {isLoading ? (
-            <>
-              <LoadingCircular size={18} /> Loading...
-            </>
-          ) : (
-            <>Create Custom RPC</>
-          )}
-        </Button>
-      </section>
+          label="Create Custom RPC"
+        />
+      </ButtonInlineWrapper>
     </Form>
   )
 }

@@ -9,9 +9,8 @@ type Item =
 const AuthList = ({ list }: { list: Item[] }) => {
   const renderItem = ({ children, icon, ...props }: Item) => {
     if ("onClick" in props) {
-      const { onClick } = props
       return (
-        <button className={styles.link} onClick={onClick} key={children}>
+        <button className={styles.link} onClick={props.onClick} key={children}>
           {children}
           {icon}
         </button>

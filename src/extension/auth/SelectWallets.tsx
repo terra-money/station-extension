@@ -1,6 +1,6 @@
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"
 import KeyboardBackspaceRoundedIcon from "@mui/icons-material/KeyboardBackspaceRounded"
 import MoreVertIcon from "@mui/icons-material/MoreVert"
+import AddIcon from "@mui/icons-material/Add"
 import UsbIcon from "@mui/icons-material/Usb"
 import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import { useAuth } from "auth"
@@ -16,6 +16,9 @@ import { useTranslation } from "react-i18next"
 import AddWallet from "./AddWallet"
 import ManageWallet from "./ManageWallet"
 import styles from "./SelectWallets.module.scss"
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
+import SwitchWallet from "./SwitchWallet"
+import { ReactComponent as WalletIcon } from "styles/images/icons/Wallet.svg"
 import { bech32 } from "bech32"
 import is from "auth/scripts/is"
 import { addressFromWords } from "utils/bech32"
@@ -55,7 +58,7 @@ export default function ManageWallets() {
   if (!selectedWallet && !isLedger)
     return (
       <button className={styles.manage__wallets}>
-        <AccountBalanceWalletIcon style={{ fontSize: 18 }} /> Connect wallet
+        <WalletIcon style={{ fontSize: 20 }} /> Connect wallet
       </button>
     )
 
@@ -89,10 +92,12 @@ export default function ManageWallets() {
               <UsbIcon style={{ fontSize: 18 }} />
             )
           ) : (
-            <AccountBalanceWalletIcon style={{ fontSize: 18 }} />
+            <WalletIcon style={{ fontSize: 18 }} />
           )}{" "}
           {wallet && "name" in wallet ? wallet.name : "Ledger"}
-          <MoreVertIcon style={{ marginLeft: "-6px", fontSize: "1.25rem" }} />
+          <ArrowDropDownIcon
+            style={{ marginLeft: "-6px", fontSize: "1.25rem" }}
+          />
         </button>
       )}
       //maxHeight

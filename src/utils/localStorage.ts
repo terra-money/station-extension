@@ -11,7 +11,7 @@ export enum SettingKey {
   CustomChains = "CustomChains",
   GasAdjustment = "GasAdjust", // Tx
   AddressBook = "AddressBook", // Send
-  HideNonWhitelistTokens = "HideNonWhiteListTokens",
+  OnlyShowWhitelist = "OnlyShowWhitelist",
   Network = "Network",
   CustomLCD = "CustomLCD",
   HideLowBalTokens = "HideLowBalTokens",
@@ -60,7 +60,7 @@ export const DefaultSettings = {
   [SettingKey.CustomTokens]: DefaultCustomTokens as CustomTokens,
   [SettingKey.MinimumValue]: 0,
   [SettingKey.NetworkCacheTime]: 0,
-  [SettingKey.HideNonWhitelistTokens]: true,
+  [SettingKey.OnlyShowWhitelist]: true,
   [SettingKey.HideLowBalTokens]: true,
   [SettingKey.WithdrawAs]: "",
   [SettingKey.Network]: "",
@@ -87,9 +87,9 @@ export const setLocalSetting = <T>(key: SettingKey, value: T) => {
   localStorage.setItem(key, item)
 }
 
-export const hideNoWhitelistState = atom({
-  key: "hideNoWhitelistState",
-  default: !!getLocalSetting(SettingKey.HideNonWhitelistTokens),
+export const onlyShowWhitelistState = atom({
+  key: "onlyShowWhitelist",
+  default: !!getLocalSetting(SettingKey.OnlyShowWhitelist),
 })
 
 export const hideLowBalTokenState = atom({
@@ -144,7 +144,7 @@ export const useSavedNetwork = () => {
 
 export const useCustomLCDs = () => {
   const [customLCDs, setCustomLCDs] = useRecoilState(customLCDState)
-  function changeCustomLCDs(chainID: string, lcd: string | undefined) {
+  const changeCustomLCDs = (chainID: string, lcd: string | undefined) => {
     const newLCDs = { ...customLCDs, [chainID]: lcd }
     setLocalSetting(SettingKey.CustomLCD, newLCDs)
     setCustomLCDs(newLCDs)
@@ -178,12 +178,13 @@ export const useCustomChains = () => {
 }
 
 export const useTokenFilters = () => {
-  const [hideNoWhitelist, setHideNoWhitelist] =
-    useRecoilState(hideNoWhitelistState)
-  const toggleHideNoWhitelist = useCallback(() => {
-    setLocalSetting(SettingKey.HideNonWhitelistTokens, !hideNoWhitelist)
-    setHideNoWhitelist(!hideNoWhitelist)
-  }, [hideNoWhitelist, setHideNoWhitelist])
+  const [onlyShowWhitelist, setOnlyShowWhitelist] = useRecoilState(
+    onlyShowWhitelistState
+  )
+  const toggleOnlyShowWhitelist = useCallback(() => {
+    setLocalSetting(SettingKey.OnlyShowWhitelist, !onlyShowWhitelist)
+    setOnlyShowWhitelist(!onlyShowWhitelist)
+  }, [onlyShowWhitelist, setOnlyShowWhitelist])
 
   const [hideLowBal, setHideLowBal] = useRecoilState(hideLowBalTokenState)
   const toggleHideLowBal = useCallback(() => {
@@ -192,8 +193,8 @@ export const useTokenFilters = () => {
   }, [hideLowBal, setHideLowBal])
 
   return {
-    hideNoWhitelist,
-    toggleHideNoWhitelist,
+    onlyShowWhitelist,
+    toggleOnlyShowWhitelist,
     toggleHideLowBal,
     hideLowBal,
   }

@@ -9,7 +9,7 @@ import {
   InputWrapper,
   Input,
   SubmitButton,
-  Flex,
+  ButtonInlineWrapper,
 } from "station-ui"
 import DeleteButton from "components/form/DeleteButton"
 
@@ -26,8 +26,9 @@ const AddressBookForm = (props: Props) => {
 
   /* form */
   const form = useForm<AddressBook>({ mode: "onChange" })
-  const { register, handleSubmit, formState } = form
+  const { register, handleSubmit, formState, watch } = form
   const { errors } = formState
+  const { favorite } = watch()
 
   useEffect(() => {
     if (index !== undefined) form.reset(list[index])
@@ -75,12 +76,16 @@ const AddressBookForm = (props: Props) => {
         />
       </InputWrapper>
       <InputWrapper>
-        <Checkbox label="Mark as Favorite" {...register("favorite")} />
+        <Checkbox
+          label="Mark as Favorite"
+          checked={favorite}
+          {...register("favorite")}
+        />
       </InputWrapper>
-      <Flex gap={28}>
+      <ButtonInlineWrapper>
         {index !== undefined && <DeleteButton onClick={deleteOnClick} />}
         <SubmitButton label={t("Save")} />
-      </Flex>
+      </ButtonInlineWrapper>
     </Form>
   )
 }

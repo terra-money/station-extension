@@ -15,8 +15,6 @@ const SettingsSelector = ({
   onChange,
   accordion,
 }: Props) => {
-  // const { deleteCustomChain } = useCustomChains()
-
   const [openAcc, setOpenAcc] = useState<number>()
   const { networks } = useNetworks()
 
@@ -26,7 +24,7 @@ const SettingsSelector = ({
         <RadioListItem
           key={value}
           label={label}
-          checked={selectedOption === value}
+          checked={value === selectedOption}
           onClick={() => onChange(value)}
           {...(accordion && {
             isOpen: openAcc === index,
