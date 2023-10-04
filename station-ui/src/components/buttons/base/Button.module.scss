@@ -9,6 +9,7 @@
   border-radius: 8px;
   gap: 8px;
   padding: 0 20px;
+  transition: all 0.2s ease-in-out;
 
   @include Small;
   color: var(--token-light-white);
@@ -17,6 +18,13 @@
     width: 14px;
     height: 14px;
   }
+
+  &:disabled {
+    background-color: var(--token-dark-500);
+    color: var(--token-dark-900);
+    box-shadow: none;
+    pointer-events: none;
+  }
 }
 
 .primary {
@@ -24,11 +32,20 @@
   box-shadow:
     inset 0px 1px 0px 0px rgba(255, 255, 255, 20%),
     0px 4px 24px 0px hsla(240, 5%, 15%, 30%);
+
+  &:hover {
+    background-color: var(--token-primary-600);
+  }
 }
 
 .secondary {
-  background-color: var(--token-dark-700);
+  border: 1px solid var(--token-dark-900);
   color: var(--token-light-100);
+
+  &:hover {
+    border: 1px solid var(--token-light-100);
+    color: var(--token-light-500);
+  }
 }
 
 .block {
