@@ -1,13 +1,9 @@
 import {
   Meta,
   Story,
-  Canvas,
-  Controls,
-  ArgTypes,
-  Description,
   Source,
 } from "@storybook/blocks";
-import { RightArrow, DocsLink, RequiredText } from "../../DocsHelpers.tsx";
+import { RightArrow, DocsLink, RequiredText, InLineDocsLink } from "../../DocsHelpers.tsx";
 import * as DelegationStories from "./delegation/Delegation.stories.tsx";
 import * as ProposalCardStories from "./proposal/ProposalCard.stories.tsx";
 import * as SummaryColumnStories from "./summary/column/SummaryColumn.stories.tsx";
@@ -21,7 +17,7 @@ import "scss/storybookoverrides.scss";
 # Cards
 Cards are used to display information in a structured way. Will likely contain other components.
 
-# DelegationCard [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-cards-delegation--docs)
+# DelegationCard [<InLineDocsLink />](/docs/components-cards-delegation--docs)
 
 ##### This is used to show a wallets individual delegation information.
 
@@ -53,7 +49,7 @@ import { DelegationCard } from "station-ui";
 <br />
 <br />
 
-# ProposalCard [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-cards-proposal--docs)
+# ProposalCard [<InLineDocsLink />](/docs/components-cards-proposal--docs)
 
 ##### This is used to show a wallets individual delegation information.
 
@@ -96,7 +92,7 @@ import { ProposalCard } from "station-ui";
 <br />
 <br />
 
-# SummaryColumn [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-cards-summary--docs)
+# SummaryColumn [<InLineDocsLink />](/docs/components-cards-summary--docs)
 
 ##### Displays a Title and a Description in a column on a card.
 
@@ -133,7 +129,7 @@ import { SummaryColumn } from "station-ui";
 <br />
 <br />
 
-# SummaryTable [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-cards-summary--docs#summarytable)
+# SummaryTable [<InLineDocsLink />](/docs/components-cards-summary--docs#summarytable)
 
 ##### Displays rows spaced apart.
 
@@ -162,7 +158,7 @@ import { SummaryTable } from "station-ui";
 <br />
 <br />
 
-# VestingCard [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-cards-vesting--docs)
+# VestingCard [<InLineDocsLink />](/docs/components-cards-vesting--docs)
 
 ##### A Card to display vesting information.
 
@@ -192,7 +188,7 @@ import { VestingCard } from "station-ui";
 <br />
 <br />
 
-# Wallet Summary Card [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-cards-walletsummary--docs)
+# Wallet Summary Card [<InLineDocsLink />](/docs/components-cards-walletsummary--docs)
 
 ##### A Card to display Wallet Summary information.
 

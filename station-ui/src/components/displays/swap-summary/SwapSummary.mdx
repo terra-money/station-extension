@@ -1,0 +1,77 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as SwapSummaryStories from "./SwapSummary.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Displays/Swap Summary" />
+
+# Swap Summary
+
+##### This just displays a summary of a swap.
+
+## Swap Summary Props
+- **`fromAsset`** - <RequiredText /> - `**below object**` - The from asset information.
+  - `{`
+    `symbol: string`
+    `amount: string`
+    `icon: string`
+  `}`
+- **`toAsset`** - <RequiredText /> - `**below object**` - The to asset information.
+  - `{`
+    `symbol: string`
+    `amount: string`
+    `icon: string`
+  `}`
+
+## Import
+```jsx
+import { SwapSummary } from "station-ui";
+```
+
+## Stories
+
+## Default
+A Display summary of a swap.
+<div className="story_with_source_below">
+  <Canvas of={SwapSummaryStories.Default} />
+  <Source code={`
+    <SwapSummary
+  fromAsset={{
+    symbol: 'KUJI',
+    amount: '1000',
+    icon: 'https://station-assets.terra.dev/img/coins/Kuji.svg',
+  }}
+  toAsset={{
+    symbol: 'LUNA',
+    amount: '0.0015',
+    icon: 'https://station-assets.terra.dev/img/coins/Luna.svg',
+  }}
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

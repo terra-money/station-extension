@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import SwapSummary, { SwapSummaryProps } from './SwapSummary';
 
 const meta: Meta<SwapSummaryProps> = {
-  title: 'Components/Displays/Swap Summary',
+  title: 'Components/Displays/Swap Summary/Stories',
   component: SwapSummary,
   argTypes: {},
 } as Meta;

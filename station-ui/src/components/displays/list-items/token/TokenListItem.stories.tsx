@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import TokenListItem, { TokenListItemProps } from './default/TokenListItem';
 import TokenSingleChainListItem, { TokenSingleChainListItemProps } from './single-chain/TokenSingleChainListItem';
 import TokenCheckboxListItem, { TokenCheckboxListItemProps } from './single-chain/TokenCheckboxListItem';
-import { useState } from 'react';
 
 const meta: Meta<TokenListItemProps> = {
-  title: 'Components/List Items/Token',
+  title: 'Components/List Items/Token/Stories',
   component: TokenListItem,
   argTypes: {},
 } as Meta;

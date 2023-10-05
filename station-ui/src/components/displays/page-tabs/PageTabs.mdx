@@ -1,0 +1,65 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as PageTabsStories from "./PageTabs.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Displays/Page Tabs" />
+
+# Page Tabs
+
+##### These tabs are used to navigate between pages.
+
+## Props
+- **`tabs`** - <RequiredText /> - `string[]` - The label of the tabs.
+- **`activeTab`** - <RequiredText /> - `number` - The index of the active tab.
+- **`onClick`** - <RequiredText /> - `(index: number) => void` - Controls what happens on click.
+
+## Import
+```jsx
+import { PageTabs } from "station-ui";
+```
+
+## Stories
+
+## Default
+Provides users with inportant information.
+<div className="story_with_source_below">
+  <Canvas of={PageTabsStories.Default} />
+  <Source code={`
+    const [activeTab, setActiveTab] = useState(1);
+
+return (
+  <PageTabs
+    tabs={['Tab 1', 'Tab 2', 'Tab 3']}
+    activeTab={activeTab}
+    onClick={setActiveTab}
+  />
+);
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
