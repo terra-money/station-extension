@@ -3,8 +3,13 @@ import AddIcon from "@mui/icons-material/Add"
 import UsbIcon from "@mui/icons-material/Usb"
 import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import { useAuth } from "auth"
-import { ModalButton, useModal } from "components/feedback"
-import { Button } from "components/general"
+import {
+  FlexColumn,
+  ModalButton,
+  NavButton,
+  WalletList,
+  useModal,
+} from "station-ui"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import AddWallet from "./AddWallet"
@@ -15,6 +20,8 @@ import SwitchWallet from "./SwitchWallet"
 import { ReactComponent as WalletIcon } from "styles/images/icons/Wallet.svg"
 import { bech32 } from "bech32"
 import is from "auth/scripts/is"
+import { addressFromWords } from "utils/bech32"
+import { truncate } from "@terra-money/terra-utils"
 
 enum Path {
   select = "select",
@@ -22,10 +29,19 @@ enum Path {
   add = "add",
 }
 
-const ManageWallets = () => {
+type Navigation =
+  | {
+      path: Path.select | Path.add
+    }
+  | {
+      path: Path.manage
+      wallet: string
+    }
+
+export default function ManageWallets() {
   const { wallet, wallets } = useAuth()
   const { t } = useTranslation()
-  const [path, setPath] = useState(Path.select)
+  const [route, setRoute] = useState<Navigation>({ path: Path.select })
   const selectedWallet = wallets.find((w) => {
     if ("words" in w) {
       return w.words["330"] === wallet?.words["330"]
@@ -45,14 +61,25 @@ const ManageWallets = () => {
       </button>
     )
 
+  function renderTitle() {
+    switch (route.path) {
+      case Path.select:
+        return t("Wallet Selector")
+      case Path.manage:
+        return t("Manage Wallet")
+      case Path.add:
+        return t("Add Wallet")
+    }
+  }
+
   return (
     <ModalButton
-      title={t("Manage Wallets")}
+      title={renderTitle()}
       renderButton={(open) => (
         <button
           onClick={() => {
             open()
-            setPath(Path.select)
+            setRoute({ path: Path.select })
           }}
           className={styles.manage__wallets}
           data-testid="manage-wallets-button"
@@ -72,47 +99,80 @@ const ManageWallets = () => {
           />
         </button>
       )}
-      maxHeight
+      //maxHeight
     >
-      {path !== Path.select && (
+      {route.path !== Path.select && (
         <button
-          onClick={() => setPath(Path.select)}
+          onClick={() => setRoute({ path: Path.select })}
           style={{ position: "absolute", top: 43, left: 30 }}
         >
           <KeyboardBackspaceRoundedIcon style={{ fontSize: 24 }} />
         </button>
       )}
-      <ManageWalletsModal />
+      <ManageWalletsModal route={route} setRoute={setRoute} />
     </ModalButton>
   )
 }
 
-function ManageWalletsModal() {
-  const { t } = useTranslation()
-  const [path, setPath] = useState(Path.select)
-  const close = useModal()
+interface Props {
+  route: Navigation
+  setRoute: (path: Navigation) => void
+}
 
-  switch (path) {
+function ManageWalletsModal({ route, setRoute }: Props) {
+  const { t } = useTranslation()
+  const { closeModal } = useModal()
+  const { wallets, connect, connectedWallet } = useAuth()
+
+  switch (route.path) {
     case Path.select:
       return (
-        <>
-          <SwitchWallet manage={() => setPath(Path.manage)} onSwitch={close} />
-          <Button
-            className={styles.add__button}
-            onClick={() => setPath(Path.add)}
-          >
-            <AddIcon style={{ fontSize: 18 }} />
-            {t("Add a wallet")}
-          </Button>
-        </>
+        <FlexColumn gap={24} className={styles.select__wallet__container}>
+          <NavButton
+            label={t("Add Wallet")}
+            onClick={() => setRoute({ path: Path.add })}
+          />
+          <WalletList
+            activeWallet={{
+              name: connectedWallet?.name ?? "",
+              address: truncate(
+                addressFromWords(connectedWallet?.words["330"] ?? "", "terra"),
+                [11, 6]
+              ),
+              settingsOnClick: () =>
+                setRoute({
+                  path: Path.manage,
+                  wallet: connectedWallet?.name ?? "",
+                }),
+            }}
+            otherWallets={wallets
+              .filter(({ name }) => name !== connectedWallet?.name)
+              .map((wallet) => ({
+                name: wallet.name,
+                address: truncate(
+                  "address" in wallet
+                    ? wallet.address
+                    : addressFromWords(wallet.words["330"], "terra"),
+                  [11, 6]
+                ),
+                onClick: () => {
+                  connect(wallet.name)
+                  closeModal()
+                },
+                settingsOnClick: () =>
+                  setRoute({
+                    path: Path.manage,
+                    wallet: wallet.name,
+                  }),
+              }))}
+          />
+        </FlexColumn>
       )
 
     case Path.add:
       return <AddWallet />
 
     case Path.manage:
-      return <ManageWallet />
+      return <ManageWallet wallet={route.wallet} />
   }
 }
-
-export default ManageWallets

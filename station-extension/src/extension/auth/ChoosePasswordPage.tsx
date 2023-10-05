@@ -1,19 +1,19 @@
 import { useTranslation } from "react-i18next"
-import AccessWithLedgerForm from "auth/ledger/AccessWithLedgerForm"
 import ExtensionPage from "../components/ExtensionPage"
+import ChoosePasswordForm from "auth/modules/password/ChoosePasswordForm"
 
-const AccessWithLedgerPage = () => {
+const ChoosePasswordPage = () => {
   const { t } = useTranslation()
 
   return (
     <ExtensionPage
-      title={t("Access with Ledger")}
+      title={t("Create your password")}
       backButtonPath="/"
       fullHeight
     >
-      <AccessWithLedgerForm />
+      <ChoosePasswordForm />
     </ExtensionPage>
   )
 }
 
-export default AccessWithLedgerPage
+export default ChoosePasswordPage
