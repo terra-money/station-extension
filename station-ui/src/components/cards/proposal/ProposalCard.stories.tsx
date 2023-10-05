@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import ProposalCard, { ProposalCardProps } from './ProposalCard';
 
 const meta: Meta<ProposalCardProps> = {
-  title: 'Components/Cards/Proposal',
+  title: 'Components/Cards/Proposal/Stories',
   component: ProposalCard,
   argTypes: {},
 } as Meta;

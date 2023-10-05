@@ -1,0 +1,67 @@
+import {
+  Meta,
+  Story,
+  Canvas,
+  Controls,
+  ArgTypes,
+  Description,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as DelegationCardStories from "./Delegation.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Cards/Delegation" />
+
+# DelegationCard
+
+##### This is used to show a wallets individual delegation information.
+
+## Props
+- **`validator`** - <RequiredText /> - `**object below**` - Data for the validator to display.
+  - `{ name: string; img: string; description: string }`
+- **`onClick`** - <RequiredText /> - `() => void` - OnClick function for the card.
+- **`className`** - `string` - ClassName override for the card.
+- **`children`** - `ReactNode` - Children to display on the card below the validator.
+  > - Should be `<TokenSingleChainListItem />` for this component.
+
+## Import
+```jsx
+import { DelegationCard } from "station-ui";
+```
+
+## Stories
+
+## Default
+<div className="story_with_source_below">
+  <Canvas of={DelegationCardStories.Default} />
+  <Source code={`
+    <DelegationCard
+  validator={{
+    name: 'Orbital Command',
+    img: 'https://raw.githubusercontent.com/terra-money/validator-images/main/images/A2879F08F59FB0AF.jpg',
+    description: '2.27% voting power • 5% commission',
+  }}
+  onClick={() => console.log('clicked')}
+>
+  <TokenSingleChainListItem
+    priceNode={<span>$ 42000</span>}
+    tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
+    symbol={"LUNA"}
+    price={1}
+    amountNode={<span>3,400.00</span>}
+    chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+  />
+</DelegationCard>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

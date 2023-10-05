@@ -10,7 +10,8 @@ import {
 import { RightArrow, DocsLink, RequiredText } from "../../DocsHelpers.tsx";
 import * as DelegationStories from "./delegation/Delegation.stories.tsx";
 import * as ProposalCardStories from "./proposal/ProposalCard.stories.tsx";
-import * as SummaryCardStories from "./summary/SummaryCard.stories.tsx";
+import * as SummaryColumnStories from "./summary/column/SummaryColumn.stories.tsx";
+import * as SummaryTableStories from "./summary/table/SummaryTable.stories.tsx";
 import * as VestingCardStories from "./vesting/VestingCard.stories.tsx";
 import * as WalletSummaryCardStories from "./wallet-summary/WalletSummaryCard.stories.tsx";
 import "scss/storybookoverrides.scss";
@@ -20,7 +21,7 @@ import "scss/storybookoverrides.scss";
 # Cards
 Cards are used to display information in a structured way. Will likely contain other components.
 
-# DelegationCard
+# DelegationCard [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-cards-delegation--docs)
 
 ##### This is used to show a wallets individual delegation information.
 
@@ -40,10 +41,10 @@ import { DelegationCard } from "station-ui";
 ## Variants
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "100%" }}>
-    <DocsLink linkToRoute="Components/Cards/DelegationCard" linkToID="default">
+    <DocsLink linkToRoute="Components/Cards/Delegation" linkToID="default">
       <h6 className="h6">Default</h6>
       <Story of={DelegationStories.Default} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
 </div>
@@ -52,7 +53,7 @@ import { DelegationCard } from "station-ui";
 <br />
 <br />
 
-# ProposalCard
+# ProposalCard [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-cards-proposal--docs)
 
 ##### This is used to show a wallets individual delegation information.
 
@@ -76,17 +77,17 @@ import { ProposalCard } from "station-ui";
 ## Variants
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "100%" }}>
-    <DocsLink linkToRoute="Components/Cards/ProposalCard" linkToID="default">
+    <DocsLink linkToRoute="Components/Cards/Proposal" linkToID="default">
       <h6 className="h6">Default</h6>
       <Story of={ProposalCardStories.Default} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "100%" }}>
-    <DocsLink linkToRoute="Components/Cards/ProposalCard" linkToID="deposit">
+    <DocsLink linkToRoute="Components/Cards/Proposal" linkToID="deposit">
       <h6 className="h6">Deposit</h6>
       <Story of={ProposalCardStories.Deposit} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
 </div>
@@ -95,26 +96,35 @@ import { ProposalCard } from "station-ui";
 <br />
 <br />
 
-# SummaryCard
+# SummaryColumn [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-cards-summary--docs)
 
-##### This card is a very low level card. Basically just a background with a border radius and padding.
+##### Displays a Title and a Description in a column on a card.
 
 ## Props
-- **`children`** - `ReactNode` - The content to be displayed on this card.
+- **`title`** - <RequiredText /> - `string` - Medium text title.
+- **`extra`** - `ReactNode` - Add as a ReactNode item to the right of the title.
+- **`description`** - <RequiredText /> - `string` - Description of the card.
 - **`className`** - `string` - ClassName override for the card.
 
 ## Import
 ```jsx
-import { SummaryCard } from "station-ui";
+import { SummaryColumn } from "station-ui";
 ```
 
 ## Variants
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "100%" }}>
-    <DocsLink linkToRoute="Components/Cards/SummaryCard" linkToID="default">
+    <DocsLink linkToRoute="Components/Cards/Summary" linkToID="default">
       <h6 className="h6">Default</h6>
-      <Story of={SummaryCardStories.Default} />
-      {/* See More<RightArrow /> */}
+      <Story of={SummaryColumnStories.Default} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Cards/Summary" linkToID="with-extra">
+      <h6 className="h6">With Extra</h6>
+      <Story of={SummaryColumnStories.WithExtra} />
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
 </div>
@@ -123,7 +133,36 @@ import { SummaryCard } from "station-ui";
 <br />
 <br />
 
-# VestingCard
+# SummaryTable [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-cards-summary--docs#summarytable)
+
+##### Displays rows spaced apart.
+
+## Props
+- **`rows`** - <RequiredText /> - `**object below**` - The row data of the card.
+  - **`{ label: string; value: string | ReactNode }[]`**
+- **`className`** - `string` - ClassName override for the card.
+
+## Import
+```jsx
+import { SummaryTable } from "station-ui";
+```
+
+## Variants
+<div className="sub__items">
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Cards/Summary" linkToID="default-1">
+      <h6 className="h6">Default</h6>
+      <Story of={SummaryTableStories.Default} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+</div>
+
+<br />
+<br />
+<br />
+
+# VestingCard [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-cards-vesting--docs)
 
 ##### A Card to display vesting information.
 
@@ -141,10 +180,10 @@ import { VestingCard } from "station-ui";
 ## Variants
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "100%" }}>
-    <DocsLink linkToRoute="Components/Cards/VestingCard" linkToID="default">
+    <DocsLink linkToRoute="Components/Cards/Vesting" linkToID="default">
       <h6 className="h6">Default</h6>
       <Story of={VestingCardStories.Default} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
 </div>
@@ -153,7 +192,7 @@ import { VestingCard } from "station-ui";
 <br />
 <br />
 
-# Wallet Summary Card
+# Wallet Summary Card [<span style={{ fontSize: "14px", fontWeight: "600", marginLeft: "24px" }}>Docs<RightArrow style={{ fill: "black" }} /></span>](/docs/components-cards-walletsummary--docs)
 
 ##### A Card to display Wallet Summary information.
 
@@ -174,24 +213,24 @@ import { WalletSummaryCard } from "station-ui";
 ## Variants
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Cards/WalletSummaryCard" linkToID="default">
+    <DocsLink linkToRoute="Components/Cards/WalletSummary" linkToID="default">
       <h6 className="h6">Default</h6>
       <Story of={WalletSummaryCardStories.Default} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Cards/WalletSummaryCard" linkToID="has-values">
+    <DocsLink linkToRoute="Components/Cards/WalletSummary" linkToID="hasvalues">
       <h6 className="h6">Has Values</h6>
       <Story of={WalletSummaryCardStories.HasValues} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Cards/WalletSummaryCard" linkToID="is-active">
+    <DocsLink linkToRoute="Components/Cards/WalletSummary" linkToID="isactive">
       <h6 className="h6">Is Active</h6>
       <Story of={WalletSummaryCardStories.IsActive} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
 </div>
