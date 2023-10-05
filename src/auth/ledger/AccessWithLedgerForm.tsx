@@ -1,36 +1,35 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
-import UsbIcon from "@mui/icons-material/Usb"
-import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import { LedgerKey } from "@terra-money/ledger-station-js"
-import {
-  Form,
-  FormError,
-  FormHelp,
-  FormItem,
-  FormWarning,
-} from "components/form"
-import { Checkbox, Input, Submit } from "components/form"
 import validate from "../scripts/validate"
 import useAuth from "../hooks/useAuth"
 import { createBleTransport, isBleAvailable } from "utils/ledger"
 import { wordsFromAddress } from "utils/bech32"
 
-import Lottie from "lottie-react"
-import connect from "./assets/connect.json"
-import openApp from "./assets/openApp.json"
-import { Button } from "components/general"
-
 import styles from "./AccessWithLedger.module.scss"
 import { FlexColumn } from "components/layout"
 import { TooltipIcon } from "components/display"
+import {
+  Banner,
+  LedgerDeviceAction,
+  LedgerModal,
+  Checkbox,
+  InputWrapper,
+  Input,
+  Button,
+  Form,
+  SectionHeader,
+} from "station-ui"
+import CreatedWallet from "auth/modules/create/CreatedWallet"
+import { isPasswordValid, passwordExists } from "auth/scripts/keystore"
 
 interface Values {
   index: number
   bluetooth: boolean
   name: string
+  password: string
+  confirm: string
 }
 
 enum Pages {
@@ -39,13 +38,11 @@ enum Pages {
   openTerra = "openTerra",
   askCosmos = "askCosmos",
   openCosmos = "openCosmos",
-  selectName = "selectName",
   complete = "complete",
 }
 
 const AccessWithLedgerForm = () => {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const { connectLedger } = useAuth()
   const [error, setError] = useState<Error>()
   const [page, setPage] = useState(Pages.form)
@@ -53,6 +50,8 @@ const AccessWithLedgerForm = () => {
   const [pubkey, setPubkey] = useState<{ 330: string; 118?: string }>({
     330: "",
   })
+
+  const [showAdvanced, setShowAdvanced] = useState(false)
 
   /* check bluetooth availability */
   const [bleAvailable, setBleAvailable] = useState(false)
@@ -66,18 +65,32 @@ const AccessWithLedgerForm = () => {
     defaultValues: { index: 0, bluetooth: false },
   })
 
-  const { register, watch, handleSubmit, formState } = form
-  const { errors, isValid, isSubmitting } = formState
-  const { index, bluetooth } = watch()
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState,
+    setError: setFormError,
+  } = form
+  const { errors, isValid } = formState
+  const { index, bluetooth, name, password } = watch()
 
-  const submit = async ({ index, bluetooth, name }: Values) => {
+  const submit = async ({ index, bluetooth, name, password }: Values) => {
     setError(undefined)
 
-    connectLedger(words, pubkey, index, bluetooth, name)
-    navigate("/", { replace: true })
+    connectLedger(password, words, pubkey, index, bluetooth, name)
   }
 
   const connectTerra = async () => {
+    if (passwordExists() && !isPasswordValid(password)) {
+      setFormError(
+        "password",
+        { message: t("Invalid password") },
+        { shouldFocus: true }
+      )
+      return
+    }
+
     setError(undefined)
     try {
       // wait until ledger is connected
@@ -127,150 +140,189 @@ const AccessWithLedgerForm = () => {
     switch (page) {
       case Pages.form:
         return (
-          <>
-            <section className="center">
-              {bluetooth ? (
-                <>
-                  <BluetoothIcon style={{ fontSize: 56 }} />
-                  <p>{t("Turn on your Ledger device")}</p>
-                </>
-              ) : (
-                <>
-                  <UsbIcon style={{ fontSize: 56 }} />
-                  <p>{t("Plug in a Ledger device")}</p>
-                </>
-              )}
-            </section>
-
-            <FormItem /* do not translate this */
-              label="Index"
-              error={errors.index?.message}
-              extra={
-                <TooltipIcon
-                  content={t("BIP 44 index number. For advanced users only")}
+          <section className={styles.form__container}>
+            <FlexColumn gap={18} className={styles.form__details}>
+              <InputWrapper
+                label={t("Wallet name")}
+                error={errors.name?.message}
+              >
+                <Input
+                  {...register("name", { validate: validate.name })}
+                  placeholder="e.g. 'my-ledger-wallet'"
+                  autoFocus
                 />
-              }
-            >
-              <Input
-                {...register("index", {
-                  valueAsNumber: true,
-                  validate: validate.index,
-                })}
-              />
+              </InputWrapper>
 
-              {index !== 0 && (
-                <FormWarning>{t("Default index is 0")}</FormWarning>
+              <InputWrapper
+                label={t("Password")}
+                error={errors.password?.message}
+              >
+                <Input
+                  {...register("password", {
+                    validate: passwordExists() ? undefined : validate.password,
+                  })}
+                  type="password"
+                />
+              </InputWrapper>
+
+              {!passwordExists() && (
+                <InputWrapper
+                  label={t("Confirm password")}
+                  error={errors.confirm?.message}
+                >
+                  <Input
+                    {...register("confirm", {
+                      validate: (confirm) =>
+                        validate.confirm(password, confirm),
+                    })}
+                    onFocus={() => form.trigger("confirm")}
+                    type="password"
+                  />
+                </InputWrapper>
               )}
 
               {bleAvailable && (
-                <Checkbox {...register("bluetooth")} checked={bluetooth}>
-                  Use Bluetooth
-                </Checkbox>
+                <Checkbox
+                  {...register("bluetooth")}
+                  checked={bluetooth}
+                  label={t("Use Bluetooth")}
+                />
               )}
-            </FormItem>
 
-            {error && <FormError>{error.message}</FormError>}
-            <Button color="primary" onClick={connectTerra}>
-              Connect
-            </Button>
-          </>
+              <button
+                onClick={(e) => {
+                  e.preventDefault()
+                  setShowAdvanced((show) => !show)
+                }}
+              >
+                <SectionHeader
+                  title={
+                    showAdvanced
+                      ? t("Hide Advanced Options")
+                      : t("Show Advanced Options")
+                  }
+                  withLine
+                />
+              </button>
+
+              {showAdvanced && (
+                <>
+                  <InputWrapper /* do not translate this */
+                    label="Index"
+                    error={errors.index?.message}
+                    extra={
+                      <TooltipIcon
+                        content={t(
+                          "BIP 44 index number. For advanced users only"
+                        )}
+                      />
+                    }
+                  >
+                    <Input
+                      {...register("index", {
+                        valueAsNumber: true,
+                        validate: validate.index,
+                      })}
+                    />
+                  </InputWrapper>
+
+                  {index !== 0 && (
+                    <Banner variant="warning" title={t("Default index is 0")} />
+                  )}
+                </>
+              )}
+            </FlexColumn>
+
+            <FlexColumn gap={18} className={styles.form__footer}>
+              {error && <Banner variant="error" title={error.message} />}
+
+              <Button
+                variant="primary"
+                onClick={connectTerra}
+                disabled={!isValid}
+              >
+                Connect
+              </Button>
+            </FlexColumn>
+          </section>
         )
       case Pages.connect:
         return (
-          <>
-            <section className="center">
-              <Lottie animationData={connect} />
-              <p>{t("Connect and unlock your device")}</p>
-            </section>
-          </>
+          <LedgerModal
+            action={
+              bluetooth ? LedgerDeviceAction.UNLOCK : LedgerDeviceAction.CONNECT
+            }
+            appName="Terra"
+          />
         )
       case Pages.openTerra:
         return (
-          <>
-            <>
-              <section className="center">
-                <Lottie animationData={openApp} />
-                <p>
-                  Open the <strong>Terra app</strong> on the Ledger device.
-                </p>
-              </section>
-            </>
-          </>
+          <LedgerModal action={LedgerDeviceAction.OPEN_APP} appName="Terra" />
         )
       case Pages.askCosmos:
         return (
-          <>
-            <>
-              <section className="center">
-                <p>{t("Do you want to import your Cosmos accounts?")}</p>
-                <FlexColumn gap={4} className={styles.warningContainer}>
-                  <FormHelp>
-                    {t(
-                      "You will need the Cosmos app installed on your Ledger."
-                    )}
-                    <br />
-                    {t(
-                      "The device will try to open the cosmos app automatically."
-                    )}
-                  </FormHelp>
-                  {error && <FormError>{error.message}, try again.</FormError>}
-                </FlexColumn>
+          <section className={styles.form__container}>
+            <FlexColumn gap={18} className={styles.form__details}>
+              <p className="center">
+                {t("Do you want to import your Cosmos accounts?")}
+              </p>
+              <Banner
+                variant="info"
+                title={`${t(
+                  "You will need the Cosmos app installed on your Ledger."
+                )} ${t(
+                  "The device will try to open the cosmos app automatically."
+                )}`}
+              />
+            </FlexColumn>
 
-                <Button
-                  className={styles.mainButton}
-                  color="primary"
-                  onClick={connectCosmos}
+            <FlexColumn gap={18} className={styles.form__footer}>
+              {error && (
+                <Banner
+                  variant="error"
+                  title={`${error.message}, try again.`}
+                />
+              )}
+              <Button
+                className={styles.mainButton}
+                variant="primary"
+                onClick={connectCosmos}
+              >
+                {t("Yes")}
+              </Button>
+              <p className="center">
+                <button
+                  className={styles.smallButton}
+                  onClick={() => setPage(Pages.complete)}
                 >
-                  {t("Yes")}
-                </Button>
-                <p>
-                  <button
-                    className={styles.smallButton}
-                    onClick={() => setPage(Pages.complete)}
-                  >
-                    {t("No, I'll use only Terra")}
-                  </button>
-                </p>
-              </section>
-            </>
-          </>
+                  {t("No, I'll use only Terra")}
+                </button>
+              </p>
+            </FlexColumn>
+          </section>
         )
       case Pages.openCosmos:
         return (
-          <>
-            <>
-              <section className="center">
-                <Lottie animationData={openApp} />
-                <p>
-                  Open the <strong>Cosmos app</strong> on the Ledger device.
-                </p>
-              </section>
-            </>
-          </>
+          <LedgerModal action={LedgerDeviceAction.OPEN_APP} appName="Cosmos" />
         )
       case Pages.complete:
         return (
-          <>
-            <>
-              <section className="center">
-                <FormItem label={t("Wallet name")} error={errors.name?.message}>
-                  <Input
-                    {...register("name", { validate: validate.name })}
-                    placeholder="Ledger"
-                    autoFocus
-                  />
-                </FormItem>
-                <Submit disabled={!isValid} submitting={isSubmitting}>
-                  {t("Submit")}
-                </Submit>
-              </section>
-            </>
-          </>
+          <CreatedWallet
+            name={name}
+            words={words}
+            onConfirm={() =>
+              connectLedger(password, words, pubkey, index, bluetooth, name)
+            }
+          />
         )
     }
   }
 
-  return <Form onSubmit={handleSubmit(submit)}>{render()}</Form>
+  return (
+    <Form onSubmit={handleSubmit(submit)} className={styles.form}>
+      {render()}
+    </Form>
+  )
 }
 
 export default AccessWithLedgerForm

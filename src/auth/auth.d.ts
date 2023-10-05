@@ -1,20 +1,19 @@
 type Bip = 118 | 330
 
-type LocalWallet = SingleWallet | LegacySingleWallet | MultisigWallet // wallet with name
+type LocalWallet = SingleWallet | MultisigWallet // | LegacySingleWallet// wallet with name
 
 type Wallet = LedgerWallet | SingleWallet //| LegacyWallet
 type StoredWallet =
   | InterchainStoredWallet
-  | LegacySingleWallet
+  //| LegacySingleWallet
   | StoredWalletLegacy
   | MultisigWallet
   | LedgerWallet
   | SeedStoredWallet
+
 type ResultStoredWallet =
-  | LegacyStoredWallet
-  | MultisigWallet
-  | StoredWallet
-  | SeedStoredWallet
+  //| LegacyStoredWallet
+  MultisigWallet | StoredWallet | SeedStoredWallet
 
 // interchain types
 interface SingleWallet {

@@ -1,0 +1,29 @@
+.header {
+  text-align: center;
+
+  h1 {
+    font-size: 20pt;
+    font-weight: 800;
+  }
+  p {
+    font-size: 16px;
+    font-weight: var(--bold);
+    text-align: center;
+    padding: 0 1rem;
+    color: var(--text-muted);
+  }
+}
+
+.address {
+  h4 {
+    font-size: 16px;
+    font-weight: var(--bold);
+  }
+
+  p {
+    font-size: 16px;
+    font-weight: var(--bold);
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+  }
+}

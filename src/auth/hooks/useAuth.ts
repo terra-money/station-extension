@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { atom, useRecoilState } from "recoil"
 import { encode } from "js-base64"
 import {
@@ -12,16 +12,22 @@ import { RawKey, SignatureV2 } from "@terra-money/feather.js"
 import { LedgerKey } from "@terra-money/ledger-station-js"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import is from "../scripts/is"
-import { addWallet, PasswordError } from "../scripts/keystore"
-import { getDecryptedKey, testPassword } from "../scripts/keystore"
-import { getWallet, storeWallet } from "../scripts/keystore"
-import { clearWallet, lockWallet } from "../scripts/keystore"
+import {
+  addWallet,
+  disconnectWallet,
+  isPasswordValid,
+  PasswordError,
+  storeConnectedWallet,
+} from "../scripts/keystore"
+import { getDecryptedKey } from "../scripts/keystore"
+import { getWallet, lockWallet } from "../scripts/keystore"
 import { getStoredWallet, getStoredWallets } from "../scripts/keystore"
 import encrypt from "../scripts/encrypt"
 import useAvailable from "./useAvailable"
-import { addressFromWords, wordsFromAddress } from "utils/bech32"
+import { addressFromWords } from "utils/bech32"
 import { useNetwork } from "./useNetwork"
 import { createBleTransport } from "utils/ledger"
+import { useLogin } from "extension/modules/Login"
 
 export const walletState = atom({
   key: "interchain-wallet",
@@ -32,62 +38,44 @@ const useAuth = () => {
   const lcd = useInterchainLCDClient()
   const networks = useNetwork()
   const available = useAvailable()
+  const { isLoggedIn } = useLogin()
 
   const [wallet, setWallet] = useRecoilState(walletState)
+
+  useEffect(() => {
+    setWallet(getWallet())
+  }, [isLoggedIn]) // eslint-disable-line
+
   const wallets = getStoredWallets()
 
   /* connect */
-  const connect = useCallback(
-    (name: string) => {
-      const storedWallet = getStoredWallet(name)
-      if ("address" in storedWallet) {
-        const { address, lock } = storedWallet
-        const words = {
-          "330": wordsFromAddress(address),
-        }
+  const connect = (name: string) => {
+    const storedWallet = getStoredWallet(name)
+    setWallet(storedWallet)
+    storeConnectedWallet(name)
+  }
 
-        if (lock) throw new Error("Wallet is locked")
-
-        const wallet = is.multisig(storedWallet)
-          ? { name, words, multisig: true as true }
-          : { name, words }
-
-        storeWallet(wallet)
-        setWallet(wallet as any)
-      } else {
-        const { lock } = storedWallet
-        if (lock) throw new Error("Wallet is locked")
-
-        storeWallet(storedWallet)
-        setWallet(storedWallet as any)
-      }
-    },
-    [setWallet]
-  )
-
-  const connectLedger = useCallback(
-    (
-      words: { "330": string; "118"?: string },
-      pubkey: { "330": string; "118"?: string },
-      index = 0,
-      bluetooth = false,
-      name = "Ledger"
-    ) => {
-      const wallet = {
-        words,
-        pubkey,
-        ledger: true as const,
-        index,
-        bluetooth,
-        lock: false as const,
-        name,
-      }
-      addWallet(wallet)
-      storeWallet(wallet)
-      setWallet(wallet as any)
-    },
-    [setWallet]
-  )
+  const connectLedger = (
+    password: string,
+    words: { "330": string; "118"?: string },
+    pubkey: { "330": string; "118"?: string },
+    index = 0,
+    bluetooth = false,
+    name = "Ledger"
+  ) => {
+    const wallet = {
+      words,
+      pubkey,
+      ledger: true as const,
+      index,
+      bluetooth,
+      lock: false as const,
+      name,
+    }
+    addWallet(wallet, password)
+    storeConnectedWallet(name)
+    setWallet(wallet)
+  }
 
   /* connected */
   const connectedWallet = useMemo(() => {
@@ -101,16 +89,14 @@ const useAuth = () => {
   }, [connectedWallet])
 
   /* disconnected */
-  const disconnect = useCallback(() => {
-    clearWallet()
+  const disconnect = () => {
+    disconnectWallet()
     setWallet(undefined)
-  }, [setWallet])
+  }
 
-  const lock = useCallback(() => {
-    const { name } = getConnectedWallet()
-    lockWallet(name)
-    disconnect()
-  }, [disconnect, getConnectedWallet])
+  const lock = () => {
+    lockWallet()
+  }
 
   /* helpers */
   const getKey = (password: string) => {
@@ -158,8 +144,7 @@ const useAuth = () => {
   /* form */
   const validatePassword = (password: string) => {
     try {
-      const { name } = getConnectedWallet()
-      return testPassword({ name, password })
+      return isPasswordValid(password) ? false : "Incorrect password"
     } catch (error) {
       return "Incorrect password"
     }
