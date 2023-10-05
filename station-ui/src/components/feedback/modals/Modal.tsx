@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactNode } from "react"
+import { PropsWithChildren, ReactNode, useEffect, useState } from "react"
 import ReactModal from "react-modal"
 import classNames from "classnames/bind"
 import CloseIcon from "@mui/icons-material/Close"
@@ -37,10 +37,17 @@ const Modal = (props: PropsWithChildren<ModalProps>) => {
     backAction,
   } = props
 
+  const [forceExtension, setForceExtension] = useState(false)
+
+  useEffect(() => {
+    const forceExists = document.getElementById('force__extension')
+    setForceExtension(!!forceExists)
+  }, [])
+
   return (
     <ReactModal
       {...props}
-      className={cx(styles.modal, { minimal })}
+      className={cx(styles.modal, { minimal, ['force__extension']: forceExtension })}
       overlayClassName={styles.overlay}
       appElement={document.getElementById(rootID)!}
     >

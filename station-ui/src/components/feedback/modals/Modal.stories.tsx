@@ -1,6 +1,6 @@
 import type { StoryObj, Meta } from '@storybook/react';
 import Modal, { ModalProps } from './Modal';
-import { InputWrapper } from 'components/form-helpers';
+import { Form, InputWrapper } from 'components/form-helpers';
 import { Input } from 'components/inputs';
 import { SubmitButton } from 'components';
 
@@ -84,6 +84,86 @@ const meta: Meta<ModalProps> = {
 } as Meta
 
 export default meta
+
+export const ExtensionDefault: StoryObj = {
+  render: () => (
+    <div id={'force__extension'}>
+      <Modal title="Modal Title" isOpen={true} onRequestClose={() => {}}>
+        <Form>
+          <InputWrapper label={"This is a label"}>
+            <Input inputMode="text" placeholder={"am placeholder"} />
+          </InputWrapper>
+
+          <SubmitButton variant="primary" onClick={() => {}} label={"Submit"} />
+        </Form>
+      </Modal>
+    </div>
+  ),
+}
+
+export const ExtensionWithBackButton: StoryObj = {
+  render: () => (
+    <div id={'force__extension'}>
+      <Modal
+        title="Modal Title"
+        isOpen={true}
+        onRequestClose={() => {}}
+        backAction={() => {}}
+      >
+        <Form>
+          <InputWrapper label={"This is a label"}>
+            <Input inputMode="text" placeholder={"am placeholder"} />
+          </InputWrapper>
+
+          <SubmitButton variant="primary" onClick={() => {}} label={"Submit"} />
+        </Form>
+      </Modal>
+    </div>
+  ),
+}
+
+export const ExtensionWithSubTitle: StoryObj = {
+  render: () => (
+    <div id={'force__extension'}>
+      <Modal
+        title="Modal Title"
+        isOpen={true}
+        onRequestClose={() => {}}
+        subtitle="terra1oid33d3...pazdy5"
+      >
+        <Form>
+          <InputWrapper label={"This is a label"}>
+            <Input inputMode="text" placeholder={"am placeholder"} />
+          </InputWrapper>
+
+          <SubmitButton variant="primary" onClick={() => {}} label={"Submit"} />
+        </Form>
+      </Modal>
+    </div>
+  ),
+}
+
+export const ExtensionWithSubTitleAndBack: StoryObj = {
+  render: () => (
+    <div id={'force__extension'}>
+      <Modal
+        title="Modal Title"
+        isOpen={true}
+        onRequestClose={() => {}}
+        backAction={() => {}}
+        subtitle="terra1oid33d3...pazdy5"
+      >
+        <Form>
+          <InputWrapper label={"This is a label"}>
+            <Input inputMode="text" placeholder={"am placeholder"} />
+          </InputWrapper>
+
+          <SubmitButton variant="primary" onClick={() => {}} label={"Submit"} />
+        </Form>
+      </Modal>
+    </div>
+  ),
+}
 
 export const Playground: StoryObj = {
   render: (props) => (
