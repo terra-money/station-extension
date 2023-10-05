@@ -87,13 +87,7 @@ export const SearchInput = forwardRef(
           )}
           style={attrs.padding ? {} : { margin: 0 }}
         >
-          <input
-            {...attrs}
-            className={cx(styles.input, attrs.small && styles.input__small)}
-            inputMode="search"
-            autoComplete="off"
-            ref={ref}
-          />
+          <Input {...attrs} inputMode="search" autoComplete="off" ref={ref} />
           {attrs.extra}
         </div>
       </InputWrapper>
