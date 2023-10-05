@@ -37,7 +37,7 @@ export const useManageWallet = () => {
 
   const toSignMultisig = {
     to: "/multisig/sign",
-    children: t("Sign a multisig tx"),
+    children: t("Sign Multisig Tx"),
     icon: <FactCheckOutlinedIcon />,
   }
 

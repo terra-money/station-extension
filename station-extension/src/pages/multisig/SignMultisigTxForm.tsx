@@ -6,7 +6,6 @@ import { SAMPLE_ADDRESS } from "config/constants"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { Pre } from "components/general"
 import { Form, FormError, FormItem } from "components/form"
-import { Input, Submit, TextArea } from "components/form"
 import { Modal } from "components/feedback"
 import { isWallet, useAuth } from "auth"
 import { PasswordError } from "auth/scripts/keystore"
@@ -14,6 +13,15 @@ import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
 import ReadTx from "./ReadTx"
 import { useChainID } from "data/wallet"
 import validate from "auth/scripts/validate"
+import {
+  // Dropdown,
+  Input,
+  TextArea,
+  // Form,
+  InputWrapper,
+  // ButtonInlineWrapper,
+  SubmitButton,
+} from "station-ui"
 
 interface TxValues {
   address: AccAddress
@@ -41,8 +49,6 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
   const [password, setPassword] = useState("")
   const [incorrect, setIncorrect] = useState<string>()
 
-  const disabled = passwordRequired && !password ? t("Enter password") : ""
-
   const [signature, setSignature] = useState<SignatureV2>()
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<Error>()
@@ -69,11 +75,12 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
   }
 
   const submittingLabel = isWallet.ledger(wallet) ? t("Confirm in ledger") : ""
+  console.log(SAMPLE_ENCODED_TX)
 
   return (
     <ReadTx tx={tx.trim()}>
       <Form onSubmit={handleSubmit(submit)}>
-        <FormItem label={t("Multisig address")}>
+        <InputWrapper label={t("Multisig Address")}>
           <Input
             {...register("address", {
               validate: validate.address,
@@ -81,18 +88,16 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
             placeholder={SAMPLE_ADDRESS}
             autoFocus
           />
-        </FormItem>
-
-        <FormItem label={t("Tx")}>
+        </InputWrapper>
+        <InputWrapper label={t("Hashed Transaction")}>
           <TextArea
             {...register("tx", { required: true })}
             placeholder={SAMPLE_ENCODED_TX}
             rows={6}
           />
-        </FormItem>
-
+        </InputWrapper>
         {passwordRequired && (
-          <FormItem label={t("Password")} error={incorrect}>
+          <InputWrapper label={t("Password")} error={incorrect}>
             <Input
               type="password"
               value={password}
@@ -101,14 +106,12 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
                 setPassword(e.target.value)
               }}
             />
-          </FormItem>
+          </InputWrapper>
         )}
 
         {error && <FormError>{error.message}</FormError>}
 
-        <Submit submitting={submitting} disabled={!!disabled || !isValid}>
-          {submitting ? submittingLabel : disabled}
-        </Submit>
+        <SubmitButton disabled={!isValid}>{"Sign Transaction"}</SubmitButton>
       </Form>
 
       {signature && (
