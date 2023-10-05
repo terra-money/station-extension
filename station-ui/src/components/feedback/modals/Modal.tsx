@@ -2,6 +2,7 @@ import { PropsWithChildren, ReactNode } from "react"
 import ReactModal from "react-modal"
 import classNames from "classnames/bind"
 import CloseIcon from "@mui/icons-material/Close"
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace"
 import { getMaxHeightStyle } from "utils/style"
 import styles from "./Modal.module.scss"
 
@@ -10,6 +11,7 @@ const cx = classNames.bind(styles)
 export interface ModalProps extends ReactModal.Props {
   /* content */
   title?: ReactNode
+  subtitle?: ReactNode
   footer?: (close: ReactModal.Props["onRequestClose"]) => ReactNode
 
   /* style */
@@ -20,11 +22,20 @@ export interface ModalProps extends ReactModal.Props {
   closeIcon?: ReactNode
   icon?: ReactNode
   rootID?: string
+  backAction?: () => void
 }
 
 const Modal = (props: PropsWithChildren<ModalProps>) => {
-  const { title, children, footer, rootID = "station" } = props
-  const { icon, closeIcon, onRequestClose, confirm, maxHeight, minimal } = props
+  const { title, subtitle, children, footer, rootID = "station" } = props
+  const {
+    icon,
+    closeIcon,
+    onRequestClose,
+    confirm,
+    maxHeight,
+    minimal,
+    backAction,
+  } = props
 
   return (
     <ReactModal
@@ -40,10 +51,20 @@ const Modal = (props: PropsWithChildren<ModalProps>) => {
       )}
 
       {(title || icon) && (
-        <header className={styles.header}>
-          <section className={styles.icon}>{icon}</section>
-          <h1 className={cx(styles.title, { confirm })}>{title}</h1>
-        </header>
+        <div className={styles.header__container}>
+          {backAction && (
+            <button className={styles.back__button} onClick={backAction}>
+              <KeyboardBackspaceIcon fontSize="inherit" />
+            </button>
+          )}
+          <header className={styles.header}>
+            <section className={styles.icon}>{icon}</section>
+            <h1 className={cx(styles.title, { confirm })}>{title}</h1>
+            <h3 className={cx(styles.subtitle)}>
+              {subtitle}
+            </h3>
+          </header>
+        </div>
       )}
 
       {children && (

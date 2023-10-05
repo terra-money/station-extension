@@ -93,6 +93,7 @@ export const Playground: StoryObj = {
   ),
   args: {
     title: "Modal Title",
+    subtitle: "Modal Subtitle",
     confirm: false,
     minimal: false,
     maxHeight: 320,
@@ -103,6 +104,13 @@ export const Playground: StoryObj = {
       defaultValue: "Modal Title",
       table: {
         defaultValue: { summary: "Modal Title" },
+      },
+    },
+    subtitle: {
+      control: "text",
+      defaultValue: "Modal Subtitle",
+      table: {
+        defaultValue: { summary: "Modal Subtitle" },
       },
     },
   },

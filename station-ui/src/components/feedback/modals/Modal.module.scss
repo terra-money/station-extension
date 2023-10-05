@@ -38,7 +38,7 @@
   }
 
   @include extension {
-    padding: 48px 20px;
+    padding: 40px 20px;
     width: 100%;
     max-width: 100%;
     height: 100%;
@@ -58,12 +58,26 @@
   position: absolute;
   top: 0;
   right: 0;
-  font-size: 20px;
+  font-size: 24px;
   padding: 16px;
+  color: var(--token-light-100);
+}
+
+.back__button {
+  font-size: 24px;
+  color: var(--token-light-100);
+}
+
+.header__container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
 }
 
 .header {
   text-align: center;
+  width: 100%;
 }
 
 .icon {
@@ -73,6 +87,27 @@
 
 .title {
   @include Medium-Large;
+  font-weight: 600;
+}
+
+.subtitle {
+  @include Small;
+  color: var(--token-light-100);
+  margin-top: 5px;
+}
+
+@include extension {
+  .title {
+    text-align: left;
+  }
+
+  .subtitle {
+    text-align: left;
+  }
+
+  .close {
+    margin: 24px 0;
+  }
 }
 
 .confirm {
