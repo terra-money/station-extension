@@ -5,6 +5,7 @@ import { Pre } from "components/general"
 import { Auto, Card, Grid } from "components/layout"
 import { Wrong } from "components/feedback"
 import { ReadMultiple } from "components/token"
+import { SummaryCard, SectionHeader, InputWrapper, TextArea } from "station-ui"
 
 const ReadTx = (props: PropsWithChildren<{ tx: string }>) => {
   const { tx: encoded, children } = props
@@ -20,8 +21,6 @@ const ReadTx = (props: PropsWithChildren<{ tx: string }>) => {
   }
 
   const render = () => {
-    if (!encoded) return <Wrong>{t("Tx is not defined")}</Wrong>
-
     const tx = decodeTx(encoded)
     if (!tx) return <Wrong>{t("Invalid tx")}</Wrong>
 
@@ -30,34 +29,37 @@ const ReadTx = (props: PropsWithChildren<{ tx: string }>) => {
     const { fee } = auth_info
 
     const contents = [
-      {
-        title: t("Messages"),
-        content: messages.map((message, index) => (
-          <Pre key={index}>{message.toData()}</Pre>
-        )),
-      },
-
       { title: t("Memo"), content: memo },
       { title: t("Fee"), content: <ReadMultiple list={fee.amount.toData()} /> },
     ]
 
     return (
-      <Grid gap={20}>
-        {contents.map(({ title, content }) => {
-          if (!content) return null
+      <>
+        <SectionHeader title={t("Details")} withLine />
+        <InputWrapper label={t("Message")}>
+          {messages.map((message, index) => (
+            <TextArea readOnly={true} key={index}>
+              <pre>{JSON.stringify(message.toData(), null, 2)}</pre>
+            </TextArea>
+          ))}
+        </InputWrapper>
+        <SummaryCard>
+          {contents.map(({ title, content }) => {
+            if (!content) return null
 
-          return (
-            <article key={title}>
-              <h1>{title}</h1>
-              {content}
-            </article>
-          )
-        })}
-      </Grid>
+            return (
+              <article key={title}>
+                <h1>{title}</h1>
+                {content}
+              </article>
+            )
+          })}
+        </SummaryCard>
+      </>
     )
   }
 
-  return <Auto columns={[<Card>{children}</Card>, <Card>{render()}</Card>]} />
+  return <Auto columns={[<>{children}</>, encoded ? render() : <></>]} />
 }
 
 export default ReadTx
