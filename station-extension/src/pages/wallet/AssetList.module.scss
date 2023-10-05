@@ -22,5 +22,11 @@
 }
 
 .filter {
-  fill: var(--token-dark-500);
+  cursor: pointer;
+  &.active {
+    color: purple;
+  }
+  &.inactive {
+    color: red;
+  }
 }

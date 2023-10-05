@@ -12,7 +12,7 @@ const LocalTerraError = ({ refresh }: { refresh: () => void }) => {
   const { name } = useTheme()
 
   return (
-    <FlexColumn gap={10} className={name}>
+    <FlexColumn gap={20} className={name}>
       <img src={Logo} alt={t("Logo")} width={60} height={60} />
 
       <article>
@@ -22,7 +22,7 @@ const LocalTerraError = ({ refresh }: { refresh: () => void }) => {
           {t("Learn more")}
         </ExternalLink>
       </article>
-      <FlexColumn gap={20}>
+      <FlexColumn gap={10}>
         <Button onClick={refresh} size="small" color="primary">
           {t("Refresh")}
         </Button>
