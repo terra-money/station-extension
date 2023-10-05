@@ -8,7 +8,6 @@ import ConfirmConnect from "./ConfirmConnect"
 import ConfirmTx from "./ConfirmTx"
 import Welcome from "./Welcome"
 import Wallet from "pages/wallet/Wallet"
-import ConfirmPubkey from "./ConfirmPubkey"
 import ConfirmNewChain from "./ConfirmNewChain"
 import ConfirmSwitchNetwork from "./ConfirmSwitchNetwork"
 
@@ -33,7 +32,7 @@ const Front = () => {
   }
 
   if (pubkey) {
-    return <ConfirmPubkey origin={pubkey} />
+    //return <ConfirmPubkey origin={pubkey} />
   }
 
   if (chain) {

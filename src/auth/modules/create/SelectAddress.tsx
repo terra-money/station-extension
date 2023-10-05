@@ -1,20 +1,19 @@
 import { useTranslation } from "react-i18next"
 import { useQuery } from "react-query"
 import { useForm } from "react-hook-form"
-import { readAmount } from "@terra-money/terra-utils"
+import { readAmount, truncate } from "@terra-money/terra-utils"
 import { SeedKey, AccAddress } from "@terra-money/feather.js"
-import { Coins, Delegation, UnbondingDelegation } from "@terra-money/feather.js"
+import { Coins } from "@terra-money/feather.js"
 import { sortCoins } from "utils/coin"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { useCurrency } from "data/settings/Currency"
 import { useThemeAnimation } from "data/settings/Theme"
-import { Flex, Grid } from "components/layout"
+import { Flex } from "station-ui"
 import { Form, Submit } from "components/form"
-import { Tag } from "components/display"
-import AuthButton from "../../components/AuthButton"
 import { useCreateWallet } from "./CreateWalletWizard"
 import styles from "./SelectAddress.module.scss"
 import { useNativeDenoms } from "data/token"
+import { Banner, CheckedButton, FlexColumn } from "station-ui"
 
 const SelectAddress = () => {
   const { t } = useTranslation()
@@ -31,13 +30,21 @@ const SelectAddress = () => {
     ["mnemonic", seed, index],
     async () => {
       const results = await Promise.allSettled(
-        ([118, 330] as const).map(async (bip) => {
+        ([330, 118] as const).map(async (bip) => {
           const mk = new SeedKey({ seed, coinType: bip, index })
           const address = mk.accAddress("terra")
           const [balance] = await lcd.bank.balance(address)
-          const [delegations] = await lcd.staking.delegations(address)
-          const [unbondings] = await lcd.staking.unbondingDelegations(address)
-          return { address, bip, index, balance, delegations, unbondings }
+          // throws 404 if account doesn't exist
+          const accountInfo = await lcd.auth
+            .accountInfo(address)
+            .catch(() => {})
+          return {
+            address,
+            bip,
+            index,
+            balance,
+            sequence: accountInfo?.getSequenceNumber() ?? 0,
+          }
         })
       )
 
@@ -50,9 +57,8 @@ const SelectAddress = () => {
       onSuccess: (results) => {
         const account118 = results.find(({ bip }) => bip === 118)
         if (!account118) return
-        const { balance, delegations, unbondings } = account118
-        const is118Empty =
-          !balance.toData().length && !delegations.length && !unbondings.length
+        const { balance, sequence } = account118
+        const is118Empty = !balance.toData().length && !sequence
         if (is118Empty) createWallet(330, index)
       },
     }
@@ -82,79 +88,78 @@ const SelectAddress = () => {
     address: AccAddress
     bip: Bip
     balance: Coins
-    delegations: Delegation[]
-    unbondings: UnbondingDelegation[]
+    sequence: number
   }
 
   const renderDetails = ({ address, bip, ...rest }: Details) => {
-    const { balance, delegations, unbondings } = rest
+    const { balance, sequence } = rest
     const coins = sortCoins(balance, currency.id)
     const length = coins.length
 
     return (
-      <Grid gap={4}>
-        <Grid gap={12}>
-          <Flex gap={8} start>
-            <Tag color="info" small>
-              {bip}
-            </Tag>
+      <section className={styles.selector__container}>
+        <div className={styles.selector__title}>
+          <h1>m/44'/{bip}'</h1>
+          <h4>{truncate(address)}</h4>
+        </div>
 
-            {!!delegations.length && (
-              <Tag color="info" small>
-                {t("Delegated")}
-              </Tag>
-            )}
-
-            {!!unbondings.length && (
-              <Tag color="info" small>
-                {t("Undelegated")}
-              </Tag>
-            )}
-          </Flex>
-
-          <h1>{address}</h1>
-        </Grid>
-
-        <Flex gap={4} start className={styles.coins}>
-          {coins
-            .slice(0, 3)
-            .map((coin) =>
-              [
-                readAmount(coin.amount),
-                readNativeDenom(coin.denom).symbol,
-              ].join(" ")
-            )
-            .join(", ")}
-
-          {length - 3 > 0 && (
-            <span className="muted">
-              {t("+{{length}} coins", { length: length - 3 })}
+        <div className={styles.selector__details}>
+          <p>
+            <span className={styles.muted}>Balance:</span>
+            <span>
+              {coins
+                .slice(0, 1)
+                .map((coin) =>
+                  [
+                    readAmount(coin.amount),
+                    readNativeDenom(coin.denom).symbol,
+                  ].join(" ")
+                )
+                .join(", ")}{" "}
+              {length - 1 > 0 && (
+                <span className="muted">
+                  {t("+{{length}} coins", { length: length - 1 })}
+                </span>
+              )}
             </span>
-          )}
-        </Flex>
-      </Grid>
+          </p>
+
+          <p>
+            <span className={styles.muted}>Previous Txs:</span>
+
+            <span>{sequence}</span>
+          </p>
+        </div>
+      </section>
     )
   }
 
   return (
-    <Grid gap={20}>
+    <FlexColumn justify="space-between" style={{ height: "100%" }}>
       <Form onSubmit={handleSubmit(submit)}>
+        <Banner
+          variant="warning"
+          title={t(
+            "There are two wallets sharing this seed phrase, each with a different token denominator. Please choose which version you want to import."
+          )}
+        />
+
         {results.map((item) => {
           return (
-            <AuthButton
+            <CheckedButton
               className={styles.button}
               onClick={() => setValue("bip", item.bip)}
               active={item.bip === bip}
               key={item.bip}
             >
               {renderDetails(item)}
-            </AuthButton>
+            </CheckedButton>
           )
         })}
 
-        <Submit />
+        <Submit>{t("Import Selected")}</Submit>
       </Form>
-    </Grid>
+    </FlexColumn>
   )
 }
 
