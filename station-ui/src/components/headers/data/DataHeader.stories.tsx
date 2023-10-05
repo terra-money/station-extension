@@ -4,7 +4,7 @@ import DataHeader, { DataHeaderProps } from './DataHeader';
 import { Button } from 'components';
 
 const meta: Meta<DataHeaderProps> = {
-  title: 'Components/Headers/DataHeader/Stories',
+  title: 'Components/Headers/Data/Stories',
   component: DataHeader,
   argTypes: {},
 } as Meta;

@@ -3,7 +3,7 @@ import { ReactComponent as GovernanceIcon } from 'assets/icon/Governance.svg';
 import PageHeader, { PageHeaderProps } from './PageHeader';
 
 const meta: Meta<PageHeaderProps> = {
-  title: 'Components/Headers/PageHeader/Stories',
+  title: 'Components/Headers/Page/Stories',
   component: PageHeader,
   argTypes: {},
 } as Meta;

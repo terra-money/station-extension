@@ -1,0 +1,104 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as RichHeaderStories from "./RichHeader.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Headers/Rich" />
+
+# Rich Header
+
+##### A Header for displaying a large image, title, description, and a link.
+
+## Props
+- **`image`** - <RequiredText /> - `string` - The image to display.
+- **`title`** - <RequiredText /> - `string` - The title of the header.
+- **`link`** - <RequiredText /> - `string` - The external link to display.
+- **`description`** - `string` - The description of the header that is full width.
+- **`status`** - `string` - Adds an icon to the image for more information to give to the user.
+  - Options are `alert`, `check`.
+
+## Import
+```jsx
+import { RichHeader } from "station-ui";
+```
+
+## Stories
+
+## Default
+<div className="story_with_source_below">
+  <Canvas of={RichHeaderStories.Default} />
+  <Source code={`
+    <RichHeader
+  image={"https://raw.githubusercontent.com/terra-money/validator-images/main/images/A2879F08F59FB0AF.jpg"}
+  title={"Orbital Command"}
+  link={"https://orbitalcommand.io"}
+  description={"Secure, enterprise-grade validator. Committed to investing heavily into educating, promoting, and expanding the Terra community and ecosystem. Delegate to OC to eliminate slashing risk, earn more $LUNA, and support $LUNA price appreciation through community growth."}
+/>
+  `} />
+</div>
+
+## With Check Icon
+<div className="story_with_source_below">
+  <Canvas of={RichHeaderStories.WithCheckIcon} />
+  <Source code={`
+    <RichHeader
+  image={"https://raw.githubusercontent.com/terra-money/validator-images/main/images/A2879F08F59FB0AF.jpg"}
+  title={"Orbital Command"}
+  link={"https://orbitalcommand.io"}
+  description={"Secure, enterprise-grade validator. Committed to investing heavily into educating, promoting, and expanding the Terra community and ecosystem. Delegate to OC to eliminate slashing risk, earn more $LUNA, and support $LUNA price appreciation through community growth."}
+  status={"check"}
+/>
+  `} />
+</div>
+
+## With Alert Icon
+<div className="story_with_source_below">
+  <Canvas of={RichHeaderStories.WithAlertIcon} />
+  <Source code={`
+    <RichHeader
+  image={"https://raw.githubusercontent.com/terra-money/validator-images/main/images/A2879F08F59FB0AF.jpg"}
+  title={"Orbital Command"}
+  link={"https://orbitalcommand.io"}
+  description={"Secure, enterprise-grade validator. Committed to investing heavily into educating, promoting, and expanding the Terra community and ecosystem. Delegate to OC to eliminate slashing risk, earn more $LUNA, and support $LUNA price appreciation through community growth."}
+  status={"alert"}
+/>
+  `} />
+</div>
+
+## No Description
+<div className="story_with_source_below">
+  <Canvas of={RichHeaderStories.NoDescription} />
+  <Source code={`
+    <RichHeader
+  image={"https://raw.githubusercontent.com/terra-money/validator-images/main/images/A2879F08F59FB0AF.jpg"}
+  title={"Orbital Command"}
+  link={"https://orbitalcommand.io"}
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

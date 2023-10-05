@@ -1,0 +1,62 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as ProposalHeaderStories from "./ProposalHeader.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Headers/Proposal" />
+
+# Proposal Header
+
+##### A Header for displaying information about a proposal.
+
+## Props
+- **`title`** - <RequiredText /> - `string` - The title of the page (The large text).
+- **`metaText`** - <RequiredText /> - `string` - The description of the page (The small text on top).
+- **`metaImage`** - <RequiredText /> - `string` - The image of the page (The small image on top).
+- **`submittedDate`** - <RequiredText /> - `string` - The date the proposal was submitted.
+
+## Import
+```jsx
+import { ProposalHeader } from "station-ui";
+```
+
+## Stories
+
+## Default
+<div className="story_with_source_below">
+  <Canvas of={ProposalHeaderStories.Default} />
+  <Source code={`
+    <ProposalHeader
+  metaText={"4736 | Community pool spend proposal"}
+  metaImage={"https://station-assets.terra.dev/img/chains/Terra.svg"}
+  title={"OFFICIAL “Revitalizing Terra: A Backbone Labs and Eris Protocol Collaboration” (Not A Grant)"}
+  submittedDate={"3 July 2023, 18:49:03 UTC"}
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
