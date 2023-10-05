@@ -1,10 +1,8 @@
 import { FormError } from "components/form"
-import { InternalButton } from "components/general"
 import { useBankBalance, useIsWalletEmpty } from "data/queries/bank"
 import { useNativeDenoms } from "data/token"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import ManageTokens from "./ManageTokens"
 import Asset from "./Asset"
 import styles from "./AssetList.module.scss"
 import { useTokenFilters } from "utils/localStorage"
@@ -15,7 +13,10 @@ import {
 } from "data/settings/CustomTokens"
 import FilterListIcon from "@mui/icons-material/FilterList"
 import { useUnknownIBCDenoms, useParsedAssetList } from "data/token"
-import { SectionHeader } from "station-ui"
+import { SectionHeader, Dropdown } from "station-ui"
+import classNames from "classnames"
+
+const cx = classNames.bind(styles)
 
 const AssetList = () => {
   const { t } = useTranslation()
@@ -26,8 +27,14 @@ const AssetList = () => {
   const readNativeDenom = useNativeDenoms()
   const native = useCustomTokensNative()
   const cw20 = useCustomTokensCW20()
-  const list = useParsedAssetList() as any[]
-  const lowBal = [] as any[]
+  const list = useParsedAssetList()
+  const [filter, setFilter] = useState(false)
+  const [filterChain, setFilterChain] = useState<string>()
+
+  const toggleFilter = () => {
+    setFilter(!filter)
+    setFilterChain(undefined)
+  }
 
   const alwaysVisibleDenoms = useMemo(
     () =>
@@ -38,18 +45,37 @@ const AssetList = () => {
     [cw20.list, native.list]
   )
 
-  const assetList = list
-    .filter((a) => (onlyShowWhitelist ? a.whitelisted : true))
-    .filter((a) => {
-      const { token } = readNativeDenom(a.denom)
-      const visible =
-        a.price * toInput(a.balance) >= 1 || alwaysVisibleDenoms.has(token)
-      if (!visible) lowBal.push(a)
-      return visible
-    })
-    .sort(
-      (a, b) => b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
+  const assets = useMemo(() => {
+    const filtered = list
+      .filter((a) => (onlyShowWhitelist ? a.whitelisted : true))
+      .filter((a) => (filterChain ? a.chains.includes(filterChain) : true))
+
+    const visible = filtered
+      .filter(
+        (a) =>
+          a.price * toInput(a.balance) >= 1 || alwaysVisibleDenoms.has(a.denom)
+      )
+      .sort(
+        (a, b) => b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
+      )
+
+    const lowBal = filtered.filter((a) => !visible.includes(a))
+
+    return { visible, lowBal }
+  }, [list, onlyShowWhitelist, filterChain, alwaysVisibleDenoms])
+
+  const renderAsset = ({ denom, chainID, ...item }: any) => {
+    return (
+      <Asset
+        {...readNativeDenom(
+          unknownIBCDenoms[[denom, chainID].join("*")]?.baseDenom ?? denom,
+          unknownIBCDenoms[[denom, chainID].join("*")]?.chainID ?? chainID
+        )}
+        {...item}
+        key={item.id}
+      />
     )
+  }
 
   const render = () => {
     if (!coins) return
@@ -60,45 +86,25 @@ const AssetList = () => {
           <FormError>{t("Coins required to post transactions")}</FormError>
         )}
         <section>
-          {assetList.map(({ denom, chainID, id, ...item }, i) => (
-            <Asset
-              denom={denom}
-              {...readNativeDenom(
-                unknownIBCDenoms[[denom, chainID].join("*")]?.baseDenom ??
-                  denom,
-                unknownIBCDenoms[[denom, chainID].join("*")]?.chainID ?? chainID
-              )}
-              id={id}
-              {...item}
-              key={i}
+          {filter && (
+            <Dropdown
+              value="chain-placeholder"
+              onChange={(chain) => {
+                setFilterChain(chain)
+              }}
+              options={[{ value: "phoenix-1", label: "Terra" }]}
             />
-          ))}
+          )}
+          {assets.visible.map(renderAsset)}
         </section>
-        {lowBal.length > 0 && (
+        {assets.lowBal.length > 0 && (
           <>
             <SectionHeader
-              title={t(`Show Low Balance Assets (${lowBal.length})`)}
+              title={t(`Show Low Balance Assets (${assets.lowBal.length})`)}
               withLine
               onClick={toggleHideLowBal}
             />
-            {!hideLowBal && (
-              <section>
-                {lowBal.map(({ denom, chainID, id, ...item }, i) => (
-                  <Asset
-                    denom={denom}
-                    {...readNativeDenom(
-                      unknownIBCDenoms[[denom, chainID].join("*")]?.baseDenom ??
-                        denom,
-                      unknownIBCDenoms[[denom, chainID].join("*")]?.chainID ??
-                        chainID
-                    )}
-                    id={id}
-                    {...item}
-                    key={i}
-                  />
-                ))}
-              </section>
-            )}
+            {!hideLowBal && <section>{assets.lowBal.map(renderAsset)}</section>}
           </>
         )}
       </div>
@@ -109,13 +115,10 @@ const AssetList = () => {
     <article className={styles.assetlist}>
       <div className={styles.assetlist__title}>
         <SectionHeader title={t("Assets")} />
-        <ManageTokens>
-          {(open) => (
-            <InternalButton onClick={open}>
-              <FilterListIcon className={styles.filter} />
-            </InternalButton>
-          )}
-        </ManageTokens>
+        <FilterListIcon
+          className={cx(styles.filter, { active: filter, inactive: !filter })}
+          onClick={toggleFilter}
+        />
       </div>
       <div className={styles.assetlist__list}>{render()}</div>
     </article>

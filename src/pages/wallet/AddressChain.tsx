@@ -4,7 +4,7 @@ import { InputWrapper, Copy, TextArea } from "station-ui"
 
 const AddressChain = ({ address }: { address: string }) => {
   return (
-    <Grid gap={20}>
+    <Grid gap={10}>
       <QRCode value={address} />
       <InputWrapper label="Address" extra={<Copy copyText={address} />}>
         <TextArea readOnly value={address} />

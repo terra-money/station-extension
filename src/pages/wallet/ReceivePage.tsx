@@ -8,10 +8,14 @@ import AddressChain from "pages/wallet/AddressChain"
 import { truncate } from "@terra-money/terra-utils"
 import { capitalize } from "@mui/material"
 import styles from "./ReceivePage.module.scss"
+import { useAuth } from "auth"
+import { useTranslation } from "react-i18next"
 
 const ReceivePage = () => {
   const addresses = useInterchainAddresses()
   const networks = useNetwork()
+  const { wallet } = useAuth()
+  const { t } = useTranslation()
 
   const data = useMemo(() => {
     if (!addresses) return []
@@ -33,6 +37,8 @@ const ReceivePage = () => {
           )
           .map((item) => (
             <ModalButton
+              title={t(capitalize("receive"))}
+              subtitle={`${wallet?.name ?? ""} (${capitalize(item.name)})`}
               renderButton={(open) => (
                 <AddressSelectableListItem
                   key={item.id}

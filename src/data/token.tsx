@@ -316,7 +316,7 @@ export const useParsedAssetList = () => {
   const networkName = useNetworkName()
   const unknownIBCDenoms = useUnknownIBCDenoms()
 
-  const list: any = useMemo(
+  const list = useMemo(
     () => [
       ...Object.values(
         coins.reduce((acc, { denom, amount, chain }) => {
