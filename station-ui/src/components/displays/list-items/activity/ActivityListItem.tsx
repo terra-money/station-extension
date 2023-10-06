@@ -39,7 +39,7 @@ const ActivityListItem = ({
     <div className={styles.activity__li__container}>
       <div className={cx(styles.activity__li, { has__timeline: timelineMessages?.length })}>
         <div className={styles.activity__icon__container}>
-          {timelineMessages?.length && <span className={styles.dashed__line} />}
+          {timelineMessages?.length ? <span className={styles.dashed__line} /> : null}
           <img
             src={chain.icon}
             alt={chain.label}
