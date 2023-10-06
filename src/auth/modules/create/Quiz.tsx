@@ -3,13 +3,12 @@ import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
 import update from "immutability-helper"
 import numeral from "numeral"
-import DangerousOutlinedIcon from "@mui/icons-material/DangerousOutlined"
 import shuffle from "utils/shuffle"
 import { Form, FormItem, Submit } from "components/form"
-import AuthButton from "../../components/AuthButton"
 import { useCreateWallet } from "./CreateWalletWizard"
 import styles from "./Quiz.module.scss"
-import ConfirmModal from "../manage/ConfirmModal"
+import { Banner, Button, CheckedButton, Flex } from "station-ui"
+import { FlexColumn } from "components/layout"
 
 export interface QuizItem {
   index: number
@@ -32,48 +31,53 @@ const Quiz = () => {
   const reset = () => setStep(1)
 
   return (
-    <Form onSubmit={handleSubmit(submit)}>
-      {incorrect && (
-        <ConfirmModal
-          onRequestClose={() => setIncorrect(false)}
-          icon={<DangerousOutlinedIcon fontSize="inherit" className="danger" />}
-        >
-          {t("Write down the mnemonic and choose the correct word")}
-        </ConfirmModal>
-      )}
+    <Form onSubmit={handleSubmit(submit)} className={styles.quiz}>
+      <FlexColumn gap={18} className={styles.hints__container}>
+        {quiz.map(({ index }, i) => (
+          <FormItem
+            // do not translate this unless you find a simple way to handle ordinal
+            label={`${numeral(index + 1).format("0o")} word`}
+            key={index}
+          >
+            <section className={styles.hint}>
+              {hint.map((word) => {
+                const handleClick = () => {
+                  const next = update(answers, { [i]: { $set: word } })
+                  setAnswers(next)
+                }
 
-      {quiz.map(({ index }, i) => (
-        <FormItem
-          // do not translate this unless you find a simple way to handle ordinal
-          label={`${numeral(index + 1).format("0o")} word`}
-          key={index}
-        >
-          <section className={styles.hint}>
-            {hint.map((word) => {
-              const handleClick = () => {
-                const next = update(answers, { [i]: { $set: word } })
-                setAnswers(next)
-              }
+                return (
+                  <CheckedButton
+                    active={answers[i] === word}
+                    onClick={handleClick}
+                    key={word}
+                  >
+                    {word}
+                  </CheckedButton>
+                )
+              })}
+            </section>
+          </FormItem>
+        ))}
+      </FlexColumn>
 
-              return (
-                <AuthButton
-                  className={styles.item}
-                  onClick={handleClick}
-                  active={answers[i] === word}
-                  key={word}
-                >
-                  {word}
-                </AuthButton>
-              )
-            })}
-          </section>
-        </FormItem>
-      ))}
+      <FlexColumn gap={12} className={styles.footer}>
+        {incorrect && (
+          <Banner
+            variant="error"
+            title={t("Write down the mnemonic and choose the correct word")}
+          />
+        )}
 
-      <Submit disabled={answers.some((answer) => !answer)} />
-      <button className={styles.reset} onClick={reset}>
-        {t("I haven't written down the mnemonic")}
-      </button>
+        <Flex gap={12}>
+          <Button variant="secondary" onClick={reset} block>
+            {t("Back")}
+          </Button>
+          <Submit disabled={answers.some((answer) => !answer)} noMargin>
+            {t("Confirm")}
+          </Submit>
+        </Flex>
+      </FlexColumn>
     </Form>
   )
 }

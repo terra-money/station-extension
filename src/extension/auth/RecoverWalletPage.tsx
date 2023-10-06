@@ -6,7 +6,7 @@ const RecoverWallet = () => {
   const { t } = useTranslation()
 
   return (
-    <ExtensionPage title={t("Import from seed phrase")}>
+    <ExtensionPage title={t("Import Wallet")} backButtonPath="/" fullHeight>
       <RecoverWalletForm />
     </ExtensionPage>
   )

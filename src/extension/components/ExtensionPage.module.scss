@@ -4,7 +4,26 @@
   background-color: var(--card-bg-muted);
   height: calc(100% - var(--header-height));
   padding-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
   // padding here to position progress bar
+}
+
+.page > * {
+  width: 100%;
+}
+
+.main__bg__color {
+  background-color: var(--button-primary-bg);
+}
+
+.full__height {
+  height: 100vh;
+  padding-bottom: 0;
+}
+
+.full__height__body {
+  height: 100%;
 }
 
 .title_container {
@@ -38,6 +57,9 @@
   padding-top: 20px;
   color: var(--extension-text);
   text-align: left;
+  svg {
+    color: var(--token-light-100) !important;
+  }
 }
 
 .title {
@@ -47,6 +69,8 @@
   justify-content: center;
 
   &.skew_title {
-    margin-left: -34px;
+    text-align: left;
+    margin: 0;
+    display: inline;
   }
 }
