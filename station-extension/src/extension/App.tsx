@@ -1,8 +1,7 @@
 import { useEffect } from "react"
-import { useRoutes } from "react-router-dom"
+import { useRoutes, useLocation } from "react-router-dom"
 import { useAddress, useChainID, useNetworkName } from "data/wallet"
-import { ErrorBoundary } from "components/feedback"
-import { fallback } from "app/App"
+import { ErrorBoundary, Wrong } from "components/feedback"
 import InitBankBalance from "app/InitBankBalance"
 import LatestTx from "app/sections/LatestTx"
 import NetworkHeader from "app/sections/NetworkHeader"
@@ -35,6 +34,9 @@ import { useReplaceKeplr } from "utils/localStorage"
 import EnableCoinType from "app/sections/EnableCoinType"
 import UpdateNotification from "./update/UpdateNotification"
 import ChangeLogModal from "./update/ChangeLogModal"
+import Welcome from "./modules/Welcome"
+import ExtensionPage from "./components/ExtensionPage"
+import { getErrorMessage } from "utils/error"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -88,10 +90,17 @@ const App = () => {
     { path: "*", element: <Front /> },
   ])
 
-  return (
-    <ErrorBoundary fallback={fallback}>
-      <InitBankBalance>
-        <RequestContainer>
+  const location = useLocation()
+
+  function render() {
+    if (!wallet && !location.pathname.startsWith("/auth/")) {
+      //{wallets.length ? <SwitchWallet /> : <Welcome />}
+      return <Welcome />
+    }
+    // main page
+    return (
+      <>
+        {!location.pathname.startsWith("/auth/") && (
           <Header>
             <ManageWallets />
             <Flex gap={5}>
@@ -102,14 +111,29 @@ const App = () => {
               <Preferences />
             </Flex>
           </Header>
+        )}
 
-          <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
-        </RequestContainer>
+        <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
+      </>
+    )
+  }
+
+  return (
+    <ErrorBoundary fallback={fallback}>
+      <InitBankBalance>
+        <RequestContainer>{render()}</RequestContainer>
       </InitBankBalance>
       <ChangeLogModal />
       <UpdateNotification />
     </ErrorBoundary>
   )
 }
+
+/* error */
+export const fallback = (error: Error) => (
+  <ExtensionPage>
+    <Wrong>{getErrorMessage(error)}</Wrong>
+  </ExtensionPage>
+)
 
 export default App
