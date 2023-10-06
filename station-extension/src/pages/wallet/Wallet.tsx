@@ -32,6 +32,7 @@ type WalletRoute = CommonRoute & {
 type AddressRoute = CommonRoute & { page: Page.address; address: string }
 type Route = WalletRoute | AddressRoute
 
+
 // Handle routing inside Wallet
 const [useWalletRoute, WalletRouter] = createContext<{
   route: Route
