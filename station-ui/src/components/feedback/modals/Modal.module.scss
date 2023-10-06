@@ -38,7 +38,7 @@
   }
 
   @include extension {
-    padding: 40px 20px;
+    padding: 40px 24px;
     width: 100%;
     max-width: 100%;
     height: 100%;
@@ -72,7 +72,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 18px;
+  gap: 24px;
 }
 
 .header {
@@ -91,7 +91,7 @@
 }
 
 .subtitle {
-  @include Small;
+  @include X-Small;
   color: var(--token-light-100);
   margin-top: 4px;
 }
