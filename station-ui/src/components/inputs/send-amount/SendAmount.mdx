@@ -1,0 +1,106 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as SendAmountStories from "./SendAmount.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Inputs/Send Amount" />
+
+# SendAmount
+
+##### This is a component for send input.
+It has a dynamic width input... so it will grow and shrink based on the amount of text in the input.
+It is incredible. It was dificult to make. I am proud of it.
+
+## Props
+- **`displayType`** - <RequiredText /> - Determines if token or currency are the large input.
+  - Options are `token`, `currency`.
+- **`amount`** - <RequiredText /> - `number` - The number a user put in the input.
+- **`symbol`** - <RequiredText /> - `string` - The symbol of the token.
+- **`tokenIcon`** - <RequiredText /> - `string` - The icon of the token.
+- **`secondaryAmount`** - <RequiredText /> - `number` - The smaller amount on the bottom.
+- **`amountInputAttrs`** - <RequiredText /> - `InputHTMLAttributes<HTMLInputElement>` - Attributes from react-hook-form or others.
+- **`currencySymbol`** - <RequiredText /> - `string` - The symbol for the users currency.
+- **`price`** - <RequiredText /> - `number` - The price of the token.
+
+## Import
+```jsx
+import { SendAmount } from "station-ui";
+```
+
+## Stories
+
+## Token Large
+<div className="story_with_source_below">
+  <Canvas of={SendAmountStories.TokenLarge} />
+  <Source code={`
+    const [sendToken, ] = useState('LUNA');
+const { register, handleSubmit, watch } = useForm();
+const onSubmit = handleSubmit(data => console.log(data));
+
+return (
+  <form onSubmit={onSubmit}>
+    <SendAmount
+      displayType={'token'}
+      symbol={sendToken}
+      tokenIcon={tokensBySymbol[sendToken].tokenIcon}
+      amountInputAttrs={{...register("inputAmount", { required: true, valueAsNumber: true })}}
+      amount={watch("inputAmount") || 0}
+      secondaryAmount={watch("inputAmount") || 0}
+      currencySymbol={'$'}
+      price={tokenPrices[sendToken]}
+    />
+  </form>
+);
+  `} />
+</div>
+
+## Value Large
+<div className="story_with_source_below">
+  <Canvas of={SendAmountStories.ValueLarge} />
+  <Source code={`
+    const [sendToken, ] = useState('LUNA');
+const { register, handleSubmit, watch } = useForm();
+const onSubmit = handleSubmit(data => console.log(data));
+
+return (
+  <form onSubmit={onSubmit}>
+    <SendAmount
+      displayType={'currency'}
+      symbol={sendToken}
+      tokenIcon={tokensBySymbol[sendToken].tokenIcon}
+      amountInputAttrs={{...register("inputAmount", { required: true, valueAsNumber: true })}}
+      amount={watch("inputAmount") || 0}
+      secondaryAmount={watch("inputAmount") || 0}
+      currencySymbol={'$'}
+      price={tokenPrices[sendToken]}
+    />
+  </form>
+);
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

@@ -1,0 +1,104 @@
+import {
+  Meta,
+  Canvas,
+  Controls,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as DropdownStories from "./Dropdown.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Inputs/Dropdown" />
+
+# Dropdown
+
+##### A dropdown component with icons or text only.
+
+## Props
+- **`options`** - <RequiredText /> - `**object below[]**` - Options for the Dropdown.
+  - **`value`** - <RequiredText /> - `string` - The value of the option.
+  - **`label`** - <RequiredText /> - `string` - The label of the option.
+  - **`image`** - `string` - The image of the option.
+- **`onChange`** - <RequiredText /> - `(value: string) => void` - The function to run when the value changes.
+- **`value`** - <RequiredText /> - `string` - The value of the selected option.
+
+## Import
+```jsx
+import { Dropdown } from "station-ui";
+```
+
+## Stories
+
+## Default
+<div className="story_with_source_below">
+  <Canvas of={DropdownStories.Default} />
+  <Source code={`
+    const options = [
+  { value: "terra", label: "Terra", image: 'https://station-assets.terra.dev/img/chains/Terra.svg' },
+  { value: "axelar", label: "Axelar", image: 'https://station-assets.terra.dev/img/chains/Axelar.svg' },
+  { value: "carbon", label: "Carbon", image: 'https://station-assets.terra.dev/img/chains/Carbon.svg' },
+  { value: "cosmos", label: "Cosmos", image: 'https://station-assets.terra.dev/img/chains/Cosmos.svg' },
+  { value: "crescent", label: "Crescent", image: 'https://station-assets.terra.dev/img/chains/Crescent.svg' },
+  { value: "juno", label: "Juno", image: 'https://station-assets.terra.dev/img/chains/Juno.svg' },
+  { value: "mars", label: "Mars", image: 'https://station-assets.terra.dev/img/chains/Mars.svg' },
+];
+
+const [selectedValue, setSelectedValue] = useState('terra');
+
+return (
+  <Dropdown
+    options={options}
+    onChange={(value) => setSelectedValue(value)}
+    value={selectedValue}
+  />
+)
+  `} />
+</div>
+
+## Default Text Only
+<div className="story_with_source_below">
+  <Canvas of={DropdownStories.Default} />
+  <Source code={`
+    const options = [
+  { value: "terra", label: "Terra" },
+  { value: "axelar", label: "Axelar" },
+  { value: "carbon", label: "Carbon" },
+  { value: "cosmos", label: "Cosmos" },
+  { value: "crescent", label: "Crescent" },
+  { value: "juno", label: "Juno" },
+  { value: "mars", label: "Mars" },
+];
+
+const [selectedValue, setSelectedValue] = useState('terra');
+
+return (
+  <Dropdown
+    options={options}
+    onChange={(value) => setSelectedValue(value)}
+    value={selectedValue}
+  />
+)
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
