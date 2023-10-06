@@ -70,29 +70,31 @@ const CoinTypeMnemonicForm = ({ close }: { close: () => void }) => {
         throw new Error("Wrong mnemonic or index")
       }
 
-      deleteWallet(wallet.name)
-      addWallet({
-        name: wallet.name,
-        index,
-        legacy: isLegacy,
-        words: {
-          "330": wordsFromAddress(
-            (isLegacy ? key118 : key330).accAddress("terra")
-          ),
-          "118": wordsFromAddress(key118.accAddress("terra")),
-          "60": wordsFromAddress(key60.accAddress("terra")),
+      deleteWallet(wallet.name, password)
+      addWallet(
+        {
+          name: wallet.name,
+          index,
+          legacy: isLegacy,
+          words: {
+            "330": wordsFromAddress(
+              (isLegacy ? key118 : key330).accAddress("terra")
+            ),
+            "118": wordsFromAddress(key118.accAddress("terra")),
+            "60": wordsFromAddress(key60.accAddress("terra")),
+          },
+          pubkey: {
+            // @ts-expect-error
+            "330": (isLegacy ? key118 : key330).publicKey.key,
+            // @ts-expect-error
+            "118": key118.publicKey.key,
+            // @ts-expect-error
+            "60": key60.publicKey.key,
+          },
+          seed,
         },
-        pubkey: {
-          // @ts-expect-error
-          "330": (isLegacy ? key118 : key330).publicKey.key,
-          // @ts-expect-error
-          "118": key118.publicKey.key,
-          // @ts-expect-error
-          "60": key60.publicKey.key,
-        },
-        seed,
-        password,
-      })
+        password
+      )
       connect(wallet.name)
       close()
     } catch (error) {

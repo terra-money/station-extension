@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore"
-import KeyIcon from "@mui/icons-material/Key"
 import GroupsIcon from "@mui/icons-material/Groups"
 import { sandbox } from "../scripts/env"
 
@@ -18,13 +17,8 @@ const useAvailable = () => {
     },
     {
       to: "/auth/recover",
-      children: t("Import from seed phrase"),
+      children: t("Import wallet"),
       icon: <SettingsBackupRestoreIcon />,
-    },
-    {
-      to: "/auth/import",
-      children: t("Import from private key"),
-      icon: <KeyIcon />,
     },
     {
       to: "/auth/multisig/new",
