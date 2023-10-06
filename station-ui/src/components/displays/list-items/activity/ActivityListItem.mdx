@@ -1,0 +1,140 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../../DocsHelpers.tsx";
+import * as ActivityListItemStories from "./ActivityListItem.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/List Items/Activity" />
+
+# ActivityListItem
+
+##### Displays a single activity item.
+
+## Props
+- **`variant`** - <RequiredText /> - Changes the icon on the chain.
+  - Options are `success`, `failed`, `loading`.
+- **`chain`** - <RequiredText /> - `**object below**` - Chain for image.
+  - `{ icon: string, label: string }`
+- **`msg`** - <RequiredText /> - `ReactNode` - The message containing the details of the transactions.
+- **`type`** - <RequiredText /> - `string` - String that is displayed inside of the Pill.
+- **`time`** - <RequiredText /> - `string` - The time when the transaction was made.
+- **`timelineMessages`** - `ReactNode[]` - Array of messages that are displayed connecting to the main message.
+
+## Import
+```jsx
+import { DelegationCard } from "station-ui";
+```
+
+## Stories
+
+## Successful
+Activity with a green check icon on the chain icon.
+<div className="story_with_source_below">
+  <Canvas of={ActivityListItemStories.Successful} />
+  <Source code={`
+    <ActivityListItem
+  variant={"success"}
+  chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+  msg={
+    <div>
+      Sent <span>420.00 LUNA</span> to <span>terra1...20k38v</span>
+    </div>
+  }
+  type={"Execute Contract"}
+  time={"2 minutes ago"}
+/>
+  `} />
+</div>
+
+## Failed
+Activity with a red check icon on the chain icon and a "Failed Transaction" pill.
+<div className="story_with_source_below">
+  <Canvas of={ActivityListItemStories.Failed} />
+  <Source code={`
+    <ActivityListItem
+  variant={"failed"}
+  chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+  msg={
+    <div>
+      Sent <span>420.00 LUNA</span> to <span>terra1...20k38v</span>
+    </div>
+  }
+  type={"Failed Transaction"}
+  time={"2 minutes ago"}
+/>
+  `} />
+</div>
+
+## Loading
+Activity with a loading icon on the chain icon.
+<div className="story_with_source_below">
+  <Canvas of={ActivityListItemStories.Loading} />
+  <Source code={`
+    <ActivityListItem
+  variant={"loading"}
+  chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+  msg={
+    <div>
+      Delegated <span>420.00 LUNA</span> to <span>Orbital Command</span>
+    </div>
+  }
+  type={"Delegate"}
+  time={"1 day ago"}
+/>
+  `} />
+</div>
+
+## Timeline
+Activity with a timeline connecting to the main message.
+<div className="story_with_source_below">
+  <Canvas of={ActivityListItemStories.Timeline} />
+  <Source code={`
+    <ActivityListItem
+  variant={"success"}
+  chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+  msg={
+    <div>
+      Delegated <span>420.00 LUNA</span> to <span>Orbital Command</span>
+    </div>
+  }
+  type={"Delegate"}
+  time={"1 day ago"}
+  timelineMessages={[
+    <div>
+      Delegated <span>420.00 LUNA</span> to <span>Orbital Command</span>
+    </div>,
+    <div>
+      Delegated <span>420.00 LUNA</span> to <span>Orbital Command</span>
+    </div>,
+    <div>
+      Delegated <span>420.00 LUNA</span> to <span>Orbital Command</span>
+    </div>,
+  ]}
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

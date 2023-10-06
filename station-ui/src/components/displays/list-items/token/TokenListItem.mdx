@@ -1,0 +1,211 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../../DocsHelpers.tsx";
+import * as TokenListItemStories from "./TokenListItem.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/List Items/Token" />
+
+# Token ListItem
+
+##### Displays a single token item.
+
+## Props
+- **`balance`** - `string` - The balance of the token.
+  - If this is not provided, the balance will default to "0".
+- **`chains`** - <RequiredText /> - `string[]` - A list of chains this token is on.
+- **`currency`** - <RequiredText /> - `**object below**` - The currency a user uses.
+  - `{ id: string, symbol: string, name: string }`
+- **`tokenImg`** - <RequiredText /> - `string` - The Image for the token.
+- **`symbol`** - <RequiredText /> - `string` - The label to display the token.
+- **`price`** - `number` - The current price of the token.
+- **`change`** - `number` - The percent change of the token in 24 hours.
+- **`amountNode`** - <RequiredText /> - `ReactNode` - The amount of the token.
+- **`onClick`** - <RequiredText /> - `() => void` - Function that is called when the item is clicked.
+
+## Import
+```jsx
+import { TokenListItem } from "station-ui";
+```
+
+## Stories
+
+## Default
+Displays an individual token item with a Tooltip that displays amounts on chains (if token is on multiple chains).
+<div className="story_with_source_below">
+  <Canvas of={TokenListItemStories.Default} />
+  <Source code={`
+    <TokenListItem
+  priceNode={<span>$ 421.00</span>}
+  chains={[{name: "terra",  icon: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }, { balance: '320' , name: "axelar", icon: "https://station-assets.terra.dev/img/chains/Axelar.svg"}]}
+  tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
+  symbol={"LUNA"}
+  price={1}
+  change={0.1}
+  amountNode={<span>420.00</span>}
+/>
+  `} />
+</div>
+
+## Default Single Chain
+Displays an individual token item that is on a single chain (So, no Tooltip).
+<div className="story_with_source_below">
+  <Canvas of={TokenListItemStories.DefaultSingleChain} />
+  <Source code={`
+    <TokenListItem
+  priceNode={<span>$ 421.00</span>}
+  chains={[{name: "terra",  icon: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }]}
+  tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
+  symbol={"LUNA"}
+  price={1}
+  change={0.1}
+  amountNode={<span>420.00</span>}
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+
+# TokenSingleChain ListItem
+
+##### Displays a single token what has a single chain.
+
+## Props
+- **`balance`** - `string` - The balance of the token.
+  - If this is not provided, the balance will default to "0".
+- **`chain`** - <RequiredText /> - `**object below**` - A list of chains this token is on.
+  - `{ icon: string, label: string }`
+- **`currency`** - <RequiredText /> - `**object below**` - The currency a user uses.
+  - `{ id: string, symbol: string, name: string }`
+- **`tokenImg`** - <RequiredText /> - `string` - The Image for the token.
+- **`symbol`** - <RequiredText /> - `string` - The label to display the token.
+- **`price`** - `number` - The current price of the token.
+- **`isSendBack`** - `boolean` - If the token is being sent back.
+- **`amountNode`** - <RequiredText /> - `ReactNode` - The amount of the token.
+- **`onClick`** - <RequiredText /> - `() => void` - Function that is called when the item is clicked.
+
+## Import
+```jsx
+import { TokenSingleChainListItem } from "station-ui";
+```
+
+## Stories
+
+## Chain Display
+A token displayed with a chain focus. So, removed 24hour change and replaces it with a chain icon and name.
+<div className="story_with_source_below">
+  <Canvas of={TokenListItemStories.ChainDisplay} />
+  <Source code={`
+    <TokenSingleChainListItem
+  priceNode={<span>$42000</span>}
+  tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
+  symbol={"LUNA"}
+  price={1}
+  amountNode={<span>420.00</span>}
+  chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+/>
+  `} />
+</div>
+
+## Send Back
+The same as ChainDisplay, but with a send back pill.
+<div className="story_with_source_below">
+  <Canvas of={TokenListItemStories.ChainDisplay} />
+  <Source code={`
+    <TokenSingleChainListItem
+  priceNode={<span>$ 42000</span>}
+  tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
+  symbol={"LUNA"}
+  price={1}
+  amountNode={<span>420.00</span>}
+  chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+  isSendBack
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+
+# TokenCheckbox ListItem
+
+##### Displays a token item with a checkbox.
+
+## Props
+- **`tokenImg`** - <RequiredText /> - `string` - The Image for the token.
+- **`symbol`** - <RequiredText /> - `string` - The label to display the token.
+- **`chain`** - <RequiredText /> - `**object below**` - A list of chains this token is on.
+  - `{ icon: string, label: string }`
+- **`onClick`** - <RequiredText /> - `() => void` - Function that is called when the item is clicked.
+- **`checked`** - `boolean` - If the checkbox is checked.
+
+## Import
+```jsx
+import { TokenCheckboxListItem } from "station-ui";
+```
+
+## Stories
+
+## With Chain Checkbox
+The same as ChainDisplay, but with a checkbox on the right side instead of the amounts.
+<div className="story_with_source_below">
+  <Canvas of={TokenListItemStories.WithChainCheckbox} />
+  <Source code={`
+    <TokenCheckboxListItem
+  tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
+  symbol={"LUNA"}
+  onClick={() => setChecked(!checked)}
+  checked={checked}
+  chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

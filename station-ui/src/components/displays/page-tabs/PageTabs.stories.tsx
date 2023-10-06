@@ -4,7 +4,7 @@ import PageTabs, { PageTabsProps } from './PageTabs';
 import { useState } from 'react';
 
 const meta: Meta<PageTabsProps> = {
-  title: 'Components/Displays/Page Tabs',
+  title: 'Components/Displays/Page Tabs/Stories',
   component: PageTabs,
   argTypes: {},
 } as Meta;

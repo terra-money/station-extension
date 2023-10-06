@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import VotingSummary, { VotingSummaryProps } from './VotingSummary';
 
 const meta: Meta<VotingSummaryProps> = {
-  title: 'Components/Displays/Voting Summary',
+  title: 'Components/Displays/Voting Summary/Stories',
   component: VotingSummary,
   argTypes: {},
 } as Meta;

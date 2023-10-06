@@ -4,7 +4,7 @@ import Tooltip from './Tooltip';
 import styles from "./example.module.scss";
 
 const meta: Meta<TippyProps> = {
-  title: 'Components/Displays/Tooltip',
+  title: 'Components/Displays/Tooltip/Stories',
   component: Tooltip,
   argTypes: {},
 } as Meta;
@@ -25,7 +25,18 @@ export const Default: StoryObj<TippyProps> = {
 
 export const ChainsBoxExample: StoryObj<TippyProps> = {
   render: () => {
-    const chains = [{name: "terra",  img: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }, { balance: '320' , name: "axelar", img: "https://station-assets.terra.dev/img/chains/Axelar.svg"}];
+    const chains = [
+      {
+        name: "terra",
+        img: "https://station-assets.terra.dev/img/chains/Terra.svg",
+        balance: '100',
+      },
+      {
+        name: "axelar",
+        img: "https://station-assets.terra.dev/img/chains/Axelar.svg",
+        balance: '320',
+      },
+    ];
 
     return (
       <div style={{ height: "100px", marginLeft: "50px", display: "flex", alignItems: "flex-end" }}>
