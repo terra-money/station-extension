@@ -50,7 +50,7 @@ export interface ParsedVestingSchedule {
   amount: { total: string; vested: string }
 }
 
-interface VestingScheduleItem {
+export interface VestingScheduleItem {
   start?: Date
   end: Date
   toNow: "past" | "now" | "future"
