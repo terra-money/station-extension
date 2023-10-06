@@ -43,10 +43,7 @@ const AssetVesting = ({ token = "uluna" }: Props) => {
       <VestingCard token={token} />
       {schedule.map((item, index) => (
         <>
-          <SectionHeader
-            title={`Period ${index + 1}`}
-            className={styles.header}
-          />
+          <SectionHeader title={`Period ${index + 1}`} />
           <SummaryCard className={styles.wrapper}>
             {renderSummaryRows(item)}
           </SummaryCard>

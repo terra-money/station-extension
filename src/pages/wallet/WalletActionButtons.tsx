@@ -4,7 +4,7 @@ import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
 import { useNetworkName, useNetwork, useChainID } from "data/wallet"
 import { useIsWalletEmpty } from "data/queries/bank"
 import { useKado } from "pages/wallet/Buy"
-import { useWalletRoute, Path } from "./Wallet"
+import { useWalletRoute, Page } from "./Wallet"
 import { useTranslation } from "react-i18next"
 import styles from "./NetWorth.module.scss"
 import { capitalize } from "@mui/material"
@@ -43,28 +43,21 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
       icon: <SendIcon />,
       primary: true,
       label: t("send"),
-      onClick: () =>
-        setRoute({
-          path: Path.send,
-          previousPage: route,
-          denom,
-        }),
+      onClick: () => setRoute({ page: Page.send, denom }),
       disabled: sendButtonDisabled,
     },
     {
       icon: <Swap />,
       label: t("swap"),
-      onClick: () => {},
-      hide: route.path !== Path.wallet,
+      onClick: () => {
+        setRoute({ page: Page.swap })
+      },
+      hide: route.page !== Page.wallet,
     },
     {
       icon: <ReceiveIcon />,
       label: t("receive"),
-      onClick: () =>
-        setRoute({
-          path: Path.receive,
-          previousPage: route,
-        }),
+      onClick: () => setRoute({ page: Page.receive }),
     },
     {
       icon: <AddIcon />,

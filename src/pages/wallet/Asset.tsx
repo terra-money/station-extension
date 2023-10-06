@@ -7,7 +7,7 @@ import { WithFetching } from "components/feedback"
 import { useMemo } from "react"
 
 import styles from "./Asset.module.scss"
-import { useWalletRoute, Path } from "./Wallet"
+import { useWalletRoute, Page } from "./Wallet"
 import { TokenListItem } from "station-ui"
 import { useBankBalance } from "data/queries/bank"
 import { useNativeDenoms } from "data/token"
@@ -45,8 +45,8 @@ const Asset = (props: Props) => {
   const change = props.change ?? prices?.[props.token]?.change
 
   const handleAssetClick = () => {
-    if (route.path !== Path.coin)
-      setRoute({ path: Path.coin, denom: id, previousPage: route })
+    if (route.page !== Page.coin)
+      setRoute({ page: Page.coin, denom: id, previous: route })
   }
 
   const chains = useMemo(() => {

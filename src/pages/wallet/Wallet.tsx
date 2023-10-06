@@ -6,23 +6,31 @@ import { useState } from "react"
 import createContext from "utils/createContext"
 import AssetPage from "./AssetPage"
 import ReceivePage from "./ReceivePage"
+import AddressChain from "pages/wallet/AddressChain"
 import SendPage from "./SendPage"
 import { PageTabs } from "station-ui"
 import { useTranslation } from "react-i18next"
-import { capitalize } from "@mui/material"
+import { Close } from "@mui/icons-material"
+import { truncate } from "@terra-money/terra-utils"
 
-enum Path {
+enum Page {
   wallet = "wallet",
   coin = "coin",
   receive = "receive",
   send = "send",
+  swap = "swap",
+  address = "address",
 }
 
-type Route = {
-  path: Path.coin | Path.receive | Path.send | Path.wallet
+type CommonRoute = {
+  previous?: Route
   denom?: string
-  previousPage?: Route
 }
+type WalletRoute = CommonRoute & {
+  page: Page.wallet | Page.receive | Page.swap | Page.coin | Page.send
+}
+type AddressRoute = CommonRoute & { page: Page.address; address: string }
+type Route = WalletRoute | AddressRoute
 
 // Handle routing inside Wallet
 const [useWalletRoute, WalletRouter] = createContext<{
@@ -30,33 +38,63 @@ const [useWalletRoute, WalletRouter] = createContext<{
   setRoute: (route: Route) => void
 }>("useWalletRoute")
 
-export { useWalletRoute, Path }
+export { useWalletRoute, Page }
 
 const Wallet = () => {
-  const [route, setRoute] = useState<Route>({ path: Path.wallet })
+  const [route, setRoute] = useState<Route>({ page: Page.wallet })
   const [tab, setTab] = useState(0)
   const { t } = useTranslation()
 
   const Header = () => {
-    if (route.path === Path.wallet) return null
-    const title =
-      route.path === Path.receive || route.path === Path.send ? route.path : ""
+    if (route.page === Page.wallet) return null
+    const renderTitle = () => {
+      switch (route.page) {
+        case Page.swap:
+          return t("Swap")
+        case Page.receive:
+          return t("Receive")
+        case Page.send:
+          return t("Send")
+        case Page.address:
+          return truncate(route.address)
+        default:
+          return ""
+      }
+    }
 
     return (
       <div className={styles.header}>
+        {route.previous && (
+          <button
+            className={styles.back}
+            onClick={() => setRoute(route.previous as Route)}
+          >
+            <BackIcon data-testid="BackIcon" />
+          </button>
+        )}
+        <h1>{renderTitle()}</h1>
         <button
-          className={styles.back}
-          onClick={() => setRoute(route.previousPage ?? { path: Path.wallet })}
+          className={styles.close}
+          onClick={() => setRoute({ page: Page.wallet })}
         >
-          <BackIcon data-testid="BackIcon" />
+          <Close data-testid="CloseIcon" />
         </button>
-        {title && <h1>{capitalize(title)}</h1>}
       </div>
     )
   }
-  const render = () => {
-    switch (route.path) {
-      case Path.wallet:
+  const renderPage = () => {
+    switch (route.page) {
+      case Page.coin:
+        return <AssetPage />
+      case Page.receive:
+        return <ReceivePage />
+      case Page.send:
+        return <SendPage />
+      case Page.swap:
+        return <span>swap page</span>
+      case Page.address:
+        return <AddressChain address={route.address} />
+      default:
         return (
           <>
             <NetWorth />
@@ -68,33 +106,19 @@ const Wallet = () => {
             {tab === 0 ? <AssetList /> : <p>Activty component</p>}
           </>
         )
-      case Path.coin:
-        return (
-          <>
-            <Header />
-            <AssetPage />
-          </>
-        )
-      case Path.receive:
-        return (
-          <>
-            <Header />
-            <ReceivePage />
-          </>
-        )
-      case Path.send:
-        return (
-          <>
-            <Header />
-            <SendPage />
-          </>
-        )
     }
   }
 
   return (
     <div className={styles.wallet}>
-      <WalletRouter value={{ route, setRoute }}>{render()}</WalletRouter>
+      <WalletRouter value={{ route, setRoute }}>
+        {
+          <>
+            <Header />
+            {renderPage()}
+          </>
+        }
+      </WalletRouter>
     </div>
   )
 }
