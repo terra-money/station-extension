@@ -1,5 +1,5 @@
 import { useNativeDenoms, useUnknownIBCDenoms } from "data/token"
-import { useWalletRoute, Path } from "./Wallet"
+import { useWalletRoute, Page } from "./Wallet"
 import styles from "./AssetPage.module.scss"
 import { Read, TokenIcon } from "components/token"
 import { useCurrency } from "data/settings/Currency"
@@ -21,7 +21,7 @@ const AssetPage = () => {
   const { t } = useTranslation()
   const { route } = useWalletRoute()
   const networkName = useNetworkName()
-  const routeDenom = route.path === Path.coin ? route.denom ?? "uluna" : "uluna"
+  const routeDenom = route.page === Page.coin ? route.denom ?? "uluna" : "uluna"
   const [chain, denom] = routeDenom.includes("*")
     ? routeDenom.split("*")
     : [undefined, routeDenom]

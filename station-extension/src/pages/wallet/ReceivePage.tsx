@@ -3,19 +3,16 @@ import { getChainNamefromID } from "data/queries/chains"
 import { useNetwork } from "data/wallet"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import WithSearchInput from "pages/custom/WithSearchInput"
-import { ModalButton, AddressSelectableListItem } from "station-ui"
-import AddressChain from "pages/wallet/AddressChain"
+import { AddressSelectableListItem } from "station-ui"
 import { truncate } from "@terra-money/terra-utils"
 import { capitalize } from "@mui/material"
 import styles from "./ReceivePage.module.scss"
-import { useAuth } from "auth"
-import { useTranslation } from "react-i18next"
+import { useWalletRoute, Page } from "./Wallet"
 
 const ReceivePage = () => {
   const addresses = useInterchainAddresses()
   const networks = useNetwork()
-  const { wallet } = useAuth()
-  const { t } = useTranslation()
+  const { setRoute } = useWalletRoute()
 
   const data = useMemo(() => {
     if (!addresses) return []
@@ -36,24 +33,22 @@ const ReceivePage = () => {
             item.name.toLowerCase().includes(input.toLowerCase())
           )
           .map((item) => (
-            <ModalButton
-              title={t(capitalize("receive"))}
-              subtitle={`${wallet?.name ?? ""} (${capitalize(item.name)})`}
-              renderButton={(open) => (
-                <AddressSelectableListItem
-                  key={item.id}
-                  label={capitalize(item.name)}
-                  chain={{
-                    icon: networks[item.id].icon,
-                    label: item.name,
-                  }}
-                  subLabel={truncate(item.address)}
-                  onClick={open}
-                />
-              )}
-            >
-              <AddressChain address={item.address} />
-            </ModalButton>
+            <AddressSelectableListItem
+              key={item.id}
+              label={capitalize(item.name)}
+              chain={{
+                icon: networks[item.id].icon,
+                label: item.name,
+              }}
+              subLabel={truncate(item.address)}
+              onClick={() => {
+                setRoute({
+                  page: Page.address,
+                  address: item.address,
+                  previous: { page: Page.receive },
+                })
+              }}
+            />
           ))
       }}
     </WithSearchInput>

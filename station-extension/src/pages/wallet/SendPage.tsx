@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { CoinInput, getPlaceholder, toInput } from "txs/utils"
 import styles from "./SendPage.module.scss"
-import { useWalletRoute, Path } from "./Wallet"
+import { useWalletRoute, Page } from "./Wallet"
 import validate from "../../txs/validate"
 import { useIBCChannels, useWhitelist } from "data/queries/chains"
 import CheckIcon from "@mui/icons-material/Check"
@@ -336,7 +336,7 @@ const SendPage = () => {
     createTx,
     disabled: false,
     onChangeMax,
-    onSuccess: () => setRoute({ path: Path.wallet }),
+    onSuccess: () => setRoute({ page: Page.wallet }),
     taxRequired: true,
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     gasAdjustment:
