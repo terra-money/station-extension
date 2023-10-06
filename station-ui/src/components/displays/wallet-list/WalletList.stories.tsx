@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import WalletList from './WalletList';
 
 const meta: Meta = {
-  title: 'Components/Displays/Wallet List',
+  title: 'Components/Displays/Wallet List/Stories',
   component: WalletList,
   argTypes: {},
 } as Meta;

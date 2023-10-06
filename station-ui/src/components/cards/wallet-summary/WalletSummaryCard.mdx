@@ -1,0 +1,108 @@
+import {
+  Meta,
+  Story,
+  Canvas,
+  Controls,
+  ArgTypes,
+  Description,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as WalletSummaryCardStories from "./WalletSummaryCard.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Cards/WalletSummary" />
+
+# Wallet Summary Card
+
+##### A Card to display Wallet Summary information.
+
+## Props
+- **`walletType`** - <RequiredText /> - `string` - To display the wallet type.
+- **`walletAddress`** - <RequiredText /> - `string` - The address of the wallet.
+- **`walletBalance`** - <RequiredText /> - `string` - The balance of the wallet.
+- **`prevTransactions`** - <RequiredText /> - `string` - The 'number' of transactions (as a string).
+- **`isActive`** - `boolean` - Set if the card is active.
+- **`className`** - `string` - ClassName override for the card.
+- **`onClick`** - `() => void` - A function of what to do when this card is clicked.
+
+## Import
+```jsx
+import { WalletSummaryCard } from "station-ui";
+```
+
+## Stories
+
+## Default
+<div className="story_with_source_below">
+  <Canvas of={WalletSummaryCardStories.Default} />
+  <Source code={`
+    <WalletSummaryCard
+  walletType={"m/44’/330’"}
+  walletAddress={"terra1si2hi2d2d...916sh2"}
+  walletBalance={"0 LUNA"}
+  prevTransactions={"0"}
+/>
+  `} />
+</div>
+
+## HasValues
+Changes font color to white when there are values.
+<div className="story_with_source_below">
+  <Canvas of={WalletSummaryCardStories.HasValues} />
+  <Source code={`
+    <WalletSummaryCard
+  walletType={"m/44’/330’"}
+  walletAddress={"terra1si2hi2d2d...916sh2"}
+  walletBalance={"10 LUNA"}
+  prevTransactions={"1"}
+/>
+  `} />
+</div>
+
+## IsActive
+Adds a white border to indicate that the card is active.
+<div className="story_with_source_below">
+  <Canvas of={WalletSummaryCardStories.IsActive} />
+  <Source code={`
+    <WalletSummaryCard
+  walletType={"m/44’/330’"}
+  walletAddress={"terra1si2hi2d2d...916sh2"}
+  walletBalance={"10 LUNA"}
+  prevTransactions={"1"}
+  isActive
+  onClick={() => { }}
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

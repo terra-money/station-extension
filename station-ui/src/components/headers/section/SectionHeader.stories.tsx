@@ -3,7 +3,7 @@ import SectionHeader, { SectionHeaderProps } from './SectionHeader';
 import { ReactComponent as FilterIcon } from 'assets/icon/Filter.svg';
 
 const meta: Meta<SectionHeaderProps> = {
-  title: 'Components/Headers/SectionHeader/Stories',
+  title: 'Components/Headers/Section/Stories',
   component: SectionHeader,
   argTypes: {},
 } as Meta;

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import ProgressBar, { ProgressBarProps } from './ProgressBar';
 
 const meta: Meta<ProgressBarProps> = {
-  title: 'Components/Displays/Progress Bar',
+  title: 'Components/Displays/Progress Bar/Stories',
   component: ProgressBar,
   argTypes: {},
 } as Meta;
@@ -45,19 +45,6 @@ export const SinglePassThreshold: StoryObj<ProgressBarProps> = {
       { type: 'noWithVeto', percent: '0%' },
     ],
     threshold: 20,
-  },
-};
-
-export const Empty: StoryObj<ProgressBarProps> = {
-  render: (args) => <ProgressBar {...args} />,
-  args: {
-    data: [
-      { type: 'yes', percent: '0%' },
-      { type: 'abstain', percent: '0%' },
-      { type: 'no', percent: '0%' },
-      { type: 'noWithVeto', percent: '0%' },
-    ],
-    threshold: 3.5,
   },
 };
 

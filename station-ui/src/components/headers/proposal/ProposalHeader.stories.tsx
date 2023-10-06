@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import ProposalHeader, { ProposalHeaderProps } from './ProposalHeader';
 
 const meta: Meta<ProposalHeaderProps> = {
-  title: 'Components/Headers/ProposalHeader/Stories',
+  title: 'Components/Headers/Proposal/Stories',
   component: ProposalHeader,
   argTypes: {},
 } as Meta;

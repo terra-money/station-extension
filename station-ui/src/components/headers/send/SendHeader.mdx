@@ -1,0 +1,60 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as SendHeaderStories from "./SendHeader.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Headers/Send" />
+
+# Send Header
+
+##### A Header to show information about a send.
+
+## Props
+- **`heading`** - <RequiredText /> - `string` - The small text at the top.
+- **`label`** - <RequiredText /> - `string` - The main large text in the middle.
+- **`subLabel`** - <RequiredText /> - `string` - The secondary text on the bottom.
+
+## Import
+```jsx
+import { SendHeader } from "station-ui";
+```
+
+## Stories
+
+## Default
+<div className="story_with_source_below">
+  <Canvas of={SendHeaderStories.Default} />
+  <Source code={`
+    <SendHeader
+  heading="Sending"
+  label="5 LUNA"
+  subLabel="$3.65"
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

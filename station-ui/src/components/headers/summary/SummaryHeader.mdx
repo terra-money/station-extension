@@ -1,0 +1,91 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as SummaryHeaderStories from "./SummaryHeader.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Headers/Summary" />
+
+# Summary Header
+
+##### A Summary Header to show information. With a large status icon.
+
+## Props
+- **`statusLabel`** - <RequiredText /> - `string` - Largest text.
+- **`statusMessage`** - <RequiredText /> - `string` - Secondary text.
+- **`status`** - `string` - Determines the icon.
+  - Options are `alert`, `success`.
+- **`summaryTitle`** - `string` - The title in the summary box.
+- **`summaryValue`** - `string` - The secondary text in the summary box.
+
+## Import
+```jsx
+import { SummaryHeader } from "station-ui";
+```
+
+## Stories
+
+## Success With SummaryCard
+<div className="story_with_source_below">
+  <Canvas of={SummaryHeaderStories.SuccessWithSummaryCard} />
+  <Source code={`
+    <SummaryHeader
+  statusLabel={"Success!"}
+  statusMessage={"The wallet was created"}
+  status={"success"}
+  summaryTitle={"my-wallet"}
+  summaryValue={"terra1kc87mu460fwkqte29rquh4hc20m54fxwtsx7gp"}
+/>
+  `} />
+</div>
+
+## Error With SummaryCard
+<div className="story_with_source_below">
+  <Canvas of={SummaryHeaderStories.ErrorWithSummaryCard} />
+  <Source code={`
+    <SummaryHeader
+  statusLabel={"Error"}
+  statusMessage={"oh no! something went wrong"}
+  status={"alert"}
+  summaryTitle={"Am ERROR"}
+  summaryValue={"Error message goes here, preferably very descriptive to avoid confusion."}
+/>
+  `} />
+</div>
+
+## Without SummaryCard
+<div className="story_with_source_below">
+  <Canvas of={SummaryHeaderStories.WithoutSummaryCard} />
+  <Source code={`
+    <SummaryHeader
+  statusLabel={"Error"}
+  statusMessage={"oh no! something went wrong"}
+  status={"alert"}
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

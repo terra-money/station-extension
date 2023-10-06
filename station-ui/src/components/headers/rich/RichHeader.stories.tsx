@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import RichHeader, { RichHeaderProps } from './RichHeader';
 
 const meta: Meta<RichHeaderProps> = {
-  title: 'Components/Headers/RichHeader/Stories',
+  title: 'Components/Headers/Rich/Stories',
   component: RichHeader,
   argTypes: {},
 } as Meta;

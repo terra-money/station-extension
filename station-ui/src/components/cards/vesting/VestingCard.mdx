@@ -1,0 +1,60 @@
+import {
+  Meta,
+  Story,
+  Canvas,
+  Controls,
+  ArgTypes,
+  Description,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as VestingCardStories from "./VestingCard.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Cards/Vesting" />
+
+# VestingCard
+
+##### A Card to display vesting information.
+
+## Props
+- **`vestedAmount`** - <RequiredText /> - `string` - The threshold for the ProgressBar.
+- **`children`** - `ReactNode` - The content to be displayed on this card.
+  - Should be **`<TokenSingleChainListItem />`** for this component.
+- **`className`** - `string` - ClassName override for the card.
+
+## Import
+```jsx
+import { VestingCard } from "station-ui";
+```
+
+## Stories
+
+## Default
+<div className="story_with_source_below">
+  <Canvas of={VestingCardStories.Default} />
+  <Source code={`
+    <VestingCard
+  vestedAmount={"420.00"}
+>
+  <TokenSingleChainListItem
+    priceNode={<span>$ 42000</span>}
+    tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
+    symbol={"LUNA"}
+    price={1}
+    amountNode={<span>3,400.00</span>}
+    chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+  />
+</VestingCard>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
