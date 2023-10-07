@@ -3,7 +3,7 @@ import VestingCard, { VestingCardProps } from './VestingCard';
 import { TokenSingleChainListItem } from 'components';
 
 const meta: Meta<VestingCardProps> = {
-  title: 'Components/Cards/Vesting',
+  title: 'Components/Cards/Vesting/Stories',
   component: VestingCard,
   argTypes: {},
 } as Meta;

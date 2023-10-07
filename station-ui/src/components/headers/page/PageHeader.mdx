@@ -1,0 +1,60 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as PageHeaderStories from "./PageHeader.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Headers/Page" />
+
+# Page Header
+
+##### A Header used at the top of a page. Displays the page name and a description.
+
+## Props
+- **`title`** - <RequiredText /> - `string` - The title of the page.
+- **`description`** - <RequiredText /> - `string` - The description of the page.
+- **`icon`** - <RequiredText /> - `ReactNode` - An Icon that correlates with the page.
+
+## Import
+```jsx
+import { PageHeader } from "station-ui";
+```
+
+## Stories
+
+## Default
+<div className="story_with_source_below">
+  <Canvas of={PageHeaderStories.Default} />
+  <Source code={`
+    <PageHeader
+  title="Governance"
+  description="Browse and vote on governance proposals across the Cosmos ecosystem."
+  icon={<GovernanceIcon fill="var(--token-dark-900)" />}
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

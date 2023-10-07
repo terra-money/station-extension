@@ -1,0 +1,100 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as VotingSummaryStories from "./VotingSummary.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Displays/Voting Summary" />
+
+# Voting Summary
+
+##### Displays more information on top of `<ProgressBar />`.
+
+## VotingSummary Props
+- **`data`** - <RequiredText /> - `ProgressBarData[]` - The status of each step.
+  - **`ProgressBarData`** = `{`
+    `type: 'yes' | 'abstain' | 'no' | 'noWithVeto'`
+    `percent: string`
+    `amount: string | ReactNode`
+  `}`
+- **`threshold`** - `number` - The threshold to pass.
+
+## Import
+```jsx
+import { VotingSummary } from "station-ui";
+```
+
+## Stories
+
+## Threshold Met
+<div className="story_with_source_below">
+  <Canvas of={VotingSummaryStories.ThresholdMet} />
+  <Source code={`
+    <VotingSummary
+      data={[
+        { type: 'yes', percent: '50%', amount: '32,562,000' },
+        { type: 'abstain', percent: '10%', amount: '2,000,000' },
+        { type: 'no', percent: '2.5%', amount: '500,000' },
+        { type: 'noWithVeto', percent: '0.5%', amount: '100,000' },
+      ]}
+      threshold={50}
+    />
+  `} />
+</div>
+
+## Threshold Not Met
+<div className="story_with_source_below">
+  <Canvas of={VotingSummaryStories.ThresholdNotMet} />
+  <Source code={`
+    <VotingSummary
+      data={[
+        { type: 'yes', percent: '5%', amount: '1,062,000' },
+        { type: 'abstain', percent: '10%', amount: '2,000,000' },
+        { type: 'no', percent: '2.5%', amount: '500,000' },
+        { type: 'noWithVeto', percent: '0.5%', amount: '100,000' },
+      ]}
+      threshold={50}
+    />
+  `} />
+</div>
+
+## No Votes
+<div className="story_with_source_below">
+  <Canvas of={VotingSummaryStories.NoVotes} />
+  <Source code={`
+    <VotingSummary
+      data={[
+        { type: 'yes', percent: '0.00%', amount: '0' },
+        { type: 'abstain', percent: '0.00%', amount: '0' },
+        { type: 'no', percent: '0.00%', amount: '0' },
+        { type: 'noWithVeto', percent: '0.00%', amount: '0' },
+      ]}
+      threshold={50}
+    />
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

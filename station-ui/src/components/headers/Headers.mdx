@@ -1,13 +1,9 @@
 import {
   Meta,
   Story,
-  Canvas,
-  Controls,
-  ArgTypes,
-  Description,
   Source,
 } from "@storybook/blocks";
-import { RightArrow, DocsLink, RequiredText } from "../../DocsHelpers.tsx";
+import { RightArrow, DocsLink, RequiredText, InLineDocsLink } from "../../DocsHelpers.tsx";
 import * as DataHeaderStories from "./data/DataHeader.stories.tsx";
 import * as PageHeaderStories from "./page/PageHeader.stories.tsx";
 import * as ProposalHeaderStories from "./proposal/ProposalHeader.stories.tsx";
@@ -23,7 +19,7 @@ import "scss/storybookoverrides.scss";
 Displays information to users. Sometimes interactive, sometimes not.
 Some of them feel like they should be "Cards"...
 
-# Data Header
+# Data Header [<InLineDocsLink />](/docs/components-headers-data--docs)
 
 ##### Used to display data to users. Very much designed to display staking data.
 
@@ -44,10 +40,10 @@ import { DataHeader } from "station-ui";
 ## Variants
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "100%" }}>
-    <DocsLink linkToRoute="Components/Headers/DataHeader" linkToID="default">
+    <DocsLink linkToRoute="Components/Headers/Data" linkToID="default">
       <h6 className="h6">Default</h6>
       <Story of={DataHeaderStories.Default} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
 </div>
@@ -56,7 +52,7 @@ import { DataHeader } from "station-ui";
 <br />
 <br />
 
-# Page Header
+# Page Header [<InLineDocsLink />](/docs/components-headers-page--docs)
 
 ##### A Header used at the top of a page. Displays the page name and a description.
 
@@ -73,10 +69,10 @@ import { PageHeader } from "station-ui";
 ## Variants
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "100%" }}>
-    <DocsLink linkToRoute="Components/Headers/PageHeader" linkToID="default">
+    <DocsLink linkToRoute="Components/Headers/Page" linkToID="default">
       <h6 className="h6">Default</h6>
       <Story of={PageHeaderStories.Default} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
 </div>
@@ -85,7 +81,7 @@ import { PageHeader } from "station-ui";
 <br />
 <br />
 
-# Proposal Header
+# Proposal Header [<InLineDocsLink />](/docs/components-headers-proposal--docs)
 
 ##### A Header for displaying information about a proposal.
 
@@ -103,10 +99,10 @@ import { ProposalHeader } from "station-ui";
 ## Variants
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "100%" }}>
-    <DocsLink linkToRoute="Components/Headers/ProposalHeader" linkToID="default">
+    <DocsLink linkToRoute="Components/Headers/Proposal" linkToID="default">
       <h6 className="h6">Default</h6>
       <Story of={ProposalHeaderStories.Default} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
 </div>
@@ -115,7 +111,7 @@ import { ProposalHeader } from "station-ui";
 <br />
 <br />
 
-# Rich Header
+# Rich Header [<InLineDocsLink />](/docs/components-headers-rich--docs)
 
 ##### A Header for displaying a large image, title, description, and a link.
 
@@ -135,31 +131,31 @@ import { RichHeader } from "station-ui";
 ## Variants
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Headers/RichHeader" linkToID="default">
+    <DocsLink linkToRoute="Components/Headers/Rich" linkToID="default">
       <h6 className="h6">Default</h6>
       <Story of={RichHeaderStories.Default} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Headers/RichHeader" linkToID="with-check-icon">
+    <DocsLink linkToRoute="Components/Headers/Rich" linkToID="with-check-icon">
       <h6 className="h6">With Check Icon</h6>
       <Story of={RichHeaderStories.WithCheckIcon} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Headers/RichHeader" linkToID="with-alert-icon">
+    <DocsLink linkToRoute="Components/Headers/Rich" linkToID="with-alert-icon">
       <h6 className="h6">With Alert Icon</h6>
       <Story of={RichHeaderStories.WithAlertIcon} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Headers/RichHeader" linkToID="no-description">
+    <DocsLink linkToRoute="Components/Headers/Rich" linkToID="no-description">
       <h6 className="h6">No Description</h6>
       <Story of={RichHeaderStories.NoDescription} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
 </div>
@@ -168,7 +164,7 @@ import { RichHeader } from "station-ui";
 <br />
 <br />
 
-# Section Header
+# Section Header [<InLineDocsLink />](/docs/components-headers-section--docs)
 
 ##### A small header to display a label.
 
@@ -188,45 +184,45 @@ import { SectionHeader } from "station-ui";
 ## Variants
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Headers/SectionHeader" linkToID="title-only">
+    <DocsLink linkToRoute="Components/Headers/Section" linkToID="title-only">
       <h6 className="h6">Title Only</h6>
       <Story of={SectionHeaderStories.TitleOnly} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Headers/SectionHeader" linkToID="title-with-action">
+    <DocsLink linkToRoute="Components/Headers/Section" linkToID="title-with-action">
       <h6 className="h6">Title With Action</h6>
       <Story of={SectionHeaderStories.TitleWithAction} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Headers/SectionHeader" linkToID="title-with-line">
+    <DocsLink linkToRoute="Components/Headers/Section" linkToID="title-with-line">
       <h6 className="h6">Title With Line</h6>
       <Story of={SectionHeaderStories.TitleWithLine} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Headers/SectionHeader" linkToID="title-indented">
+    <DocsLink linkToRoute="Components/Headers/Section" linkToID="title-indented">
       <h6 className="h6">Title Indented</h6>
       <Story of={SectionHeaderStories.TitleIndented} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Headers/SectionHeader" linkToID="title-with-icon">
+    <DocsLink linkToRoute="Components/Headers/Section" linkToID="title-with-icon">
       <h6 className="h6">Title With Icon</h6>
       <Story of={SectionHeaderStories.TitleWithIcon} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Headers/SectionHeader" linkToID="just-a-line">
+    <DocsLink linkToRoute="Components/Headers/Section" linkToID="just-a-line">
       <h6 className="h6">Just A Line</h6>
       <Story of={SectionHeaderStories.JustALine} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
 </div>
@@ -235,7 +231,7 @@ import { SectionHeader } from "station-ui";
 <br />
 <br />
 
-# Send Header
+# Send Header [<InLineDocsLink />](/docs/components-headers-send--docs)
 
 ##### A Header to show information about a send.
 
@@ -252,10 +248,10 @@ import { SendHeader } from "station-ui";
 ## Variants
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Headers/SendHeader" linkToID="default">
+    <DocsLink linkToRoute="Components/Headers/Send" linkToID="default">
       <h6 className="h6">Default</h6>
       <Story of={SendHeaderStories.Default} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
 </div>
@@ -264,7 +260,7 @@ import { SendHeader } from "station-ui";
 <br />
 <br />
 
-# Summary Header
+# Summary Header [<InLineDocsLink />](/docs/components-headers-summary--docs)
 
 ##### A Summary Header to show information. With a large status icon.
 
@@ -284,24 +280,24 @@ import { SummaryHeader } from "station-ui";
 ## Variants
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "100%" }}>
-    <DocsLink linkToRoute="Components/Headers/SummaryHeader" linkToID="success-with-summary-card">
+    <DocsLink linkToRoute="Components/Headers/Summary" linkToID="success-with-summarycard">
       <h6 className="h6">Success With Summary Card</h6>
       <Story of={SummaryHeaderStories.SuccessWithSummaryCard} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "100%" }}>
-    <DocsLink linkToRoute="Components/Headers/SummaryHeader" linkToID="error-with-summary-card">
+    <DocsLink linkToRoute="Components/Headers/Summary" linkToID="error-with-summarycard">
       <h6 className="h6">Error With Summary Card</h6>
       <Story of={SummaryHeaderStories.ErrorWithSummaryCard} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "100%" }}>
-    <DocsLink linkToRoute="Components/Headers/SummaryHeader" linkToID="without-summary-card">
+    <DocsLink linkToRoute="Components/Headers/Summary" linkToID="without-summarycard">
       <h6 className="h6">Without Summary Card</h6>
       <Story of={SummaryHeaderStories.WithoutSummaryCard} />
-      {/* See More<RightArrow /> */}
+      <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
 </div>

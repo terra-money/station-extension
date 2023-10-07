@@ -3,7 +3,7 @@ import DelegationCard, { DelegationCardProps } from './DelegationCard';
 import { TokenSingleChainListItem } from 'components';
 
 const meta: Meta<DelegationCardProps> = {
-  title: 'Components/Cards/Delegation',
+  title: 'Components/Cards/Delegation/Stories',
   component: DelegationCard,
   argTypes: {},
 } as Meta;

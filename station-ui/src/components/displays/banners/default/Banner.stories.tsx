@@ -33,9 +33,8 @@ export const Error: StoryObj<BannerProps> = {
   ),
 };
 
-
 export const TextWrapExample: StoryObj<BannerProps> = {
   render: () => (
-    <Banner variant='error' title='This action can not be undone. You will need a private key or a mnemonic seed phrase to restore this wallet to the app.' />
+    <Banner variant='error' title='This action can not be undone. You will need a private key or a mnemonic seed phrase to restore this wallet to the app. This action can not be undone. You will need a private key or a mnemonic seed phrase to restore this wallet to the app.' />
   ),
 };

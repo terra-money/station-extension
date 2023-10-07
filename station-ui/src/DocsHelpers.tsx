@@ -60,3 +60,9 @@ export const RequiredText = () => (
     *required*
   </span>
 );
+
+export const InLineDocsLink = () => (
+  <span style={{ marginLeft: "18px", display: "inline-flex" }}>
+    <RightArrow style={{ fill: "black", height: "16px", width: "16px" }} />
+  </span>
+);
