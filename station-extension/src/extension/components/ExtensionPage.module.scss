@@ -1,7 +1,7 @@
 .page {
   overflow-x: hidden;
   overflow-y: scroll;
-  background-color: var(--card-bg-muted);
+  background-color: var(--token-dark-100);
   height: calc(100% - var(--header-height));
   padding-bottom: 3rem;
   display: flex;
@@ -26,7 +26,7 @@
   height: 100%;
 }
 
-.title_container {
+.header_container {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -73,4 +73,20 @@
     margin: 0;
     display: inline;
   }
+
+  &.with_subtitle {
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 32px;
+    margin-top: 40px;
+  }
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--token-light-100);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  margin-top: 16px;
 }

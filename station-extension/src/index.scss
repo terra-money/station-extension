@@ -1,8 +1,8 @@
-@import "theme";
-@import "fonts";
-@import "reboot";
-@import "utils";
-@import "customize";
+@import 'theme';
+@import 'fonts';
+@import 'reboot';
+@import 'utils';
+@import 'customize';
 
 #station {
   min-width: 400px;
@@ -10,5 +10,5 @@
   height: 100vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  background-color: var(--bg);
+  background-color: var(--token-dark-100);
 }
