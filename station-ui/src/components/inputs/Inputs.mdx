@@ -183,16 +183,37 @@ import { Dropdown } from "station-ui";
 ## Variants
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/Dropdown" linkToID="default">
+      <h6 className="h6">Default</h6>
+      <Story of={DropdownStories.Default} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/Dropdown" linkToID="default-with-search">
+      <h6 className="h6">Default With Search</h6>
+      <Story of={DropdownStories.DefaultWithSearch} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "100%" }}>
     <DocsLink linkToRoute="Components/Inputs/Dropdown" linkToID="default-text-only">
       <h6 className="h6">Default Text Only</h6>
       <Story of={DropdownStories.DefaultTextOnly} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
-  <div className="story__wrapper" style={{ width: "100%", height: "300px" }}>
-    <DocsLink linkToRoute="Components/Inputs/Dropdown" linkToID="default">
-      <h6 className="h6">Default</h6>
-      <Story of={DropdownStories.Default} />
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/Dropdown" linkToID="children-override">
+      <h6 className="h6">Children Override</h6>
+      <Story of={DropdownStories.ChildrenOverride} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/Dropdown" linkToID="children-override-wsearch">
+      <h6 className="h6">Children Override w/Search</h6>
+      <Story of={DropdownStories.ChildrenOverrideWithSearch} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
