@@ -4,10 +4,10 @@ import { useForm } from "react-hook-form"
 import update from "immutability-helper"
 import numeral from "numeral"
 import shuffle from "utils/shuffle"
-import { Form, FormItem, Submit } from "components/form"
+import { Form, FormItem } from "components/form"
 import { useCreateWallet } from "./CreateWalletWizard"
 import styles from "./Quiz.module.scss"
-import { Banner, Button, CheckedButton, Flex } from "station-ui"
+import { Banner, Button, CheckedButton, Flex, SubmitButton } from "station-ui"
 import { FlexColumn } from "components/layout"
 
 export interface QuizItem {
@@ -17,7 +17,7 @@ export interface QuizItem {
 
 const Quiz = () => {
   const { t } = useTranslation()
-  const { setStep, values, createWallet } = useCreateWallet()
+  const { setStep, values } = useCreateWallet()
   const { mnemonic } = values
 
   /* quiz */
@@ -27,7 +27,7 @@ const Quiz = () => {
   /* submit */
   const { handleSubmit } = useForm()
   const [incorrect, setIncorrect] = useState(false)
-  const submit = () => (win(answers) ? createWallet(330) : setIncorrect(true))
+  const submit = () => (win(answers) ? setStep(3) : setIncorrect(true))
   const reset = () => setStep(1)
 
   return (
@@ -59,9 +59,7 @@ const Quiz = () => {
             </section>
           </FormItem>
         ))}
-      </FlexColumn>
 
-      <FlexColumn gap={12} className={styles.footer}>
         {incorrect && (
           <Banner
             variant="error"
@@ -69,13 +67,13 @@ const Quiz = () => {
           />
         )}
 
-        <Flex gap={12}>
+        <Flex gap={12} style={{ marginTop: 22 }}>
           <Button variant="secondary" onClick={reset} block>
             {t("Back")}
           </Button>
-          <Submit disabled={answers.some((answer) => !answer)} noMargin>
+          <SubmitButton disabled={answers.some((answer) => !answer)}>
             {t("Confirm")}
-          </Submit>
+          </SubmitButton>
         </Flex>
       </FlexColumn>
     </Form>

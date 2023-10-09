@@ -16,8 +16,7 @@ import {
   addWallet,
   disconnectWallet,
   isPasswordValid,
-  PasswordError,
-  storeConnectedWallet,
+  connectWallet,
 } from "../scripts/keystore"
 import { getDecryptedKey } from "../scripts/keystore"
 import { getWallet, lockWallet } from "../scripts/keystore"
@@ -52,7 +51,7 @@ const useAuth = () => {
   const connect = (name: string) => {
     const storedWallet = getStoredWallet(name)
     setWallet(storedWallet)
-    storeConnectedWallet(name)
+    connectWallet(name)
   }
 
   const connectLedger = (
@@ -73,7 +72,7 @@ const useAuth = () => {
       name,
     }
     addWallet(wallet, password)
-    storeConnectedWallet(name)
+    connectWallet(name)
     setWallet(wallet)
   }
 
@@ -117,7 +116,7 @@ const useAuth = () => {
   const encodeEncryptedWallet = (password: string) => {
     const { name, words } = getConnectedWallet()
     const key = getKey(password)
-    if (!key) throw new PasswordError("Key do not exist")
+    if (!key) throw new Error("Key do not exist")
     if ("seed" in key) {
       const seed = new SeedKey({
         seed: Buffer.from(key.seed, "hex"),
@@ -186,7 +185,7 @@ const useAuth = () => {
       return await key.createSignatureAmino(doc)
     } else {
       const pk = getKey(password)
-      if (!pk) throw new PasswordError("Incorrect password")
+      if (!pk) throw new Error("Incorrect password")
 
       if ("seed" in pk) {
         const key = new SeedKey({
@@ -200,7 +199,7 @@ const useAuth = () => {
         return await key.createSignatureAmino(doc)
       } else {
         if (!pk[networks[chainID].coinType])
-          throw new PasswordError("Incorrect password")
+          throw new Error("Incorrect password")
         const key = new RawKey(
           Buffer.from(pk[networks[chainID].coinType] ?? "", "hex")
         )
@@ -218,7 +217,7 @@ const useAuth = () => {
       return key.publicKey.key
     } else {
       const pk = getKey(password)
-      if (!pk) throw new PasswordError("Incorrect password")
+      if (!pk) throw new Error("Incorrect password")
 
       if ("seed" in pk) {
         const key = new SeedKey({
@@ -229,7 +228,7 @@ const useAuth = () => {
         // @ts-expect-error
         return key.publicKey.key
       } else {
-        if (!pk[coinType]) throw new PasswordError("Incorrect password")
+        if (!pk[coinType]) throw new Error("Incorrect password")
         const key = new RawKey(Buffer.from(pk[coinType] ?? "", "hex"))
         // @ts-expect-error
         return key.publicKey.key
@@ -253,7 +252,7 @@ const useAuth = () => {
       })
     } else {
       const pk = getKey(password)
-      if (!pk) throw new PasswordError("Incorrect password")
+      if (!pk) throw new Error("Incorrect password")
 
       if ("seed" in pk) {
         const key = new SeedKey({
@@ -268,7 +267,7 @@ const useAuth = () => {
         return await w.createAndSignTx({ ...txOptions, signMode })
       } else {
         if (!pk[networks[txOptions?.chainID].coinType])
-          throw new PasswordError("Incorrect password")
+          throw new Error("Incorrect password")
         const key = new RawKey(
           Buffer.from(pk[networks[txOptions?.chainID].coinType] ?? "", "hex")
         )
@@ -285,7 +284,7 @@ const useAuth = () => {
       throw new Error("Ledger can not sign arbitrary data")
     } else {
       const pk = getKey(password)
-      if (!pk) throw new PasswordError("Incorrect password")
+      if (!pk) throw new Error("Incorrect password")
 
       if ("seed" in pk) {
         const key = new SeedKey({

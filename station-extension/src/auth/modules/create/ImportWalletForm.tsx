@@ -8,7 +8,7 @@ import { Input, TextArea, Submit, FormHelp } from "components/form"
 import { Grid } from "components/layout"
 
 import decrypt from "../../scripts/decrypt"
-import { addWallet, PasswordError } from "../../scripts/keystore"
+import { addWallet } from "../../scripts/keystore"
 import useAuth from "../../hooks/useAuth"
 import { wordsFromAddress } from "utils/bech32"
 import { RawKey } from "@terra-money/feather.js"
@@ -43,7 +43,7 @@ const ImportWalletForm = () => {
       const { name, address, encrypted_key }: Decoded = JSON.parse(decode(key))
       const pk = decrypt(encrypted_key, password)
 
-      if (!pk) throw new PasswordError(t("Incorrect password"))
+      if (!pk) throw new Error(t("Incorrect password"))
 
       const decryptedKey = new RawKey(Buffer.from(pk, "hex"))
 

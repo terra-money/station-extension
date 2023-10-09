@@ -6,12 +6,13 @@ import { addWallet } from "../../scripts/keystore"
 import CreateWalletForm from "./CreateWalletForm"
 import CreatedWallet from "./CreatedWallet"
 import { wordsFromAddress } from "utils/bech32"
+import PasswordForm from "./PasswordForm"
 
 export interface Values {
   name: string
-  password: string
   mnemonic: string
   index: number
+  coinType?: Bip
 }
 
 /* context */
@@ -26,7 +27,7 @@ interface CreateWallet {
 
   /* create wallet */
   createdWallet?: SingleWallet
-  createWallet: (coinType: Bip, index?: number) => void
+  createWallet: (password: string, index?: number) => void
 }
 
 export const [useCreateWallet, CreateWalletProvider] =
@@ -37,7 +38,7 @@ interface Props {
   beforeCreate: ReactNode
 }
 
-const DefaultValues = { name: "", password: "", mnemonic: "", index: 0 }
+const DefaultValues = { name: "", mnemonic: "", index: 0 }
 
 const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
   /* step */
@@ -48,15 +49,15 @@ const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
 
   /* form values */
   const initial = { ...DefaultValues, mnemonic: defaultMnemonic }
-  const [values, setValues] = useState(initial)
+  const [values, setValues] = useState<Values>(initial)
 
   /* create wallet */
   const [createdWallet, setCreatedWallet] = useState<SingleWallet>()
-  const createWallet = (coinType: Bip, index = 0) => {
-    const { name, password, mnemonic } = values
+  const createWallet = (password: string, index = 0) => {
+    const { name, mnemonic, coinType } = values
 
     const seed = SeedKey.seedFromMnemonic(mnemonic)
-    const key330 = new SeedKey({ seed, coinType, index })
+    const key330 = new SeedKey({ seed, coinType: coinType ?? 330, index })
     const key118 = new SeedKey({ seed, coinType: 118, index })
     const key60 = new SeedKey({ seed, coinType: 60, index })
     const words = {
@@ -86,7 +87,7 @@ const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
       password
     )
     setCreatedWallet({ name, words, pubkey })
-    setStep(3)
+    setStep(4)
   }
 
   /* effect: reset memory on unmount */
@@ -108,6 +109,9 @@ const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
         return beforeCreate
 
       case 3:
+        return <PasswordForm />
+
+      case 4:
         if (!createdWallet) return null
         return <CreatedWallet {...createdWallet} />
     }

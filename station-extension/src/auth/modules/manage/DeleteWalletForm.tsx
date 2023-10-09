@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import DoneAllIcon from "@mui/icons-material/DoneAll"
 import { Form } from "components/form"
 import { isWallet } from "auth"
-import { deleteWallet } from "../../scripts/keystore"
+import { deleteWallet, isPasswordValid } from "../../scripts/keystore"
 import useAuth from "../../hooks/useAuth"
 import ConfirmModal from "./ConfirmModal"
 import { Banner, Input, InputWrapper, SubmitButton } from "station-ui"
@@ -29,8 +29,11 @@ const DeleteWalletForm = () => {
   /* submit */
   const submit = (values: Values) => {
     if (!name) return
+    if (!isPasswordValid(values.password))
+      throw new Error(t("Invalid password"))
+
     disconnect()
-    deleteWallet(name, values.password)
+    deleteWallet(name)
     setName(undefined)
   }
 

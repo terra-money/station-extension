@@ -10,7 +10,6 @@ import { Input, Checkbox } from "components/form"
 import Overlay from "app/components/Overlay"
 import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
 import { isWallet, useAuth } from "auth"
-import { PasswordError } from "auth/scripts/keystore"
 import { getOpenURL, getStoredPassword } from "../storage"
 import { getIsDangerousTx, SignBytesRequest, TxRequest } from "../utils"
 import { useRequest } from "../RequestContainer"
@@ -159,7 +158,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
           actions.tx(requestType, props, response, nextPassword)
         }
       } catch (error) {
-        if (error instanceof PasswordError) {
+        if (error instanceof Error) {
           setIncorrect(error.message)
         } else {
           const message = getErrorMessage(error)
@@ -177,7 +176,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
         const response = { result, success: true }
         actions.tx(requestType, props, response, nextPassword)
       } catch (error) {
-        if (error instanceof PasswordError) {
+        if (error instanceof Error) {
           setIncorrect(error.message)
         } else {
           const message = getErrorMessage(error)
