@@ -1,4 +1,4 @@
-import { SectionHeader, SummaryCard, SendHeader } from "station-ui"
+import { SectionHeader, SendHeader } from "station-ui"
 import VestingCard from "./VestingCard"
 import {
   isVestingAccount,
@@ -46,9 +46,9 @@ const AssetVesting = ({ token = "uluna" }: Props) => {
             title={`Period ${index + 1}`}
             className={styles.header}
           />
-          <SummaryCard className={styles.wrapper}>
+          <section className={styles.wrapper}>
             {renderSummaryRows(item)}
-          </SummaryCard>
+          </section>
         </>
       ))}
     </>

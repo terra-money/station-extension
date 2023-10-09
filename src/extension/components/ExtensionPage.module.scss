@@ -30,6 +30,10 @@
   display: flex;
   align-items: center;
   gap: 16px;
+
+  .title__container {
+    width: 100%;
+  }
 }
 
 .container {

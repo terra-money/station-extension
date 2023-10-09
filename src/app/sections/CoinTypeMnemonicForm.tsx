@@ -70,7 +70,7 @@ const CoinTypeMnemonicForm = ({ close }: { close: () => void }) => {
         throw new Error("Wrong mnemonic or index")
       }
 
-      deleteWallet(wallet.name, password)
+      deleteWallet(wallet.name)
       addWallet(
         {
           name: wallet.name,
