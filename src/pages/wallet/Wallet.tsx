@@ -7,11 +7,12 @@ import createContext from "utils/createContext"
 import AssetPage from "./AssetPage"
 import ReceivePage from "./ReceivePage"
 import AddressChain from "pages/wallet/AddressChain"
-import SendPage from "./SendPage"
+import SendPage from "./SendPage/SendPage"
 import { PageTabs } from "station-ui"
 import { useTranslation } from "react-i18next"
 import { Close } from "@mui/icons-material"
 import { truncate } from "@terra-money/terra-utils"
+import classNames from "classnames"
 
 enum Page {
   wallet = "wallet",
@@ -20,6 +21,8 @@ enum Page {
   send = "send",
   swap = "swap",
   address = "address",
+  sendChain = "sendChain",
+  sendToken = "sendToken",
 }
 
 type CommonRoute = {
@@ -27,11 +30,17 @@ type CommonRoute = {
   denom?: string
 }
 type WalletRoute = CommonRoute & {
-  page: Page.wallet | Page.receive | Page.swap | Page.coin | Page.send
+  page:
+    | Page.wallet
+    | Page.receive
+    | Page.swap
+    | Page.coin
+    | Page.send
+    | Page.sendChain
+    | Page.sendToken
 }
 type AddressRoute = CommonRoute & { page: Page.address; address: string }
 type Route = WalletRoute | AddressRoute
-
 
 // Handle routing inside Wallet
 const [useWalletRoute, WalletRouter] = createContext<{
@@ -40,6 +49,8 @@ const [useWalletRoute, WalletRouter] = createContext<{
 }>("useWalletRoute")
 
 export { useWalletRoute, Page }
+
+const cx = classNames.bind(styles)
 
 const Wallet = () => {
   const [route, setRoute] = useState<Route>({ page: Page.wallet })
@@ -55,6 +66,10 @@ const Wallet = () => {
         case Page.receive:
           return t("Receive")
         case Page.send:
+          return t("Send")
+        case Page.sendChain:
+          return t("Select Chain")
+        case Page.sendToken:
           return t("Send")
         case Page.address:
           return truncate(route.address)
@@ -73,7 +88,7 @@ const Wallet = () => {
             <BackIcon data-testid="BackIcon" />
           </button>
         )}
-        <h1>{renderTitle()}</h1>
+        <h1 className={cx({ previous: route.previous })}>{renderTitle()}</h1>
         <button
           className={styles.close}
           onClick={() => setRoute({ page: Page.wallet })}
@@ -85,17 +100,7 @@ const Wallet = () => {
   }
   const renderPage = () => {
     switch (route.page) {
-      case Page.coin:
-        return <AssetPage />
-      case Page.receive:
-        return <ReceivePage />
-      case Page.send:
-        return <SendPage />
-      case Page.swap:
-        return <span>swap page</span>
-      case Page.address:
-        return <AddressChain address={route.address} />
-      default:
+      case Page.wallet:
         return (
           <>
             <NetWorth />
@@ -107,18 +112,26 @@ const Wallet = () => {
             {tab === 0 ? <AssetList /> : <p>Activty component</p>}
           </>
         )
+      case Page.coin:
+        return <AssetPage />
+      case Page.receive:
+        return <ReceivePage />
+      case Page.swap:
+        return <span>swap page</span>
+      case Page.address:
+        return <AddressChain address={route.address} />
+      default:
+        return <SendPage /> // default because of send page internal routing
     }
   }
 
   return (
     <div className={styles.wallet}>
       <WalletRouter value={{ route, setRoute }}>
-        {
-          <>
-            <Header />
-            {renderPage()}
-          </>
-        }
+        <>
+          <Header />
+          {renderPage()}
+        </>
       </WalletRouter>
     </div>
   )
