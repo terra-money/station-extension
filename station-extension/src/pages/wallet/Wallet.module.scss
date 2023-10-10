@@ -7,21 +7,30 @@
   height: calc(100vh - var(--header-height));
   transition: 400ms;
   background-color: var(--card-bg-muted);
+  padding: 20px;
 }
 .header {
-  .back {
-    position: absolute;
-    left: 25px;
-    top: 40px;
-  }
-  .close {
-    position: absolute;
-    right: 25px;
-    top: 30px;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  // .back {
+  //   position: absolute;
+  //   left: 25px;
+  //   top: 40px;
+  // }
+  // .close {
+  //   position: absolute;
+  //   right: 25px;
+  //   top: 30px;
+  // }
+
   h1 {
-    width: 100%;
-    padding: 1.6rem;
     font-size: x-large;
+    margin: 10px;
+
+    // &.previous {
+    //   margin-left: 30px !important;
+    // }
   }
 }

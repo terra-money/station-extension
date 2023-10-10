@@ -11,8 +11,8 @@ import { useWalletRoute, Page } from "./Wallet"
 
 const ReceivePage = () => {
   const addresses = useInterchainAddresses()
-  const networks = useNetwork()
   const { setRoute } = useWalletRoute()
+  const networks = useNetwork()
 
   const data = useMemo(() => {
     if (!addresses) return []
@@ -20,11 +20,31 @@ const ReceivePage = () => {
       address: addresses[key],
       name: getChainNamefromID(key, networks) ?? key,
       id: key,
+      onClick: () => {
+        setRoute({
+          page: Page.address,
+          address: addresses[key],
+          previous: { page: Page.receive },
+        })
+      },
     }))
-  }, [addresses, networks])
+  }, [addresses, networks, setRoute])
 
   if (!data.length) return null
+  return <SearchChains data={data} />
+}
 
+interface SearchChainsProps {
+  data: {
+    name: string
+    id: string
+    address: string
+    onClick: (param?: any) => void
+  }[]
+}
+
+export const SearchChains = ({ data }: SearchChainsProps) => {
+  const networks = useNetwork()
   return (
     <WithSearchInput label="Search Chains" className={styles.receive}>
       {(input) => {
@@ -32,22 +52,16 @@ const ReceivePage = () => {
           .filter((item) =>
             item.name.toLowerCase().includes(input.toLowerCase())
           )
-          .map((item) => (
+          .map(({ address, id, name, onClick }) => (
             <AddressSelectableListItem
-              key={item.id}
-              label={capitalize(item.name)}
+              key={id}
+              label={capitalize(name)}
               chain={{
-                icon: networks[item.id].icon,
-                label: item.name,
+                icon: networks[id].icon,
+                label: name,
               }}
-              subLabel={truncate(item.address)}
-              onClick={() => {
-                setRoute({
-                  page: Page.address,
-                  address: item.address,
-                  previous: { page: Page.receive },
-                })
-              }}
+              subLabel={truncate(address)}
+              onClick={onClick}
             />
           ))
       }}
