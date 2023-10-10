@@ -131,7 +131,11 @@ const useAuth = () => {
         // needed to import into old versions of station
         encrypted_key: legacyEncrypt(seed.privateKey.toString("hex"), password),
         // import into new versions
-        seed: encrypt(seed.privateKey.toString("hex"), password),
+        seed: encrypt(
+          // encode in base64 to use less chars
+          Buffer.from(key.seed, "hex").toString("base64"),
+          password
+        ),
         index: key.index,
         legacy: key.legacy,
       }
