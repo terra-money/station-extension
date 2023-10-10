@@ -12,7 +12,6 @@ import { PageTabs } from "station-ui"
 import { useTranslation } from "react-i18next"
 import { Close } from "@mui/icons-material"
 import { truncate } from "@terra-money/terra-utils"
-import classNames from "classnames"
 
 enum Page {
   wallet = "wallet",
@@ -25,22 +24,22 @@ enum Page {
   sendToken = "sendToken",
 }
 
-type CommonRoute = {
-  previous?: Route
+const pageOrder = {
+  [Page.wallet]: null, // null means no back button
+  [Page.receive]: null,
+  [Page.send]: null,
+  [Page.coin]: null,
+  [Page.swap]: null,
+  [Page.address]: Page.receive,
+  [Page.sendChain]: Page.send,
+  [Page.sendToken]: Page.sendChain,
+}
+
+type Route = {
   denom?: string
+  address?: string
+  page: Page
 }
-type WalletRoute = CommonRoute & {
-  page:
-    | Page.wallet
-    | Page.receive
-    | Page.swap
-    | Page.coin
-    | Page.send
-    | Page.sendChain
-    | Page.sendToken
-}
-type AddressRoute = CommonRoute & { page: Page.address; address: string }
-type Route = WalletRoute | AddressRoute
 
 // Handle routing inside Wallet
 const [useWalletRoute, WalletRouter] = createContext<{
@@ -50,8 +49,6 @@ const [useWalletRoute, WalletRouter] = createContext<{
 
 export { useWalletRoute, Page }
 
-const cx = classNames.bind(styles)
-
 const Wallet = () => {
   const [route, setRoute] = useState<Route>({ page: Page.wallet })
   const [tab, setTab] = useState(0)
@@ -59,36 +56,31 @@ const Wallet = () => {
 
   const Header = () => {
     if (route.page === Page.wallet) return null
-    const renderTitle = () => {
-      switch (route.page) {
-        case Page.swap:
-          return t("Swap")
-        case Page.receive:
-          return t("Receive")
-        case Page.send:
-          return t("Send")
-        case Page.sendChain:
-          return t("Select Chain")
-        case Page.sendToken:
-          return t("Send")
-        case Page.address:
-          return truncate(route.address)
-        default:
-          return ""
-      }
+
+    const pageTitle = {
+      [Page.wallet]: "Wallet",
+      [Page.coin]: "Asset",
+      [Page.receive]: "Receive",
+      [Page.send]: "Send",
+      [Page.swap]: "Swap",
+      [Page.sendChain]: "Select Chain",
+      [Page.sendToken]: "Send",
+      [Page.address]: truncate(route.address),
     }
+
+    const prevPage = pageOrder[route.page]
 
     return (
       <div className={styles.header}>
-        {route.previous && (
+        {prevPage && (
           <button
             className={styles.back}
-            onClick={() => setRoute(route.previous as Route)}
+            onClick={() => setRoute({ page: prevPage })}
           >
             <BackIcon data-testid="BackIcon" />
           </button>
         )}
-        <h1 className={cx({ previous: route.previous })}>{renderTitle()}</h1>
+        <h1>{pageTitle[route.page]}</h1>
         <button
           className={styles.close}
           onClick={() => setRoute({ page: Page.wallet })}
@@ -119,7 +111,7 @@ const Wallet = () => {
       case Page.swap:
         return <span>swap page</span>
       case Page.address:
-        return <AddressChain address={route.address} />
+        return <AddressChain address={route.address ?? ""} />
       default:
         return <SendPage /> // default because of send page internal routing
     }

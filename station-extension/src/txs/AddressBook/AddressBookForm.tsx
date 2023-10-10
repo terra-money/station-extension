@@ -8,14 +8,17 @@ import {
   Form,
   InputWrapper,
   Input,
+  InputInLine,
   SubmitButton,
   ButtonInlineWrapper,
 } from "station-ui"
 import DeleteButton from "components/form/DeleteButton"
+import { EmojiButton } from "components/form"
 
 interface Props {
   item?: AddressBook
   close: () => void
+  icon?: string
   index?: number // exsisting item index for edit/remove
 }
 
@@ -26,9 +29,9 @@ const AddressBookForm = (props: Props) => {
 
   /* form */
   const form = useForm<AddressBook>({ mode: "onChange" })
-  const { register, handleSubmit, formState, watch } = form
+  const { register, handleSubmit, formState, watch, setValue } = form
   const { errors } = formState
-  const { favorite } = watch()
+  const { favorite, icon } = watch()
 
   useEffect(() => {
     if (index !== undefined) form.reset(list[index])
@@ -44,11 +47,16 @@ const AddressBookForm = (props: Props) => {
     close()
   }
 
+  const emojiOnClick = (emoji: string) => {
+    setValue("icon", emoji)
+  }
+
   return (
     <Form onSubmit={handleSubmit(submit)}>
       <InputWrapper label={t("Wallet Name")} error={errors.name?.message}>
-        <Input
-          placeholder="my-wallet"
+        <InputInLine
+          extra={<EmojiButton icon={icon} onClick={emojiOnClick} />}
+          label=""
           {...register("name", {
             required: true,
           })}

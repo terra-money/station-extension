@@ -20,13 +20,14 @@ import { useTranslation } from "react-i18next"
 import {
   InputWrapper,
   Form,
-  Input,
+  InputInLine,
   Paste,
   Grid,
   SectionHeader,
   AddressSelectableListItem,
 } from "station-ui"
-import validate from "txs/validate"
+import { useParsedAssetList } from "data/token"
+import validate, { validateRecipient } from "txs/validate"
 import OtherWallets from "./OtherWallets"
 import { WalletList } from "./OtherWallets"
 import { truncate } from "@terra-money/terra-utils"
@@ -58,33 +59,35 @@ const SendPage = () => {
   const { route, setRoute } = useWalletRoute()
   const balances = useBankBalance()
   const networks = useNetwork()
+  const assetList = useParsedAssetList()
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange" })
-  const { register, watch, setValue } = form
+  const { register, watch, setValue, trigger } = form
   const { formState } = form
   const { errors } = formState
   const { recipient } = watch()
 
   const Address = () => {
-    const onClick = (item: AddressBook) => {
-      setValue("recipient", item.recipient)
-      setRoute({ page: Page.sendChain, previous: { page: Page.send } })
+    const onSubmit = (address: string) => {
+      setValue("recipient", address)
+      trigger("recipient")
+      if (validateRecipient(address)) {
+        setRoute({ page: Page.sendChain })
+      }
     }
 
-    const onPaste = (val: string) => {
-      setValue("recipient", val)
-      setRoute({ page: Page.sendChain, previous: { page: Page.send } })
-    }
     return (
       <>
         <InputWrapper
           label={t("Wallet Address")}
           error={errors.recipient?.message}
-          extra={<Paste onPaste={(val) => onPaste(val)} />}
+          // extra={<Paste onPaste={(val) => onSubmit(val)} />}
         >
-          <Input
+          <InputInLine
             type="text"
+            label="To"
+            extra={<Paste onPaste={(val) => onSubmit(val)} />}
             {...register("recipient", {
               value: recipient ?? "",
               validate: { ...validate.recipient() },
@@ -94,7 +97,7 @@ const SendPage = () => {
         <SectionHeader title="Recently Used" />
         {/* <WalletList items={} title={t("Recently Used")} onClick={onClick} /> */}
         <SectionHeader title="Other Wallets" />
-        <OtherWallets onClick={onClick} />
+        <OtherWallets onClick={onSubmit} />
       </>
     )
   }
@@ -106,31 +109,46 @@ const SendPage = () => {
       return Array.from(chainsSet) as string[]
     }, [])
 
-    const onClick = (chain: string) => {
-      setValue("chain", chain)
-      setRoute({ page: Page.send, previous: { page: Page.sendChain } })
-    }
-
-    const data = useMemo(
+    const chains = useMemo(
       () =>
         availableChains.map((chain) => ({
           name: getChainNamefromID(chain, networks) ?? chain,
-          onClick: () => onClick(chain),
+          onClick: () => {
+            setValue("chain", chain)
+            setRoute({ page: Page.sendToken })
+          },
           id: chain,
-          address: convertAddress(recipient!, networks[chain].prefix),
+          address: convertAddress(recipient!, networks[chain]?.prefix),
         })),
       [availableChains]
     )
-    console.log("data", data)
 
-    return <SearchChains data={data} />
+    return <SearchChains data={chains} />
   }
+
+  const Token = () => {
+    console.log("assetList", assetList)
+    return (
+      <>
+        <InputInLine
+          disabled
+          label={"To"}
+          extra={truncate(recipient)}
+          value={recipient}
+        />
+        <SectionHeader title={t("My Tokens")} />
+      </>
+    )
+  }
+
   const render = () => {
     switch (route.page) {
       case Page.send:
         return <Address />
       case Page.sendChain:
         return <Chain />
+      case Page.sendToken:
+        return <Token />
       default:
         return null
     }

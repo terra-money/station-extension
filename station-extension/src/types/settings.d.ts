@@ -4,6 +4,7 @@ interface AddressBook {
   recipient: string
   memo?: string
   favorite?: boolean
+  icon?: string
 }
 
 /* Tokens */

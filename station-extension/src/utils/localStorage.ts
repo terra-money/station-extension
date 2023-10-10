@@ -3,6 +3,7 @@ import themes from "styles/themes/themes"
 import { useCallback } from "react"
 import { atom, useRecoilState } from "recoil"
 import { CustomNetwork, InterchainNetwork } from "types/network"
+import { AccAddress } from "@terra-money/feather.js"
 
 export enum SettingKey {
   Theme = "Theme",
@@ -22,6 +23,7 @@ export enum SettingKey {
   NetworkCacheTime = "NetworkCacheTime",
   DevMode = "DevMode",
   ReplaceKeplr = "ReplaceKeplr",
+  RecentRecipients = "RecentRecipients",
 }
 
 //const isSystemDarkMode =
@@ -57,6 +59,7 @@ export const DefaultSettings = {
   } as Record<string, Record<string, InterchainNetwork>>,
   [SettingKey.GasAdjustment]: DEFAULT_GAS_ADJUSTMENT,
   [SettingKey.AddressBook]: [] as AddressBook[],
+  [SettingKey.RecentRecipients]: [] as AccAddress[],
   [SettingKey.CustomTokens]: DefaultCustomTokens as CustomTokens,
   [SettingKey.MinimumValue]: 0,
   [SettingKey.NetworkCacheTime]: 0,
@@ -100,6 +103,14 @@ export const hideLowBalTokenState = atom({
 export const savedNetworkState = atom({
   key: "savedNetwork",
   default: getLocalSetting(SettingKey.Network) as string | undefined,
+})
+
+export const recentRecipients = atom({
+  key: "recentRecipients",
+  default: getLocalSetting(SettingKey.RecentRecipients) as (
+    | string
+    | undefined
+  )[],
 })
 
 export const customLCDState = atom({
@@ -198,6 +209,19 @@ export const useTokenFilters = () => {
     toggleHideLowBal,
     hideLowBal,
   }
+}
+
+export const useRecentRecipients = () => {
+  const [recipients, setRecipients] = useRecoilState(recentRecipients)
+  const addRecipient = useCallback(
+    (recipient: string) => {
+      const newRecipients = [recipient, ...recipients].splice(0, 5)
+      setLocalSetting(SettingKey.RecentRecipients, newRecipients)
+      setRecipients(newRecipients)
+    },
+    [recipients, setRecipients]
+  )
+  return { recipients, addRecipient }
 }
 
 const toggleSetting = (

@@ -45,8 +45,7 @@ const Asset = (props: Props) => {
   const change = props.change ?? prices?.[props.token]?.change
 
   const handleAssetClick = () => {
-    if (route.page !== Page.coin)
-      setRoute({ page: Page.coin, denom: id, previous: route })
+    if (route.page !== Page.coin) setRoute({ page: Page.coin, denom: id })
   }
 
   const chains = useMemo(() => {
