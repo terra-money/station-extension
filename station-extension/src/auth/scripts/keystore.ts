@@ -62,11 +62,12 @@ export const isPasswordValid = (password: string) => {
 }
 
 // get the active wallet (user must be logged in)
-export const getWallet = () => {
+export const getWallet = (name?: string) => {
   if (isLoginNeeded()) return undefined
 
   const wallets = localStorage.getItem(LocalStorage.WALLETS)
-  const walletName = localStorage.getItem(LocalStorage.CONNECTED_WALLET_NAME)
+  const walletName =
+    name ?? localStorage.getItem(LocalStorage.CONNECTED_WALLET_NAME)
 
   if (!wallets || !walletName) return
   const parsed = JSON.parse(wallets)
