@@ -3,10 +3,13 @@
   overflow-y: scroll;
   background-color: var(--token-dark-100);
   height: calc(100% - var(--header-height));
-  padding-bottom: 3rem;
   display: flex;
   flex-direction: column;
-  // padding here to position progress bar
+
+  padding-bottom: 12px;
+  @media screen and (max-width: 600px) {
+    padding-bottom: 3rem;
+  }
 }
 
 .page > * {
@@ -19,7 +22,10 @@
 
 .full__height {
   height: 100vh;
-  padding-bottom: 0;
+
+  @media screen and (max-width: 600px) {
+    padding-bottom: 0;
+  }
 }
 
 .full__height__body {
