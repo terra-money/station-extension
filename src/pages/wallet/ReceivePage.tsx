@@ -9,6 +9,15 @@ import { capitalize } from "@mui/material"
 import styles from "./ReceivePage.module.scss"
 import { useWalletRoute, Page } from "./Wallet"
 
+interface SearchChainsProps {
+  data: {
+    name: string
+    id: string
+    address: string
+    onClick: (param?: any) => void
+  }[]
+}
+
 const ReceivePage = () => {
   const addresses = useInterchainAddresses()
   const { setRoute } = useWalletRoute()
@@ -24,7 +33,6 @@ const ReceivePage = () => {
         setRoute({
           page: Page.address,
           address: addresses[key],
-          previous: { page: Page.receive },
         })
       },
     }))
@@ -32,15 +40,6 @@ const ReceivePage = () => {
 
   if (!data.length) return null
   return <SearchChains data={data} />
-}
-
-interface SearchChainsProps {
-  data: {
-    name: string
-    id: string
-    address: string
-    onClick: (param?: any) => void
-  }[]
 }
 
 export const SearchChains = ({ data }: SearchChainsProps) => {

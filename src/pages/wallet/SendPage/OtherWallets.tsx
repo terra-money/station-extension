@@ -3,16 +3,15 @@ import { useAddressBook } from "data/settings/AddressBook"
 import { truncate } from "@terra-money/terra-utils"
 import { useState } from "react"
 import {
-  WalletSelectableListItem,
-  Button,
   Grid,
   SectionHeader,
   Tabs,
   AddressSelectableListItem,
 } from "station-ui"
+import { useAuth } from "auth"
 
 interface Props {
-  onClick?: (item: AddressBook) => void
+  onClick?: (address: string) => void
 }
 
 export const WalletList = ({
@@ -22,16 +21,16 @@ export const WalletList = ({
 }: {
   items: AddressBook[]
   title: string
-  onClick?: (item: AddressBook) => void
+  onClick?: (address: string) => void
 }) => {
   if (!items.length) return null
   return (
-    <Grid gap={12}>
+    <Grid gap={10}>
       <SectionHeader withLine title={title} />
       {items.map((w) => (
         <AddressSelectableListItem
           key={w.name}
-          onClick={() => onClick?.(w)}
+          onClick={() => onClick?.(w.recipient)}
           label={w.name}
           subLabel={truncate(w.recipient)}
         />
@@ -43,6 +42,8 @@ export const WalletList = ({
 const OtherWallets = ({ onClick }: Props) => {
   const { list: addressList } = useAddressBook()
   const [tabKey, setTabKey] = useState("addressBook")
+  // const { wallets } = useAuth()
+  const { t } = useTranslation()
 
   const tabs = [
     {
@@ -74,7 +75,7 @@ const OtherWallets = ({ onClick }: Props) => {
           />
         </>
       ) : (
-        <p>Pending useAuth refactor</p>
+        <WalletList title={t("Other Wallets")} items={[]} />
       )}
     </>
   )
