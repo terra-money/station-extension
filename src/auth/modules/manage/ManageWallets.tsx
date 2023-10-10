@@ -18,7 +18,7 @@ export const useManageWallet = (walletName: string) => {
   const wallet = wallets.find((w) => w.name === walletName)
 
   const toExport = {
-    to: "/auth/export",
+    to: `/auth/export/${walletName}`,
     children: t("Export wallet"),
     icon: <QrCodeIcon />,
   }
