@@ -28,9 +28,9 @@ const Auth = () => {
       <Route path="multisig/new" element={<NewMultisigWalletPage />} />
 
       {/* manage */}
-      <Route path="export" element={<ExportWalletPage />} />
+      <Route path="export/:walletName" element={<ExportWalletPage />} />
       <Route path="password" element={<ChangePasswordPage />} />
-      <Route path="delete" element={<DeleteWalletPage />} />
+      <Route path="delete/:walletName" element={<DeleteWalletPage />} />
       <Route path="disconnect" element={<Disconnect />} />
     </Routes>
   )

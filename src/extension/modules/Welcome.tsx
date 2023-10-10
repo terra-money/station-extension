@@ -52,6 +52,7 @@ const Welcome = () => {
             variant="white-filled"
             block
             label={t("Import existing wallet")}
+            style={existsWallets ? { color: "var(--token-dark-200)" } : {}}
           />
           <Button
             onClick={() => openURL("/auth/new")}

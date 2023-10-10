@@ -28,11 +28,15 @@
 
 .header_container {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
 
   .title__container {
     width: 100%;
+  }
+
+  svg {
+    margin-top: 8px;
   }
 }
 
@@ -67,7 +71,9 @@
 }
 
 .title {
-  font-size: 22px;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -80,7 +86,6 @@
 
   &.with_subtitle {
     font-size: 32px;
-    font-weight: 600;
     line-height: 32px;
     margin-top: 40px;
   }
@@ -93,4 +98,11 @@
   font-weight: 500;
   line-height: 20px;
   margin-top: 16px;
+}
+
+.small__subtitle {
+  color: var(--token-light-100);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
 }
