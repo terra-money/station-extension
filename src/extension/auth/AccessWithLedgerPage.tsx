@@ -8,7 +8,8 @@ const AccessWithLedgerPage = () => {
   return (
     <ExtensionPage
       title={t("Access with Ledger")}
-      backButtonPath="/"
+      //backButtonPath="/"
+      subtitle=" "
       fullHeight
     >
       <AccessWithLedgerForm />

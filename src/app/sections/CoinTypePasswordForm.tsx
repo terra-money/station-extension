@@ -77,8 +77,7 @@ const CoinTypePasswordForm = ({ close }: { close: () => void }) => {
               }
             }
             return w
-          }),
-          password
+          })
         )
 
         connect(wallet.name)

@@ -11,6 +11,7 @@
 .form {
   height: 100%;
 }
+
 .form__container {
   display: flex;
   flex-direction: column;
@@ -27,15 +28,24 @@
   }
 }
 
+.question {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
 .mainButton {
   width: 100%;
 }
 
 .smallButton {
   margin-top: 0.8rem;
-  font-weight: var(--normal);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--token-light-100);
+
   &:hover {
-    color: var(--button-primary-bg);
+    color: var(--token-light);
   }
 }
 

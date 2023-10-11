@@ -20,7 +20,7 @@ const SelectAddress = () => {
   const currency = useCurrency()
   const lcd = useInterchainLCDClient()
   const readNativeDenom = useNativeDenoms()
-  const { values, createWallet } = useCreateWallet()
+  const { values, setValues, setStep } = useCreateWallet()
   const { mnemonic, index } = values
   const seed = SeedKey.seedFromMnemonic(mnemonic)
 
@@ -59,7 +59,7 @@ const SelectAddress = () => {
         if (!account118) return
         const { balance, sequence } = account118
         const is118Empty = !balance.toData().length && !sequence
-        if (is118Empty) createWallet(330, index)
+        if (is118Empty) setStep(3)
       },
     }
   )
@@ -71,7 +71,8 @@ const SelectAddress = () => {
 
   const submit = ({ bip }: { bip?: Bip }) => {
     if (!bip) return
-    createWallet(bip, index)
+    setValues({ ...values, coinType: bip })
+    setStep(3)
   }
 
   /* render */
