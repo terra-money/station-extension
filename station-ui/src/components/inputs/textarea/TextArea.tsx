@@ -18,7 +18,7 @@ const TextArea = forwardRef(
     try {
       const parsedValue = JSON.parse(attrs.value as string)
       if (typeof parsedValue === "object" && parsedValue !== null) {
-        displayValue = JSON.stringify(parsedValue, null, 2)
+        displayValue = JSON.stringify(parsedValue, null, 6)
       }
     } catch (e) {
       // ignore
