@@ -20,7 +20,6 @@ export const Default: StoryObj<VestingCardProps> = {
           priceNode={<span>$ 42000</span>}
           tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
           symbol={"LUNA"}
-          price={1}
           amountNode={<span>3,400.00</span>}
           chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
         />

@@ -56,7 +56,6 @@ export const ChainDisplay: StoryObj<TokenSingleChainListItemProps> = {
         priceNode={<span>$42000</span>}
         tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
         symbol={"LUNA"}
-        price={1}
         amountNode={<span>420.00</span>}
         chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
       />
@@ -72,7 +71,6 @@ export const SendBack: StoryObj<TokenSingleChainListItemProps> = {
         priceNode={<span>$ 42000</span>}
         tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
         symbol={"LUNA"}
-        price={1}
         amountNode={<span>420.00</span>}
         chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
         isSendBack
