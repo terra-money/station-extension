@@ -1,12 +1,15 @@
 @import "scss/font_mixins";
 
+.textarea__override {
+  height: 150px;
+}
+
 .textarea {
   background: var(--token-dark-300);
   border: 1px solid var(--token-dark-700);
   border-radius: 8px;
-  overflow: hidden;
   padding: 18px;
-  white-space: normal;
+  white-space: pre-wrap;
 
   @include SmallLH;
   color: var(--token-light-white);
