@@ -9,6 +9,7 @@
     justify-content: center;
     width: 100%;
     padding-bottom: 16px;
+    border-bottom: 2px solid var(--token-dark-100);
 
     @include Small;
     color: var(--token-light-white);

@@ -8,7 +8,6 @@ import { createBleTransport, isBleAvailable } from "utils/ledger"
 import { wordsFromAddress } from "utils/bech32"
 
 import styles from "./AccessWithLedger.module.scss"
-import { FlexColumn } from "components/layout"
 import { TooltipIcon } from "components/display"
 import {
   Banner,
@@ -20,6 +19,8 @@ import {
   Button,
   Form,
   SectionHeader,
+  FlexColumn,
+  Flex,
 } from "station-ui"
 import CreatedWallet from "auth/modules/create/CreatedWallet"
 import { isPasswordValid, passwordExists } from "auth/scripts/keystore"
@@ -38,6 +39,7 @@ enum Pages {
   openTerra = "openTerra",
   askCosmos = "askCosmos",
   openCosmos = "openCosmos",
+  choosePasswordForm = "choosePasswordForm",
   complete = "complete",
 }
 
@@ -65,32 +67,11 @@ const AccessWithLedgerForm = () => {
     defaultValues: { index: 0, bluetooth: false },
   })
 
-  const {
-    register,
-    watch,
-    handleSubmit,
-    formState,
-    setError: setFormError,
-  } = form
+  const { register, watch, formState, setError: setFormError } = form
   const { errors, isValid } = formState
   const { index, bluetooth, name, password } = watch()
 
-  const submit = async ({ index, bluetooth, name, password }: Values) => {
-    setError(undefined)
-
-    connectLedger(password, words, pubkey, index, bluetooth, name)
-  }
-
   const connectTerra = async () => {
-    if (passwordExists() && !isPasswordValid(password)) {
-      setFormError(
-        "password",
-        { message: t("Invalid password") },
-        { shouldFocus: true }
-      )
-      return
-    }
-
     setError(undefined)
     try {
       // wait until ledger is connected
@@ -129,7 +110,7 @@ const AccessWithLedgerForm = () => {
       }))
       // @ts-expect-error
       setPubkey((p) => ({ ...p, "118": key118.publicKey.key }))
-      setPage(Pages.complete)
+      setPage(Pages.choosePasswordForm)
     } catch (error) {
       setError(error as Error)
       setPage(Pages.askCosmos)
@@ -152,34 +133,6 @@ const AccessWithLedgerForm = () => {
                   autoFocus
                 />
               </InputWrapper>
-
-              <InputWrapper
-                label={t("Password")}
-                error={errors.password?.message}
-              >
-                <Input
-                  {...register("password", {
-                    validate: passwordExists() ? undefined : validate.password,
-                  })}
-                  type="password"
-                />
-              </InputWrapper>
-
-              {!passwordExists() && (
-                <InputWrapper
-                  label={t("Confirm password")}
-                  error={errors.confirm?.message}
-                >
-                  <Input
-                    {...register("confirm", {
-                      validate: (confirm) =>
-                        validate.confirm(password, confirm),
-                    })}
-                    onFocus={() => form.trigger("confirm")}
-                    type="password"
-                  />
-                </InputWrapper>
-              )}
 
               {bleAvailable && (
                 <Checkbox
@@ -263,7 +216,7 @@ const AccessWithLedgerForm = () => {
         return (
           <section className={styles.form__container}>
             <FlexColumn gap={18} className={styles.form__details}>
-              <p className="center">
+              <p className={`center ${styles.question}`}>
                 {t("Do you want to import your Cosmos accounts?")}
               </p>
               <Banner
@@ -274,9 +227,7 @@ const AccessWithLedgerForm = () => {
                   "The device will try to open the cosmos app automatically."
                 )}`}
               />
-            </FlexColumn>
 
-            <FlexColumn gap={18} className={styles.form__footer}>
               {error && (
                 <Banner
                   variant="error"
@@ -293,7 +244,7 @@ const AccessWithLedgerForm = () => {
               <p className="center">
                 <button
                   className={styles.smallButton}
-                  onClick={() => setPage(Pages.complete)}
+                  onClick={() => setPage(Pages.choosePasswordForm)}
                 >
                   {t("No, I'll use only Terra")}
                 </button>
@@ -305,24 +256,77 @@ const AccessWithLedgerForm = () => {
         return (
           <LedgerModal action={LedgerDeviceAction.OPEN_APP} appName="Cosmos" />
         )
+
+      case Pages.choosePasswordForm:
+        return (
+          <section className={styles.form__container}>
+            <FlexColumn gap={18} className={styles.form__details}>
+              <InputWrapper
+                label={t("Password")}
+                error={errors.password?.message}
+              >
+                <Input
+                  {...register("password", {
+                    validate: passwordExists() ? undefined : validate.password,
+                  })}
+                  type="password"
+                />
+              </InputWrapper>
+
+              {!passwordExists() && (
+                <InputWrapper
+                  label={t("Confirm password")}
+                  error={errors.confirm?.message}
+                >
+                  <Input
+                    {...register("confirm", {
+                      validate: (confirm) =>
+                        validate.confirm(password, confirm),
+                    })}
+                    onFocus={() => form.trigger("confirm")}
+                    type="password"
+                  />
+                </InputWrapper>
+              )}
+
+              <Button
+                disabled={!isValid || !password}
+                onClick={() => {
+                  if (passwordExists() && !isPasswordValid(password)) {
+                    setFormError(
+                      "password",
+                      { message: t("Invalid password") },
+                      { shouldFocus: true }
+                    )
+                    return
+                  }
+                  setPage(Pages.complete)
+                }}
+                variant="primary"
+                style={{ marginTop: 22 }}
+              >
+                {t("Confirm")}
+              </Button>
+            </FlexColumn>
+          </section>
+        )
+
       case Pages.complete:
         return (
-          <CreatedWallet
-            name={name}
-            words={words}
-            onConfirm={() =>
-              connectLedger(password, words, pubkey, index, bluetooth, name)
-            }
-          />
+          <Flex align="flex-start" className={styles.form__container}>
+            <CreatedWallet
+              name={name}
+              words={words}
+              onConfirm={() =>
+                connectLedger(password, words, pubkey, index, bluetooth, name)
+              }
+            />
+          </Flex>
         )
     }
   }
 
-  return (
-    <Form onSubmit={handleSubmit(submit)} className={styles.form}>
-      {render()}
-    </Form>
-  )
+  return <Form className={styles.form}>{render()}</Form>
 }
 
 export default AccessWithLedgerForm

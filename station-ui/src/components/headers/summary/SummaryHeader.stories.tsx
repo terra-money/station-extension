@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import SummaryHeader, { SummaryHeaderProps } from './SummaryHeader';
 
 const meta: Meta<SummaryHeaderProps> = {
-  title: 'Components/Headers/SummaryHeader/Stories',
+  title: 'Components/Headers/Summary/Stories',
   component: SummaryHeader,
   argTypes: {},
 } as Meta;

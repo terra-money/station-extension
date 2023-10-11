@@ -33,7 +33,6 @@ import { Read } from "components/token"
 import ConnectWallet from "app/sections/ConnectWallet"
 import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
 import { isWallet, useAuth } from "auth"
-import { PasswordError } from "auth/scripts/keystore"
 import { toInput, CoinInput, calcTaxes } from "./utils"
 import styles from "./Tx.module.scss"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
@@ -287,7 +286,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
       onPost?.()
     } catch (error) {
-      if (error instanceof PasswordError) setIncorrect(error.message)
+      if (error instanceof Error) setIncorrect(error.message)
       else setError(error as Error)
     }
 

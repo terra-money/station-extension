@@ -1,0 +1,174 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as ProgressBarStories from "./ProgressBar.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Displays/Progress Bar" />
+
+# Progress Bar
+
+##### This is a progress bar for governance proposals.
+
+## Props
+- **`data`** - <RequiredText /> - Sets the variant of the banner.
+  - `[{`
+    - `type: 'yes' | 'abstain' | 'no' | 'noWithVeto' | 'deposit'`
+    - `percent: string`
+  - `}]`
+- **`threshold`** - <RequiredText /> - `number` - Sets the progress threshold.
+- **`threshold`** - <RequiredText /> - `number` - Sets the progress threshold.
+- **`isSmall`** - `boolean` - Turns the bar into half the height and other UI changes.
+- **`labelOverride`** - `string` - Overrides the label of the threshold bar.
+
+## Import
+```jsx
+import { ProgressBar } from "station-ui";
+```
+
+## Stories
+
+## Threshold Not Met
+This example shows a progress bar with a pass threshold of 50% that **has not** been hit yet.
+<div className="story_with_source_below">
+  <Canvas of={ProgressBarStories.ThresholdNotMet} />
+  <Source code={`
+    <ProgressBar
+  data={[
+    { type: 'yes', percent: '5%' },
+    { type: 'abstain', percent: '10%' },
+    { type: 'no', percent: '2%' },
+    { type: 'noWithVeto', percent: '0.5%' },
+  ]}
+  threshold={50}
+/>
+  `} />
+</div>
+
+## Pass Threshold Met
+This example shows a progress bar with a pass threshold of 20% that **has** been hit yet.
+<div className="story_with_source_below">
+  <Canvas of={ProgressBarStories.PassThresholdMet} />
+  <Source code={`
+    <ProgressBar
+  data={[
+    { type: 'yes', percent: '5%' },
+    { type: 'abstain', percent: '10%' },
+    { type: 'no', percent: '2%' },
+    { type: 'noWithVeto', percent: '0.5%' },
+  ]}
+  threshold={20}
+/>
+  `} />
+</div>
+
+## Single Pass Threshold
+This example shows a progress bar with just `yes` with a pass threshold of 20% that **has** been hit yet.
+<div className="story_with_source_below">
+  <Canvas of={ProgressBarStories.SinglePassThreshold} />
+  <Source code={`
+    <ProgressBar
+  data={[
+    { type: 'yes', percent: '20%' },
+    { type: 'abstain', percent: '0%' },
+    { type: 'no', percent: '0%' },
+    { type: 'noWithVeto', percent: '0%' },
+  ]}
+  threshold={20}
+/>
+  `} />
+</div>
+
+## On Left Edge
+This is an example of the label not overflowing on the left.
+<div className="story_with_source_below">
+  <Canvas of={ProgressBarStories.OnLeftEdge} />
+  <Source code={`
+    <ProgressBar
+  data={[
+    { type: 'yes', percent: '0%' },
+    { type: 'abstain', percent: '0%' },
+    { type: 'no', percent: '0%' },
+    { type: 'noWithVeto', percent: '0%' },
+  ]}
+  threshold={1}
+/>
+  `} />
+</div>
+
+## On Right Edge
+This is an example of the label not overflowing on the right.
+<div className="story_with_source_below">
+  <Canvas of={ProgressBarStories.OnRightEdge} />
+  <Source code={`
+    <ProgressBar
+  data={[
+    { type: 'yes', percent: '0%' },
+    { type: 'abstain', percent: '0%' },
+    { type: 'no', percent: '0%' },
+    { type: 'noWithVeto', percent: '0%' },
+  ]}
+  threshold={99}
+/>
+  `} />
+</div>
+
+## Small
+This is used at the button of a Card.
+<div className="story_with_source_below">
+  <Canvas of={ProgressBarStories.Small} />
+  <Source code={`
+    <ProgressBar
+  data={[
+    { type: 'yes', percent: '5%' },
+    { type: 'abstain', percent: '10%' },
+    { type: 'no', percent: '2%' },
+    { type: 'noWithVeto', percent: '0.5%' },
+  ]}
+  threshold={50}
+  isSmall
+  labelOverride="PT"
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

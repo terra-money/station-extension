@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import AddressSelectableListItem, { AddressSelectableListItemProps } from './AddressSelectableListItem';
 
 const meta: Meta<AddressSelectableListItemProps> = {
-  title: 'Components/List Items/Address (Selectable)',
+  title: 'Components/List Items/Selectable/Address',
   component: AddressSelectableListItem,
   argTypes: {},
 } as Meta;

@@ -13,7 +13,7 @@
   --modal-width: 520px;
   --input-height: 45px;
   --wallet-width: 420px;
-  --extension-width: min(100%, 600px);
+  --extension-width: clamp(400px, 50%, 500px);
 
   // fonts
   --font-family-monospace: "Source Code Pro", monospace;

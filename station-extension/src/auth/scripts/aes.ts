@@ -1,7 +1,7 @@
 import CryptoJS from "crypto-js"
 
 const keySize = 256
-const iterations = 100_000
+const iterations = 20_000
 const msgSalt = "STATION:"
 
 export const encrypt = (msg: string, pass: string) => {

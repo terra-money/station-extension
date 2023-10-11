@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import WalletSelectableListItem, { WalletSelectableListItemProps } from './WalletSelectableListItem';
 
 const meta: Meta<WalletSelectableListItemProps> = {
-  title: 'Components/List Items/Wallet (Selectable)',
+  title: 'Components/List Items/Selectable/Wallet',
   component: WalletSelectableListItem,
   argTypes: {},
 } as Meta;

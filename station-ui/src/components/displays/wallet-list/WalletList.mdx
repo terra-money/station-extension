@@ -1,0 +1,92 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as WalletListStories from "./WalletList.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Displays/Wallet List" />
+
+# Wallet List
+
+##### Displays wallets. The wallet list item is `<WalletSelectableListItem />`.
+
+## WalletList Props
+- **`activeWallet`**: - <RequiredText /> - `**object below**` - Data of the active wallet.
+  - `{`
+    - `name: string;`
+    `address: string;`
+    `settingsOnClick: () => void;`
+  - `}`
+- **`otherWallets`**: - <RequiredText /> - `**object below**` - Array containing data for other wallets.
+  - `{`
+    - `name: string;`
+    `address: string;`
+    `onClick: () => void;`
+    `settingsOnClick: () => void;`
+  - `}[]`
+
+## Import
+```jsx
+import { WalletList } from "station-ui";
+```
+
+## Stories
+
+## Default
+Example of a wallet list with an active wallet and other wallets.
+<div className="story_with_source_below">
+  <Canvas of={WalletListStories.Default} />
+  <Source code={`
+    <WalletList
+  activeWallet={{
+    name: 'my-wallet',
+    address: 'terra5dnwe3fc...pazdy5',
+    settingsOnClick: () => {},
+  }}
+  otherWallets={
+    [{
+      name: 'other-wallet-1',
+      address: 'terra5dnwe3fc...pazdy5',
+      onClick: () => {},
+      settingsOnClick: () => {},
+    },
+    {
+      name: 'other-wallet-2',
+      address: 'terra5dnwe3fc...pazdy5',
+      onClick: () => {},
+      settingsOnClick: () => {},
+    },{
+      name: 'other-wallet-3',
+      address: 'terra5dnwe3fc...pazdy5',
+      onClick: () => {},
+      settingsOnClick: () => {},
+    }]
+  }
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

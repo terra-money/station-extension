@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import SendHeader, { SendHeaderProps } from './SendHeader';
 
 const meta: Meta<SendHeaderProps> = {
-  title: 'Components/Headers/SendHeader/Stories',
+  title: 'Components/Headers/Send/Stories',
   component: SendHeader,
   argTypes: {},
 } as Meta;
