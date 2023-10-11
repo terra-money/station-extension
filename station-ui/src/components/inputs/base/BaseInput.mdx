@@ -1,0 +1,113 @@
+import {
+  Meta,
+  Canvas,
+  Controls,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as BaseInputStories from "./BaseInput.stories.tsx";
+import * as InputWrapperStories from "../../form-helpers/wrappers/InputWrapper/InputWrapper.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Inputs/Base" />
+
+# Base Input
+
+##### Basic Input component.
+* To add a label and error message, wrap this component in `<InputWrapper />`.
+
+## Props
+- **`actionIcon`** - `**object below**` - This will add a icon to the right side of the input.
+  - **`icon`** - <RequiredText /> - `ReactNode` - The icon to display.
+  - **`onClick`** - `() => void` - The function to run when the icon is clicked.
+- **`emoji`** - `string` - Adds an emoji to the right side of the input.
+  - ***This is not locked to just emojis. Any string can be passed in (for now)***
+
+## Import
+```jsx
+import { Input } from "station-ui";
+```
+
+## Stories
+
+## Default
+Basic input with a placeholder.
+<div className="story_with_source_below">
+  <Canvas of={BaseInputStories.Default} />
+  <Source code={`
+    <Input placeholder='Primary input' />
+  `} />
+</div>
+
+## InputWrapper Example
+This is an example of how to use the InputWrapper component with the Input component.
+<div className="story_with_source_below">
+  <Canvas of={InputWrapperStories.Playground}></Canvas>
+  <Controls of={InputWrapperStories.Playground} />
+  <Source code={`
+    <InputWrapper
+  label={label}
+  extra={
+    showExtra && (
+      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <WalletIcon fill='var(--token-dark-900)' />
+        <span>8,334.02 LUNA</span>
+      </div>
+    )
+  }
+  error={showError ? 'This is an error message' : ''}
+  warning={showWarning ? 'This is a warning message' : ''}
+>
+  <Input
+    // {...register('input-label', {})}
+    placeholder={'Placeholder'}
+  />
+</InputWrapper>
+  `} />
+</div>
+
+## SubIcon
+Basic input with an icon on the right side.
+<div className="story_with_source_below">
+  <Canvas of={BaseInputStories.SubIcon} />
+  <Source code={`
+    <Input
+  actionIcon={{
+    icon: <WalletIcon fill='var(--token-dark-900)' />,
+    onClick: () => console.log('clicked')
+  }}
+  placeholder='Primary with sub icon'
+/>
+  `} />
+</div>
+
+## Emoji
+Basic input with an emoji on the right side.
+<div className="story_with_source_below">
+  <Canvas of={BaseInputStories.Emoji} />
+  <Source code={`
+    <Input emoji={'🔥'}  placeholder='Primary with emoji' />
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

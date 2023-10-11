@@ -1,10 +1,9 @@
-import Pill from 'components/general/pill/Pill';
-import styles from '../TokenListItem.module.scss';
+import Pill from "components/general/pill/Pill"
+import styles from "../TokenListItem.module.scss"
 
 export interface TokenSingleChainListItemProps {
   tokenImg: string
   symbol: string
-  price?: number
   amountNode: React.ReactNode
   priceNode: React.ReactNode
   chain: { icon: string, label: string }
@@ -36,7 +35,7 @@ const TokenSingleChainListItem = ({
           <div className={styles.top__row}>
             <h3 className={styles.symbol}>
               <span className={styles.symbol__name}>{symbol}</span>
-              {isSendBack && <Pill variant='warning' text="Send Back" />}
+              {isSendBack && <Pill variant="warning" text="Send Back" />}
             </h3>
             <h3 className={styles.amount}>
               {amountNode}
@@ -58,7 +57,7 @@ const TokenSingleChainListItem = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TokenSingleChainListItem;
+export default TokenSingleChainListItem

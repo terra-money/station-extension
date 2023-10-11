@@ -1,0 +1,223 @@
+import {
+  Meta,
+  Canvas,
+  Controls,
+  Source,
+  Story
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as DropdownStories from "./Dropdown.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Inputs/Dropdown" />
+
+# Dropdown
+
+##### A dropdown component with icons or text only.
+
+## Props
+> To use `Search` with `children` you will need to filter the options yourself and pass in the filtered options to the `Dropdown` component.
+> There are examples of this in the stories below.
+
+- **`options`** - <RequiredText /> - `**object below[]**` - Options for the Dropdown.
+  - **`value`** - <RequiredText /> - `string` - The value of the option.
+  - **`label`** - <RequiredText /> - `string` - The label of the option.
+  - **`image`** - `string` - The image of the option.
+- **`onChange`** - <RequiredText /> - `(value: string) => void` - The function to run when the value changes.
+- **`value`** - <RequiredText /> - `string` - The value of the selected option.
+- **`withSearch`** - `boolean` - Adds a search input to search options.
+- **`children`** - `ReactNode` - Passing in ReactNodes into this will override the standard option UI.
+- **`setSearchValue`** - `(value: string) => void` - A function passed in to help children options filter.
+
+## Import
+```jsx
+import { Dropdown } from "station-ui";
+```
+
+## Stories
+
+## Default
+<div
+  className="story__wrapper"
+  style={{
+    width: "calc(100% - 20px)",
+    margin: "45px 10px 60px 10px",
+  }}
+>
+  <Story of={DropdownStories.Default} />
+  <Source code={`
+    const options = [
+  { value: "terra", label: "Terra", image: 'https://station-assets.terra.dev/img/chains/Terra.svg' },
+  ...
+];
+
+const [selectedValue, setSelectedValue] = useState('terra');
+
+return (
+  <Dropdown
+    options={options}
+    onChange={(value) => setSelectedValue(value)}
+    value={selectedValue}
+  />
+)
+  `} />
+</div>
+
+## Default With Search
+<div
+  className="story__wrapper"
+  style={{
+    width: "calc(100% - 20px)",
+    margin: "45px 10px 60px 10px",
+  }}
+>
+  <Story of={DropdownStories.DefaultWithSearch} />
+  <Source code={`
+    const options = [
+  { value: "terra", label: "Terra" },
+  ...
+];
+
+const [selectedValue, setSelectedValue] = useState('terra');
+
+return (
+      <Dropdown
+    options={options}
+    onChange={(value) => setSelectedValue(value)}
+    value={selectedValue}
+    withSearch
+  />
+)
+  `} />
+</div>
+
+## Default Text Only
+<div
+  className="story__wrapper"
+  style={{
+    width: "calc(100% - 20px)",
+    margin: "45px 10px 60px 10px",
+  }}
+>
+  <Story of={DropdownStories.DefaultTextOnly} />
+  <Source code={`
+    const options = [
+  { value: "terra", label: "Terra" },
+  ...
+];
+
+const [selectedValue, setSelectedValue] = useState('terra');
+
+return (
+  <Dropdown
+    options={options}
+    onChange={(value) => setSelectedValue(value)}
+    value={selectedValue}
+  />
+)
+  `} />
+</div>
+
+## Children Override
+<div
+  className="story__wrapper"
+  style={{
+    width: "calc(100% - 20px)",
+    margin: "45px 10px 60px 10px",
+  }}
+>
+  <Story of={DropdownStories.ChildrenOverride} />
+  <Source code={`
+    const options: { value: string; label: string; image?: string }[] =
+  Object.values(tokensBySymbol).map(item => ({
+    value: item.symbol,
+    label: item.symbol,
+    image: item.tokenIcon,
+  }));
+
+const [selectedValue, setSelectedValue] = useState('LUNA');
+
+return (
+    <Dropdown
+    options={options}
+    onChange={(value) => setSelectedValue(value)}
+    value={selectedValue}
+  >
+    {Object.keys(tokensBySymbol).map((token, index) => (
+                <TokenSingleChainListItem
+          key={index}
+          priceNode={<span>$ {tokenPrices[token] * Number(walletBalance[token]) || 0}</span>}
+          tokenImg={tokensBySymbol[token].tokenIcon}
+          symbol={tokensBySymbol[token].symbol}
+          amountNode={<span>{walletBalance[token] || 0}</span>}
+          chain={{ icon: tokensBySymbol[token].chainIcon, label: tokensBySymbol[token].chainName }}
+          onClick={() => setSelectedValue(token)}
+      />
+            ))}
+  </Dropdown>
+)
+  `} />
+</div>
+
+## Children Override w/Search
+<div
+  className="story__wrapper"
+  style={{
+    width: "calc(100% - 20px)",
+    margin: "45px 10px 60px 10px",
+  }}
+>
+  <Story of={DropdownStories.ChildrenOverrideWithSearch} />
+  <Source code={`
+    const options: { value: string; label: string; image?: string }[] =
+  Object.values(tokensBySymbol).map(item => ({
+    value: item.symbol,
+    label: item.symbol,
+    image: item.tokenIcon,
+  }));
+
+const [selectedValue, setSelectedValue] = useState('LUNA');
+
+return (
+    <Dropdown
+    options={options}
+    onChange={(value) => setSelectedValue(value)}
+    value={selectedValue}
+  >
+    {Object.keys(tokensBySymbol).map((token, index) => (
+                <TokenSingleChainListItem
+          key={index}
+          priceNode={<span>$ {tokenPrices[token] * Number(walletBalance[token]) || 0}</span>}
+          tokenImg={tokensBySymbol[token].tokenIcon}
+          symbol={tokensBySymbol[token].symbol}
+          amountNode={<span>{walletBalance[token] || 0}</span>}
+          chain={{ icon: tokensBySymbol[token].chainIcon, label: tokensBySymbol[token].chainName }}
+          onClick={() => setSelectedValue(token)}
+      />
+            ))}
+  </Dropdown>
+)
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

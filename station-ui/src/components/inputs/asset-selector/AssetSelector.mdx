@@ -1,0 +1,244 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as AssetSelectorStories from "./AssetSelector.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Inputs/AssetSelector" />
+
+# Asset Selectors
+
+##### This is for selecting assets on the Swap page.
+`To` and `From` are slightly different.
+
+## AssetSelector `From` Props
+- **`extra`** - <RequiredText /> - `ReactNode` - Light text on the top of the box. Should be token amount in the user wallet.
+- **`symbol`** - <RequiredText /> - `string` - The symbol of the token.
+- **`tokenIcon`** - <RequiredText /> - `string` - The icon of the token.
+- **`onSymbolClick`** - <RequiredText /> - `() => void` - Controls what happens when the token dropdown is clicked.
+- **`chainIcon`** - <RequiredText /> - `string` - The icon of the selected tokens chain.
+- **`chainName`** - <RequiredText /> - `string` - The name of the selected tokens chain.
+- **`amountInputAttrs`** - <RequiredText /> - `InputHTMLAttributes<HTMLInputElement>` - Attributes from react-hook-form or others.
+- **`currencyAmount`** - <RequiredText /> - `string` - The amount converted to currency price. *Include the currency symbol*.
+
+## AssetSelector `To` Props
+- **`extra`** - <RequiredText /> - `ReactNode` - Light text on the top of the box. Should be token amount in the user wallet.
+- **`symbol`** - <RequiredText /> - `string` - The symbol of the token.
+- **`tokenIcon`** - <RequiredText /> - `string` - The icon of the token.
+- **`onSymbolClick`** - <RequiredText /> - `() => void` - Controls what happens when the token dropdown is clicked.
+- **`chainIcon`** - <RequiredText /> - `string` - The icon of the selected tokens chain.
+- **`chainName`** - <RequiredText /> - `string` - The name of the selected tokens chain.
+- **`amount`** - <RequiredText /> - `string` - The amount a user will get on this token based off of the "From" input.
+- **`currencyAmount`** - <RequiredText /> - `string` - The amount converted to currency price. *Include the currency symbol*.
+
+## Import
+```jsx
+import { AssetSelectorFrom, AssetSelectorTo } from "station-ui";
+```
+
+## Stories
+
+## Example
+An example of both the `From` and `To` Asset Selectors like they would be on the Swap page.
+<div className="story_with_source_below">
+  <Canvas of={AssetSelectorStories.Example} />
+  <Source code={`
+    const [fromSymbol, setFromSymbol] = useState('LUNA');
+const [toSymbol, setToSymbol] = useState('axlUSDC');
+const [assetModalOpen, setAssetModalOpen] = useState(false);
+const [direction, setDirection] = useState('');
+
+const { register, handleSubmit, watch } = useForm();
+const onSubmit = handleSubmit(data => console.log(data));
+const toAmount = parseFloat(watch("fromAmount")) * tokenPrices[fromSymbol] / tokenPrices[toSymbol];
+
+const handleFromSymbolClick = (direction: string) => {
+      setAssetModalOpen(!assetModalOpen);
+      setDirection(direction);
+}
+
+const options = [
+      { value: "terra", label: "Terra" },
+      { value: "axelar", label: "Axelar" },
+      { value: "carbon", label: "Carbon" },
+      { value: "cosmos", label: "Cosmos" },
+      { value: "crescent", label: "Crescent" },
+      { value: "juno", label: "Juno" },
+      { value: "mars", label: "Mars" },
+];
+
+const handleTokenSelection = (token: string) => {
+      if (direction === 'from') {
+            setFromSymbol(token);
+            setAssetModalOpen(!assetModalOpen);
+            setDirection('');
+      } else if (direction === 'to') {
+            setToSymbol(token);
+            setAssetModalOpen(!assetModalOpen);
+            setDirection('');
+      }
+}
+
+return (
+      <>
+      <Modal
+        isOpen={assetModalOpen}
+        onRequestClose={() => setAssetModalOpen(false)}
+        title='Select Asset'
+      >
+        <FlexColumn gap={24} style={{ width: '100%' }}>
+          <InputWrapper label="Chains">
+            <StandardDropdown
+              options={options}
+              onChange={() => {}}
+              value="terra"
+            />
+          </InputWrapper>
+
+          <SectionHeader
+            title="Tokens"
+            withLine
+          />
+
+          <InputWrapper label="Search Tokens">
+            <Input
+              placeholder="Search Tokens"
+              onChange={() => {}}
+            />
+          </InputWrapper>
+
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            {Object.keys(tokensBySymbol).map((token, index) => (
+                                    <TokenSingleChainListItem
+                key={index}
+                priceNode={<span>$ {tokenPrices[token]}</span>}
+                tokenImg={tokensBySymbol[token].tokenIcon}
+                symbol={tokensBySymbol[token].symbol}
+                price={tokenPrices[token]}
+                amountNode={<span>{walletBalance[token]}</span>}
+                chain={{ icon: tokensBySymbol[token].chainIcon, label: tokensBySymbol[token].chainName }}
+                onClick={() => handleTokenSelection(token)}
+              />
+                                ))}
+          </div>
+
+        </FlexColumn>
+      </Modal>
+      <form onSubmit={onSubmit}>
+        <AssetSelectorFrom
+          extra={
+            <>
+              <WalletIcon width={12} height={12} fill='var(--token-dark-900)' />
+              <p>
+                {$-{walletBalance[fromSymbol] || 0} $-{fromSymbol}}
+              </p>
+            </>
+          }
+          symbol={fromSymbol}
+          tokenIcon={tokensBySymbol[fromSymbol].tokenIcon}
+          onSymbolClick={() => handleFromSymbolClick('from')}
+          chainIcon={tokensBySymbol[fromSymbol].chainIcon}
+          chainName={tokensBySymbol[fromSymbol].chainName}
+          amountInputAttrs={{...register("fromAmount", { required: true, valueAsNumber: true })}}
+          currencyAmount={$$-{(parseFloat(watch("fromAmount")) * tokenPrices[fromSymbol]).toFixed(6)}}
+        />
+        <br />
+        <br />
+        <br />
+        <AssetSelectorTo
+          extra={
+            <>
+              <WalletIcon width={12} height={12} fill='var(--token-dark-900)' />
+              <p>
+                {$-{walletBalance[toSymbol] || 0} $-{toSymbol}}
+              </p>
+            </>
+          }
+          symbol={toSymbol}
+          tokenIcon={tokensBySymbol[toSymbol].tokenIcon}
+          onSymbolClick={() => handleFromSymbolClick('to')}
+          chainIcon={tokensBySymbol[toSymbol].chainIcon}
+          chainName={tokensBySymbol[toSymbol].chainName}
+          amount={$-{toAmount}}
+          currencyAmount={$$-{(toAmount * tokenPrices[toSymbol]).toFixed(6)}}
+        />
+      </form>
+    </>
+  );
+  `} />
+</div>
+
+## From
+Just the `From` Asset Selector.
+<div className="story_with_source_below">
+  <Canvas of={AssetSelectorStories.From} />
+  <Source code={`
+    <AssetSelectorFrom
+  extra={
+    <>
+      <WalletIcon width={12} height={12} fill='var(--token-dark-900)' />
+      <p>
+        {$-{walletBalance?.LUNA} LUNA}
+      </p>
+    </>
+  }
+  symbol='LUNA'
+  tokenIcon={tokensBySymbol.LUNA.tokenIcon}
+  onSymbolClick={() => {}}
+  chainIcon={tokensBySymbol.LUNA.chainIcon}
+  chainName={tokensBySymbol.LUNA.chainName}
+  amountInputAttrs={{ value: fromAmount }}
+  currencyAmount={$$-{(parseFloat(fromAmount) * tokenPrices.LUNA).toFixed(6)}}
+/>
+  `} />
+</div>
+
+## To
+Just the `To` Asset Selector.
+<div className="story_with_source_below">
+  <Canvas of={AssetSelectorStories.To} />
+  <Source code={`
+    <AssetSelectorTo
+  extra={
+    <>
+      <WalletIcon width={12} height={12} fill='var(--token-dark-900)' />
+      <p>
+        {$-{walletBalance.axlUSDC} axlUSDC}
+      </p>
+    </>
+  }
+  symbol='axlUSDC'
+  tokenIcon={tokensBySymbol.axlUSDC.tokenIcon}
+  onSymbolClick={() => {}}
+  chainIcon={tokensBySymbol.axlUSDC.chainIcon}
+  chainName={tokensBySymbol.axlUSDC.chainName}
+  amount={$-{(parseFloat(fromAmount) * tokenPrices.LUNA / tokenPrices.axlUSDC).toFixed(6)}}
+  currencyAmount={$$-{(parseFloat(fromAmount) * tokenPrices.LUNA).toFixed(6)}}
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

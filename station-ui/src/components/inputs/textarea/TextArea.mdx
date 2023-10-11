@@ -1,0 +1,88 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as TextAreaStories from "./TextArea.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Inputs/TextArea" />
+
+# TextArea
+
+##### Component for textarea. Has a "readOnly" option.
+
+## Props
+- **`TextareaHTMLAttributes<HTMLTextAreaElement>`**
+
+## Import
+```jsx
+import { TextArea } from "station-ui";
+```
+
+## Stories
+
+## Default
+<div className="story_with_source_below">
+  <Canvas of={TextAreaStories.Default} />
+  <Source code={`
+    <TextArea
+  readOnly={false}
+  placeholder="We're proposing to spend 100,000 LUNA from the Community Pool to fund the creation of public goods for the Terra ecosystem"
+/>
+  `} />
+</div>
+
+## ReadOnly
+<div className="story_with_source_below">
+  <Canvas of={TextAreaStories.ReadOnly} />
+  <Source code={`
+    <TextArea
+  readOnly={true}
+  value={"page page page page scout page office repair save page situate lion page decrease will page cry page sausage page page issue law page"}
+/>
+  `} />
+</div>
+
+## With InputWrapper Example
+<div className="story_with_source_below">
+  <Canvas of={TextAreaStories.WithInputWrapperExample} />
+  <Source code={`
+    <InputWrapper
+  label="Textbox label"
+  extra={
+    <Copy
+      copyText={value}
+    />
+  }
+>
+  <TextArea
+    readOnly={true}
+    value={value}
+  />
+</InputWrapper>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
