@@ -16,9 +16,11 @@ const TextArea = forwardRef(
     let displayValue = attrs.value
 
     try {
-      const parsedValue = JSON.parse(attrs.value as string)
-      if (typeof parsedValue === "object" && parsedValue !== null) {
-        displayValue = JSON.stringify(parsedValue, null, 6)
+      if (attrs.value !== undefined) {
+        const parsedValue = JSON.parse(attrs.value as string)
+        if (typeof parsedValue === "object" && parsedValue !== null) {
+          displayValue = JSON.stringify(parsedValue, null, 6)
+        }
       }
     } catch (e) {
       // ignore
