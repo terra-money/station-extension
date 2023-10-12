@@ -20,7 +20,7 @@ npm install
 ***This is primary to build the tokens***
 
 ```
-npm run storybook
+npm run build
 ```
 
 3. Start the Storybook server:
