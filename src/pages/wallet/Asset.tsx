@@ -7,9 +7,8 @@ import { WithFetching } from "components/feedback"
 import { useMemo } from "react"
 
 import styles from "./Asset.module.scss"
-import { useWalletRoute, Page } from "./Wallet"
 import { TokenListItem } from "station-ui"
-import { useBankBalance } from "data/queries/bank"
+import { CoinBalance, useBankBalance } from "data/queries/bank"
 import { useNativeDenoms } from "data/token"
 import { useNetwork } from "data/wallet"
 
@@ -21,6 +20,8 @@ export interface Props extends TokenItem, QueryState {
   hideActions?: boolean
   chains: string[]
   id: string
+  coins: CoinBalance[]
+  onClick?: () => void
 }
 
 interface AssetInfo {
@@ -31,22 +32,22 @@ interface AssetInfo {
 }
 
 const Asset = (props: Props) => {
-  const { icon, denom, decimals, id, balance, ...state } = props
+  const {
+    icon,
+    denom,
+    decimals,
+    id,
+    balance,
+    onClick,
+    coins,
+    price,
+    change,
+    ...state
+  } = props
   const { t } = useTranslation()
   const currency = useCurrency()
   const readNativeDenom = useNativeDenoms()
   const network = useNetwork()
-  const coins = useBankBalance()
-
-  const { data: prices, ...pricesState } = useExchangeRates()
-  const { route, setRoute } = useWalletRoute()
-
-  const price = props.price ?? prices?.[props.token]?.price
-  const change = props.change ?? prices?.[props.token]?.change
-
-  const handleAssetClick = () => {
-    if (route.page !== Page.coin) setRoute({ page: Page.coin, denom: id })
-  }
 
   const chains = useMemo(() => {
     return props.chains.reduce((acc, chain) => {
@@ -87,11 +88,7 @@ const Asset = (props: Props) => {
 
   const AmountNode = () => {
     return (
-      <WithFetching
-        {...combineState(state, pricesState)}
-        yOffset={-5}
-        height={1}
-      >
+      <WithFetching {...combineState(state)} yOffset={-5} height={1}>
         {(progress, wrong) => (
           <>
             {progress}
@@ -136,7 +133,7 @@ const Asset = (props: Props) => {
     <div className={styles.asset}>
       <TokenListItem
         chains={chains}
-        onClick={handleAssetClick}
+        onClick={onClick}
         amountNode={<AmountNode />}
         priceNode={<PriceNode />}
         change={change}

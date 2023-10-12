@@ -1,19 +1,22 @@
-import { ModalButton } from "station-ui"
+import { ModalButton, Input, InputWrapper, Button } from "station-ui"
+import { useState } from "react"
 import { ReactComponent as EmptyEmoji } from "styles/images/icons/EmptyEmoji.svg"
 import styles from "./EmojiButton.module.scss"
-import { useState } from "react"
-
 const emojiOptions = [
-  "😀",
-  "😃",
-  "😄",
-  "😁",
-  "😆",
-  "😅",
-  "😂",
-  "🤣",
-  "😊",
-  "😇",
+  "💳",
+  "⚡️",
+  "🐋",
+  "🚀",
+  "🔥",
+  "💼",
+  "🦊",
+  "🐉",
+  "🌝",
+  "⭐️",
+  "☂️",
+  "🍟",
+  "🎩",
+  "🍭",
 ]
 
 interface Props {
@@ -22,6 +25,8 @@ interface Props {
 }
 
 const EmojiButton = ({ onClick, icon }: Props) => {
+  const [emoji, setEmoji] = useState<string>(icon ?? "")
+
   return (
     <ModalButton
       title="Icon"
@@ -33,12 +38,22 @@ const EmojiButton = ({ onClick, icon }: Props) => {
         )
       }
     >
+      <InputWrapper label="Icon">
+        <Input
+          placeholder="Letter or Emoji"
+          maxLength={1}
+          value={emoji}
+          onChange={(e) => {
+            setEmoji(e.target.value)
+          }}
+        />
+      </InputWrapper>
       <div className={styles.picker}>
         {emojiOptions.map((emoji) => (
           <button
             key={emoji}
             onClick={() => {
-              onClick(emoji)
+              setEmoji(emoji)
             }}
             className={styles.emojiButton}
           >
@@ -46,6 +61,15 @@ const EmojiButton = ({ onClick, icon }: Props) => {
           </button>
         ))}
       </div>
+      <Button
+        variant="primary"
+        style={{ width: "100%" }}
+        disabled={!emoji}
+        label="Save"
+        onClick={() => {
+          onClick(emoji)
+        }}
+      />
     </ModalButton>
   )
 }

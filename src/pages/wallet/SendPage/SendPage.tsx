@@ -16,6 +16,8 @@ import { useExchangeRates } from "data/queries/coingecko"
 import { useNativeDenoms } from "data/token"
 import { useCallback, useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
+import { getChainIDFromAddress } from "utils/bech32"
+import { useIBCChannels, useWhitelist } from "data/queries/chains"
 import { useTranslation } from "react-i18next"
 import {
   InputWrapper,
@@ -26,6 +28,7 @@ import {
   SectionHeader,
   AddressSelectableListItem,
 } from "station-ui"
+
 import { useParsedAssetList } from "data/token"
 import validate, { validateRecipient } from "txs/validate"
 import OtherWallets from "./OtherWallets"
@@ -33,7 +36,8 @@ import { WalletList } from "./OtherWallets"
 import { truncate } from "@terra-money/terra-utils"
 import { SearchChains } from "../ReceivePage"
 import { useWalletRoute, Page } from "../Wallet"
-import { useNetwork } from "data/wallet"
+import { useNetwork, useNetworkName } from "data/wallet"
+import Asset from "../Asset"
 
 interface TxValues {
   asset?: string
@@ -60,20 +64,29 @@ const SendPage = () => {
   const balances = useBankBalance()
   const networks = useNetwork()
   const assetList = useParsedAssetList()
+  const { ibcDenoms } = useWhitelist()
+  const networkName = useNetworkName()
+  const { getIBCChannel } = useIBCChannels()
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange" })
   const { register, watch, setValue, trigger } = form
   const { formState } = form
   const { errors } = formState
-  const { recipient } = watch()
+  const { recipient, chain } = watch()
 
+  // View #1
   const Address = () => {
-    const onSubmit = (address: string) => {
+    const onClick = (address: AccAddress) => {
+      setValue("recipient", address)
+      setRoute({ page: Page.sendChain })
+    }
+
+    const onPaste = (address: AccAddress) => {
       setValue("recipient", address)
       trigger("recipient")
       if (validateRecipient(address)) {
-        setRoute({ page: Page.sendChain })
+        setRoute({ page: Page.sendToken })
       }
     }
 
@@ -87,7 +100,7 @@ const SendPage = () => {
           <InputInLine
             type="text"
             label="To"
-            extra={<Paste onPaste={(val) => onSubmit(val)} />}
+            extra={<Paste onPaste={(val) => onPaste(val)} />}
             {...register("recipient", {
               value: recipient ?? "",
               validate: { ...validate.recipient() },
@@ -97,11 +110,12 @@ const SendPage = () => {
         <SectionHeader title="Recently Used" />
         {/* <WalletList items={} title={t("Recently Used")} onClick={onClick} /> */}
         <SectionHeader title="Other Wallets" />
-        <OtherWallets onClick={onSubmit} />
+        <OtherWallets onClick={onClick} />
       </>
     )
   }
 
+  // View #2 (only shown if they select from OtherWallets, not paste)
   const Chain = () => {
     const availableChains = useMemo(() => {
       const chainsSet = new Set()
@@ -122,12 +136,29 @@ const SendPage = () => {
         })),
       [availableChains]
     )
-
     return <SearchChains data={chains} />
   }
 
+  // View #3
   const Token = () => {
-    console.log("assetList", assetList)
+    const destinationChain = getChainIDFromAddress(recipient, networks)
+    const tokens = useMemo(
+      () =>
+        assetList.filter((a) => {
+          if (!chain || !destinationChain) return null
+          const isNative = a.chains.includes(destinationChain)
+          const isIBC = getIBCChannel({
+            from: chain,
+            to: destinationChain,
+            tokenAddress: a.denom,
+            icsChannel:
+              ibcDenoms[networkName][`${chain}:${a.denom}`]?.icsChannel,
+          })
+          return isNative || isIBC
+        }),
+      [destinationChain]
+    )
+
     return (
       <>
         <InputInLine
@@ -137,8 +168,20 @@ const SendPage = () => {
           value={recipient}
         />
         <SectionHeader title={t("My Tokens")} />
+        {tokens.map((a) => (
+          <Asset
+            {...a}
+            key={a.id}
+            onClick={() => setRoute({ page: Page.sendSubmit, denom: a.denom })}
+          />
+        ))}
       </>
     )
+  }
+
+  // View #4
+  const Submit = () => {
+    return <p>Submit</p>
   }
 
   const render = () => {
@@ -149,6 +192,8 @@ const SendPage = () => {
         return <Chain />
       case Page.sendToken:
         return <Token />
+      case Page.sendSubmit:
+        return <Submit />
       default:
         return null
     }
