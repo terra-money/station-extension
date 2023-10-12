@@ -1,0 +1,81 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as CheckboxStories from "./Checkbox.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Inputs/Checkbox" />
+
+# Checkbox
+
+##### This is a checkbox component.
+
+## Props
+- **`label`** - <RequiredText /> - `string` - The label next to the checkbox.
+- **`checked`** - `boolean` - Displays a filled checkbox if true.
+
+## Import
+```jsx
+import { Checkbox } from "station-ui";
+```
+
+## Stories
+
+## Unchecked Checkbox
+<div className="story_with_source_below">
+  <Canvas of={CheckboxStories.UncheckedCheckbox} />
+  <Source code={`
+    <Checkbox
+  checked={false}
+  label='Checkbox'
+/>
+  `} />
+</div>
+
+## Checked Checkbox
+<div className="story_with_source_below">
+  <Canvas of={CheckboxStories.CheckedCheckbox} />
+  <Source code={`
+    <Checkbox
+  checked={true}
+  label='Checkbox'
+/>
+  `} />
+</div>
+
+## Disabled Checkbox
+<div className="story_with_source_below">
+  <Canvas of={CheckboxStories.DisabledCheckbox} />
+  <Source code={`
+    <Checkbox
+  checked={false}
+  disabled={true}
+  label='Checkbox'
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

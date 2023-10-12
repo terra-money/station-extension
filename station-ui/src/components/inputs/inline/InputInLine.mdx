@@ -1,0 +1,92 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as InputInLineStories from "./InputInLine.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Inputs/InLine" />
+
+# InputInLine
+
+##### An inpit with a label inline (inside) with the input.
+
+## Props
+- **`label`** - <RequiredText /> - `string` - The label next to the checkbox.
+- **`extra`** - `ReactNode` - Adds anything on the right side of the input.
+
+## Import
+```jsx
+import { InputInLine } from "station-ui";
+```
+
+## Stories
+
+## Default
+Label in the input with a placeholder.
+<div className="story_with_source_below">
+  <Canvas of={InputInLineStories.Default} />
+  <Source code={`
+    <InputInLine label={'To'} placeholder='Primary input' >
+  `} />
+</div>
+
+## With Text Extra
+Label in the input with a placeholder and ReactNode passed in as 'extra' on the right side.
+<div className="story_with_source_below">
+  <Canvas of={InputInLineStories.WithTextExtra} />
+  <Source code={`
+    <InputInLine
+  label={'To'}
+  extra={'extra'}
+  placeholder='Primary input'
+/>
+  `} />
+</div>
+
+## Example With Extra Paste
+Label in the input with a placeholder and ReactNode passed in as 'extra' on the right side.
+<div className="story_with_source_below">
+  <Canvas of={InputInLineStories.ExampleWithExtraPaste} />
+  <Source code={`
+    const [value, setValue] = useState('');
+
+return (
+  <InputInLine
+    label={'To'}
+    extra={
+      <Paste
+        onPaste={(text) => setValue(text)}
+      />
+    }
+    value={value}
+    onChange={(e) => setValue(e.target.value)}
+    placeholder='Primary input'
+  />
+)
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
