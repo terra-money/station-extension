@@ -16,7 +16,14 @@ To use Storybook:
 npm install
 ```
 
-2. Start the Storybook server:
+2. Build the package:
+***This is primary to build the tokens***
+
+```
+npm run storybook
+```
+
+3. Start the Storybook server:
 
 ```
 npm run storybook
