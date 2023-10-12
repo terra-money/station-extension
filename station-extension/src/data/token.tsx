@@ -380,6 +380,5 @@ export const useParsedAssetList = () => {
     ],
     [coins, readNativeDenom, unknownIBCDenoms, networkName, prices, networks]
   )
-  console.log("list", list)
   return list
 }

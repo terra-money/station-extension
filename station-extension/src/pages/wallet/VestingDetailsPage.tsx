@@ -1,4 +1,4 @@
-import { SectionHeader, SendHeader } from "station-ui"
+import { SectionHeader, SendHeader, SummaryTable } from "station-ui"
 import VestingCard from "./VestingCard"
 import {
   isVestingAccount,
@@ -28,13 +28,7 @@ const AssetVesting = ({ token = "uluna" }: Props) => {
       { label: "Amount", value: <Read amount={item.amount} /> },
       { label: "Ratio", value: <ReadPercent>{item.ratio}</ReadPercent> },
     ]
-
-    return rows.map((row) => (
-      <div className={styles.row}>
-        <div className={styles.label}>{row.label}</div>
-        <div className={styles.value}>{row.value}</div>
-      </div>
-    ))
+    return <SummaryTable rows={rows} />
   }
 
   return (
@@ -48,6 +42,15 @@ const AssetVesting = ({ token = "uluna" }: Props) => {
             className={styles.header}
           />
           <section className={styles.wrapper}>
+            <SummaryTable
+              rows={[
+                {
+                  label: "Start Date",
+                  value: item.start?.toLocaleDateString(),
+                },
+                { label: "End Date", value: item.end.toLocaleDateString() },
+              ]}
+            />
             {renderSummaryRows(item)}
           </section>
         </>
