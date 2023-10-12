@@ -54,9 +54,10 @@ const AddressBookForm = (props: Props) => {
   return (
     <Form onSubmit={handleSubmit(submit)}>
       <InputWrapper label={t("Wallet Name")} error={errors.name?.message}>
-        <InputInLine
-          extra={<EmojiButton icon={icon} onClick={emojiOnClick} />}
-          label=""
+        <Input
+          actionIcon={{
+            icon: <EmojiButton icon={icon} onClick={emojiOnClick} />,
+          }}
           {...register("name", {
             required: true,
           })}

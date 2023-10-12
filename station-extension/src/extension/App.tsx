@@ -93,10 +93,10 @@ const App = () => {
   const location = useLocation()
 
   function render() {
-    if (!wallet && !location.pathname.startsWith("/auth/")) {
-      //{wallets.length ? <SwitchWallet /> : <Welcome />}
-      return <Welcome />
-    }
+    // if (!wallet && !location.pathname.startsWith("/auth/")) {
+    //   {wallets.length ? <SwitchWallet /> : <Welcome />}
+    //   return <Welcome />
+    // }
     // main page
     return (
       <>

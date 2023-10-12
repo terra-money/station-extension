@@ -21,6 +21,7 @@ enum Page {
   swap = "swap",
   address = "address",
   sendChain = "sendChain",
+  sendSubmit = "sendSubmit",
   sendToken = "sendToken",
 }
 
@@ -32,7 +33,8 @@ const pageOrder = {
   [Page.swap]: null,
   [Page.address]: Page.receive,
   [Page.sendChain]: Page.send,
-  [Page.sendToken]: Page.sendChain,
+  [Page.sendToken]: Page.send,
+  [Page.sendSubmit]: Page.sendToken,
 }
 
 type Route = {
@@ -65,6 +67,7 @@ const Wallet = () => {
       [Page.swap]: "Swap",
       [Page.sendChain]: "Select Chain",
       [Page.sendToken]: "Send",
+      [Page.sendSubmit]: "Submit",
       [Page.address]: truncate(route.address),
     }
 

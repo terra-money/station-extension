@@ -49,9 +49,7 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
     {
       icon: <Swap />,
       label: t("swap"),
-      onClick: () => {
-        setRoute({ page: Page.swap })
-      },
+      onClick: () => setRoute({ page: Page.swap }),
       hide: route.page !== Page.wallet,
     },
     {
@@ -62,7 +60,7 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
     {
       icon: <AddIcon />,
       label: t("buy"),
-      onClick: () => openModal(),
+      onClick: openModal,
       disabled: networkName !== "mainnet",
     },
   ]

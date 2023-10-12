@@ -15,6 +15,7 @@ import FilterListIcon from "@mui/icons-material/FilterList"
 import { useUnknownIBCDenoms, useParsedAssetList } from "data/token"
 import { SectionHeader, Dropdown } from "station-ui"
 import classNames from "classnames"
+import { useWalletRoute, Page } from "./Wallet"
 
 const cx = classNames.bind(styles)
 
@@ -30,6 +31,14 @@ const AssetList = () => {
   const list = useParsedAssetList()
   const [filter, setFilter] = useState(false)
   const [filterChain, setFilterChain] = useState<string>()
+  const { route, setRoute } = useWalletRoute()
+
+  const handleAssetClick = (denom: Denom) => {
+    console.log("denom", denom)
+    if (route.page !== Page.coin) {
+      setRoute({ page: Page.coin, denom })
+    }
+  }
 
   const toggleFilter = () => {
     setFilter(!filter)
@@ -60,7 +69,6 @@ const AssetList = () => {
       )
 
     const lowBal = filtered.filter((a) => !visible.includes(a))
-
     return { visible, lowBal }
   }, [list, onlyShowWhitelist, filterChain, alwaysVisibleDenoms])
 
@@ -73,6 +81,8 @@ const AssetList = () => {
         )}
         {...item}
         key={item.id}
+        coins={coins}
+        onClick={() => handleAssetClick(denom)}
       />
     )
   }
