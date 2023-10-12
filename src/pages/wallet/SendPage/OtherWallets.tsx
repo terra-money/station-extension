@@ -23,7 +23,7 @@ export const WalletList = ({
   title: string
   onClick?: (address: string) => void
 }) => {
-  if (!items.length) return null
+  if (!items.length) return <p>No allets found</p>
   return (
     <Grid gap={10}>
       <SectionHeader withLine title={title} />

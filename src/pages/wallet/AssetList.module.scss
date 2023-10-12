@@ -1,7 +1,6 @@
 @import "mixins";
 
 .assetlist {
-  background-color: var(--card-bg-muted);
   display: grid;
   grid-template-areas: "title" "list";
   grid-template-rows: min-content auto;

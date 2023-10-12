@@ -2,7 +2,7 @@ import styles from "./Wallet.module.scss"
 import { ReactComponent as BackIcon } from "styles/images/icons/BackButton.svg"
 import NetWorth from "./NetWorth"
 import AssetList from "./AssetList"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import createContext from "utils/createContext"
 import AssetPage from "./AssetPage"
 import ReceivePage from "./ReceivePage"
@@ -93,7 +93,8 @@ const Wallet = () => {
       </div>
     )
   }
-  const renderPage = () => {
+  const renderPage = useCallback(() => {
+    console.log("wallet renderPage")
     switch (route.page) {
       case Page.wallet:
         return (
@@ -118,7 +119,7 @@ const Wallet = () => {
       default:
         return <SendPage /> // default because of send page internal routing
     }
-  }
+  }, [route, tab, t])
 
   return (
     <div className={styles.wallet}>

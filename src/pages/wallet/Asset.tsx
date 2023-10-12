@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next"
 import { Read } from "components/token"
-import { useExchangeRates } from "data/queries/coingecko"
 import { combineState } from "data/query"
 import { useCurrency } from "data/settings/Currency"
 import { WithFetching } from "components/feedback"
@@ -8,7 +7,7 @@ import { useMemo } from "react"
 
 import styles from "./Asset.module.scss"
 import { TokenListItem } from "station-ui"
-import { CoinBalance, useBankBalance } from "data/queries/bank"
+import { CoinBalance } from "data/queries/bank"
 import { useNativeDenoms } from "data/token"
 import { useNetwork } from "data/wallet"
 

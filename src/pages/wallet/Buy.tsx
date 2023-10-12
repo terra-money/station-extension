@@ -8,7 +8,6 @@ import { KADO_API_KEY } from "config/constants"
 export const useKado = () => {
   const addresses = useInterchainAddresses()
   const network = useNetwork()
-  console.log("render")
 
   const onToAddressMulti =
     addresses &&

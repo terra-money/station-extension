@@ -10,7 +10,7 @@ import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { SAMPLE_ADDRESS } from "config/constants"
 import { getChainNamefromID } from "data/queries/chains"
 import { convertAddress } from "utils/chain"
-
+import { useCurrency } from "data/settings/Currency"
 import { useBankBalance } from "data/queries/bank"
 import { useExchangeRates } from "data/queries/coingecko"
 import { useNativeDenoms } from "data/token"
@@ -26,7 +26,8 @@ import {
   Paste,
   Grid,
   SectionHeader,
-  AddressSelectableListItem,
+  TokenSingleChainListItem,
+  TokenSingleChainListItemProps,
 } from "station-ui"
 
 import { useParsedAssetList } from "data/token"
@@ -38,6 +39,7 @@ import { SearchChains } from "../ReceivePage"
 import { useWalletRoute, Page } from "../Wallet"
 import { useNetwork, useNetworkName } from "data/wallet"
 import Asset from "../Asset"
+import { Read } from "components/token"
 
 interface TxValues {
   asset?: string
@@ -49,13 +51,10 @@ interface TxValues {
   decimals?: number
 }
 
-interface AssetType {
-  denom: string
+interface AssetType extends TokenSingleChainListItemProps {
+  value: string
   balance: string
-  icon: string
-  symbol: string
-  price: number
-  chains: string[]
+  decimals: number
 }
 
 const SendPage = () => {
@@ -67,6 +66,8 @@ const SendPage = () => {
   const { ibcDenoms } = useWhitelist()
   const networkName = useNetworkName()
   const { getIBCChannel } = useIBCChannels()
+  const { data: prices } = useExchangeRates()
+  const currency = useCurrency()
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange" })
@@ -86,6 +87,7 @@ const SendPage = () => {
       setValue("recipient", address)
       trigger("recipient")
       if (validateRecipient(address)) {
+        setValue("chain", getChainIDFromAddress(address, networks))
         setRoute({ page: Page.sendToken })
       }
     }
@@ -95,7 +97,6 @@ const SendPage = () => {
         <InputWrapper
           label={t("Wallet Address")}
           error={errors.recipient?.message}
-          // extra={<Paste onPaste={(val) => onSubmit(val)} />}
         >
           <InputInLine
             type="text"
@@ -142,22 +143,47 @@ const SendPage = () => {
   // View #3
   const Token = () => {
     const destinationChain = getChainIDFromAddress(recipient, networks)
-    const tokens = useMemo(
-      () =>
-        assetList.filter((a) => {
-          if (!chain || !destinationChain) return null
-          const isNative = a.chains.includes(destinationChain)
+    const onClick = (token: any) => {
+      console.log("token", token)
+      setRoute({ page: Page.sendSubmit })
+    }
+    const tokens = useMemo(() => {
+      return assetList.reduce((acc = [], a) => {
+        if (!chain || !destinationChain) return acc
+        a.chains.forEach((tokenChain: string) => {
+          const isNative = tokenChain === destinationChain
           const isIBC = getIBCChannel({
             from: chain,
-            to: destinationChain,
+            to: tokenChain,
             tokenAddress: a.denom,
             icsChannel:
               ibcDenoms[networkName][`${chain}:${a.denom}`]?.icsChannel,
           })
-          return isNative || isIBC
-        }),
-      [destinationChain]
-    )
+
+          if (isNative || isIBC) {
+            const balance = parseInt(
+              balances.find(
+                (b) => b.chain === tokenChain && b.denom === a.denom
+              )?.amount ?? "0"
+            )
+
+            const item = {
+              ...a,
+              tokenImg: a.icon,
+              value: prices?.[a.denom]?.price ?? 0 * balance,
+              balance,
+              chain: {
+                label: getChainNamefromID(tokenChain, networks) ?? tokenChain,
+                icon: networks[tokenChain]?.icon,
+              },
+            } as AssetType
+
+            acc.push(item)
+          }
+        })
+        return acc
+      })
+    }, [destinationChain]) as AssetType[]
 
     return (
       <>
@@ -168,12 +194,8 @@ const SendPage = () => {
           value={recipient}
         />
         <SectionHeader title={t("My Tokens")} />
-        {tokens.map((a) => (
-          <Asset
-            {...a}
-            key={a.id}
-            onClick={() => setRoute({ page: Page.sendSubmit, denom: a.denom })}
-          />
+        {tokens.map((token: AssetType) => (
+          <TokenSingleChainListItem {...token} onClick={() => onClick(token)} />
         ))}
       </>
     )
