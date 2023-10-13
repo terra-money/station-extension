@@ -1,16 +1,15 @@
-import { ReactComponent as PriceUp } from "assets/icon/PriceUp.svg";
-import classNames from "classnames";
-import { ReactComponent as PriceDown } from "assets/icon/PriceDown.svg";
-import styles from '../TokenListItem.module.scss';
-import { Tooltip } from "components";
+import { ReactComponent as PriceUp } from "assets/icon/PriceUp.svg"
+import classNames from "classnames"
+import { ReactComponent as PriceDown } from "assets/icon/PriceDown.svg"
+import styles from "../TokenListItem.module.scss"
+import { Tooltip } from "components"
 
-const cx = classNames.bind(styles);
+const cx = classNames.bind(styles)
 
 export interface TokenListItemProps {
   chains: { name: string, icon: string, balance: string }[]
   tokenImg: string
   symbol: string
-  price?: number
   change?: number
   amountNode: React.ReactNode
   priceNode: React.ReactNode
@@ -27,7 +26,6 @@ const TokenListItem = ({
   onClick,
 }: TokenListItemProps) => {
 
-
   const TooltipContent = () => (
     <div className={styles.chains__list}>
       {chains.map((c, index) => (
@@ -40,7 +38,8 @@ const TokenListItem = ({
         </div>
       ))}
     </div>
-  );
+  )
+
   return (
     <div className={styles.token__container} onClick={onClick}>
       <div className={styles.details}>
@@ -80,7 +79,7 @@ const TokenListItem = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TokenListItem;
+export default TokenListItem
