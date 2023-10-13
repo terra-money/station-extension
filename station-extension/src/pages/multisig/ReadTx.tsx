@@ -1,11 +1,10 @@
 import { PropsWithChildren } from "react"
 import { useTranslation } from "react-i18next"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
-import { Pre } from "components/general"
-import { Auto, Card, Grid } from "components/layout"
+import { Auto } from "components/layout"
 import { Wrong } from "components/feedback"
 import { ReadMultiple } from "components/token"
-import { SummaryCard, SectionHeader, InputWrapper, TextArea } from "station-ui"
+import { SectionHeader, InputWrapper, TextArea, SummaryTable } from "station-ui"
 
 const ReadTx = (props: PropsWithChildren<{ tx: string }>) => {
   const { tx: encoded, children } = props
@@ -28,9 +27,9 @@ const ReadTx = (props: PropsWithChildren<{ tx: string }>) => {
     const { memo, messages } = body
     const { fee } = auth_info
 
-    const contents = [
-      { title: t("Memo"), content: memo },
-      { title: t("Fee"), content: <ReadMultiple list={fee.amount.toData()} /> },
+    const txDetails = [
+      { label: t("Memo"), value: memo },
+      { label: t("Fee"), value: <ReadMultiple list={fee.amount.toData()} /> },
     ]
 
     return (
@@ -38,23 +37,12 @@ const ReadTx = (props: PropsWithChildren<{ tx: string }>) => {
         <SectionHeader title={t("Details")} withLine />
         <InputWrapper label={t("Message")}>
           {messages.map((message, index) => (
-            <TextArea readOnly={true} key={index}>
-              <pre>{JSON.stringify(message.toData(), null, 2)}</pre>
-            </TextArea>
+            <TextArea readOnly={true} value={message.toJSON()} key={index} />
           ))}
         </InputWrapper>
-        <SummaryCard>
-          {contents.map(({ title, content }) => {
-            if (!content) return null
-
-            return (
-              <article key={title}>
-                <h1>{title}</h1>
-                {content}
-              </article>
-            )
-          })}
-        </SummaryCard>
+        <InputWrapper label={t("Message")}>
+          <SummaryTable rows={txDetails.filter((detail) => !!detail.value)} />
+        </InputWrapper>
       </>
     )
   }
