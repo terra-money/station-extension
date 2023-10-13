@@ -1,7 +1,6 @@
-import { SectionHeader } from "station-ui"
-import { Path } from "./Wallet"
-import { useWalletRoute } from "./Wallet"
+import { SectionHeader, ModalButton } from "station-ui"
 import VestingCard from "./VestingCard"
+import VestingDetailsPage from "./VestingDetailsPage"
 
 interface Props {
   token: string
@@ -9,22 +8,18 @@ interface Props {
 }
 
 const AssetVesting = (props: Props) => {
-  const { route, setRoute } = useWalletRoute()
-
   return (
     <>
       <SectionHeader title="Vesting" withLine />
-      <div
-        onClick={() =>
-          setRoute({
-            path: Path.vesting,
-            denom: props.token,
-            previousPage: route,
-          })
-        }
+      <ModalButton
+        renderButton={(open) => (
+          <div onClick={open}>
+            <VestingCard {...props} />
+          </div>
+        )}
       >
-        <VestingCard token={props.token} />
-      </div>
+        <VestingDetailsPage {...props} />
+      </ModalButton>
     </>
   )
 }

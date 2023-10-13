@@ -6,7 +6,13 @@ const NewWallet = () => {
   const { t } = useTranslation()
 
   return (
-    <ExtensionPage title={t("New wallet")}>
+    <ExtensionPage
+      title={t("New wallet")}
+      subtitle={t(
+        "Choose your wallet name, icon and then write down your new seed phrase"
+      )}
+      fullHeight
+    >
       <NewWalletForm />
     </ExtensionPage>
   )

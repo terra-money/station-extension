@@ -1,43 +1,42 @@
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import DoneAllIcon from "@mui/icons-material/DoneAll"
-import { Grid } from "components/layout"
 import { Submit } from "components/form"
-import { Details } from "components/display"
 import useAuth from "../../hooks/useAuth"
 import { addressFromWords } from "utils/bech32"
+import { FlexColumn, SummaryHeader } from "station-ui"
 
-const CreatedWallet = ({ name, words }: SingleWallet) => {
+interface Props extends SingleWallet {
+  onConfirm?: () => void
+}
+
+const CreatedWallet = ({ name, words, onConfirm }: Props) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { connect } = useAuth()
 
   const address = addressFromWords(words["330"])
   const submit = () => {
-    connect(name)
+    if (onConfirm) {
+      onConfirm()
+    } else {
+      connect(name)
+    }
     navigate("/", { replace: true })
   }
 
   return (
-    <article>
-      <Grid gap={28}>
-        <header className="center">
-          <DoneAllIcon className="success" style={{ fontSize: 56 }} />
-          <h1>{t("Wallet generated successfully")}</h1>
-        </header>
-
-        <Details>
-          <article>
-            <h1>{name}</h1>
-            <p>{address}</p>
-          </article>
-        </Details>
-
-        <Submit type="button" onClick={submit}>
-          {t("Connect")}
-        </Submit>
-      </Grid>
-    </article>
+    <FlexColumn gap={40}>
+      <SummaryHeader
+        statusLabel={t("Success!")}
+        statusMessage={t("The wallet was created")}
+        status={"success"}
+        summaryTitle={name}
+        summaryValue={address}
+      />
+      <Submit type="button" onClick={submit}>
+        {t("Done")}
+      </Submit>
+    </FlexColumn>
   )
 }
 

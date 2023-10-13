@@ -1,16 +1,39 @@
 .page {
   overflow-x: hidden;
   overflow-y: scroll;
-  background-color: var(--card-bg-muted);
+  background-color: var(--token-dark-100);
   height: calc(100% - var(--header-height));
   padding-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
   // padding here to position progress bar
 }
 
-.title_container {
+.page > * {
+  width: 100%;
+}
+
+.main__bg__color {
+  background-color: var(--button-primary-bg);
+}
+
+.full__height {
+  height: 100vh;
+  padding-bottom: 0;
+}
+
+.full__height__body {
+  height: 100%;
+}
+
+.header_container {
   display: flex;
   align-items: center;
   gap: 16px;
+
+  .title__container {
+    width: 100%;
+  }
 }
 
 .container {
@@ -38,6 +61,9 @@
   padding-top: 20px;
   color: var(--extension-text);
   text-align: left;
+  svg {
+    color: var(--token-light-100) !important;
+  }
 }
 
 .title {
@@ -47,6 +73,24 @@
   justify-content: center;
 
   &.skew_title {
-    margin-left: -34px;
+    text-align: left;
+    margin: 0;
+    display: inline;
   }
+
+  &.with_subtitle {
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 32px;
+    margin-top: 40px;
+  }
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--token-light-100);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  margin-top: 16px;
 }
