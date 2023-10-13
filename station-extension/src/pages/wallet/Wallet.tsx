@@ -23,6 +23,7 @@ enum Page {
   sendChain = "sendChain",
   sendSubmit = "sendSubmit",
   sendToken = "sendToken",
+  sendConfirm = "sendConfirm",
 }
 
 const pageOrder = {
@@ -35,6 +36,7 @@ const pageOrder = {
   [Page.sendChain]: Page.send,
   [Page.sendToken]: Page.send,
   [Page.sendSubmit]: Page.sendToken,
+  [Page.sendConfirm]: Page.sendSubmit,
 }
 
 type Route = {
@@ -68,6 +70,7 @@ const Wallet = () => {
       [Page.sendChain]: "Select Chain",
       [Page.sendToken]: "Send",
       [Page.sendSubmit]: "Submit",
+      [Page.sendConfirm]: "Confirm Send",
       [Page.address]: truncate(route.address),
     }
 

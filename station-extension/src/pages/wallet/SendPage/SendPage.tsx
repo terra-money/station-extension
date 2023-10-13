@@ -21,6 +21,8 @@ import { useForm } from "react-hook-form"
 import { getChainIDFromAddress } from "utils/bech32"
 import { useIBCChannels, useWhitelist } from "data/queries/chains"
 import { useTranslation } from "react-i18next"
+import Tx from "txs/Tx"
+import { toInput } from "txs/utils"
 import {
   InputWrapper,
   Form,
@@ -31,6 +33,7 @@ import {
   TokenSingleChainListItem,
   TokenSingleChainListItemProps,
   SendAmount,
+  Button,
 } from "station-ui"
 
 import { useParsedAssetList } from "data/token"
@@ -44,6 +47,7 @@ import { useNetwork, useNetworkName } from "data/wallet"
 import Asset from "../Asset"
 import { Read } from "components/token"
 import WithSearchInput from "pages/custom/WithSearchInput"
+import { or } from "ramda"
 
 interface TxValues {
   asset?: string
@@ -260,10 +264,10 @@ const SendPage = () => {
           disabled
           label={"To"}
           extra={truncate(recipient)}
-          value={recipient}
+          value={"🥹"}
         />
         <SendAmount
-          displayType="token"
+          displayType="currency"
           tokenIcon={selected.tokenImg}
           symbol={selected.symbol}
           amount={input ?? 0}
@@ -271,12 +275,178 @@ const SendPage = () => {
           price={selected.price ?? 0}
           currencySymbol={currency.symbol}
           amountInputAttrs={{
-            ...register("input", { required: true, valueAsNumber: true }),
+            ...register("input", {
+              required: true,
+              valueAsNumber: true,
+              validate: validate.input(
+                toInput(selected.balance, selected.decimals),
+                selected.decimals
+              ),
+            }),
           }}
         />
         <TokenSingleChainListItem {...selected} />
+        <Button
+          variant="primary"
+          onClick={() => setRoute({ page: Page.sendConfirm })}
+          label={t("Continue")}
+        />
       </>
     )
+  }
+
+  const Confirm = () => {
+    return <p>Confirm</p>
+    // const tx = {
+    //   token: token?.denom ?? "",
+    //   decimals,
+    //   amount,
+    //   coins,
+    //   chain,
+    //   balance: token?.amount ?? "0",
+    //   estimationTxValues,
+    //   createTx,
+    //   disabled: false,
+    //   onChangeMax,
+    //   onSuccess: () => setRoute({ page: Page.wallet }),
+    //   taxRequired: true,
+    //   queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
+    //   gasAdjustment: destinationChain !== originChain ? 2 : 1,
+    // }
+    // return (
+    //   <Tx {...tx}>
+    //   {({ max, fee, submit }) => (
+    //     <Form  className={styles.form}>
+    //       <section className={styles.send}>
+    //         <div className={styles.form__container}>
+    //           <FormItem
+    //             label={t("Asset")}
+    //             error={errors.asset?.message ?? errors.address?.message}
+    //           >
+    //             <AssetSelector
+    //               value={asset ?? defaultAsset}
+    //               onChange={(asset) => setValue("asset", asset)}
+    //               assetList={filteredAssets}
+    //               assetsByDenom={assetsByDenom}
+    //             />
+    //           </FormItem>
+    //           {availableChains && (
+    //             <FormItem label={t("Source chain")}>
+    //               <ChainSelector
+    //                 value={chain ?? ""}
+    //                 chainsList={availableChains}
+    //                 onChange={(chain) => setValue("chain", chain)}
+    //               />
+    //             </FormItem>
+    //           )}
+    //           <FormItem
+    //             label={t("Recipient")}
+    //             extra={renderDestinationChain()}
+    //             error={errors.recipient?.message ?? errors.address?.message}
+    //           >
+    //             <ModalButton
+    //               title={t("Address book")}
+    //               renderButton={(open) => (
+    //                 <Input
+    //                   {...register("recipient", {
+    //                     validate: {
+    //                       ...validate.recipient(),
+    //                       ...validate.ibc(
+    //                         networks,
+    //                         chain ?? "",
+    //                         token?.denom ?? "",
+    //                         getIBCChannel,
+    //                         readNativeDenom(token?.denom ?? "").isAxelar
+    //                       ),
+    //                     },
+    //                   })}
+    //                   placeholder={SAMPLE_ADDRESS}
+    //                   actionButton={{
+    //                     icon: <ContactsIcon />,
+    //                     onClick: open,
+    //                   }}
+    //                   autoFocus
+    //                 />
+    //               )}
+    //             >
+    //               {/* <AddressBookList
+    //                 onClick={async ({ recipient, memo }) => {
+    //                   setValue("recipient", recipient)
+    //                   memo && setValue("memo", memo)
+    //                   await trigger("recipient")
+    //                 }}
+    //               /> */}
+    //             </ModalButton>
+
+    //             <input {...register("address")} readOnly hidden />
+    //           </FormItem>
+
+    //           <FormItem
+    //             label={t("Amount")}
+    //             extra={max.render()}
+    //             error={errors.input?.message}
+    //           >
+    //             <Input
+    //               {...register("input", {
+    //                 valueAsNumber: true,
+    //                 validate: validate.input(
+    //                   toInput(max.amount, decimals),
+    //                   decimals
+    //                 ),
+    //               })}
+    //               type="number"
+    //               token={asset}
+    //               inputMode="decimal"
+    //               onFocus={max.reset}
+    //               placeholder={getPlaceholder(decimals)}
+    //             />
+    //           </FormItem>
+
+    //           {!destinationAddress ||
+    //           getChainIDFromAddress(destinationAddress, networks) === chain ? (
+    //             <>
+    //               <FormItem
+    //                 label={`${t("Memo")} (${t("optional")})`}
+    //                 error={errors.memo?.message}
+    //               >
+    //                 <Input
+    //                   {...register("memo", {
+    //                     validate: {
+    //                       size: validate.size(256, "Memo"),
+    //                       brackets: validate.memo(),
+    //                       mnemonic: validate.isNotMnemonic(),
+    //                     },
+    //                   })}
+    //                 />
+    //               </FormItem>
+
+    //               <Grid gap={4}>
+    //                 {!memo && (
+    //                   <FormWarning>
+    //                     {t("Check if this transaction requires a memo")}
+    //                   </FormWarning>
+    //                 )}
+    //               </Grid>
+    //             </>
+    //           ) : (
+    //             <Grid gap={4}>
+    //               {!memo && (
+    //                 <FormWarning>
+    //                   {t(
+    //                     "This is a cross-chain transaction. Don't send tokens to exchanges with this tx."
+    //                   )}
+    //                 </FormWarning>
+    //               )}
+    //             </Grid>
+    //           )}
+
+    //           {fee.render()}
+    //         </div>
+    //       </section>
+    //       <section className={styles.actions}>{submit.button}</section>
+    //     </Form>
+    //   )}
+    // </Tx>)
   }
 
   const render = () => {
@@ -289,6 +459,8 @@ const SendPage = () => {
         return <Token />
       case Page.sendSubmit:
         return <Submit />
+      case Page.sendConfirm:
+        return <Confirm />
       default:
         return null
     }
