@@ -19,11 +19,7 @@ const ValidatorAddress = ({ children: address }: { children: string }) => {
     ({ operator_address }) => operator_address === address
   )?.description.moniker
 
-  return (
-    <FinderLink value={address} short={!moniker} validator>
-      {moniker ?? address}
-    </FinderLink>
-  )
+  return <span>{moniker ?? address}</span>
 }
 
 const TerraAddress = ({ children: address }: { children: string }) => {
@@ -41,7 +37,7 @@ const TerraAddress = ({ children: address }: { children: string }) => {
     return [protocol, name].join(" ")
   }, [address, addresses, contracts, tokens])
 
-  return <FinderLink value={address}>{name ?? truncate(address)}</FinderLink>
+  return <span>{name ?? truncate(address)}</span>
 }
 
 const Tokens = ({ children: coins }: { children: string }) => {
