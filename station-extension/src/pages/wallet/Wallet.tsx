@@ -10,6 +10,7 @@ import SendPage from "./SendPage"
 import VestingDetailsPage from "./VestingDetailsPage"
 import { PageTabs } from "station-ui"
 import { useTranslation } from "react-i18next"
+import ActivityList from "pages/activity/ActivityList"
 
 enum Path {
   wallet = "wallet",
@@ -66,7 +67,7 @@ const Wallet = () => {
               onClick={setTab}
               tabs={[t("Assets"), t("Activity")]}
             />
-            {tab === 0 ? <AssetList /> : <p> Activty component</p>}
+            {tab === 0 ? <AssetList /> : <ActivityList />}
           </>
         )
       case Path.coin:
