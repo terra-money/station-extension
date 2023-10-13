@@ -3,19 +3,32 @@ import { PropsWithChildren, ReactNode } from "react"
 import styles from "./ExtensionPage.module.scss"
 import { ReactComponent as BackIcon } from "styles/images/icons/BackButton.svg"
 
-import { useNavigate } from "react-router-dom"
 import Container from "../layouts/Container"
 import { Card } from "components/layout"
+import classNames from "classnames"
+import { openURL } from "extension/storage"
+import ExtensionFooter from "./ExtensionFooter"
 
 interface Props extends QueryState {
   header?: ReactNode
   title?: string
+  subtitle?: string
   backButtonPath?: string
+  backgroundColor?: "main"
+  fullHeight?: boolean
 }
 
 const ExtensionPage = (props: PropsWithChildren<Props>) => {
-  const navigate = useNavigate()
-  const { header, title, backButtonPath, children } = props
+  const {
+    header,
+    title,
+    subtitle,
+    backButtonPath,
+    children,
+    backgroundColor,
+    fullHeight,
+  } = props
+  const cx = classNames.bind(styles)
 
   return (
     <WithFetching {...props}>
@@ -23,7 +36,13 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
         <>
           {progress}
 
-          <article className={styles.page}>
+          <article
+            className={cx(
+              styles.page,
+              backgroundColor === "main" && styles.main__bg__color,
+              fullHeight && styles.full__height
+            )}
+          >
             {header && (
               <header className={styles.header}>
                 <Container className={styles.container}>{header}</Container>
@@ -33,28 +52,46 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
             {title && (
               <Container className={styles.container}>
                 <header className={styles.header}>
-                  <div className={styles.title_container}>
+                  <div className={styles.header_container}>
                     {backButtonPath && (
                       <BackIcon
                         width={18}
                         height={18}
-                        onClick={() => navigate(backButtonPath)}
+                        onClick={() => openURL(backButtonPath)}
+                        fill="currentColor"
                       />
-                    )}{" "}
-                    <h1
-                      className={`${styles.title} ${
-                        backButtonPath ? styles.skew_title : ""
-                      }`}
-                    >
-                      {title}
-                    </h1>
+                    )}
+                    <div className={styles.title__container}>
+                      <h1
+                        className={cx(
+                          styles.title,
+                          backButtonPath && styles.skew_title,
+                          subtitle && styles.with_subtitle
+                        )}
+                      >
+                        {title}
+                      </h1>
+                      {subtitle && (
+                        <h3 className={cx(styles.subtitle)}>{subtitle}</h3>
+                      )}
+                    </div>
                   </div>
                 </header>
               </Container>
             )}
 
-            <section className={styles.main}>
-              <Container className={styles.container}>
+            <section
+              className={cx(
+                styles.main,
+                fullHeight && styles.full__height__body
+              )}
+            >
+              <Container
+                className={cx(
+                  styles.container,
+                  fullHeight && styles.full__height__body
+                )}
+              >
                 {wrong ? (
                   <Card>{wrong}</Card>
                 ) : (
@@ -62,6 +99,8 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                 )}
               </Container>
             </section>
+
+            {backgroundColor !== "main" && <ExtensionFooter />}
           </article>
         </>
       )}

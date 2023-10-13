@@ -8,7 +8,7 @@ import { Input, TextArea, Submit, FormHelp } from "components/form"
 import { Grid } from "components/layout"
 
 import decrypt from "../../scripts/decrypt"
-import { addWallet, PasswordError } from "../../scripts/keystore"
+import { addWallet } from "../../scripts/keystore"
 import useAuth from "../../hooks/useAuth"
 import { wordsFromAddress } from "utils/bech32"
 import { RawKey } from "@terra-money/feather.js"
@@ -43,25 +43,27 @@ const ImportWalletForm = () => {
       const { name, address, encrypted_key }: Decoded = JSON.parse(decode(key))
       const pk = decrypt(encrypted_key, password)
 
-      if (!pk) throw new PasswordError(t("Incorrect password"))
+      if (!pk) throw new Error(t("Incorrect password"))
 
       const decryptedKey = new RawKey(Buffer.from(pk, "hex"))
 
       if (decryptedKey.accAddress("terra") !== address)
         throw new Error("Invalid private key")
 
-      addWallet({
-        name,
-        password,
-        words: {
-          "330": wordsFromAddress(address),
+      addWallet(
+        {
+          name,
+          words: {
+            "330": wordsFromAddress(address),
+          },
+          pubkey: {
+            // @ts-expect-error
+            "330": decryptedKey.publicKey.key,
+          },
+          key: { "330": Buffer.from(pk, "hex") },
         },
-        pubkey: {
-          // @ts-expect-error
-          "330": decryptedKey.publicKey.key,
-        },
-        key: { "330": Buffer.from(pk, "hex") },
-      })
+        password
+      )
       connect(name)
       navigate("/")
     } catch (error) {

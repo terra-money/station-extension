@@ -3,31 +3,35 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import DoneAllIcon from "@mui/icons-material/DoneAll"
-import { Form, FormItem, FormWarning, Input, Submit } from "components/form"
+import { Form } from "components/form"
 import { isWallet } from "auth"
-import { deleteWallet } from "../../scripts/keystore"
+import { deleteWallet, isPasswordValid } from "../../scripts/keystore"
 import useAuth from "../../hooks/useAuth"
 import ConfirmModal from "./ConfirmModal"
+import { Banner, Input, InputWrapper, SubmitButton } from "station-ui"
 
 interface Values {
-  name: string
+  password: string
 }
 
 const DeleteWalletForm = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { wallet, disconnect } = useAuth()
+  const { wallet, disconnect, validatePassword } = useAuth()
   const walletName = isWallet.local(wallet) ? wallet.name : undefined
   const [name, setName] = useState(walletName)
 
   /* form */
-  const form = useForm<Values>({ mode: "onChange" })
+  const form = useForm<Values>()
   const { register, handleSubmit, formState } = form
-  const { isValid } = formState
+  const { isValid, errors } = formState
 
   /* submit */
   const submit = (values: Values) => {
-    if (values.name !== name) return
+    if (!name) return
+    if (!isPasswordValid(values.password))
+      throw new Error(t("Invalid password"))
+
     disconnect()
     deleteWallet(name)
     setName(undefined)
@@ -44,24 +48,21 @@ const DeleteWalletForm = () => {
         </ConfirmModal>
       ) : (
         <Form onSubmit={handleSubmit(submit)}>
-          <FormItem>
-            <p>
-              Type <strong>{name}</strong> to confirm
-            </p>
-
+          <InputWrapper label={t("Password")} error={errors.password?.message}>
             <Input
-              {...register("name", { validate: (value) => value === name })}
-              autoFocus
+              {...register("password", { validate: validatePassword })}
+              type="password"
             />
-          </FormItem>
+          </InputWrapper>
 
-          <FormWarning>
-            {t(
-              "This action cannot be undone. A mnemonic is required to recover a deleted wallet."
+          <Banner
+            variant="error"
+            title={t(
+              "This action can not be undone. You will need a private key or a mnemonic seed phrase to restore this wallet to the app."
             )}
-          </FormWarning>
+          />
 
-          <Submit disabled={!isValid} />
+          <SubmitButton disabled={!isValid} />
         </Form>
       )}
     </>

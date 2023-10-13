@@ -1,75 +1,38 @@
-@import "mixins";
+.changelog__container {
+  .changelog__header {
+    text-align: center;
+    margin-bottom: 2rem;
 
-.overlay {
-  @include flex;
-  background: hsl(0 0% 0% / 0.8);
+    .icon {
+      font-size: 32pt;
+    }
 
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+    .title {
+      font-size: 18pt;
+      font-weight: bold;
+    }
 
-  z-index: 1050;
-}
-
-.modal {
-  @include flex-column;
-  max-height: 80vh;
-  background: var(--card-bg-muted);
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  outline: 0;
-  position: relative;
-  overflow: hidden;
-  padding: 50px 40px 40px;
-  width: 789px;
-  max-width: 95%;
-  border: var(--border-width) solid var(--card-border);
-
-  --accordion-width: 615px;
-
-  @media (max-width: 770px) {
-    --accordion-width: 575px;
-  }
-  @media (max-width: 725px) {
-    --accordion-width: 525px;
-  }
-  @media (max-width: 675px) {
-    --accordion-width: 450px;
-  }
-  @media (max-width: 590px) {
-    --accordion-width: 350px;
-  }
-  @media (max-width: 450px) {
-    --accordion-width: 285px;
-  }
-}
-
-.title {
-  font-size: clamp(17px, 4.5vw, 38px);
-  text-align: center;
-  margin-bottom: 0.6rem;
-}
-
-.confirm {
-  background-color: var(--button-primary-bg);
-  color: var(--button-primary-text);
-  min-height: 50px;
-  width: var(--accordion-width);
-  border-radius: 16px;
-  margin-top: 32px;
-  transition: all 0.3s;
-
-  @include mobile {
-    margin-top: 12px;
+    .subtitle {
+      color: var(--text-muted);
+    }
   }
 
-  &:hover {
-    background-color: hsl(
-      var(--button-primary-bg-h),
-      var(--button-primary-bg-s),
-      calc(var(--button-primary-bg-l) - 5%)
-    );
+  .changelog__body {
+    h2 {
+      font-size: 12pt;
+      font-weight: 600;
+      margin: 0.4rem 0;
+    }
+
+    li {
+      color: var(--text-muted);
+    }
+  }
+
+  .changelog__loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5rem;
   }
 }
