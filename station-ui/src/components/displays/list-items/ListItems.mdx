@@ -161,16 +161,13 @@ import { WalletSelectableListItem } from "station-ui";
 ##### Displays a single token item.
 
 ## Props
-- **`balance`** - `string` - The balance of the token.
-  - If this is not provided, the balance will default to "0".
-- **`chains`** - <RequiredText /> - `string[]` - A list of chains this token is on.
-- **`currency`** - <RequiredText /> - `**object below**` - The currency a user uses.
-  - `{ id: string, symbol: string, name: string }`
+- **`chains`** - <RequiredText /> - `{*object*}[]` - A list of chains this token is on.
+  - `{ name: string, icon: string, balance: string }`
 - **`tokenImg`** - <RequiredText /> - `string` - The Image for the token.
 - **`symbol`** - <RequiredText /> - `string` - The label to display the token.
-- **`price`** - `number` - The current price of the token.
 - **`change`** - `number` - The percent change of the token in 24 hours.
 - **`amountNode`** - <RequiredText /> - `ReactNode` - The amount of the token.
+- **`priceNode`** - <RequiredText /> - `ReactNode` - The price of the token.
 - **`onClick`** - <RequiredText /> - `() => void` - Function that is called when the item is clicked.
 
 ## Import
