@@ -8,13 +8,10 @@ import {
 import { useState } from "react"
 import { toAmount } from "@terra-money/terra-utils"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { SAMPLE_ADDRESS } from "config/constants"
 import { getChainNamefromID } from "data/queries/chains"
 import { convertAddress } from "utils/chain"
 import { useCurrency } from "data/settings/Currency"
 import { useBankBalance } from "data/queries/bank"
-import { useExchangeRates } from "data/queries/coingecko"
-import { useNativeDenoms } from "data/token"
 import { useCallback, useEffect, useMemo } from "react"
 import { capitalize } from "@mui/material"
 import { useForm } from "react-hook-form"
@@ -35,6 +32,9 @@ import {
   TokenSingleChainListItemProps,
   SendAmount,
   Button,
+  Input,
+  SendHeader,
+  SummaryTable,
 } from "station-ui"
 
 import { useParsedAssetList } from "data/token"
@@ -45,10 +45,8 @@ import { truncate } from "@terra-money/terra-utils"
 import { SearchChains } from "../ReceivePage"
 import { useWalletRoute, Page } from "../Wallet"
 import { useNetwork, useNetworkName } from "data/wallet"
-import Asset from "../Asset"
 import { Read } from "components/token"
 import WithSearchInput from "pages/custom/WithSearchInput"
-import { or } from "ramda"
 
 interface TxValues {
   asset?: string
@@ -65,10 +63,12 @@ interface AssetType extends TokenSingleChainListItemProps {
   value: string
   balance: string
   decimals: number
+  amount: string
   denom: string
   tokenChain: string
   price?: number
   channel?: string
+  senderAddress: AccAddress
 }
 
 const SendPage = () => {
@@ -81,7 +81,7 @@ const SendPage = () => {
   const networkName = useNetworkName()
   const { getIBCChannel, getICSContract } = useIBCChannels()
   const currency = useCurrency()
-  const [selected, setSelected] = useState<AssetType>()
+  const [asset, setAsset] = useState<AssetType>()
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange" })
@@ -158,9 +158,11 @@ const SendPage = () => {
 
   // View #3
   const Token = () => {
+    const addresses = useInterchainAddresses()
     const tokens = useMemo(() => {
       return assetList.reduce((acc, a) => {
-        if (!destinationChain || !destinationChain) return acc
+        if (!destinationChain) return acc
+
         a.chains.forEach((tokenChain: string) => {
           const isNative = tokenChain === destinationChain
           const channel = getIBCChannel({
@@ -179,12 +181,16 @@ const SendPage = () => {
               )?.amount ?? "0"
             )
             const value = balance * a.price
+            const amount = toAmount(input, { decimals: asset?.decimals })
+            const senderAddress = addresses?.[tokenChain]
 
             const item = {
               ...a,
               denom: a.denom,
               tokenImg: a.icon,
               value,
+              amount,
+              senderAddress,
               balance,
               channel,
               tokenChain,
@@ -212,7 +218,7 @@ const SendPage = () => {
         })
         return acc
       }, [] as AssetType[])
-    }, [])
+    }, [addresses])
 
     return (
       <>
@@ -241,14 +247,14 @@ const SendPage = () => {
             return (
               <>
                 {filtered.length === 0 && <p>No tokens found</p>}
-                {filtered.map((t: AssetType) => (
+                {filtered.map((asset: AssetType) => (
                   <TokenSingleChainListItem
-                    key={t.denom}
-                    {...t}
+                    key={`${asset.denom}*${asset.tokenChain}`}
+                    {...asset}
                     onClick={() => {
-                      setValue("asset", t.denom)
-                      setValue("originChain", t.tokenChain)
-                      setSelected(t)
+                      setValue("asset", asset.denom)
+                      setValue("originChain", asset.tokenChain)
+                      setAsset(t)
                       setRoute({ page: Page.sendSubmit })
                     }}
                   />
@@ -263,7 +269,7 @@ const SendPage = () => {
 
   // View #4
   const Submit = () => {
-    if (!selected) return null
+    if (!asset) return null
     return (
       <>
         <InputInLine
@@ -274,24 +280,38 @@ const SendPage = () => {
         />
         <SendAmount
           displayType="currency"
-          tokenIcon={selected.tokenImg}
-          symbol={selected.symbol}
+          tokenIcon={asset.tokenImg}
+          symbol={asset.symbol}
           amount={input ?? 0}
           secondaryAmount={input ?? 0}
-          price={selected.price ?? 0}
+          price={asset.price ?? 0}
           currencySymbol={currency.symbol}
           amountInputAttrs={{
             ...register("input", {
               required: true,
               valueAsNumber: true,
               validate: validate.input(
-                toInput(selected.balance, selected.decimals),
-                selected.decimals
+                toInput(asset.balance, asset.decimals),
+                asset.decimals
               ),
             }),
           }}
         />
-        <TokenSingleChainListItem {...selected} />
+        <InputWrapper
+          label={`${t("Memo")} (${t("optional")})`}
+          error={errors.memo?.message}
+        >
+          <Input
+            {...register("memo", {
+              validate: {
+                size: validate.size(256, "Memo"),
+                brackets: validate.memo(),
+                mnemonic: validate.isNotMnemonic(),
+              },
+            })}
+          />
+        </InputWrapper>
+        <TokenSingleChainListItem {...asset} />
         <Button
           variant="primary"
           onClick={() => setRoute({ page: Page.sendConfirm })}
@@ -302,13 +322,15 @@ const SendPage = () => {
   }
 
   const Confirm = () => {
-    const { decimals, channel, denom } = selected ?? {}
+    const { decimals, channel, denom, senderAddress } = asset ?? {}
     const addresses = useInterchainAddresses()
     // return <p>Confirm</p>
     const createTx = useCallback(
       ({ address, input, memo }: TxValues) => {
-        if (!addresses) return
+        if (!senderAddress) return
+
         if (!(address && AccAddress.validate(address))) return
+
         const amount = toAmount(input, { decimals })
         const execute_msg = { transfer: { recipient: address, amount } }
 
@@ -318,28 +340,16 @@ const SendPage = () => {
 
         if (destinationChain === originChain) {
           const msgs = AccAddress.validate(denom)
-            ? [
-                new MsgExecuteContract(
-                  addresses[originChain ?? ""],
-                  denom,
-                  execute_msg
-                ),
-              ]
-            : [
-                new MsgSend(
-                  addresses[originChain ?? ""],
-                  address,
-                  amount + denom
-                ),
-              ]
+            ? [new MsgExecuteContract(senderAddress, denom, execute_msg)]
+            : [new MsgSend(senderAddress, address, amount + denom)]
 
           return { msgs, memo, chainID: originChain }
         } else {
           if (!channel) throw new Error("No IBC channel found")
 
-          const msgs = AccAddress.validate(denom ?? "")
+          const msgs = AccAddress.validate(denom)
             ? [
-                new MsgExecuteContract(addresses[originChain ?? ""], denom, {
+                new MsgExecuteContract(senderAddress, denom, {
                   send: {
                     contract: getICSContract({
                       from: originChain,
@@ -348,6 +358,7 @@ const SendPage = () => {
                     amount: amount,
                     msg: Buffer.from(
                       JSON.stringify({
+                        channel,
                         remote_address: address,
                       })
                     ).toString("base64"),
@@ -359,7 +370,7 @@ const SendPage = () => {
                   "transfer",
                   channel,
                   new Coin(denom ?? "", amount),
-                  addresses[originChain ?? ""],
+                  senderAddress,
                   address,
                   undefined,
                   (Date.now() + 120 * 1000) * 1e6,
@@ -370,7 +381,7 @@ const SendPage = () => {
           return { msgs, memo, chainID: originChain }
         }
       },
-      [addresses, decimals, channel, denom]
+      [decimals, channel, denom, senderAddress]
     )
 
     const onChangeMax = useCallback(async (input: number) => {
@@ -389,11 +400,11 @@ const SendPage = () => {
 
     const tx = {
       token: denom,
-      decimals: selected?.decimals,
-      amount: toAmount(input, { decimals: selected?.decimals }),
+      decimals: asset?.decimals,
+      amount: asset?.amount,
       coins,
       chain: originChain ?? "",
-      balance: selected?.balance,
+      balance: asset?.balance,
       estimationTxValues,
       createTx,
       onChangeMax,
@@ -406,6 +417,29 @@ const SendPage = () => {
       <Tx {...tx}>
         {({ max, fee, submit }) => (
           <Form onSubmit={handleSubmit(submit.fn)}>
+            <SendHeader
+              heading={t("Sending")}
+              label={`${asset?.amount} ${asset?.symbol}`}
+              subLabel={currency.symbol + " " + asset?.value ?? "—"}
+            />
+            <SectionHeader withLine title={t("Send Path")} />
+            <InputInLine
+              disabled
+              label={"To"}
+              extra={truncate(recipient)}
+              value={"🥹"}
+            />
+            <SummaryTable
+              rows={[
+                { label: t("Total Value"), value: asset?.value },
+                {
+                  label: t("Token Sent"),
+                  value: `${asset?.amount} ${asset?.symbol}`,
+                },
+                { label: t("From"), value: senderAddress },
+              ]}
+            />
+            ,
             <Button variant="primary" type="submit" />
           </Form>
         )}
