@@ -13,8 +13,11 @@ import {
 } from "data/settings/CustomTokens"
 import FilterListIcon from "@mui/icons-material/FilterList"
 import { useUnknownIBCDenoms, useParsedAssetList } from "data/token"
-import { SectionHeader, Dropdown } from "station-ui"
+import { SectionHeader, Dropdown, TokenSingleChainListItem } from "station-ui"
 import classNames from "classnames"
+import { useWalletRoute, Page } from "./Wallet"
+import { ChainID } from "types/network"
+import { useNetwork } from "data/wallet"
 
 const cx = classNames.bind(styles)
 
@@ -29,11 +32,19 @@ const AssetList = () => {
   const cw20 = useCustomTokensCW20()
   const list = useParsedAssetList()
   const [filter, setFilter] = useState(false)
-  const [filterChain, setFilterChain] = useState<string>()
+  const [filterChain, setFilterChain] = useState("all")
+  const { route, setRoute } = useWalletRoute()
+  const network = useNetwork()
+
+  const handleAssetClick = (denom: Denom) => {
+    if (route.page !== Page.coin) {
+      setRoute({ page: Page.coin, denom })
+    }
+  }
 
   const toggleFilter = () => {
     setFilter(!filter)
-    setFilterChain(undefined)
+    setFilterChain("all")
   }
 
   const alwaysVisibleDenoms = useMemo(
@@ -50,6 +61,22 @@ const AssetList = () => {
       .filter((a) => (onlyShowWhitelist ? a.whitelisted : true))
       .filter((a) => (filterChain ? a.chains.includes(filterChain) : true))
 
+    const chainList = filtered.reduce((acc, { chains, symbol, balance }) => {
+      chains.forEach((chain: ChainID) => {
+        if (!acc.includes(chain)) {
+          const token = {
+            symbol,
+            chain,
+            name: network[chain].name,
+            icon: network[chain].icon,
+            balance,
+          }
+          acc.push(token)
+        }
+      })
+      return acc
+    }, [])
+
     const visible = filtered
       .filter(
         (a) =>
@@ -60,9 +87,8 @@ const AssetList = () => {
       )
 
     const lowBal = filtered.filter((a) => !visible.includes(a))
-
-    return { visible, lowBal }
-  }, [list, onlyShowWhitelist, filterChain, alwaysVisibleDenoms])
+    return { visible, lowBal, chainList }
+  }, [list, onlyShowWhitelist, filterChain, network, alwaysVisibleDenoms])
 
   const renderAsset = ({ denom, chainID, ...item }: any) => {
     return (
@@ -73,6 +99,8 @@ const AssetList = () => {
         )}
         {...item}
         key={item.id}
+        coins={coins}
+        onClick={() => handleAssetClick(denom)}
       />
     )
   }
@@ -88,12 +116,26 @@ const AssetList = () => {
         <section>
           {filter && (
             <Dropdown
-              value="chain-placeholder"
-              onChange={(chain) => {
-                setFilterChain(chain)
-              }}
-              options={[{ value: "phoenix-1", label: "Terra" }]}
-            />
+              value="all"
+              onChange={(chain) => setFilterChain(chain)}
+              options={[
+                { value: "all", label: "All Chains" },
+                ...assets.chainList.map((c: any) => ({
+                  value: c.chain,
+                  label: c.name,
+                })),
+              ]}
+            >
+              {assets.chainList.map((chain: any) => (
+                <TokenSingleChainListItem
+                  {...chain}
+                  chain={{
+                    name: chain.name,
+                    icon: chain.tokenImg,
+                  }}
+                />
+              ))}
+            </Dropdown>
           )}
           {assets.visible.map(renderAsset)}
         </section>
