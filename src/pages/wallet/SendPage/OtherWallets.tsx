@@ -9,6 +9,7 @@ import {
   AddressSelectableListItem,
 } from "station-ui"
 import { useAuth } from "auth"
+import { Empty } from "components/feedback"
 
 interface Props {
   onClick?: (address: string) => void
@@ -23,7 +24,7 @@ export const WalletList = ({
   title: string
   onClick?: (address: string) => void
 }) => {
-  if (!items.length) return <p>No allets found</p>
+  if (!items.length) return <Empty />
   return (
     <Grid gap={10}>
       <SectionHeader withLine title={title} />

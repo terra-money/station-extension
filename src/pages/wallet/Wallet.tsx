@@ -97,7 +97,6 @@ const Wallet = () => {
     )
   }
   const renderPage = useCallback(() => {
-    console.log("wallet renderPage")
     switch (route.page) {
       case Page.wallet:
         return (
