@@ -8,14 +8,11 @@ const TextArea = forwardRef(
     attrs: TextAreaProps,
     ref: ForwardedRef<HTMLTextAreaElement>,
   ) => {
-    const { readOnly } = attrs;
-
     return (
       <textarea
         {...attrs}
         className={styles.textarea}
         rows={4}
-        readOnly={readOnly}
         ref={ref}
       />
     );
