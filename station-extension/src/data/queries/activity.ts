@@ -2,7 +2,7 @@ import { useQueries } from "react-query"
 import { useNetwork } from "data/wallet"
 import { isTerraChain } from "utils/chain"
 import axios from "axios"
-import { combineState, queryKey } from "data/query"
+import { RefetchOptions, combineState, queryKey } from "data/query"
 
 interface PaginationKeys {
   limit: string
@@ -45,38 +45,40 @@ export const useActivity = (addresses: Record<string, string> | undefined) => {
     "transfer.sender",
   ]
   const activityData = useQueries(
-    Object.keys(addresses ?? {}).map((chain) => {
-      const address = chain && addresses?.[chain]
-
-      const isTerra = isTerraChain(chain)
+    Object.entries(addresses ?? {}).map(([chainID, address]) => {
+      const isTerra = isTerraChain(chainID)
 
       // return pagination keys by network.
       const paginationKeys = getPaginationKeys(isTerra)
 
       return {
-        queryKey: [queryKey.History, networks?.[chain]?.lcd, address],
+        queryKey: [queryKey.History, networks?.[chainID]?.lcd, address],
         queryFn: async () => {
           const result: any[] = []
           const hashArray: string[] = []
 
-          if (!networks?.[chain]?.lcd) {
+          if (!networks?.[chainID]?.lcd) {
             return result
           }
 
-          const requests = await Promise.all(
-            EVENTS.map((event) => {
-              return axios.get<AccountHistory>(`/cosmos/tx/v1beta1/txs`, {
-                baseURL: networks[chain].lcd,
-                params: {
-                  events: `${event}='${address}'`,
-                  //order_by: "ORDER_BY_DESC",
-                  [paginationKeys.offset]: 0 || undefined,
-                  [paginationKeys.reverse]: isTerra ? 2 : true,
-                  [paginationKeys.limit]: LIMIT,
-                },
+          const requests = (
+            await Promise.all(
+              EVENTS.map((event) => {
+                try {
+                  return axios.get<AccountHistory>(`/cosmos/tx/v1beta1/txs`, {
+                    baseURL: networks[chainID].lcd,
+                    params: {
+                      events: `${event}='${address}'`,
+                      //order_by: "ORDER_BY_DESC",
+                      [paginationKeys.offset]: 0 || undefined,
+                      [paginationKeys.reverse]: isTerra ? 2 : true,
+                      [paginationKeys.limit]: LIMIT,
+                    },
+                  })
+                } catch (e) {}
               })
-            })
-          )
+            )
+          ).filter((request) => !!request) as { data: AccountHistory }[]
 
           for (const { data } of requests) {
             data.tx_responses.forEach((tx) => {
@@ -90,15 +92,10 @@ export const useActivity = (addresses: Record<string, string> | undefined) => {
           return result
             .sort((a, b) => Number(b.height) - Number(a.height))
             .slice(0, LIMIT)
-            .map((tx) => ({ ...tx, chain }))
+            .map((tx) => ({ ...tx, chain: chainID }))
         },
         // Data will never become stale and always stay in cache
-        cacheTime: Infinity,
-        staleTime: Infinity,
-        refetchOnMount: false,
-        refetchOnWindowFocus: false,
-        refetchOnReconnect: false,
-        refetchIntervalInBackground: false,
+        ...RefetchOptions.INFINITY,
       }
     })
   )
