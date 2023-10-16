@@ -22,7 +22,8 @@ import { getChainIDFromAddress } from "utils/bech32"
 import { useIBCChannels, useWhitelist } from "data/queries/chains"
 import { useTranslation } from "react-i18next"
 import Tx from "txs/Tx"
-import { toInput } from "txs/utils"
+import { toInput, CoinInput } from "txs/utils"
+import { queryKey } from "data/query"
 import {
   InputWrapper,
   Form,
@@ -67,6 +68,7 @@ interface AssetType extends TokenSingleChainListItemProps {
   denom: string
   tokenChain: string
   price?: number
+  channel?: string
 }
 
 const SendPage = () => {
@@ -77,13 +79,13 @@ const SendPage = () => {
   const assetList = useParsedAssetList()
   const { ibcDenoms } = useWhitelist()
   const networkName = useNetworkName()
-  const { getIBCChannel } = useIBCChannels()
+  const { getIBCChannel, getICSContract } = useIBCChannels()
   const currency = useCurrency()
   const [selected, setSelected] = useState<AssetType>()
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange" })
-  const { register, watch, setValue, trigger } = form
+  const { register, watch, setValue, trigger, handleSubmit } = form
   const { formState } = form
   const { errors } = formState
   const { recipient, originChain, input, destinationChain } = watch()
@@ -115,8 +117,10 @@ const SendPage = () => {
             label="To"
             extra={<Paste onPaste={(recipient) => onPaste(recipient)} />}
             {...register("recipient", {
-              value: recipient ?? "",
-              validate: { ...validate.recipient() },
+              validate: {
+                ...validate.recipient(),
+                ...validate.ibc(networks, originChain ?? "", "", getIBCChannel),
+              },
             })}
           />
         </InputWrapper>
@@ -159,7 +163,7 @@ const SendPage = () => {
         if (!destinationChain || !destinationChain) return acc
         a.chains.forEach((tokenChain: string) => {
           const isNative = tokenChain === destinationChain
-          const isIBC = getIBCChannel({
+          const channel = getIBCChannel({
             from: tokenChain,
             to: destinationChain,
             tokenAddress: a.denom,
@@ -168,7 +172,7 @@ const SendPage = () => {
                 ?.icsChannel,
           })
 
-          if (isNative || isIBC) {
+          if (isNative || channel) {
             const balance = parseInt(
               balances.find(
                 (b) => b.chain === tokenChain && b.denom === a.denom
@@ -182,6 +186,7 @@ const SendPage = () => {
               tokenImg: a.icon,
               value,
               balance,
+              channel,
               tokenChain,
               amountNode: (
                 <Read amount={balance} fixed={2} decimals={a.decimals} />
@@ -238,6 +243,7 @@ const SendPage = () => {
                 {filtered.length === 0 && <p>No tokens found</p>}
                 {filtered.map((t: AssetType) => (
                   <TokenSingleChainListItem
+                    key={t.denom}
                     {...t}
                     onClick={() => {
                       setValue("asset", t.denom)
@@ -296,157 +302,115 @@ const SendPage = () => {
   }
 
   const Confirm = () => {
-    return <p>Confirm</p>
-    // const tx = {
-    //   token: token?.denom ?? "",
-    //   decimals,
-    //   amount,
-    //   coins,
-    //   chain,
-    //   balance: token?.amount ?? "0",
-    //   estimationTxValues,
-    //   createTx,
-    //   disabled: false,
-    //   onChangeMax,
-    //   onSuccess: () => setRoute({ page: Page.wallet }),
-    //   taxRequired: true,
-    //   queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
-    //   gasAdjustment: destinationChain !== originChain ? 2 : 1,
-    // }
-    // return (
-    //   <Tx {...tx}>
-    //   {({ max, fee, submit }) => (
-    //     <Form  className={styles.form}>
-    //       <section className={styles.send}>
-    //         <div className={styles.form__container}>
-    //           <FormItem
-    //             label={t("Asset")}
-    //             error={errors.asset?.message ?? errors.address?.message}
-    //           >
-    //             <AssetSelector
-    //               value={asset ?? defaultAsset}
-    //               onChange={(asset) => setValue("asset", asset)}
-    //               assetList={filteredAssets}
-    //               assetsByDenom={assetsByDenom}
-    //             />
-    //           </FormItem>
-    //           {availableChains && (
-    //             <FormItem label={t("Source chain")}>
-    //               <ChainSelector
-    //                 value={chain ?? ""}
-    //                 chainsList={availableChains}
-    //                 onChange={(chain) => setValue("chain", chain)}
-    //               />
-    //             </FormItem>
-    //           )}
-    //           <FormItem
-    //             label={t("Recipient")}
-    //             extra={renderDestinationChain()}
-    //             error={errors.recipient?.message ?? errors.address?.message}
-    //           >
-    //             <ModalButton
-    //               title={t("Address book")}
-    //               renderButton={(open) => (
-    //                 <Input
-    //                   {...register("recipient", {
-    //                     validate: {
-    //                       ...validate.recipient(),
-    //                       ...validate.ibc(
-    //                         networks,
-    //                         chain ?? "",
-    //                         token?.denom ?? "",
-    //                         getIBCChannel,
-    //                         readNativeDenom(token?.denom ?? "").isAxelar
-    //                       ),
-    //                     },
-    //                   })}
-    //                   placeholder={SAMPLE_ADDRESS}
-    //                   actionButton={{
-    //                     icon: <ContactsIcon />,
-    //                     onClick: open,
-    //                   }}
-    //                   autoFocus
-    //                 />
-    //               )}
-    //             >
-    //               {/* <AddressBookList
-    //                 onClick={async ({ recipient, memo }) => {
-    //                   setValue("recipient", recipient)
-    //                   memo && setValue("memo", memo)
-    //                   await trigger("recipient")
-    //                 }}
-    //               /> */}
-    //             </ModalButton>
+    const { decimals, channel, denom } = selected ?? {}
+    const addresses = useInterchainAddresses()
+    // return <p>Confirm</p>
+    const createTx = useCallback(
+      ({ address, input, memo }: TxValues) => {
+        if (!addresses) return
+        if (!(address && AccAddress.validate(address))) return
+        const amount = toAmount(input, { decimals })
+        const execute_msg = { transfer: { recipient: address, amount } }
 
-    //             <input {...register("address")} readOnly hidden />
-    //           </FormItem>
+        const destinationChain = getChainIDFromAddress(address, networks)
 
-    //           <FormItem
-    //             label={t("Amount")}
-    //             extra={max.render()}
-    //             error={errors.input?.message}
-    //           >
-    //             <Input
-    //               {...register("input", {
-    //                 valueAsNumber: true,
-    //                 validate: validate.input(
-    //                   toInput(max.amount, decimals),
-    //                   decimals
-    //                 ),
-    //               })}
-    //               type="number"
-    //               token={asset}
-    //               inputMode="decimal"
-    //               onFocus={max.reset}
-    //               placeholder={getPlaceholder(decimals)}
-    //             />
-    //           </FormItem>
+        if (!originChain || !destinationChain || !denom) return
 
-    //           {!destinationAddress ||
-    //           getChainIDFromAddress(destinationAddress, networks) === chain ? (
-    //             <>
-    //               <FormItem
-    //                 label={`${t("Memo")} (${t("optional")})`}
-    //                 error={errors.memo?.message}
-    //               >
-    //                 <Input
-    //                   {...register("memo", {
-    //                     validate: {
-    //                       size: validate.size(256, "Memo"),
-    //                       brackets: validate.memo(),
-    //                       mnemonic: validate.isNotMnemonic(),
-    //                     },
-    //                   })}
-    //                 />
-    //               </FormItem>
+        if (destinationChain === originChain) {
+          const msgs = AccAddress.validate(denom)
+            ? [
+                new MsgExecuteContract(
+                  addresses[originChain ?? ""],
+                  denom,
+                  execute_msg
+                ),
+              ]
+            : [
+                new MsgSend(
+                  addresses[originChain ?? ""],
+                  address,
+                  amount + denom
+                ),
+              ]
 
-    //               <Grid gap={4}>
-    //                 {!memo && (
-    //                   <FormWarning>
-    //                     {t("Check if this transaction requires a memo")}
-    //                   </FormWarning>
-    //                 )}
-    //               </Grid>
-    //             </>
-    //           ) : (
-    //             <Grid gap={4}>
-    //               {!memo && (
-    //                 <FormWarning>
-    //                   {t(
-    //                     "This is a cross-chain transaction. Don't send tokens to exchanges with this tx."
-    //                   )}
-    //                 </FormWarning>
-    //               )}
-    //             </Grid>
-    //           )}
+          return { msgs, memo, chainID: originChain }
+        } else {
+          if (!channel) throw new Error("No IBC channel found")
 
-    //           {fee.render()}
-    //         </div>
-    //       </section>
-    //       <section className={styles.actions}>{submit.button}</section>
-    //     </Form>
-    //   )}
-    // </Tx>)
+          const msgs = AccAddress.validate(denom ?? "")
+            ? [
+                new MsgExecuteContract(addresses[originChain ?? ""], denom, {
+                  send: {
+                    contract: getICSContract({
+                      from: originChain,
+                      to: destinationChain,
+                    }),
+                    amount: amount,
+                    msg: Buffer.from(
+                      JSON.stringify({
+                        remote_address: address,
+                      })
+                    ).toString("base64"),
+                  },
+                }),
+              ]
+            : [
+                new MsgTransfer(
+                  "transfer",
+                  channel,
+                  new Coin(denom ?? "", amount),
+                  addresses[originChain ?? ""],
+                  address,
+                  undefined,
+                  (Date.now() + 120 * 1000) * 1e6,
+                  undefined
+                ),
+              ]
+
+          return { msgs, memo, chainID: originChain }
+        }
+      },
+      [addresses, decimals, channel, denom]
+    )
+
+    const onChangeMax = useCallback(async (input: number) => {
+      setValue("input", input)
+      await trigger("input")
+    }, [])
+
+    /* fee */
+    const coins = [{ input, denom: "" }] as CoinInput[]
+    const estimationTxValues = useMemo(() => {
+      return {
+        address: addresses?.[originChain ?? "phoenix-1"],
+        input: toInput(1, decimals),
+      }
+    }, [addresses, decimals])
+
+    const tx = {
+      token: denom,
+      decimals: selected?.decimals,
+      amount: toAmount(input, { decimals: selected?.decimals }),
+      coins,
+      chain: originChain ?? "",
+      balance: selected?.balance,
+      estimationTxValues,
+      createTx,
+      onChangeMax,
+      onSuccess: () => setRoute({ page: Page.wallet }),
+      taxRequired: true,
+      queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
+      gasAdjustment: destinationChain !== originChain ? 2 : 1,
+    }
+    return (
+      <Tx {...tx}>
+        {({ max, fee, submit }) => (
+          <Form onSubmit={handleSubmit(submit.fn)}>
+            <Button variant="primary" type="submit" />
+          </Form>
+        )}
+      </Tx>
+    )
   }
 
   const render = () => {

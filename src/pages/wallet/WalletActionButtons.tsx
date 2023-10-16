@@ -17,12 +17,12 @@ interface WalletActionButton {
   label: string
   onClick: () => void
   disabled?: boolean
-  primary?: boolean
   hide?: boolean
   denom?: string
+  variant: "primary" | "secondary"
 }
 
-const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
+const WalletActionButtons = ({ denom = "uluna" }: { denom?: Denom }) => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
   const networks = useNetwork()
@@ -41,7 +41,7 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
   const buttons: WalletActionButton[] = [
     {
       icon: <SendIcon />,
-      primary: true,
+      variant: "primary",
       label: t("send"),
       onClick: () => setRoute({ page: Page.send, denom }),
       disabled: sendButtonDisabled,
@@ -49,35 +49,36 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
     {
       icon: <Swap />,
       label: t("swap"),
+      variant: "secondary",
       onClick: () => setRoute({ page: Page.swap }),
       hide: route.page !== Page.wallet,
     },
     {
       icon: <ReceiveIcon />,
       label: t("receive"),
+      variant: "secondary",
       onClick: () => setRoute({ page: Page.receive }),
     },
     {
       icon: <AddIcon />,
       label: t("buy"),
       onClick: openModal,
+      variant: "secondary",
       disabled: networkName !== "mainnet",
     },
   ]
 
   return (
     <div className={styles.networth__buttons}>
-      {buttons.map(({ icon, label, onClick, disabled, primary }) => (
-        <FlexColumn key={label}>
-          <RoundedButton
-            variant={primary ? "primary" : "secondary"}
-            onClick={onClick}
-            icon={icon}
-            disabled={disabled}
-          />
-          <span>{capitalize(label)}</span>
-        </FlexColumn>
-      ))}
+      {buttons.map((button) => {
+        if (button.hide) return null
+        return (
+          <FlexColumn key={button.label}>
+            <RoundedButton {...button} />
+            <span>{capitalize(button.label)}</span>
+          </FlexColumn>
+        )
+      })}
     </div>
   )
 }
