@@ -127,7 +127,6 @@ const SendPage = () => {
   }
 
   const Token = () => {
-    console.log("assetList", assetList)
     return (
       <>
         <InputInLine
