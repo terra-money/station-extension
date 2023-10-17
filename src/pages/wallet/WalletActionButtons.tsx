@@ -17,7 +17,7 @@ interface WalletActionButton {
   label: string
   onClick: () => void
   disabled?: boolean
-  hide?: boolean
+  hidden?: boolean
   denom?: string
   variant: "primary" | "secondary"
 }
@@ -51,7 +51,7 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: Denom }) => {
       label: t("swap"),
       variant: "secondary",
       onClick: () => setRoute({ page: Page.swap }),
-      hide: route.page !== Page.wallet,
+      hidden: route.page !== Page.wallet,
     },
     {
       icon: <ReceiveIcon />,
@@ -71,7 +71,7 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: Denom }) => {
   return (
     <div className={styles.networth__buttons}>
       {buttons.map((button) => {
-        if (button.hide) return null
+        if (button.hidden) return null
         return (
           <FlexColumn key={button.label}>
             <RoundedButton {...button} />
