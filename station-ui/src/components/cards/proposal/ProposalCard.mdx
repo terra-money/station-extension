@@ -1,0 +1,92 @@
+import {
+  Meta,
+  Story,
+  Canvas,
+  Controls,
+  ArgTypes,
+  Description,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as ProposalCardStories from "./ProposalCard.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Cards/Proposal" />
+
+# ProposalCard
+
+##### This is used to show a wallets individual delegation information.
+
+## Props
+- **`proposal`** - <RequiredText /> - `**object below**` - Data for the proposal to display.
+  - `{ metaText: string; metaImage: string; title: string; submittedDate: string; }`
+- **`progressData`** - <RequiredText /> - `ProgressBarData[]` - Data for the `<ProgressBar />`.
+  - **`ProgressBarData`** = `{`
+    - **`type`**: `'yes' | 'abstain' | 'no' | 'noWithVeto' | 'deposit'`
+    - **`percent`**: `string`
+  - `}`
+- **`threshold`** - <RequiredText /> - `number` - The threshold for the ProgressBar.
+- **`progressLabelOverride`** - `string` - Override for the progress label.
+- **`className`** - `string` - ClassName override for the card.
+
+## Import
+```jsx
+import { ProposalCard } from "station-ui";
+```
+
+## Stories
+
+## Default
+Displays a proposal with a progress bar on the bottom of the card.
+<div className="story_with_source_below">
+  <Canvas of={ProposalCardStories.Default} />
+  <Source code={`
+    <ProposalCard
+  proposal={{
+    metaText: "4736 | Community pool spend proposal",
+    metaImage: "https://station-assets.terra.dev/img/chains/Terra.svg",
+    title: "OFFICIAL “Revitalizing Terra: A Backbone Labs and Eris Protocol Collaboration” (Not A Grant)",
+    submittedDate: "3 July 2023, 18:49:03 UTC",
+  }}
+  progressData={[
+    { type: 'yes', percent: '5%' },
+    { type: 'abstain', percent: '10%' },
+    { type: 'no', percent: '2%' },
+    { type: 'noWithVeto', percent: '0.5%' },
+  ]}
+  threshold={50}
+  progressLabelOverride={'PT'}
+/>
+  `} />
+</div>
+
+## Deposit
+Displays a proposal with a deposit progress bar on the bottom of the card.
+<div className="story_with_source_below">
+  <Canvas of={ProposalCardStories.Deposit} />
+  <Source code={`
+    <ProposalCard
+  proposal={{
+    metaText: "4740 | Text proposal",
+    metaImage: "https://station-assets.terra.dev/img/chains/Terra.svg",
+    title: "LUNA NOW!",
+    submittedDate: "28 July 2023, 13:52:11 UTC",
+  }}
+  progressData={[
+    { type: 'deposit', percent: '65%' },
+  ]}
+  threshold={65}
+  progressLabelOverride={'65%'}
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

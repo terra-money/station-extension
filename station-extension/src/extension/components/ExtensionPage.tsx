@@ -7,10 +7,12 @@ import Container from "../layouts/Container"
 import { Card } from "components/layout"
 import classNames from "classnames"
 import { openURL } from "extension/storage"
+import ExtensionFooter from "./ExtensionFooter"
 
 interface Props extends QueryState {
   header?: ReactNode
   title?: string
+  subtitle?: string
   backButtonPath?: string
   backgroundColor?: "main"
   fullHeight?: boolean
@@ -20,6 +22,7 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
   const {
     header,
     title,
+    subtitle,
     backButtonPath,
     children,
     backgroundColor,
@@ -49,7 +52,7 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
             {title && (
               <Container className={styles.container}>
                 <header className={styles.header}>
-                  <div className={styles.title_container}>
+                  <div className={styles.header_container}>
                     {backButtonPath && (
                       <BackIcon
                         width={18}
@@ -58,14 +61,20 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                         fill="currentColor"
                       />
                     )}
-                    <h1
-                      className={cx(
-                        styles.title,
-                        backButtonPath && styles.skew_title
+                    <div className={styles.title__container}>
+                      <h1
+                        className={cx(
+                          styles.title,
+                          backButtonPath && styles.skew_title,
+                          subtitle && styles.with_subtitle
+                        )}
+                      >
+                        {title}
+                      </h1>
+                      {subtitle && (
+                        <h3 className={cx(styles.subtitle)}>{subtitle}</h3>
                       )}
-                    >
-                      {title}
-                    </h1>
+                    </div>
                   </div>
                 </header>
               </Container>
@@ -90,6 +99,8 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                 )}
               </Container>
             </section>
+
+            {backgroundColor !== "main" && <ExtensionFooter />}
           </article>
         </>
       )}

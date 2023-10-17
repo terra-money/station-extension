@@ -33,6 +33,7 @@
     .summary__card__value {
       @include SmallLH;
       color: var(--token-light-100);
+      word-break: break-all;
     }
   }
 }

@@ -1,0 +1,79 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as DataHeaderStories from "./DataHeader.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Headers/Data" />
+
+# Data Header
+
+##### Used to display data to users. Very much designed to display staking data.
+
+## Props
+- **`primaryLabel`** - <RequiredText /> - `string` - The Label for the top information ("My Delegations" in this example).
+- **`primaryValue`** - <RequiredText /> - `string` - The Value below the top label ("$2,899.28" in this example).
+- **`secondaryLabel`** - `string` - The first Label on the "second row" ("Available Rewards" in this example).
+- **`secondaryValue`** - `string` - The first Value on the "second row" ("$33.84" in this example).
+- **`tertiaryLabel`** - `string` - The second Label on the "second row" ("Undelegations" in this example).
+- **`tertiaryValue`** - `string` - The second Value on the "second row" ("0" in this example).
+- **`actionButtons`** - `ReactNode` - Buttons for users to do things.
+
+## Import
+```jsx
+import { DataHeader } from "station-ui";
+```
+
+## Stories
+
+## Default
+<div className="story_with_source_below">
+  <Canvas of={DataHeaderStories.Default} />
+  <Source code={`
+    <DataHeader
+  primaryLabel={"My Delegations"}
+  primaryValue={"$2,899.28"}
+  secondaryLabel={"Available Rewards"}
+  secondaryValue={"$33.84"}
+  tertiaryLabel={"Undelegations"}
+  tertiaryValue={"0"}
+  actionButtons={
+    <>
+      <Button variant='secondary' onClick={() => { }}>Claim Rewards</Button>
+      <Button
+        variant='primary'
+        onClick={() => { }}
+        icon={<StakeIcon fill="var(--token-light-white)" />}
+      >
+        Stake
+      </Button>
+    </>
+  }
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

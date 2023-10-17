@@ -1,0 +1,118 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../DocsHelpers.tsx";
+import * as SectionHeaderStories from "./SectionHeader.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Headers/Section" />
+
+# Section Header
+
+##### A small header to display a label.
+
+## Props
+- **`title`** - `string` - The title of the header.
+- **`extra`** - `ReactNode` - Adds whatever is passed on the far ride side of the header.
+- **`withLine`** - `string` - Adds a line to the header. (Makes the label middle aligned).
+- **`indented`** - `string` - Adds a small padding to the left and right of the header.
+- **`icon`** - `string` - Adds an icon in front of the label (the prop "title").
+- **`className`** - `string` - Adds a class to the header.
+
+## Import
+```jsx
+import { SectionHeader } from "station-ui";
+```
+
+## Stories
+
+## Title Only
+<div className="story_with_source_below">
+  <Canvas of={SectionHeaderStories.TitleOnly} />
+  <Source code={`
+    <SectionHeader
+  title="Swap"
+  indented={false}
+/>
+  `} />
+</div>
+
+## Title With Action
+<div className="story_with_source_below">
+  <Canvas of={SectionHeaderStories.TitleWithAction} />
+  <Source code={`
+    <SectionHeader
+  title="Swap"
+  extra={<FilterIcon fill='var(--token-dark-900)' />}
+/>
+  `} />
+</div>
+
+## Title With Line
+<div className="story_with_source_below">
+  <Canvas of={SectionHeaderStories.TitleWithLine} />
+  <Source code={`
+    <SectionHeader
+  title="Swap"
+  withLine
+/>
+  `} />
+</div>
+
+## Title Indented
+<div className="story_with_source_below">
+  <Canvas of={SectionHeaderStories.TitleIndented} />
+  <Source code={`
+    <SectionHeader
+  title="Swap"
+  indented
+/>
+  `} />
+</div>
+
+## Title With Icon
+<div className="story_with_source_below">
+  <Canvas of={SectionHeaderStories.TitleWithIcon} />
+  <Source code={`
+    <SectionHeader
+  title="Swap"
+  indented
+  icon={<div style={{ borderRadius: '50%', backgroundColor: 'var(--token-primary-500)', width: '8px', height: '8px' }} />}
+/>
+  `} />
+</div>
+
+## Just A Line
+<div className="story_with_source_below">
+  <Canvas of={SectionHeaderStories.JustALine} />
+  <Source code={`
+    <SectionHeader
+  title=""
+  withLine
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

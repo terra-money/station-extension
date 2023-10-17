@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import WalletSummaryCard, { WalletSummaryCardProps } from './WalletSummaryCard';
 
 const meta: Meta<WalletSummaryCardProps> = {
-  title: 'Components/Cards/WalletSummary',
+  title: 'Components/Cards/WalletSummary/Stories',
   component: WalletSummaryCard,
   argTypes: {},
 } as Meta;

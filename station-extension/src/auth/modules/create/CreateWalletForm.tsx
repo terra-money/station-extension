@@ -19,7 +19,6 @@ import {
   SubmitButton,
 } from "station-ui"
 import styles from "./CreateWalletForm.module.scss"
-import { isPasswordValid, passwordExists } from "auth/scripts/keystore"
 
 interface Values extends DefaultValues {
   confirm: string
@@ -46,62 +45,17 @@ const CreateWalletForm = () => {
     defaultValues: { ...values, confirm: "", checked: false },
   })
 
-  const {
-    register,
-    watch,
-    handleSubmit,
-    formState,
-    reset,
-    setValue,
-    setError,
-  } = form
+  const { register, watch, handleSubmit, formState, reset, setValue } = form
   const { errors, isValid } = formState
-  const { password, mnemonic, index, checked } = watch()
+  const { mnemonic, index, checked } = watch()
 
   useEffect(() => {
     return () => reset()
   }, [reset])
 
-  const submit = ({ name, password, mnemonic, index }: Values) => {
-    if (passwordExists() && !isPasswordValid(password)) {
-      setError(
-        "password",
-        { message: t("Invalid password") },
-        { shouldFocus: true }
-      )
-      return
-    }
-    setValues({ name, password, mnemonic: mnemonic.trim(), index })
+  const submit = ({ name, mnemonic, index }: Values) => {
+    setValues({ name, mnemonic: mnemonic.trim(), index })
     setStep(2)
-  }
-
-  function renderPasswordInput() {
-    return (
-      <>
-        <InputWrapper label={t("Password")} error={errors.password?.message}>
-          <Input
-            {...register("password", {
-              validate: passwordExists() ? undefined : validate.password,
-            })}
-            type="password"
-          />
-        </InputWrapper>
-        {!passwordExists() && (
-          <InputWrapper
-            label={t("Confirm password")}
-            error={errors.confirm?.message}
-          >
-            <Input
-              {...register("confirm", {
-                validate: (confirm) => validate.confirm(password, confirm),
-              })}
-              onFocus={() => form.trigger("confirm")}
-              type="password"
-            />
-          </InputWrapper>
-        )}
-      </>
-    )
   }
 
   function renderImportOption() {
@@ -126,8 +80,6 @@ const CreateWalletForm = () => {
                 {...register("mnemonic", { validate: validate.mnemonic })}
               />
             </InputWrapper>
-
-            {renderPasswordInput()}
 
             <button
               onClick={(e) => {
@@ -188,8 +140,6 @@ const CreateWalletForm = () => {
                 {...register("mnemonic", { validate: validate.mnemonic })}
               />
             </InputWrapper>
-
-            {renderPasswordInput()}
           </>
         )
     }
@@ -208,8 +158,6 @@ const CreateWalletForm = () => {
 
         {generated ? (
           <>
-            {renderPasswordInput()}
-
             <InputWrapper
               label={t("Mnemonic phrase")}
               error={errors.mnemonic?.message}
@@ -256,16 +204,15 @@ const CreateWalletForm = () => {
             {renderImportOption()}
           </>
         )}
+
+        <SubmitButton
+          disabled={!isValid}
+          variant={generated ? "primary" : "secondary"}
+          className={styles.submit__button}
+        >
+          {generated ? t("Create Wallet") : t("Import")}
+        </SubmitButton>
       </FlexColumn>
-      <section className={styles.form__footer}>
-        {generated ? (
-          <SubmitButton disabled={!isValid} variant="secondary">
-            {t("Create Wallet")}
-          </SubmitButton>
-        ) : (
-          <SubmitButton disabled={!isValid}>{t("Import")}</SubmitButton>
-        )}
-      </section>
     </Form>
   )
 }

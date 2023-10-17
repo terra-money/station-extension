@@ -28,6 +28,6 @@ export const Warning: StoryObj<TopLevelBannerProps> = {
 
 export const TextWrapExample: StoryObj<TopLevelBannerProps> = {
   render: () => (
-    <TopLevelBanner variant='info' title='This action can not be undone. You will need a private key or a mnemonic seed phrase to restore this wallet to the app.' />
+    <TopLevelBanner variant='info' title='This action can not be undone. You will need a private key or a mnemonic seed phrase to restore this wallet to the app. This action can not be undone. You will need a private key or a mnemonic seed phrase to restore this wallet to the app.' />
   ),
 };

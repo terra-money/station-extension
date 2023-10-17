@@ -1,0 +1,110 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../../DocsHelpers.tsx";
+import * as WalletListItemStories from "./WalletListItem.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/List Items/Wallet" />
+
+# Wallet List Item
+
+##### Display a wallets icon, name, and address.
+
+## Props
+- **`name`** - <RequiredText /> - `string` - The name of the wallet.
+- **`address`** - <RequiredText /> - `string` - The address of the wallet.
+- **`emoji`** - <RequiredText /> - `string` - The user input Emoji or Letter.
+- **`walletBalance`** - `string` - When passed in, it displays the balance on the right side of the list item.
+
+## Import
+```jsx
+import { WalletListItem } from "station-ui";
+```
+
+## Stories
+
+## Default
+Displays a wallet list item with a name, address, and emoji.
+<div className="story_with_source_below">
+  <Canvas of={WalletListItemStories.Default} />
+  <Source code={`
+    <WalletListItem
+  name={"lots-of-money-here"}
+  address={"terra1hod3...pazdy5"}
+  emoji={"🚀"}
+/>
+  `} />
+</div>
+
+## With Balance
+Displays a wallet list item with a name, address, emoji and a balance.
+<div className="story_with_source_below">
+  <Canvas of={WalletListItemStories.Default} />
+  <Source code={`
+    <WalletListItem
+  name={"lots-of-money-here"}
+  address={"terra1hod3...pazdy5"}
+  emoji={"🚀"}
+  walletBalance={"$420.00"}
+/>
+  `} />
+</div>
+
+## With Letter
+Displays a wallet list item with a name, address and letter (instead of an emoji).
+<div className="story_with_source_below">
+  <Canvas of={WalletListItemStories.WithLetter} />
+  <Source code={`
+    <WalletListItem
+  name={"lots-of-money-here"}
+  address={"terra1hod3...pazdy5"}
+  emoji={"T"}
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
