@@ -3,7 +3,6 @@
 .networth {
   @include flex-column;
   padding: 2rem 1.6rem;
-  width: var(--extension-width);
 
   p {
     color: var(--text-muted);

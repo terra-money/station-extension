@@ -22,10 +22,7 @@
 
 .filter {
   cursor: pointer;
-  &.active {
-    color: purple;
-  }
   &.inactive {
-    color: red;
+    color: var(--token-light-100);
   }
 }

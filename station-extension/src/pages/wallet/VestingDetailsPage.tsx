@@ -1,4 +1,4 @@
-import { SectionHeader, SendHeader } from "station-ui"
+import { SectionHeader, SendHeader, SummaryTable } from "station-ui"
 import VestingCard from "./VestingCard"
 import {
   isVestingAccount,
@@ -21,15 +21,15 @@ const AssetVesting = ({ token = "uluna" }: Props) => {
 
   const { schedule } = parseVestingSchedule(data)
 
-  // const renderSummaryRows = (item: VestingScheduleItem) => {
-  //   const dateRange = `${item.start?.toLocaleDateString()} - ${item.end.toLocaleDateString()}`
-  //   const rows = [
-  //     { label: "Release Date", value: dateRange },
-  //     { label: "Amount", value: <Read amount={item.amount} /> },
-  //     { label: "Ratio", value: <ReadPercent>{item.ratio}</ReadPercent> },
-  //   ]
-  //   return <SummaryTable rows={rows} />
-  // }
+  const renderSummaryRows = (item: VestingScheduleItem) => {
+    const dateRange = `${item.start?.toLocaleDateString()} - ${item.end.toLocaleDateString()}`
+    const rows = [
+      { label: "Release Date", value: dateRange },
+      { label: "Amount", value: <Read amount={item.amount} /> },
+      { label: "Ratio", value: <ReadPercent>{item.ratio}</ReadPercent> },
+    ]
+    return <SummaryTable rows={rows} />
+  }
 
   return (
     <div className={styles.container}>
@@ -41,7 +41,7 @@ const AssetVesting = ({ token = "uluna" }: Props) => {
             title={`Period ${index + 1}`}
             className={styles.header}
           />
-          {/* {renderSummaryRows(item)} */}
+          {renderSummaryRows(item)}
         </>
       ))}
     </div>
