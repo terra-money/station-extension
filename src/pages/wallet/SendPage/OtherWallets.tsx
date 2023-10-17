@@ -8,7 +8,6 @@ import {
   Tabs,
   AddressSelectableListItem,
 } from "station-ui"
-import { useAuth } from "auth"
 
 interface Props {
   onClick?: (address: string) => void
@@ -41,27 +40,27 @@ export const WalletList = ({
 
 const OtherWallets = ({ onClick }: Props) => {
   const { list: addressList } = useAddressBook()
-  const [tabKey, setTabKey] = useState("addressBook")
+  const [tabKey, setTabKey] = useState("address")
   // const { wallets } = useAuth()
   const { t } = useTranslation()
 
   const tabs = [
     {
-      key: "addressBook",
+      key: "address",
       label: "Address Book",
-      onClick: () => setTabKey("addressBook"),
+      onClick: () => setTabKey("address"),
     },
     {
-      key: "myWallets",
+      key: "wallets",
       label: "My Wallets",
-      onClick: () => setTabKey("myWallets"),
+      onClick: () => setTabKey("wallets"),
     },
   ]
 
   return (
     <>
       <Tabs activeTabKey={tabKey} tabs={tabs} />
-      {tabKey === "addressBook" ? (
+      {tabKey === "address" ? (
         <>
           <WalletList
             onClick={onClick}
