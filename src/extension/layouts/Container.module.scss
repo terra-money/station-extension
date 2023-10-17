@@ -1,4 +1,4 @@
 .container {
-  max-width: 640px;
+  max-width: var(--extension-width);
   margin: 0 auto;
 }
