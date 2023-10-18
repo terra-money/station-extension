@@ -23,7 +23,6 @@ export interface SettingsPage {
 export const [useSettingsPage, SettingsPageProvider] = createContext<{
   page: string | undefined
   setPage: (route: string, params?: any) => void
-  setHeader?: (header: ReactElement) => void
 }>("useSettingsPage")
 
 const Preferences = () => {
@@ -67,15 +66,15 @@ const Preferences = () => {
 
   const renderHeader = () =>
     page ? (
-      <>
+      <div className="">
         <button
           className={styles.back}
           onClick={() => setPage(routes[page]?.parent ?? undefined)}
         >
           <BackIcon width={18} height={18} />
         </button>
-        {routes[page].tab}
-      </>
+        <h1 className={styles.header}>{routes[page].tab}</h1>
+      </div>
     ) : (
       t("Settings")
     )

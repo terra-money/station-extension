@@ -46,11 +46,12 @@ import { useWalletRoute, Page } from "../Wallet"
 import { useNetwork, useNetworkName } from "data/wallet"
 import { Read } from "components/token"
 import WithSearchInput from "pages/custom/WithSearchInput"
+import { Empty } from "components/feedback"
 
 interface TxValues {
   asset?: string
-  originChain?: string
-  destinationChain?: string
+  chain?: string
+  destination?: string
   recipient?: string // AccAddress | TNS
   address?: AccAddress // hidden input
   input?: number
@@ -59,7 +60,7 @@ interface TxValues {
 }
 
 interface AssetType extends TokenSingleChainListItemProps {
-  value: string
+  balVal: string
   balance: string
   decimals: number
   amount: string
@@ -88,7 +89,11 @@ const SendPage = () => {
   const { register, watch, setValue, trigger, handleSubmit } = form
   const { formState } = form
   const { errors } = formState
-  const { recipient, originChain, input, destinationChain } = watch()
+  const { recipient, chain, input, destination } = watch()
+
+  const amount = useMemo(() => {
+    return toAmount(input, { decimals: asset?.decimals })
+  }, [input, asset])
 
   // View #1
   const Address = () => {
@@ -97,11 +102,12 @@ const SendPage = () => {
       setRoute({ page: Page.sendChain })
     }
 
-    const onPaste = (recipient: string) => {
+    const onChange = (recipient: AccAddress | undefined) => {
+      if (!recipient) return
       setValue("recipient", recipient)
       trigger("recipient")
       if (validateRecipient(recipient)) {
-        setValue("destinationChain", getChainIDFromAddress(recipient, networks))
+        setValue("destination", getChainIDFromAddress(recipient, networks))
         setRoute({ page: Page.sendToken })
       }
     }
@@ -115,13 +121,11 @@ const SendPage = () => {
           <InputInLine
             type="text"
             label="To"
-            extra={<Paste onPaste={(recipient) => onPaste(recipient)} />}
+            extra={<Paste onPaste={() => onChange(recipient)} />}
             {...register("recipient", {
-              validate: {
-                ...validate.recipient(),
-                ...validate.ibc(networks, originChain ?? "", "", getIBCChannel),
-              },
+              validate: { ...validate.recipient() },
             })}
+            onChange={() => onChange(recipient)}
           />
         </InputWrapper>
         <SectionHeader title="Recently Used" />
@@ -145,7 +149,7 @@ const SendPage = () => {
         availableChains.map((chain) => ({
           name: getChainNamefromID(chain, networks) ?? chain,
           onClick: () => {
-            setValue("destinationChain", chain)
+            setValue("destination", chain)
             setRoute({ page: Page.sendToken })
           },
           id: chain,
@@ -160,17 +164,16 @@ const SendPage = () => {
   const Token = () => {
     const tokens = useMemo(() => {
       return assetList.reduce((acc, a) => {
-        if (!destinationChain) return acc
+        if (!destination) return acc
 
         a.chains.forEach((tokenChain: string) => {
-          const isNative = tokenChain === destinationChain
+          const isNative = tokenChain === destination
           const channel = getIBCChannel({
             from: tokenChain,
-            to: destinationChain,
+            to: destination,
             tokenAddress: a.denom,
             icsChannel:
-              ibcDenoms[networkName][`${destinationChain}:${a.denom}`]
-                ?.icsChannel,
+              ibcDenoms[networkName][`${destination}:${a.denom}`]?.icsChannel,
           })
 
           if (isNative || channel) {
@@ -180,17 +183,14 @@ const SendPage = () => {
               )?.amount ?? "0"
             )
             if (balance === 0) return acc
-            const value = balance * a.price
-            const amount = toAmount(input, { decimals: asset?.decimals })
-            console.log("amount", amount)
-            const senderAddress = addresses?.[tokenChain]
+            const balVal = balance * a.price
 
+            const senderAddress = addresses?.[tokenChain]
             const item = {
               ...a,
               denom: a.denom,
               tokenImg: a.icon,
-              value,
-              amount,
+              balVal,
               senderAddress,
               balance,
               channel,
@@ -198,9 +198,9 @@ const SendPage = () => {
               amountNode: (
                 <Read amount={balance} fixed={2} decimals={a.decimals} />
               ),
-              priceNode: value ? (
+              priceNode: balVal ? (
                 <>
-                  <Read amount={value} fixed={2} decimals={a.decimals} />{" "}
+                  <Read amount={balVal} fixed={2} decimals={a.decimals} />{" "}
                   {currency.symbol}
                 </>
               ) : (
@@ -213,15 +213,13 @@ const SendPage = () => {
                 icon: networks[tokenChain]?.icon,
               },
             } as AssetType
-            if (!acc.includes(item)) {
-              acc.push(item)
-            }
+
+            acc.push(item)
           }
         })
         return acc
       }, [] as AssetType[])
     }, [])
-    console.log("tokens", tokens)
 
     return (
       <>
@@ -245,18 +243,18 @@ const SendPage = () => {
               )
               .sort(
                 (a: AssetType, b: AssetType) =>
-                  parseInt(b.value) - parseInt(a.value)
+                  parseInt(b.balVal) - parseInt(a.balVal)
               )
             return (
               <>
-                {filtered.length === 0 && <p>No tokens found</p>}
+                {filtered.length === 0 && <Empty />}
                 {filtered.map((asset: AssetType) => (
                   <TokenSingleChainListItem
-                    key={`${asset.denom}*${asset.tokenChain}*${asset.balance}`}
+                    key={`${asset.denom}*${asset.tokenChain}`}
                     {...asset}
                     onClick={() => {
                       setValue("asset", asset.denom)
-                      setValue("originChain", asset.tokenChain)
+                      setValue("chain", asset.tokenChain)
                       setAsset(asset)
                       setRoute({ page: Page.sendSubmit })
                     }}
@@ -306,7 +304,7 @@ const SendPage = () => {
           error={errors.memo?.message}
         >
           <Input
-            onFocus={max?.reset}
+            onFocus={() => max?.reset()}
             {...register("memo", {
               validate: {
                 size: validate.size(256, "Memo"),
@@ -326,22 +324,22 @@ const SendPage = () => {
   }
 
   const Confirm = () => {
-    const rows = useMemo(() => {
-      return [
-        { label: t("Total Value"), value: asset?.value },
-        {
-          label: t("Token Sent"),
-          value: `${asset?.amount} ${asset?.symbol}`,
-        },
-        { label: t("From"), value: truncate(senderAddress) },
-      ]
-    }, [])
+    if (!input || !asset?.price) return null
+    const value = input * asset?.price
+    const rows = [
+      { label: t("Total Value"), value: value.toFixed(2) },
+      {
+        label: t("Token Sent"),
+        value: `${input} ${asset?.symbol}`,
+      },
+      { label: t("From"), value: truncate(asset?.senderAddress) },
+    ]
     return (
       <>
         <SendHeader
           heading={t("Sending")}
-          label={`${asset?.amount} ${asset?.symbol}`}
-          subLabel={currency.symbol + " " + asset?.value ?? "—"}
+          label={`${input} ${asset?.symbol}`}
+          subLabel={currency.symbol + " " + value.toFixed(2) ?? "—"}
         />
         <SectionHeader withLine title={t("Send Path")} />
         <InputInLine
@@ -356,27 +354,25 @@ const SendPage = () => {
     )
   }
 
-  const { decimals, channel, denom, senderAddress } = asset ?? {}
-
   const createTx = useCallback(
     ({ address, input, memo }: TxValues) => {
+      const { senderAddress, amount, denom, channel } = asset ?? {}
       if (!senderAddress) return
 
-      if (!(address && AccAddress.validate(address))) return
+      if (!(recipient && AccAddress.validate(recipient))) return
 
-      const amount = toAmount(input, { decimals })
       const execute_msg = { transfer: { recipient: address, amount } }
 
-      const destinationChain = getChainIDFromAddress(address, networks)
+      const destination = getChainIDFromAddress(address, networks)
 
-      if (!originChain || !destinationChain || !denom) return
+      if (!chain || !destination || !denom || !amount) return
 
-      if (destinationChain === originChain) {
+      if (destination === chain) {
         const msgs = AccAddress.validate(denom)
           ? [new MsgExecuteContract(senderAddress, denom, execute_msg)]
-          : [new MsgSend(senderAddress, address, amount + denom)]
+          : [new MsgSend(senderAddress, recipient, amount + denom)]
 
-        return { msgs, memo, chainID: originChain }
+        return { msgs, memo, chainID: chain }
       } else {
         if (!channel) throw new Error("No IBC channel found")
 
@@ -385,8 +381,8 @@ const SendPage = () => {
               new MsgExecuteContract(senderAddress, denom, {
                 send: {
                   contract: getICSContract({
-                    from: originChain,
-                    to: destinationChain,
+                    from: chain,
+                    to: destination,
                   }),
                   amount: amount,
                   msg: Buffer.from(
@@ -404,25 +400,17 @@ const SendPage = () => {
                 channel,
                 new Coin(denom ?? "", amount),
                 senderAddress,
-                address,
+                recipient,
                 undefined,
                 (Date.now() + 120 * 1000) * 1e6,
                 undefined
               ),
             ]
 
-        return { msgs, memo, chainID: originChain }
+        return { msgs, memo, chainID: chain }
       }
     },
-    [
-      channel,
-      denom,
-      senderAddress,
-      decimals,
-      networks,
-      originChain,
-      getICSContract,
-    ]
+    [asset, recipient, networks, chain, getICSContract]
   )
 
   const onChangeMax = useCallback(
@@ -437,24 +425,26 @@ const SendPage = () => {
   const coins = [{ input, denom: "" }] as CoinInput[]
   const estimationTxValues = useMemo(() => {
     return {
-      address: addresses?.[originChain ?? "phoenix-1"],
-      input: toInput(1, decimals),
+      address: addresses?.[chain ?? "phoenix-1"],
+      input: toInput(1, asset?.decimals),
     }
-  }, [addresses, decimals, originChain])
+  }, [addresses, asset, chain])
 
   const tx = {
-    token: denom,
+    token: asset?.denom,
     decimals: asset?.decimals,
-    amount: asset?.amount,
+    amount,
     coins,
-    chain: originChain ?? "",
+    chain: chain ?? "",
     balance: asset?.balance,
     estimationTxValues,
     createTx,
     onChangeMax,
-    onSuccess: () => setRoute({ page: Page.wallet }),
+    onSuccess: () => {
+      setRoute({ page: Page.wallet })
+    },
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
-    gasAdjustment: destinationChain !== originChain ? 2 : 1,
+    gasAdjustment: destination !== chain ? 2 : 1,
   }
 
   const render = (props: any) => {
@@ -479,7 +469,6 @@ const SendPage = () => {
       {({ max, fee, submit }) => (
         <Form
           onSubmit={() => {
-            console.log("SUBMIT")
             handleSubmit(submit.fn)
           }}
         >

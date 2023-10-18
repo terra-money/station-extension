@@ -24,10 +24,10 @@ export const WalletList = ({
   title: string
   onClick?: (address: string) => void
 }) => {
-  if (!items.length) return <Empty />
   return (
     <Grid gap={10}>
       <SectionHeader withLine title={title} />
+      {!items.length && <Empty />}
       {items.map((w) => (
         <AddressSelectableListItem
           key={w.name}
