@@ -10,6 +10,7 @@ import {
   SectionHeader,
   Tabs,
 } from "station-ui"
+import { Empty } from "components/feedback"
 
 interface Props {
   onClick?: (item: AddressBook) => void
@@ -35,11 +36,10 @@ const AddressBook = ({ onClick }: Props) => {
     items: AddressBook[]
     title: string
   }) => {
-    if (!items.length) return null
-
     return (
       <Grid gap={12}>
         <SectionHeader withLine title={title} />
+        {!items.length && <Empty />}
         {items.map((w, i) => (
           <WalletSelectableListItem
             copyValue={w.recipient}
