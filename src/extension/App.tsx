@@ -35,6 +35,7 @@ import { useReplaceKeplr } from "utils/localStorage"
 import EnableCoinType from "app/sections/EnableCoinType"
 import UpdateNotification from "./update/UpdateNotification"
 import ChangeLogModal from "./update/ChangeLogModal"
+import InitActivity from "pages/activity/InitActivity"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -91,20 +92,22 @@ const App = () => {
   return (
     <ErrorBoundary fallback={fallback}>
       <InitBankBalance>
-        <RequestContainer>
-          <Header>
-            <ManageWallets />
-            <Flex gap={5}>
-              <LatestTx />
-              <EnableCoinType />
-              <NetworkHeader />
-              <NetworkStatus />
-              <Preferences />
-            </Flex>
-          </Header>
+        <InitActivity>
+          <RequestContainer>
+            <Header>
+              <ManageWallets />
+              <Flex gap={5}>
+                <LatestTx />
+                <EnableCoinType />
+                <NetworkHeader />
+                <NetworkStatus />
+                <Preferences />
+              </Flex>
+            </Header>
 
-          <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
-        </RequestContainer>
+            <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
+          </RequestContainer>
+        </InitActivity>
       </InitBankBalance>
       <ChangeLogModal />
       <UpdateNotification />

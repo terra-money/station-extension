@@ -6,10 +6,10 @@ import { useAddress, useNetwork } from "data/wallet"
 import { useValidators } from "data/queries/staking"
 import { WithTokenItem } from "data/token"
 import { useCW20Contracts, useCW20Whitelist } from "data/Terra/TerraAssets"
-import { FinderLink } from "components/general"
 import { Read } from "components/token"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { getChainIDFromAddress } from "utils/bech32"
+import { Fragment } from "react"
 
 const ValidatorAddress = ({ children: address }: { children: string }) => {
   const networks = useNetwork()
@@ -99,13 +99,12 @@ const ActivityTxMessage = ({ children: sentence, className }: Props) => {
         .split(" ")
         .filter((word, index) => index || word !== address)
         .map((word, index) => {
-          console.log("WORD", word, !index)
           const parsed = parse(word, index)
 
           return !index && index > 0 ? (
             <span key={index}>{parsed}</span>
           ) : (
-            <> {parsed} </>
+            <Fragment key={index}> {parsed} </Fragment>
           )
         })}
     </div>
