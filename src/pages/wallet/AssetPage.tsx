@@ -11,7 +11,7 @@ import AssetVesting from "./AssetVesting"
 import { useNetworkName } from "data/wallet"
 import { SectionHeader } from "station-ui"
 import { useMemo } from "react"
-// import WalletActionButtons from "./WalletActionButtons"
+import WalletActionButtons from "./WalletActionButtons"
 
 const AssetPage = () => {
   const currency = useCurrency()
@@ -106,6 +106,7 @@ const AssetPage = () => {
           )}
         </h1>
         <Read decimals={decimals} amount={totalBalance} fixed={2} /> {symbol}
+        <WalletActionButtons />
       </section>
     )
   }

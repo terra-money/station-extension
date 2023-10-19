@@ -9,7 +9,7 @@ const InitTheme = () => {
 
   useEffect(() => {
     setTheme(valid ? theme : DefaultTheme)
-  }, [valid, theme, setTheme])
+  }, [valid]) // eslint-disable-line
 
   return null
 }
