@@ -5,45 +5,10 @@ import { LoadingCircular } from "station-ui"
 import ActivityItem from "./ActivityItem"
 import styles from "./ActivityList.module.scss"
 import { useInitialAccountInfo } from "data/queries/accountInfo"
-import { useInfiniteQuery } from "react-query"
-import { useRef, useEffect } from "react"
 
 const ActivityList = () => {
   const addresses = useInterchainAddresses()
   const { activitySorted: activity, state } = useInitialAccountInfo(addresses)
-
-  const fetchActivity = async ({ pageParam = 0 }) => {
-    return activity.slice(pageParam, pageParam + 30)
-  }
-
-  const {
-    data,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isFetchingNextPage,
-    status,
-  } = useInfiniteQuery({
-    queryKey: ["activity"],
-    queryFn: fetchActivity,
-    getNextPageParam: (pageParam) => pageParam,
-  })
-
-  const scrollingContainerRef = useRef<HTMLDivElement | null>(null)
-
-  const handleScroll = () => {
-    const container = scrollingContainerRef.current
-    if (container) {
-      const bottom =
-        container.scrollHeight - container.scrollTop === container.clientHeight
-      console.log("hi", bottom)
-      if (bottom) {
-        console.log("bottom")
-        fetchNextPage()
-      }
-    }
-  }
 
   const render = () => {
     if (addresses && !activity) return null
@@ -53,22 +18,11 @@ const ActivityList = () => {
         <Empty />
       </Card>
     ) : (
-      <div
-        className={styles.activitylist}
-        onScroll={handleScroll}
-        ref={scrollingContainerRef}
-      >
-        {state.isLoading ? (
-          <LoadingCircular size={36} thickness={2} />
-        ) : (
-          data?.pages.map((group, i) => (
-            <div key={i}>
-              {group.map((activityItem) => (
-                <ActivityItem {...activityItem} key={activityItem.txhash} />
-              ))}
-            </div>
-          ))
-        )}
+      <div className={styles.activitylist}>
+        {state.isLoading ? <LoadingCircular size={36} thickness={2} /> : null}
+        {activity.map((activityItem) => (
+          <ActivityItem {...activityItem} key={activityItem.txhash} />
+        ))}
         {/* {state.isLoading ? (
           <LoadingCircular size={36} thickness={2} />
         ) : (
