@@ -1,7 +1,9 @@
 import { useQueries } from "react-query"
 import { useNetwork } from "data/wallet"
 import { isTerraChain } from "utils/chain"
+import { Account } from "@terra-money/feather.js"
 import axios from "axios"
+import createContext from "utils/createContext"
 import { RefetchOptions, combineState, queryKey } from "data/query"
 
 interface PaginationKeys {
@@ -32,7 +34,14 @@ function getPaginationKeys(isTerra: boolean): PaginationKeys {
   }
 }
 
-export const useActivity = (addresses: Record<string, string> | undefined) => {
+export type InterchainAccountInfo = Record<string, Account>
+
+export const [useInterchainAccountInfo, AccountInfoProvider] =
+  createContext<InterchainAccountInfo[]>("useAccountInfo")
+
+export const useInitialAccountInfo = (
+  addresses: Record<string, string> | undefined
+) => {
   const networks = useNetwork()
 
   const LIMIT = 100

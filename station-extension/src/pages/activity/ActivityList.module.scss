@@ -1,6 +1,8 @@
 @import "mixins";
 
 .activitylist {
+  background-color: var(--card-bg-muted);
   padding-inline: 10px;
-  overflow-y: hidden;
+  display: grid;
+  overflow-y: scroll;
 }
