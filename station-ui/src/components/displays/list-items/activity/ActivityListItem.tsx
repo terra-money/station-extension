@@ -16,6 +16,7 @@ export interface ActivityListItemProps {
   type: string
   time: string
   timelineMessages?: ReactNode[]
+  onClick?: () => void
 }
 
 const ActivityListItem = ({
@@ -25,6 +26,7 @@ const ActivityListItem = ({
   type,
   time,
   timelineMessages,
+  onClick,
 }: ActivityListItemProps) => {
 
   let statusIcon = <LoadingIcon fill='var(--token-warning-500)' />;
@@ -36,7 +38,7 @@ const ActivityListItem = ({
   }
 
   return (
-    <div className={styles.activity__li__container}>
+    <div className={styles.activity__li__container} onClick={onClick}>
       <div className={cx(styles.activity__li, { has__timeline: timelineMessages?.length })}>
         <div className={styles.activity__icon__container}>
           {timelineMessages?.length ? <span className={styles.dashed__line} /> : null}
