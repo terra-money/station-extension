@@ -35,10 +35,10 @@ const ActivityList = () => {
   const handleScroll = () => {
     const container = scrollingContainerRef.current
     if (container) {
-      const isAtBottom =
-        container.getBoundingClientRect().bottom <= window.innerHeight
-      console.log("hi", isAtBottom)
-      if (isAtBottom) {
+      const bottom =
+        container.scrollHeight - container.scrollTop === container.clientHeight
+      console.log("hi", bottom)
+      if (bottom) {
         console.log("bottom")
         fetchNextPage()
       }
@@ -53,12 +53,16 @@ const ActivityList = () => {
         <Empty />
       </Card>
     ) : (
-      <div className={styles.activitylist}>
+      <div
+        className={styles.activitylist}
+        onScroll={handleScroll}
+        ref={scrollingContainerRef}
+      >
         {state.isLoading ? (
           <LoadingCircular size={36} thickness={2} />
         ) : (
           data?.pages.map((group, i) => (
-            <div key={i} onScroll={handleScroll} ref={scrollingContainerRef}>
+            <div key={i}>
               {group.map((activityItem) => (
                 <ActivityItem {...activityItem} key={activityItem.txhash} />
               ))}
