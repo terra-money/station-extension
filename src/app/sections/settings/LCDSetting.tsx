@@ -19,8 +19,8 @@ import {
   SubmitButton,
 } from "station-ui"
 import classNames from "classnames"
-import { useSettingsPage } from "./Preferences"
 import DeleteButton from "components/form/DeleteButton"
+import { useNavigate } from "react-router-dom"
 
 const cx = classNames.bind(styles)
 interface FormValues {
@@ -38,8 +38,8 @@ const LCDSetting = (props: Props) => {
   const networkOptions = useNetworkOptions()
   const { networks } = useNetworks()
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { customLCDs, changeCustomLCDs } = useCustomLCDs()
-  const { setPage } = useSettingsPage()
   const form = useForm<FormValues>({ mode: "onChange" })
   const {
     register,
@@ -125,12 +125,12 @@ const LCDSetting = (props: Props) => {
   const submit = ({ chainID, lcd }: FormValues) => {
     if (isDisabled) return
     changeCustomLCDs(chainID, lcd)
-    setPage("network")
+    navigate("preferences/network")
   }
 
   const handleDelete = () => {
     changeCustomLCDs(chainID, undefined)
-    setPage("network")
+    navigate("preferences/network")
   }
 
   return (

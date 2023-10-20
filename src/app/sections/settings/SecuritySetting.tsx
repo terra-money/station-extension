@@ -1,16 +1,16 @@
 import { NavButton } from "station-ui"
 import { FlexColumn } from "components/layout"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
-import { useSettingsPage } from "./Preferences"
+import { useNavigate } from "react-router-dom"
 
 const SecuritySetting = () => {
-  const { setPage } = useSettingsPage()
+  const navigate = useNavigate()
   return (
     <FlexColumn gap={16}>
       <NavButton
         icon={<LockOutlinedIcon />}
         label="Change Password"
-        onClick={() => setPage("changePassword")}
+        onClick={() => navigate("preferences/changePassword")}
       />
     </FlexColumn>
   )
