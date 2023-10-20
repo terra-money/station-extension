@@ -21,7 +21,6 @@ import AddNetworkPage from "./networks/AddNetworkPage"
 import Auth from "./auth/Auth"
 import Header from "./layouts/Header"
 import Front from "./modules/Front"
-import ManageWallets from "./auth/SelectWallets"
 import { useAllInterchainAddresses, usePubkey } from "auth/hooks/useAddress"
 import { Flex } from "components/layout"
 import NetworkStatus from "components/display/NetworkStatus"
@@ -37,6 +36,8 @@ import ChangeLogModal from "./update/ChangeLogModal"
 import Welcome from "./modules/Welcome"
 import ExtensionPage from "./components/ExtensionPage"
 import { getErrorMessage } from "utils/error"
+import ManageWalletsButton from "./auth/ManageWalletsButton"
+import ManageWalletRouter from "./auth/ManageWalletRouter"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -80,6 +81,7 @@ const App = () => {
 
     /* auth */
     { path: "/auth/*", element: <Auth /> },
+    { path: "/wallet/*", element: <ManageWalletRouter /> },
 
     /* default txs */
     { path: "/swap", element: <SwapTx /> },
@@ -100,18 +102,19 @@ const App = () => {
     // main page
     return (
       <>
-        {!location.pathname.startsWith("/auth/") && (
-          <Header>
-            <ManageWallets />
-            <Flex gap={5}>
-              <LatestTx />
-              <EnableCoinType />
-              <NetworkHeader />
-              <NetworkStatus />
-              <Preferences />
-            </Flex>
-          </Header>
-        )}
+        {!location.pathname.startsWith("/auth/") &&
+          !location.pathname.startsWith("/wallet/") && (
+            <Header>
+              <ManageWalletsButton />
+              <Flex gap={5}>
+                <LatestTx />
+                <EnableCoinType />
+                <NetworkHeader />
+                <NetworkStatus />
+                <Preferences />
+              </Flex>
+            </Header>
+          )}
 
         <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
       </>

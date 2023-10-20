@@ -1,30 +1,30 @@
-import KeyboardBackspaceRoundedIcon from '@mui/icons-material/KeyboardBackspaceRounded'
-import UsbIcon from '@mui/icons-material/Usb'
-import BluetoothIcon from '@mui/icons-material/Bluetooth'
-import { useAuth } from 'auth'
+import KeyboardBackspaceRoundedIcon from "@mui/icons-material/KeyboardBackspaceRounded"
+import UsbIcon from "@mui/icons-material/Usb"
+import BluetoothIcon from "@mui/icons-material/Bluetooth"
+import { useAuth } from "auth"
 import {
   FlexColumn,
   ModalButton,
   NavButton,
   WalletList,
   useModal,
-} from 'station-ui'
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import AddWallet from './AddWallet'
-import ManageWallet from './ManageWallet'
-import styles from './SelectWallets.module.scss'
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
-import { ReactComponent as WalletIcon } from 'styles/images/icons/Wallet.svg'
-import { bech32 } from 'bech32'
-import is from 'auth/scripts/is'
-import { addressFromWords } from 'utils/bech32'
-import { truncate } from '@terra-money/terra-utils'
+} from "station-ui"
+import { useState } from "react"
+import { useTranslation } from "react-i18next"
+import AddWallet from "./AddWallet"
+import ManageWallet from "./ManageWallet"
+import styles from "./SelectWallets.module.scss"
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
+import { ReactComponent as WalletIcon } from "styles/images/icons/Wallet.svg"
+import { bech32 } from "bech32"
+import is from "auth/scripts/is"
+import { addressFromWords } from "utils/bech32"
+import { truncate } from "@terra-money/terra-utils"
 
 enum Path {
-  select = 'select',
-  manage = 'manage',
-  add = 'add',
+  select = "select",
+  manage = "manage",
+  add = "add",
 }
 
 type Navigation =
@@ -41,12 +41,12 @@ export default function ManageWallets() {
   const { t } = useTranslation()
   const [route, setRoute] = useState<Navigation>({ path: Path.select })
   const selectedWallet = wallets.find((w) => {
-    if ('words' in w) {
-      return w.words['330'] === wallet?.words['330']
+    if ("words" in w) {
+      return w.words["330"] === wallet?.words["330"]
     } else {
       return (
-        Buffer.from(bech32.decode(w.address).words).toString('hex') ===
-        wallet?.words['330']
+        Buffer.from(bech32.decode(w.address).words).toString("hex") ===
+        wallet?.words["330"]
       )
     }
   })
@@ -62,11 +62,11 @@ export default function ManageWallets() {
   function renderTitle() {
     switch (route.path) {
       case Path.select:
-        return t('Wallet Selector')
+        return t("Wallet Selector")
       case Path.manage:
-        return t('Manage Wallet')
+        return t("Manage Wallet")
       case Path.add:
-        return t('Add Wallet')
+        return t("Add Wallet")
     }
   }
 
@@ -80,7 +80,7 @@ export default function ManageWallets() {
             setRoute({ path: Path.select })
           }}
           className={styles.manage__wallets}
-          data-testid='manage-wallets-button'
+          data-testid="manage-wallets-button"
         >
           {isLedger ? (
             wallet.bluetooth ? (
@@ -90,10 +90,10 @@ export default function ManageWallets() {
             )
           ) : (
             <WalletIcon style={{ fontSize: 18 }} />
-          )}{' '}
-          {wallet && 'name' in wallet ? wallet.name : 'Ledger'}
+          )}{" "}
+          {wallet && "name" in wallet ? wallet.name : "Ledger"}
           <ArrowDropDownIcon
-            style={{ marginLeft: '-6px', fontSize: '1.25rem' }}
+            style={{ marginLeft: "-6px", fontSize: "1.25rem" }}
           />
         </button>
       )}
@@ -102,7 +102,7 @@ export default function ManageWallets() {
       {route.path !== Path.select && (
         <button
           onClick={() => setRoute({ path: Path.select })}
-          style={{ position: 'absolute', top: 43, left: 30 }}
+          style={{ position: "absolute", top: 43, left: 30 }}
         >
           <KeyboardBackspaceRoundedIcon style={{ fontSize: 24 }} />
         </button>
@@ -127,20 +127,20 @@ function ManageWalletsModal({ route, setRoute }: Props) {
       return (
         <FlexColumn gap={24} className={styles.select__wallet__container}>
           <NavButton
-            label={t('Add Wallet')}
+            label={t("Add Wallet")}
             onClick={() => setRoute({ path: Path.add })}
           />
           <WalletList
             activeWallet={{
-              name: connectedWallet?.name ?? '',
+              name: connectedWallet?.name ?? "",
               address: truncate(
-                addressFromWords(connectedWallet?.words['330'] ?? '', 'terra'),
-                [11, 6],
+                addressFromWords(connectedWallet?.words["330"] ?? "", "terra"),
+                [11, 6]
               ),
               settingsOnClick: () =>
                 setRoute({
                   path: Path.manage,
-                  wallet: connectedWallet?.name ?? '',
+                  wallet: connectedWallet?.name ?? "",
                 }),
             }}
             otherWallets={wallets
@@ -148,10 +148,10 @@ function ManageWalletsModal({ route, setRoute }: Props) {
               .map((wallet) => ({
                 name: wallet.name,
                 address: truncate(
-                  'address' in wallet
+                  "address" in wallet
                     ? wallet.address
-                    : addressFromWords(wallet.words['330'], 'terra'),
-                  [11, 6],
+                    : addressFromWords(wallet.words["330"], "terra"),
+                  [11, 6]
                 ),
                 onClick: () => {
                   connect(wallet.name)
