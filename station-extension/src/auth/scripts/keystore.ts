@@ -9,6 +9,10 @@ enum LocalStorage {
   SESSION_EXPIRES = "sessionExpires",
 }
 
+enum SessionStorage {
+  LOGGEDIN = "loggedIn",
+}
+
 const CHALLENGE_TEXT = "STATION_PASSWORD_CHALLENGE"
 
 /* wallet */
@@ -16,9 +20,15 @@ const CHALLENGE_TEXT = "STATION_PASSWORD_CHALLENGE"
 // used to determine if it's needed to show the login screen
 export const isLoginNeeded = () => {
   const expiresAt = localStorage.getItem(LocalStorage.SESSION_EXPIRES)
+  const loggedIn = sessionStorage.getItem(SessionStorage.LOGGEDIN)
   const wallets = localStorage.getItem(LocalStorage.WALLETS)
+  const sessionExpired = Date.now() > parseInt(expiresAt ?? "0")
+
+  if (!sessionExpired) {
+    sessionStorage.setItem(SessionStorage.LOGGEDIN, "true")
+  }
   // user has some wallets and the session has expired
-  return !!wallets && Date.now() > parseInt(expiresAt ?? "0")
+  return !!wallets && (!loggedIn || sessionExpired)
 }
 
 // used to determine if the user still have to set a password
@@ -43,6 +53,7 @@ export const unlockWallets = (password: string) => {
     LocalStorage.SESSION_EXPIRES,
     (Date.now() + 1000 * 60 * 60 * 12).toString()
   )
+  sessionStorage.setItem(SessionStorage.LOGGEDIN, "true")
 }
 
 // checks if the given password is valid
@@ -62,11 +73,12 @@ export const isPasswordValid = (password: string) => {
 }
 
 // get the active wallet (user must be logged in)
-export const getWallet = () => {
+export const getWallet = (name?: string) => {
   if (isLoginNeeded()) return undefined
 
   const wallets = localStorage.getItem(LocalStorage.WALLETS)
-  const walletName = localStorage.getItem(LocalStorage.CONNECTED_WALLET_NAME)
+  const walletName =
+    name ?? localStorage.getItem(LocalStorage.CONNECTED_WALLET_NAME)
 
   if (!wallets || !walletName) return
   const parsed = JSON.parse(wallets)
@@ -110,6 +122,7 @@ const storePasswordChallenge = (password: string) => {
     LocalStorage.SESSION_EXPIRES,
     (Date.now() + 1000 * 60 * 60 * 12).toString()
   )
+  sessionStorage.setItem(SessionStorage.LOGGEDIN, "true")
   localStorage.setItem(
     LocalStorage.PASSWORD_CHALLENGE,
     encrypt(CHALLENGE_TEXT, password)
@@ -217,6 +230,21 @@ export const addWallet = (params: AddWalletParams, password: string) => {
   }
 }
 
+export const addMultisigWallet = (params: MultisigWallet) => {
+  const wallets = getStoredWallets()
+
+  if (wallets.find((wallet) => wallet.name === params.name))
+    throw new Error("Wallet already exists")
+
+  const next = wallets.filter((wallet) =>
+    "words" in wallet
+      ? wallet.words["330"] !== params.words["330"]
+      : wallet.address !== addressFromWords(params.words["330"])
+  )
+
+  storeWallets([...next, params])
+}
+
 interface ChangePasswordParams {
   oldPassword: string
   newPassword: string
@@ -269,4 +297,5 @@ export const deleteWallet = (name: string) => {
 
 export const lockWallet = () => {
   localStorage.removeItem(LocalStorage.SESSION_EXPIRES)
+  sessionStorage.removeItem(SessionStorage.LOGGEDIN)
 }

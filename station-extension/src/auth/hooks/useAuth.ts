@@ -21,7 +21,8 @@ import {
 import { getDecryptedKey } from "../scripts/keystore"
 import { getWallet, lockWallet } from "../scripts/keystore"
 import { getStoredWallet, getStoredWallets } from "../scripts/keystore"
-import encrypt from "../scripts/encrypt"
+import legacyEncrypt from "../scripts/encrypt"
+import { encrypt } from "../scripts/aes"
 import useAvailable from "./useAvailable"
 import { addressFromWords } from "utils/bech32"
 import { useNetwork } from "./useNetwork"
@@ -113,9 +114,9 @@ const useAuth = () => {
 
   /* manage: export */
   // TODO: export both 119 and 330 key
-  const encodeEncryptedWallet = (password: string) => {
-    const { name, words } = getConnectedWallet()
-    const key = getKey(password)
+  const encodeEncryptedWallet = (walletName: string, password: string) => {
+    const { words } = getWallet(walletName)
+    const key = getDecryptedKey({ name: walletName, password })
     if (!key) throw new Error("Key do not exist")
     if ("seed" in key) {
       const seed = new SeedKey({
@@ -125,17 +126,26 @@ const useAuth = () => {
       })
 
       const data = {
-        name,
+        name: walletName,
         address: seed.accAddress("terra"),
-        encrypted_key: encrypt(seed.privateKey.toString("hex"), password),
+        // needed to import into old versions of station
+        encrypted_key: legacyEncrypt(seed.privateKey.toString("hex"), password),
+        // import into new versions
+        seed: encrypt(
+          // encode in base64 to use less chars
+          Buffer.from(key.seed, "hex").toString("base64"),
+          password
+        ),
+        index: key.index,
+        legacy: key.legacy,
       }
       return encode(JSON.stringify(data))
     }
 
     const data = {
-      name,
+      name: walletName,
       address: addressFromWords(words["330"], "terra"),
-      encrypted_key: encrypt(key["330"], password),
+      encrypted_key: legacyEncrypt(key["330"], password),
     }
     return encode(JSON.stringify(data))
   }

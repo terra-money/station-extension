@@ -2,15 +2,16 @@ import { useTranslation } from "react-i18next"
 import { useThemeFavicon } from "data/settings/Theme"
 import styles from "./Welcome.module.scss"
 import ExtensionPage from "extension/components/ExtensionPage"
-import { Button } from "station-ui"
+import { Button, WalletList } from "station-ui"
 import { useAuth } from "auth"
-import SwitchWallet from "extension/auth/SwitchWallet"
 import { openURL } from "extension/storage"
+import { truncate } from "@terra-money/terra-utils"
+import { addressFromWords } from "utils/bech32"
 
 const Welcome = () => {
   const { t } = useTranslation()
   const icon = useThemeFavicon()
-  const { wallets } = useAuth()
+  const { wallets, connect } = useAuth()
   const existsWallets = wallets.length > 0
 
   return (
@@ -20,7 +21,20 @@ const Welcome = () => {
     >
       <main className={styles.welcome__container}>
         {existsWallets ? (
-          <SwitchWallet />
+          <WalletList
+            otherWallets={wallets.map((wallet) => ({
+              name: wallet.name,
+              address: truncate(
+                "address" in wallet
+                  ? wallet.address
+                  : addressFromWords(wallet.words["330"], "terra"),
+                [11, 6]
+              ),
+              onClick: () => {
+                connect(wallet.name)
+              },
+            }))}
+          />
         ) : (
           <section className={styles.welcome}>
             <img src={icon} alt="Station" width={60} />
@@ -38,6 +52,7 @@ const Welcome = () => {
             variant="white-filled"
             block
             label={t("Import existing wallet")}
+            style={existsWallets ? { color: "var(--token-dark-200)" } : {}}
           />
           <Button
             onClick={() => openURL("/auth/new")}

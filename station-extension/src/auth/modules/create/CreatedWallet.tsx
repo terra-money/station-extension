@@ -1,9 +1,8 @@
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import { Submit } from "components/form"
 import useAuth from "../../hooks/useAuth"
 import { addressFromWords } from "utils/bech32"
-import { FlexColumn, SummaryHeader } from "station-ui"
+import { Button, FlexColumn, SummaryHeader } from "station-ui"
 
 interface Props extends SingleWallet {
   onConfirm?: () => void
@@ -33,9 +32,9 @@ const CreatedWallet = ({ name, words, onConfirm }: Props) => {
         summaryTitle={name}
         summaryValue={address}
       />
-      <Submit type="button" onClick={submit}>
+      <Button variant="primary" onClick={submit}>
         {t("Done")}
-      </Submit>
+      </Button>
     </FlexColumn>
   )
 }
