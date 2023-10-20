@@ -5,7 +5,7 @@ import {
   MsgSend,
   MsgTransfer,
 } from "@terra-money/feather.js"
-import { useState } from "react"
+import { useState, ReactNode } from "react"
 import { toAmount } from "@terra-money/terra-utils"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { getChainNamefromID } from "data/queries/chains"
@@ -34,12 +34,12 @@ import {
   Input,
   SendHeader,
   SummaryTable,
+  Tabs,
 } from "station-ui"
 
 import { useParsedAssetList } from "data/token"
 import validate, { validateRecipient } from "txs/validate"
 import OtherWallets from "./OtherWallets"
-import { WalletList } from "./OtherWallets"
 import { truncate } from "@terra-money/terra-utils"
 import { SearchChains } from "../ReceivePage"
 import { useWalletRoute, Page } from "../Wallet"
@@ -83,13 +83,14 @@ const SendPage = () => {
   const currency = useCurrency()
   const addresses = useInterchainAddresses()
   const [asset, setAsset] = useState<AssetType>()
+  const [tab, setTab] = useState("address")
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange" })
   const { register, watch, setValue, trigger, handleSubmit } = form
   const { formState } = form
   const { errors } = formState
-  const { recipient, chain, input, destination } = watch()
+  const { recipient, chain, input, destination, memo } = watch()
 
   const amount = useMemo(() => {
     return toAmount(input, { decimals: asset?.decimals })
@@ -97,18 +98,31 @@ const SendPage = () => {
 
   // View #1
   const Address = () => {
+    const tabs = [
+      {
+        key: "address",
+        label: "Address Book",
+        onClick: () => setTab("address"),
+      },
+      {
+        key: "wallets",
+        label: "My Wallets",
+        onClick: () => setTab("wallets"),
+      },
+    ]
+
     const onClick = (recipient: AccAddress) => {
       setValue("recipient", recipient)
-      setRoute({ page: Page.sendChain })
+      setRoute({ page: Page.sendChain, denom: route.denom })
     }
 
-    const onChange = (recipient: AccAddress | undefined) => {
+    const onPaste = (recipient: AccAddress) => {
       if (!recipient) return
       setValue("recipient", recipient)
       trigger("recipient")
       if (validateRecipient(recipient)) {
         setValue("destination", getChainIDFromAddress(recipient, networks))
-        setRoute({ page: Page.sendToken })
+        setRoute({ page: Page.sendToken, denom: route.denom })
       }
     }
 
@@ -121,17 +135,17 @@ const SendPage = () => {
           <InputInLine
             type="text"
             label="To"
-            extra={<Paste onPaste={() => onChange(recipient)} />}
+            extra={<Paste onPaste={(recipient) => onPaste(recipient)} />}
             {...register("recipient", {
               validate: { ...validate.recipient() },
             })}
-            onChange={() => onChange(recipient)}
           />
         </InputWrapper>
         <SectionHeader title="Recently Used" />
         {/* <WalletList items={} title={t("Recently Used")} onClick={onClick} /> */}
         <SectionHeader title="Other Wallets" />
-        <OtherWallets onClick={onClick} />
+        <Tabs activeTabKey={tab} tabs={tabs} />
+        <OtherWallets tab={tab} onClick={onClick} />
       </>
     )
   }
@@ -150,7 +164,7 @@ const SendPage = () => {
           name: getChainNamefromID(chain, networks) ?? chain,
           onClick: () => {
             setValue("destination", chain)
-            setRoute({ page: Page.sendToken })
+            setRoute({ page: Page.sendToken, denom: route.denom })
           },
           id: chain,
           address: convertAddress(recipient!, networks[chain]?.prefix),
@@ -167,6 +181,13 @@ const SendPage = () => {
         if (!destination) return acc
 
         a.chains.forEach((tokenChain: string) => {
+          const balance = parseInt(
+            balances.find((b) => b.chain === tokenChain && b.denom === a.denom)
+              ?.amount ?? "0"
+          )
+          if (balance === 0) return acc
+          if (route.denom && route.denom !== a.denom) return acc
+
           const isNative = tokenChain === destination
           const channel = getIBCChannel({
             from: tokenChain,
@@ -177,14 +198,7 @@ const SendPage = () => {
           })
 
           if (isNative || channel) {
-            const balance = parseInt(
-              balances.find(
-                (b) => b.chain === tokenChain && b.denom === a.denom
-              )?.amount ?? "0"
-            )
-            if (balance === 0) return acc
             const balVal = balance * a.price
-
             const senderAddress = addresses?.[tokenChain]
             const item = {
               ...a,
@@ -221,6 +235,13 @@ const SendPage = () => {
       }, [] as AssetType[])
     }, [])
 
+    const onClick = (asset: AssetType) => {
+      setValue("asset", asset.denom)
+      setValue("chain", asset.tokenChain)
+      setAsset(asset)
+      setRoute({ page: Page.sendSubmit })
+    }
+
     return (
       <>
         <InputInLine
@@ -253,10 +274,7 @@ const SendPage = () => {
                     key={`${asset.denom}*${asset.tokenChain}`}
                     {...asset}
                     onClick={() => {
-                      setValue("asset", asset.denom)
-                      setValue("chain", asset.tokenChain)
-                      setAsset(asset)
-                      setRoute({ page: Page.sendSubmit })
+                      onClick(asset)
                     }}
                   />
                 ))}
@@ -323,7 +341,7 @@ const SendPage = () => {
     )
   }
 
-  const Confirm = () => {
+  const Confirm = ({ button }: { button: ReactNode }) => {
     if (!input || !asset?.price) return null
     const value = input * asset?.price
     const rows = [
@@ -349,14 +367,15 @@ const SendPage = () => {
           value={"🥹"}
         />
         <SummaryTable rows={rows} />
-        <Button variant="primary" type="submit" label={t("Confirm")} />
+        <section>{button}</section>
       </>
     )
   }
 
   const createTx = useCallback(
     ({ address, input, memo }: TxValues) => {
-      const { senderAddress, amount, denom, channel } = asset ?? {}
+      const amount = toAmount(input, { decimals: asset?.decimals })
+      const { senderAddress, denom, channel } = asset ?? {}
       if (!senderAddress) return
 
       if (!(recipient && AccAddress.validate(recipient))) return
@@ -434,45 +453,29 @@ const SendPage = () => {
     token: asset?.denom,
     decimals: asset?.decimals,
     amount,
+    memo,
     coins,
     chain: chain ?? "",
     balance: asset?.balance,
     estimationTxValues,
     createTx,
     onChangeMax,
-    onSuccess: () => {
-      setRoute({ page: Page.wallet })
-    },
+    onSuccess: () => setRoute({ page: Page.wallet }),
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     gasAdjustment: destination !== chain ? 2 : 1,
-  }
-
-  const render = (props: any) => {
-    switch (route.page) {
-      case Page.send:
-        return <Address />
-      case Page.sendChain:
-        return <Chain />
-      case Page.sendToken:
-        return <Token />
-      case Page.sendSubmit:
-        return <Submit {...props} />
-      case Page.sendConfirm:
-        return <Confirm />
-      default:
-        return null
-    }
   }
 
   return (
     <Tx {...tx}>
       {({ max, fee, submit }) => (
-        <Form
-          onSubmit={() => {
-            handleSubmit(submit.fn)
-          }}
-        >
-          {render(max)}
+        <Form onSubmit={() => handleSubmit(submit.fn)}>
+          {route.page === Page.send && <Address />}
+          {route.page === Page.sendChain && <Chain />}
+          {route.page === Page.sendToken && <Token />}
+          {route.page === Page.sendSubmit && <Submit max={max} />}
+          {route.page === Page.sendConfirm && (
+            <Confirm button={submit.button} />
+          )}
         </Form>
       )}
     </Tx>

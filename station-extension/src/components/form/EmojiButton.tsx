@@ -1,5 +1,6 @@
 import { ModalButton, Input, InputWrapper, Button } from "station-ui"
 import { useState } from "react"
+import ExtensionPage from "extension/components/ExtensionPage"
 import { ReactComponent as EmptyEmoji } from "styles/images/icons/EmptyEmoji.svg"
 import styles from "./EmojiButton.module.scss"
 const emojiOptions = [
