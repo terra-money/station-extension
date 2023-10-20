@@ -7,12 +7,14 @@ import CreateWalletForm from "./CreateWalletForm"
 import CreatedWallet from "./CreatedWallet"
 import { wordsFromAddress } from "utils/bech32"
 import PasswordForm from "./PasswordForm"
+import { decrypt } from "auth/scripts/aes"
 
 export interface Values {
   name: string
   mnemonic: string
   index: number
   coinType?: Bip
+  seedPassword?: string
 }
 
 /* context */
@@ -27,7 +29,7 @@ interface CreateWallet {
 
   /* create wallet */
   createdWallet?: SingleWallet
-  createWallet: (password: string, index?: number) => void
+  createWallet: (password: string) => void
 }
 
 export const [useCreateWallet, CreateWalletProvider] =
@@ -53,10 +55,12 @@ const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
 
   /* create wallet */
   const [createdWallet, setCreatedWallet] = useState<SingleWallet>()
-  const createWallet = (password: string, index = 0) => {
-    const { name, mnemonic, coinType } = values
+  const createWallet = (password: string) => {
+    const { name, mnemonic, coinType, index, seedPassword } = values
 
-    const seed = SeedKey.seedFromMnemonic(mnemonic)
+    const seed = seedPassword
+      ? Buffer.from(decrypt(mnemonic, seedPassword), "base64")
+      : SeedKey.seedFromMnemonic(mnemonic)
     const key330 = new SeedKey({ seed, coinType: coinType ?? 330, index })
     const key118 = new SeedKey({ seed, coinType: 118, index })
     const key60 = new SeedKey({ seed, coinType: 60, index })
