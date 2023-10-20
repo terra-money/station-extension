@@ -12,8 +12,9 @@ const ExportWalletPage = () => {
     <ExtensionPage
       title={t("Export wallet")}
       subtitle={walletName}
-      backButtonPath="/"
+      backButtonPath={`/wallet/manage/${walletName}`}
       fullHeight
+      modal
     >
       <ExportWalletForm walletName={walletName} />
     </ExtensionPage>
