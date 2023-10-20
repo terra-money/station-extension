@@ -20,7 +20,7 @@ const AddressBook = ({ onClick }: Props) => {
   const { list: addressList } = useAddressBook()
   const [open, setOpen] = useState(false)
   const [index, setIndex] = useState<number | undefined>()
-  const [tabKey, setTabKey] = useState("addressBook")
+  const [tabKey, setTabKey] = useState("address")
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => {
@@ -58,14 +58,14 @@ const AddressBook = ({ onClick }: Props) => {
 
   const tabs = [
     {
-      key: "addressBook",
+      key: "address",
       label: "Address Book",
-      onClick: () => setTabKey("addressBook"),
+      onClick: () => setTabKey("address"),
     },
     {
-      key: "myWallets",
+      key: "wallets",
       label: "My Wallets",
-      onClick: () => setTabKey("myWallets"),
+      onClick: () => setTabKey("wallets"),
     },
   ]
 
@@ -77,7 +77,7 @@ const AddressBook = ({ onClick }: Props) => {
         {t("Add New Address")}
       </Button>
       <Tabs activeTabKey={tabKey} tabs={tabs} />
-      {tabKey === "addressBook" ? (
+      {tabKey === "address" ? (
         <>
           <WalletList
             title="Favorites"
