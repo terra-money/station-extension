@@ -10,7 +10,7 @@ const SecuritySetting = () => {
       <NavButton
         icon={<LockOutlinedIcon />}
         label="Change Password"
-        onClick={() => navigate("preferences/changePassword")}
+        onClick={() => navigate(`/preferences/security/change-password`)}
       />
     </FlexColumn>
   )

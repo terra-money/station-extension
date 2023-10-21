@@ -14,6 +14,7 @@ import { Languages } from "config/lang"
 import { capitalize } from "@mui/material"
 import AddressBook from "txs/AddressBook/AddressBook"
 import { useTranslation } from "react-i18next"
+import AddAddressBookForm from "txs/AddressBook/AddressBookForm"
 import PreferencesPage, { SettingsPage } from "./PreferencesPage"
 
 export const useSettingsRoutes = () => {
@@ -22,7 +23,7 @@ export const useSettingsRoutes = () => {
   const networkName = useNetworkName()
   const network = {
     network: {
-      route: "/network",
+      route: "network",
       title: t("Network"),
       value: capitalize(networkName),
       element: <NetworkSetting />,
@@ -31,13 +32,13 @@ export const useSettingsRoutes = () => {
 
   const functions = {
     addressBook: {
-      route: "/address-book",
+      route: "address-book",
       title: t("Address Book"),
       element: <AddressBook />,
       icon: <ContactsIcon />,
     },
     manageTokens: {
-      route: "/manage-tokens",
+      route: "manage-tokens",
       title: t("Manage Tokens"),
       element: <ManageCustomTokens />,
       icon: <ManageAssets />,
@@ -46,7 +47,7 @@ export const useSettingsRoutes = () => {
 
   const settings = {
     lang: {
-      route: "/lang",
+      route: "lang",
       title: t("Language"),
       element: <LanguageSetting />,
       value: Object.values(Languages ?? {}).find(
@@ -54,13 +55,13 @@ export const useSettingsRoutes = () => {
       )?.label,
     },
     currency: {
-      route: "/currency",
+      route: "currency",
       title: t("Currency"),
       element: <CurrencySetting />,
       value: currencyId,
     },
     security: {
-      route: "/security",
+      route: "security",
       title: t("Security"),
       element: <SecuritySetting />,
       icon: <LockOutlinedIcon />,
@@ -69,16 +70,26 @@ export const useSettingsRoutes = () => {
 
   const subPages = {
     changePassword: {
-      route: "/security/change-password",
+      route: "security/change-password",
       title: t("Change Password"),
       element: <ChangePasswordForm />,
       icon: <LockOutlinedIcon />,
     },
     lcd: {
-      route: "/network/lcd",
+      route: "network/lcd",
       element: <LCDSetting />,
       title: t("Add LCD Endpoint"),
     },
+    addressBookNew: {
+      route: "address-book/new",
+      element: <AddAddressBookForm />,
+      title: t("New Address Entry"),
+    },
+  }
+  const home = {
+    route: "/",
+    title: t("Settings"),
+    element: <PreferencesPage />,
   }
 
   const routes: Record<string, SettingsPage> = {
@@ -86,6 +97,7 @@ export const useSettingsRoutes = () => {
     ...functions,
     ...settings,
     ...subPages,
+    home,
   }
 
   return { routes, functions, settings, subPages }
