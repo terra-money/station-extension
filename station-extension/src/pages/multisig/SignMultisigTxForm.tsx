@@ -9,7 +9,6 @@ import { Form, FormError, FormItem } from "components/form"
 import { Input, Submit, TextArea } from "components/form"
 import { Modal } from "components/feedback"
 import { isWallet, useAuth } from "auth"
-import { PasswordError } from "auth/scripts/keystore"
 import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
 import ReadTx from "./ReadTx"
 import { useChainID } from "data/wallet"
@@ -61,7 +60,7 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
       )
       setSignature(signature)
     } catch (error) {
-      if (error instanceof PasswordError) setIncorrect(error.message)
+      if (error instanceof Error) setIncorrect(error.message)
       else setError(error as Error)
     }
 

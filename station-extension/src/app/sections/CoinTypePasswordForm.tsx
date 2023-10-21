@@ -1,6 +1,10 @@
 import { SeedKey } from "@terra-money/feather.js"
 import useAuth from "auth/hooks/useAuth"
-import { getDecryptedKey, updateStoredWallet } from "auth/scripts/keystore"
+import {
+  getDecryptedKey,
+  getStoredWallets,
+  storeWallets,
+} from "auth/scripts/keystore"
 import {
   Form,
   FormError,
@@ -63,11 +67,19 @@ const CoinTypePasswordForm = ({ close }: { close: () => void }) => {
           // @ts-expect-error
           "60": key60.publicKey.key,
         }
-        updateStoredWallet({
-          name: wallet.name,
-          words,
-          pubkey,
-        })
+        storeWallets(
+          getStoredWallets().map((w) => {
+            if (w.name === wallet.name) {
+              return {
+                ...w,
+                words,
+                pubkey,
+              }
+            }
+            return w
+          })
+        )
+
         connect(wallet.name)
         close()
       }
