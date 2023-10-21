@@ -23,8 +23,6 @@ const NetworkSetting = () => {
       lcd: customLCDs[chainID],
     }
   })
-  console.log("list", list)
-
   if (!networkOptions) return null
 
   return (
