@@ -1,5 +1,4 @@
-import { SectionHeader, SummaryCard } from "station-ui"
-import { useWalletRoute } from "./Wallet"
+import { SectionHeader, SendHeader } from "station-ui"
 import VestingCard from "./VestingCard"
 import {
   isVestingAccount,
@@ -7,37 +6,49 @@ import {
   useAccount,
 } from "data/queries/vesting"
 import styles from "./VestingDetailsPage.module.scss"
+import { VestingScheduleItem } from "data/queries/vesting"
+import { ReadPercent, Read } from "components/token"
 
 interface Props {
   token?: string
   chain?: string
 }
 
-const AssetVesting = (props: Props) => {
-  const { route, setRoute } = useWalletRoute()
+const AssetVesting = ({ token = "uluna" }: Props) => {
   const { data } = useAccount()
-  const { token, chain } = props
 
-  if (!data) return null
-  if (!isVestingAccount(data)) return null
+  if (!data || !isVestingAccount(data)) return null
 
-  const { schedule, amount } = parseVestingSchedule(data)
-  console.log("schedule", schedule)
+  const { schedule } = parseVestingSchedule(data)
+
+  const renderSummaryRows = (item: VestingScheduleItem) => {
+    const rows = [
+      { label: "Release Date", value: item.end.toLocaleDateString() },
+      { label: "Amount", value: <Read amount={item.amount} /> },
+      { label: "Ratio", value: <ReadPercent>{item.ratio}</ReadPercent> },
+    ]
+
+    return rows.map((row) => (
+      <div className={styles.row}>
+        <div className={styles.label}>{row.label}</div>
+        <div className={styles.value}>{row.value}</div>
+      </div>
+    ))
+  }
 
   return (
     <>
-      <VestingCard token={props.token ?? "uluna"} />
+      <SendHeader heading="" label="Vesting Details" subLabel="" />
+      <VestingCard token={token} />
       {schedule.map((item, index) => (
         <>
-          <SectionHeader title={`Period ${index + 1}`} />
-          <SummaryCard className={styles.wrapper}>
-            {Object.keys(item).map((p, index) => (
-              <>
-                <div className={styles.label}>{JSON.stringify(p)}</div>
-                {/* <div className={styles.value}>{Number(amount.total) * item[p].ratio}</div> */}
-              </>
-            ))}
-          </SummaryCard>
+          <SectionHeader
+            title={`Period ${index + 1}`}
+            className={styles.header}
+          />
+          <section className={styles.wrapper}>
+            {renderSummaryRows(item)}
+          </section>
         </>
       ))}
     </>

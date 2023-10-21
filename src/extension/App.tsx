@@ -1,8 +1,7 @@
 import { useEffect } from "react"
-import { useRoutes } from "react-router-dom"
+import { useRoutes, useLocation } from "react-router-dom"
 import { useAddress, useChainID, useNetworkName } from "data/wallet"
-import { ErrorBoundary } from "components/feedback"
-import { fallback } from "app/App"
+import { ErrorBoundary, Wrong } from "components/feedback"
 import InitBankBalance from "app/InitBankBalance"
 import LatestTx from "app/sections/LatestTx"
 import NetworkHeader from "app/sections/NetworkHeader"
@@ -22,7 +21,6 @@ import AddNetworkPage from "./networks/AddNetworkPage"
 import Auth from "./auth/Auth"
 import Header from "./layouts/Header"
 import Front from "./modules/Front"
-import ManageWallets from "./auth/SelectWallets"
 import { useAllInterchainAddresses, usePubkey } from "auth/hooks/useAddress"
 import { Flex } from "components/layout"
 import NetworkStatus from "components/display/NetworkStatus"
@@ -36,6 +34,11 @@ import EnableCoinType from "app/sections/EnableCoinType"
 import UpdateNotification from "./update/UpdateNotification"
 import ChangeLogModal from "./update/ChangeLogModal"
 import InitActivity from "pages/activity/InitActivity"
+import Welcome from "./modules/Welcome"
+import ExtensionPage from "./components/ExtensionPage"
+import { getErrorMessage } from "utils/error"
+import ManageWalletsButton from "./auth/ManageWalletsButton"
+import ManageWalletRouter from "./auth/ManageWalletRouter"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -79,6 +82,7 @@ const App = () => {
 
     /* auth */
     { path: "/auth/*", element: <Auth /> },
+    { path: "/wallet/*", element: <ManageWalletRouter /> },
 
     /* default txs */
     { path: "/swap", element: <SwapTx /> },
@@ -89,13 +93,20 @@ const App = () => {
     { path: "*", element: <Front /> },
   ])
 
-  return (
-    <ErrorBoundary fallback={fallback}>
-      <InitBankBalance>
-        <InitActivity>
-          <RequestContainer>
+  const location = useLocation()
+
+  function render() {
+    if (!wallet && !location.pathname.startsWith("/auth/")) {
+      //{wallets.length ? <SwitchWallet /> : <Welcome />}
+      return <Welcome />
+    }
+    // main page
+    return (
+      <>
+        {!location.pathname.startsWith("/auth/") &&
+          !location.pathname.startsWith("/wallet/") && (
             <Header>
-              <ManageWallets />
+              <ManageWalletsButton />
               <Flex gap={5}>
                 <LatestTx />
                 <EnableCoinType />
@@ -104,9 +115,18 @@ const App = () => {
                 <Preferences />
               </Flex>
             </Header>
+          )}
 
-            <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
-          </RequestContainer>
+        <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
+      </>
+    )
+  }
+
+  return (
+    <ErrorBoundary fallback={fallback}>
+      <InitBankBalance>
+        <InitActivity>
+          <RequestContainer>{render()}</RequestContainer>
         </InitActivity>
       </InitBankBalance>
       <ChangeLogModal />
@@ -114,5 +134,12 @@ const App = () => {
     </ErrorBoundary>
   )
 }
+
+/* error */
+export const fallback = (error: Error) => (
+  <ExtensionPage>
+    <Wrong>{getErrorMessage(error)}</Wrong>
+  </ExtensionPage>
+)
 
 export default App

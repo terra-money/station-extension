@@ -1,0 +1,36 @@
+.login__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+
+  .login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 4rem;
+    gap: 6px;
+    height: 100%;
+
+    .title {
+      font-size: 24pt;
+      font-weight: 800;
+      margin-top: 0.8rem;
+    }
+
+    .content {
+      font-size: 16px;
+      font-weight: var(--bold);
+      color: var(--text-muted);
+      text-align: center;
+      padding: 0 1rem;
+    }
+  }
+
+  .password__container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 12px;
+  }
+}

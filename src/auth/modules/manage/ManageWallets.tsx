@@ -6,23 +6,25 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined"
 import LogoutIcon from "@mui/icons-material/Logout"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
-import { Page } from "components/layout"
 import is from "../../scripts/is"
 import useAuth from "../../hooks/useAuth"
-import AuthList from "../../components/AuthList"
-import ConnectedWallet from "./ConnectedWallet"
+import { ButtonItem, LinkItem } from "extension/components/ExtensionList"
 
-export const useManageWallet = () => {
+export const useManageWallet = (walletName: string) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { wallet, disconnect, lock } = useAuth()
+  const { wallets, disconnect, lock, connectedWallet } = useAuth()
+
+  const wallet = wallets.find((w) => w.name === walletName)
 
   const toExport = {
-    to: "/auth/export",
+    to: `/auth/export/${walletName}`,
     children: t("Export wallet"),
     icon: <QrCodeIcon />,
   }
 
+  // TODO: move into extension settings
+  // eslint-disable-next-line
   const toPassword = {
     to: "/auth/password",
     children: t("Change password"),
@@ -30,24 +32,24 @@ export const useManageWallet = () => {
   }
 
   const toDelete = {
-    to: "/auth/delete",
+    to: `/auth/delete/${walletName}`,
     children: t("Delete wallet"),
     icon: <DeleteOutlineIcon />,
   }
 
-  const toSignMultisig = {
+  const toSignMultisig = connectedWallet?.name === walletName && {
     to: "/multisig/sign",
     children: t("Sign a multisig tx"),
     icon: <FactCheckOutlinedIcon />,
   }
 
-  const toPostMultisig = {
+  const toPostMultisig = connectedWallet?.name === walletName && {
     to: "/multisig/post",
     children: t("Post a multisig tx"),
     icon: <FactCheckOutlinedIcon />,
   }
 
-  const disconnectWallet = {
+  const disconnectWallet = connectedWallet?.name === walletName && {
     onClick: () => {
       disconnect()
       navigate("/", { replace: true })
@@ -56,6 +58,8 @@ export const useManageWallet = () => {
     icon: <LogoutIcon />,
   }
 
+  // TODO: move into extension settings
+  // eslint-disable-next-line
   const lockWallet = {
     onClick: () => {
       lock()
@@ -68,25 +72,11 @@ export const useManageWallet = () => {
 
   if (!wallet) return
 
-  return is.multisig(wallet)
-    ? [toPostMultisig, toDelete, disconnectWallet]
-    : is.ledger(wallet)
-    ? [toSignMultisig, disconnectWallet]
-    : [toExport, toPassword, toDelete, toSignMultisig, lockWallet]
-}
-
-const ManageWallets = () => {
-  const { t } = useTranslation()
-  const { available } = useAuth()
-  const list = useManageWallet()
-
   return (
-    <Page title={t("Manage wallets")}>
-      <ConnectedWallet>
-        {list && <AuthList list={list} />}
-        {!!available.length && <AuthList list={available} />}
-      </ConnectedWallet>
-    </Page>
-  )
+    is.multisig(wallet)
+      ? [toPostMultisig, toDelete, disconnectWallet]
+      : is.ledger(wallet)
+      ? [toSignMultisig, toDelete, disconnectWallet]
+      : [toExport, toDelete, toSignMultisig, disconnectWallet]
+  ).filter((opt) => !!opt) as (LinkItem | ButtonItem)[]
 }
-export default ManageWallets

@@ -1,9 +1,42 @@
-.button {
-  display: block;
-  padding: 16px;
-  text-align: left;
-}
-
 .coins {
   font-size: var(--font-size-small);
+}
+
+.selector__container {
+  width: 100%;
+  padding: 1.4rem 0;
+  text-align: start;
+
+  .selector__title {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    h1 {
+      font-size: 12pt;
+    }
+
+    h4 {
+      color: var(--text-muted);
+    }
+
+    padding-bottom: 1rem;
+    border-bottom: var(--border-width) solid var(--card-border);
+    margin-bottom: 1rem;
+  }
+
+  .selector__details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .muted {
+      color: var(--text-muted);
+    }
+    p {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
 }

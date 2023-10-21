@@ -1,0 +1,7 @@
+@import "mixins";
+
+.manage__wallets {
+  @include flex(flex-start);
+  gap: 8px;
+  padding-inline: 10px;
+}

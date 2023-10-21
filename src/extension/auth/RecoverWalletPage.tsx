@@ -6,7 +6,13 @@ const RecoverWallet = () => {
   const { t } = useTranslation()
 
   return (
-    <ExtensionPage title={t("Import from seed phrase")}>
+    <ExtensionPage
+      title={t("Import Wallet")}
+      subtitle={t(
+        "Enter your preferred wallet name and the wallet's seed phrase or private key."
+      )}
+      fullHeight
+    >
       <RecoverWalletForm />
     </ExtensionPage>
   )
