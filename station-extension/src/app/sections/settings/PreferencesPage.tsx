@@ -4,8 +4,7 @@ import { sandbox } from "auth/scripts/env"
 import { NavButton, SectionHeader } from "station-ui"
 import { ReactElement } from "react"
 import { useSettingsRoutes } from "./routes"
-import ExtensionPage from "extension/components/ExtensionPage"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 export interface SettingsPage {
   route: string
@@ -18,7 +17,6 @@ export interface SettingsPage {
 const PreferencesPage = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const location = useLocation()
 
   const { routes, functions, settings } = useSettingsRoutes()
 
@@ -33,19 +31,19 @@ const PreferencesPage = () => {
           label={title}
           key={route}
           {...rest}
-          onClick={() => navigate(route)}
+          onClick={() => navigate(`/preferences/${route}`)}
         />
       ))}
     </FlexColumn>
   )
 
-  const SettingsMenu = () => (
+  return (
     <FlexColumn gap={16}>
       {sandbox && (
         <NavButton
           {...routes.network}
           label={t(routes.network.title)}
-          onClick={() => navigate(routes.network.route)}
+          onClick={() => navigate(`/preferences/${routes.network.route}`)}
         />
       )}
       <SectionHeader withLine />
@@ -53,27 +51,6 @@ const PreferencesPage = () => {
       <SectionHeader withLine />
       <SettingsGroup settings={settings} />
     </FlexColumn>
-  )
-
-  // const renderHeader = () =>
-  //   page ? (
-  //     <>
-  //       <button
-  //         className={styles.back}
-  //         onClick={() => setPage(routes[page]?.parent ?? undefined)}
-  //       >
-  //         <BackIcon width={18} height={18} />
-  //       </button>
-  //       {routes[page].tab}
-  //     </>
-  //   ) : (
-  //     t("Settings")
-  //   )
-
-  return (
-    <ExtensionPage title={t("Settings")} fullHeight modal backButtonPath="/">
-      <SettingsMenu />
-    </ExtensionPage>
   )
 }
 

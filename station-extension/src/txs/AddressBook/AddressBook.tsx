@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next"
 import { useAddressBook } from "data/settings/AddressBook"
-import AddAddressBookItem from "./AddressBookForm"
 import { truncate } from "@terra-money/terra-utils"
 import { useState } from "react"
 import {
@@ -10,6 +9,10 @@ import {
   SectionHeader,
   Tabs,
 } from "station-ui"
+import { useNavigate } from "react-router-dom"
+import { useAuth } from "auth"
+import { getWallet } from "auth/scripts/keystore"
+import { addressFromWords } from "utils/bech32"
 
 interface Props {
   onClick?: (item: AddressBook) => void
@@ -18,15 +21,30 @@ interface Props {
 const AddressBook = ({ onClick }: Props) => {
   const { t } = useTranslation()
   const { list: addressList } = useAddressBook()
-  const [open, setOpen] = useState(false)
-  const [index, setIndex] = useState<number | undefined>()
   const [tabKey, setTabKey] = useState("address")
+  const navigate = useNavigate()
+  const { wallets } = useAuth()
 
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => {
-    setOpen(false)
-    setIndex(undefined)
+  const myWallets = wallets.map((wallet) => {
+    const { words } = getWallet(wallet.name)
+
+    return {
+      name: wallet.name,
+      recipient: addressFromWords(words["330"]),
+    }
+  })
+
+  const handleOpen = (walletIndex?: number) => {
+    navigate(`new`, walletIndex !== undefined ? { state: { walletIndex } } : {})
   }
+
+  const indexedList = addressList.map((item, index) => ({
+    ...item,
+    index,
+  }))
+
+  const favorites = indexedList.filter((i) => i.favorite)
+  const others = indexedList.filter((i) => !i.favorite)
 
   const WalletList = ({
     items,
@@ -39,17 +57,18 @@ const AddressBook = ({ onClick }: Props) => {
 
     return (
       <Grid gap={12}>
-        <SectionHeader withLine title={title} />
-        {items.map((w, i) => (
+        {title && <SectionHeader withLine title={title} />}
+        {items.map((item) => (
           <WalletSelectableListItem
-            copyValue={w.recipient}
-            key={w.name}
-            settingsOnClick={() => {
-              setIndex(i)
-              handleOpen()
-            }}
-            label={w.name}
-            subLabel={truncate(w.recipient)}
+            copyValue={item.recipient}
+            key={item.name}
+            settingsOnClick={
+              item.index !== undefined
+                ? () => handleOpen(item.index)
+                : undefined
+            }
+            label={item.name}
+            subLabel={truncate(item.recipient)}
           />
         ))}
       </Grid>
@@ -69,27 +88,19 @@ const AddressBook = ({ onClick }: Props) => {
     },
   ]
 
-  return open ? (
-    <AddAddressBookItem index={index} close={handleClose} />
-  ) : (
+  return (
     <Grid gap={12}>
-      <Button variant="dashed" onClick={handleOpen}>
+      <Button variant="dashed" onClick={() => handleOpen()}>
         {t("Add New Address")}
       </Button>
       <Tabs activeTabKey={tabKey} tabs={tabs} />
       {tabKey === "address" ? (
         <>
-          <WalletList
-            title="Favorites"
-            items={addressList.filter((i) => i.favorite)}
-          />
-          <WalletList
-            title="All"
-            items={addressList.filter((i) => !i.favorite)}
-          />
+          <WalletList title="Favorites" items={favorites} />
+          <WalletList title="All" items={others} />
         </>
       ) : (
-        <p>Pending useAuth refactor</p>
+        <WalletList title="" items={myWallets} />
       )}
     </Grid>
   )
