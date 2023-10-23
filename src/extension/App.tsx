@@ -102,21 +102,23 @@ const App = () => {
       return <Welcome />
     }
     // main page
+    const hidePaths = ["/auth/", "/wallet/", "/preferences"]
+    const hideHeader = hidePaths.some((p) => location.pathname.startsWith(p))
+
     return (
       <>
-        {!location.pathname.startsWith("/auth/") &&
-          !location.pathname.startsWith("/wallet/") && (
-            <Header>
-              <ManageWalletsButton />
-              <Flex gap={5}>
-                <LatestTx />
-                <EnableCoinType />
-                <NetworkHeader />
-                <NetworkStatus />
-                <PreferencesButton />
-              </Flex>
-            </Header>
-          )}
+        {!hideHeader && (
+          <Header>
+            <ManageWalletsButton />
+            <Flex gap={5}>
+              <LatestTx />
+              <EnableCoinType />
+              <NetworkHeader />
+              <NetworkStatus />
+              <PreferencesButton />
+            </Flex>
+          </Header>
+        )}
 
         <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
       </>
