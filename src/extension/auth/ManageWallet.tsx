@@ -6,8 +6,7 @@ interface Props {
 }
 
 const ManageWallet = ({ wallet }: Props) => {
-  // TODO: actions for specific wallets
-  const manageWallet = useManageWallet()
+  const manageWallet = useManageWallet(wallet)
   if (!manageWallet) return null
   return <ExtensionList list={manageWallet} />
 }
