@@ -12,6 +12,7 @@ import { toNow } from "utils/date"
 import { last } from "ramda"
 import ActivityMessage from "./ActivityMessage"
 import styles from "./ActivityItem.module.scss"
+import { useWalletRoute, Path } from "pages/wallet/Wallet"
 
 const ActivityItem = ({
   txhash,
@@ -31,6 +32,7 @@ const ActivityItem = ({
     raw_log,
   } = props
   const success = code === 0
+  const activityVariant = success ? "success" : "failed"
   const { t } = useTranslation()
   const network = useNetwork()
   const networkName = useNetworkName()
@@ -69,14 +71,35 @@ const ActivityItem = ({
 
   const activityType = msgType.charAt(0).toUpperCase() + msgType.substring(1)
 
+  const { route, setRoute } = useWalletRoute()
+
+  const handleActivityClick = () => {
+    if (route.path !== Path.activity) {
+      setRoute({
+        path: Path.activity,
+        variant: activityVariant,
+        chain: network[chain],
+        msg: activityMessages[0],
+        type: activityType,
+        time: timestamp,
+        timelineMessages: activityMessages.slice(1),
+        txHash: txhash,
+        fee: fee,
+        previousPage: route,
+      })
+    }
+  }
+
   return (
     <div className={styles.item}>
+      {" "}
       <ActivityListItem
-        variant={success ? "success" : "failed"}
+        variant={activityVariant}
         chain={{
           icon: network[chain].icon,
           label: network[chain].name,
         }}
+        onClick={handleActivityClick}
         msg={activityMessages[0]}
         type={activityType}
         time={toNow(new Date(timestamp))}
