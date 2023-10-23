@@ -19,10 +19,11 @@ import {
   SubmitButton,
 } from "station-ui"
 import classNames from "classnames"
-import { useSettingsPage } from "./Preferences"
 import DeleteButton from "components/form/DeleteButton"
+import { useLocation, useNavigate } from "react-router-dom"
 
 const cx = classNames.bind(styles)
+
 interface FormValues {
   network: string
   chainID: string
@@ -38,8 +39,9 @@ const LCDSetting = (props: Props) => {
   const networkOptions = useNetworkOptions()
   const { networks } = useNetworks()
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { customLCDs, changeCustomLCDs } = useCustomLCDs()
-  const { setPage } = useSettingsPage()
+  const location = useLocation()
   const form = useForm<FormValues>({ mode: "onChange" })
   const {
     register,
@@ -49,7 +51,7 @@ const LCDSetting = (props: Props) => {
     formState: { errors },
   } = form
   const { network, chainID, lcd } = watch()
-  const { selectedChainID } = props
+  const selectedChainID = location.state?.chainID ?? props.selectedChainID
   const networksList = useMemo(
     () =>
       Object.values(networks[network] ?? {})
@@ -125,12 +127,12 @@ const LCDSetting = (props: Props) => {
   const submit = ({ chainID, lcd }: FormValues) => {
     if (isDisabled) return
     changeCustomLCDs(chainID, lcd)
-    setPage("network")
+    navigate("/preferences/network")
   }
 
   const handleDelete = () => {
     changeCustomLCDs(chainID, undefined)
-    setPage("network")
+    navigate("/preferences/network")
   }
 
   return (
@@ -159,18 +161,6 @@ const LCDSetting = (props: Props) => {
         <Input
           type="text"
           placeholder={networks[network]?.[chainID]?.lcd}
-          // actionIcon={
-          //   lcd || !isSaved
-          //     ? {
-          //         icon: (
-          //           <span className={styles.loading}>
-          //             <DeleteIcon />
-          //           </span>
-          //         ),
-          //         onClick: () => handleDelete(),
-          //       }
-          //     : undefined
-          // }
           {...register("lcd", {
             value: customLCDs[chainID] ?? "",
           })}

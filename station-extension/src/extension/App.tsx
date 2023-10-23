@@ -24,7 +24,7 @@ import Front from "./modules/Front"
 import { useAllInterchainAddresses, usePubkey } from "auth/hooks/useAddress"
 import { Flex } from "components/layout"
 import NetworkStatus from "components/display/NetworkStatus"
-import Preferences from "app/sections/settings/Preferences"
+import PreferencesRouter from "app/sections/settings/PreferencesRouter"
 import { useAuth } from "auth"
 import is from "auth/scripts/is"
 import { useNetworks } from "app/InitNetworks"
@@ -38,6 +38,7 @@ import ExtensionPage from "./components/ExtensionPage"
 import { getErrorMessage } from "utils/error"
 import ManageWalletsButton from "./auth/ManageWalletsButton"
 import ManageWalletRouter from "./auth/ManageWalletRouter"
+import PreferencesButton from "app/sections/settings/PreferencesButton"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -82,6 +83,7 @@ const App = () => {
     /* auth */
     { path: "/auth/*", element: <Auth /> },
     { path: "/wallet/*", element: <ManageWalletRouter /> },
+    { path: "/preferences/*", element: <PreferencesRouter /> },
 
     /* default txs */
     { path: "/swap", element: <SwapTx /> },
@@ -100,21 +102,23 @@ const App = () => {
       return <Welcome />
     }
     // main page
+    const hidePaths = ["/auth/", "/wallet/", "/preferences"]
+    const hideHeader = hidePaths.some((p) => location.pathname.startsWith(p))
+
     return (
       <>
-        {!location.pathname.startsWith("/auth/") &&
-          !location.pathname.startsWith("/wallet/") && (
-            <Header>
-              <ManageWalletsButton />
-              <Flex gap={5}>
-                <LatestTx />
-                <EnableCoinType />
-                <NetworkHeader />
-                <NetworkStatus />
-                <Preferences />
-              </Flex>
-            </Header>
-          )}
+        {!hideHeader && (
+          <Header>
+            <ManageWalletsButton />
+            <Flex gap={5}>
+              <LatestTx />
+              <EnableCoinType />
+              <NetworkHeader />
+              <NetworkStatus />
+              <PreferencesButton />
+            </Flex>
+          </Header>
+        )}
 
         <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
       </>
