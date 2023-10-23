@@ -96,7 +96,6 @@ const AssetList = () => {
       .sort(
         (a, b) => b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
       )
-    console.log("visible", visible)
 
     const lowBal = filtered.filter((a) => !visible.includes(a))
     return { visible, lowBal, baseAssets }
@@ -126,7 +125,6 @@ const AssetList = () => {
 
   const render = () => {
     if (!assets) return
-    console.log(assets)
 
     return (
       <div>

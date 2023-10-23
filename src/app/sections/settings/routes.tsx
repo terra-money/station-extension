@@ -44,9 +44,9 @@ export const useSettingsRoutes = () => {
       icon: <ManageAssets />,
     },
     lockWallet: {
-      key: "lockWallet",
-      tab: t("Lock Wallet"),
-      component: <></>,
+      route: "lock-wallet",
+      title: t("Lock Wallet"),
+      element: <span></span>,
       icon: <LockOutlinedIcon />,
     },
   }
