@@ -1,26 +1,25 @@
-import { SectionHeader, ModalButton } from "station-ui"
+import { ModalButton } from "station-ui"
 import VestingCard from "./VestingCard"
 import VestingDetailsPage from "./VestingDetailsPage"
+import { ParsedVestingSchedule } from "data/queries/vesting"
 
 interface Props {
-  token: string
-  chain?: string
+  schedule: ParsedVestingSchedule
 }
 
-const AssetVesting = (props: Props) => {
+const AssetVesting = ({ schedule }: Props) => {
+  if (!schedule) return null
+
   return (
-    <>
-      <SectionHeader title="Vesting" withLine />
-      <ModalButton
-        renderButton={(open) => (
-          <div onClick={open}>
-            <VestingCard {...props} />
-          </div>
-        )}
-      >
-        <VestingDetailsPage {...props} />
-      </ModalButton>
-    </>
+    <ModalButton
+      renderButton={(open) => (
+        <button onClick={open}>
+          <VestingCard schedule={schedule} />
+        </button>
+      )}
+    >
+      <VestingDetailsPage schedule={schedule} />
+    </ModalButton>
   )
 }
 

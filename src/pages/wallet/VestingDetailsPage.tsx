@@ -1,6 +1,7 @@
 import { SectionHeader, SendHeader, SummaryTable } from "station-ui"
 import VestingCard from "./VestingCard"
 import {
+  ParsedVestingSchedule,
   isVestingAccount,
   parseVestingSchedule,
   useAccount,
@@ -10,16 +11,11 @@ import { VestingScheduleItem } from "data/queries/vesting"
 import { ReadPercent, Read } from "components/token"
 
 interface Props {
-  token?: string
-  chain?: string
+  schedule: ParsedVestingSchedule
 }
 
-const AssetVesting = ({ token = "uluna" }: Props) => {
-  const { data } = useAccount()
-
-  if (!data || !isVestingAccount(data)) return null
-
-  const { schedule } = parseVestingSchedule(data)
+const AssetVesting = ({ schedule }: Props) => {
+  if (!schedule) return null
 
   const renderSummaryRows = (item: VestingScheduleItem) => {
     const dateRange = `${item.start?.toLocaleDateString()} - ${item.end.toLocaleDateString()}`
@@ -34,15 +30,12 @@ const AssetVesting = ({ token = "uluna" }: Props) => {
   return (
     <div className={styles.container}>
       <SendHeader heading="" label="Vesting Details" subLabel="" />
-      <VestingCard token={token} />
-      {schedule.map((item, index) => (
-        <>
-          <SectionHeader
-            title={`Period ${index + 1}`}
-            className={styles.header}
-          />
+      <VestingCard schedule={schedule} />
+      {schedule.schedule.map((item, i) => (
+        <div key={i}>
+          <SectionHeader title={`Period ${i + 1}`} className={styles.header} />
           {renderSummaryRows(item)}
-        </>
+        </div>
       ))}
     </div>
   )
