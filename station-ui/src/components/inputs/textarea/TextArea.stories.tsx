@@ -1,8 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import TextArea, { TextAreaProps } from './TextArea';
-import { useEffect, useState } from 'react';
-import { InputWrapper } from 'components/form-helpers';
-import Copy from 'components/general/copy/Copy';
+import { useEffect, useState } from "react"
+import type { Meta, StoryObj } from "@storybook/react"
+import TextArea, { TextAreaProps } from "./TextArea"
+import { InputWrapper } from "components/form-helpers"
+import Copy from "components/general/copy/Copy"
+import styles from "./TextArea.module.scss"
 
 const meta: Meta<TextAreaProps> = {
   title: 'Components/Inputs/TextArea/Stories',
@@ -100,6 +101,33 @@ export const WithInputWrapperExample: StoryObj<TextAreaProps> = {
         <TextArea
           readOnly={true}
           value={value}
+        />
+      </InputWrapper>
+    );
+  },
+};
+
+export const ObjectExample: StoryObj<TextAreaProps> = {
+  render: () => {
+    return (
+      <InputWrapper
+        label="Textbox label"
+      >
+        <TextArea
+          className={styles.textarea__override}
+          readOnly={true}
+          value={
+            `{
+              "@type": "/cosmos.distribution.v1beta1.msg",
+              "despositor": "terra1desevg71bjsn2n2uibs2b",
+              "amount": [
+                {
+                  "denom": "uluna",
+                  "amount": "241545000000"
+                }
+              ]
+            }`
+          }
         />
       </InputWrapper>
     );

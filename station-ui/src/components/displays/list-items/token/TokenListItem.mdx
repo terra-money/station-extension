@@ -14,16 +14,13 @@ import "scss/storybookoverrides.scss";
 ##### Displays a single token item.
 
 ## Props
-- **`balance`** - `string` - The balance of the token.
-  - If this is not provided, the balance will default to "0".
-- **`chains`** - <RequiredText /> - `string[]` - A list of chains this token is on.
-- **`currency`** - <RequiredText /> - `**object below**` - The currency a user uses.
-  - `{ id: string, symbol: string, name: string }`
+- **`chains`** - <RequiredText /> - `{*object*}[]` - A list of chains this token is on.
+  - `{ name: string, icon: string, balance: string }`
 - **`tokenImg`** - <RequiredText /> - `string` - The Image for the token.
 - **`symbol`** - <RequiredText /> - `string` - The label to display the token.
-- **`price`** - `number` - The current price of the token.
 - **`change`** - `number` - The percent change of the token in 24 hours.
 - **`amountNode`** - <RequiredText /> - `ReactNode` - The amount of the token.
+- **`priceNode`** - <RequiredText /> - `ReactNode` - The price of the token.
 - **`onClick`** - <RequiredText /> - `() => void` - Function that is called when the item is clicked.
 
 ## Import
@@ -43,7 +40,6 @@ Displays an individual token item with a Tooltip that displays amounts on chains
   chains={[{name: "terra",  icon: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }, { balance: '320' , name: "axelar", icon: "https://station-assets.terra.dev/img/chains/Axelar.svg"}]}
   tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
   symbol={"LUNA"}
-  price={1}
   change={0.1}
   amountNode={<span>420.00</span>}
 />
@@ -60,7 +56,6 @@ Displays an individual token item that is on a single chain (So, no Tooltip).
   chains={[{name: "terra",  icon: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }]}
   tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
   symbol={"LUNA"}
-  price={1}
   change={0.1}
   amountNode={<span>420.00</span>}
 />
@@ -76,18 +71,14 @@ Displays an individual token item that is on a single chain (So, no Tooltip).
 ##### Displays a single token what has a single chain.
 
 ## Props
-- **`balance`** - `string` - The balance of the token.
-  - If this is not provided, the balance will default to "0".
-- **`chain`** - <RequiredText /> - `**object below**` - A list of chains this token is on.
-  - `{ icon: string, label: string }`
-- **`currency`** - <RequiredText /> - `**object below**` - The currency a user uses.
-  - `{ id: string, symbol: string, name: string }`
 - **`tokenImg`** - <RequiredText /> - `string` - The Image for the token.
 - **`symbol`** - <RequiredText /> - `string` - The label to display the token.
-- **`price`** - `number` - The current price of the token.
-- **`isSendBack`** - `boolean` - If the token is being sent back.
 - **`amountNode`** - <RequiredText /> - `ReactNode` - The amount of the token.
-- **`onClick`** - <RequiredText /> - `() => void` - Function that is called when the item is clicked.
+- **`priceNode`** - <RequiredText /> - `ReactNode` - The price of the token.
+- **`chain`** - <RequiredText /> - `**object below**` - A list of chains this token is on.
+  - `{ icon: string, label: string }`
+- **`isSendBack`** - `boolean` - If the token is being sent back.
+- **`onClick`** - `() => void` - Function that is called when the item is clicked.
 
 ## Import
 ```jsx
@@ -105,7 +96,6 @@ A token displayed with a chain focus. So, removed 24hour change and replaces it 
   priceNode={<span>$42000</span>}
   tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
   symbol={"LUNA"}
-  price={1}
   amountNode={<span>420.00</span>}
   chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
 />
@@ -121,7 +111,6 @@ The same as ChainDisplay, but with a send back pill.
   priceNode={<span>$ 42000</span>}
   tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
   symbol={"LUNA"}
-  price={1}
   amountNode={<span>420.00</span>}
   chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
   isSendBack
