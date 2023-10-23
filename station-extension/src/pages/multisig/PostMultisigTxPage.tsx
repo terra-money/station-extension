@@ -4,7 +4,6 @@ import { LegacyAminoMultisigPublicKey } from "@terra-money/feather.js"
 import { useChainID } from "data/wallet"
 import { useAccountInfo } from "data/queries/auth"
 import { Card, Grid, Page } from "components/layout"
-import { FormHelp } from "components/form"
 import { Wrong } from "components/feedback"
 import { isWallet, useAuth } from "auth"
 import CreateMultisigWalletForm from "auth/modules/create/CreateMultisigWalletForm"
@@ -12,6 +11,7 @@ import ConfirmModal from "auth/modules/manage/ConfirmModal"
 import useDefaultValues from "./utils/useDefaultValues"
 import PostMultisigTxForm from "./PostMultisigTxForm"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { Banner } from "station-ui"
 
 const PostMultisigTxPage = () => {
   const { t } = useTranslation()
@@ -52,12 +52,13 @@ const PostMultisigTxPage = () => {
       return (
         <Card>
           <Grid gap={4}>
-            <FormHelp>
-              {t(
+            <Banner
+              variant="info"
+              title={t(
                 "This multisig wallet has no transaction history. The addresses and the threshold must be submitted again until a transaction history exist for this wallet."
               )}
-            </FormHelp>
-            <CreateMultisigWalletForm onCreated={onCreated} />
+            />
+            <CreateMultisigWalletForm onPubkey={onCreated} />
           </Grid>
 
           {errorMessage && (

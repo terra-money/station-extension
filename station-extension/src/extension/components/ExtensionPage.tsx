@@ -2,12 +2,14 @@ import { ErrorBoundary, WithFetching } from "components/feedback"
 import { PropsWithChildren, ReactNode } from "react"
 import styles from "./ExtensionPage.module.scss"
 import { ReactComponent as BackIcon } from "styles/images/icons/BackButton.svg"
+import { ReactComponent as CloseIcon } from "styles/images/icons/Close.svg"
 
 import Container from "../layouts/Container"
 import { Card } from "components/layout"
 import classNames from "classnames"
 import { openURL } from "extension/storage"
 import ExtensionFooter from "./ExtensionFooter"
+import { useNavigate } from "react-router-dom"
 
 interface Props extends QueryState {
   header?: ReactNode
@@ -16,6 +18,7 @@ interface Props extends QueryState {
   backButtonPath?: string
   backgroundColor?: "main"
   fullHeight?: boolean
+  modal?: boolean
 }
 
 const ExtensionPage = (props: PropsWithChildren<Props>) => {
@@ -27,8 +30,10 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
     children,
     backgroundColor,
     fullHeight,
+    modal,
   } = props
   const cx = classNames.bind(styles)
+  const navigate = useNavigate()
 
   return (
     <WithFetching {...props}>
@@ -40,7 +45,8 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
             className={cx(
               styles.page,
               backgroundColor === "main" && styles.main__bg__color,
-              fullHeight && styles.full__height
+              fullHeight && styles.full__height,
+              modal && styles.modal
             )}
           >
             {header && (
@@ -50,13 +56,20 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
             )}
 
             {title && (
-              <Container className={styles.container}>
+              <Container
+                className={cx(
+                  styles.container,
+                  styles.close__container,
+                  modal && !backButtonPath && styles.container__with__icon
+                )}
+              >
                 <header className={styles.header}>
                   <div className={styles.header_container}>
                     {backButtonPath && (
                       <BackIcon
-                        width={18}
-                        height={18}
+                        className={styles.back__icon}
+                        width={20}
+                        height={20}
                         onClick={() => openURL(backButtonPath)}
                         fill="currentColor"
                       />
@@ -65,18 +78,36 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                       <h1
                         className={cx(
                           styles.title,
-                          backButtonPath && styles.skew_title,
-                          subtitle && styles.with_subtitle
+                          backButtonPath
+                            ? styles.skew_title
+                            : subtitle && styles.with_subtitle
                         )}
                       >
                         {title}
                       </h1>
                       {subtitle && (
-                        <h3 className={cx(styles.subtitle)}>{subtitle}</h3>
+                        <h3
+                          className={cx(
+                            backButtonPath
+                              ? styles.small__subtitle
+                              : styles.subtitle
+                          )}
+                        >
+                          {subtitle}
+                        </h3>
                       )}
                     </div>
                   </div>
                 </header>
+                {modal && (
+                  <CloseIcon
+                    width={16}
+                    height={16}
+                    className={styles.modal__close__icon}
+                    onClick={() => navigate("/")}
+                    fill="currentColor"
+                  />
+                )}
               </Container>
             )}
 
