@@ -2,20 +2,27 @@ import styles from "./Wallet.module.scss"
 import { ReactComponent as BackIcon } from "styles/images/icons/BackButton.svg"
 import NetWorth from "./NetWorth"
 import AssetList from "./AssetList"
-import { useState } from "react"
+import React, { useState } from "react"
 import createContext from "utils/createContext"
 import AssetPage from "./AssetPage"
 import ReceivePage from "./ReceivePage"
 import SendPage from "./SendPage"
-import { PageTabs } from "station-ui"
+import VestingDetailsPage from "./VestingDetailsPage"
+import { PageTabs, Modal } from "station-ui"
 import { useTranslation } from "react-i18next"
 import ActivityList from "pages/activity/ActivityList"
+import ActivityDetailsPage from "pages/activity/ActivityDetailsPage"
+import { InterchainNetwork } from "types/network"
+import { ReactElement } from "react"
+import ExtensionPage from "extension/components/ExtensionPage"
 
 enum Path {
   wallet = "wallet",
   coin = "coin",
   receive = "receive",
   send = "send",
+  vesting = "vesting",
+  activity = "activity",
 }
 
 type Route =
@@ -24,8 +31,16 @@ type Route =
       denom?: string
     }
   | {
-      path: Path.coin | Path.receive | Path.send
+      path: Path.coin | Path.receive | Path.send | Path.vesting | Path.activity
       denom?: string
+      variant?: string
+      chain?: InterchainNetwork
+      msg?: ReactElement<any, any>
+      type?: string
+      time?: Date
+      timelineMessages?: (ReactElement<any, any> | undefined)[]
+      txHash?: string
+      fee?: CoinData[]
       previousPage: Route
     }
 
@@ -88,6 +103,33 @@ const Wallet = () => {
             <BackButton />
             <SendPage />
           </>
+        )
+      case Path.vesting:
+        return (
+          <>
+            <BackButton />
+            <VestingDetailsPage token={route.denom} />
+          </>
+        )
+      case Path.activity:
+        return (
+          <ExtensionPage
+            title={t("Transaction")}
+            fullHeight
+            modal
+            backButtonPath="/"
+          >
+            <ActivityDetailsPage
+              variant={route.variant}
+              chain={route.chain}
+              msg={route.msg}
+              type={route.type}
+              time={route.time}
+              timelineMessages={route.timelineMessages}
+              txHash={route.txHash}
+              fee={route.fee}
+            />
+          </ExtensionPage>
         )
     }
   }

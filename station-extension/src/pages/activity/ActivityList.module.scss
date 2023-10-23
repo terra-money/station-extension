@@ -4,5 +4,7 @@
   background-color: var(--card-bg-muted);
   padding-inline: 10px;
   display: grid;
-  overflow-y: scroll;
+  grid-template-areas: "title" "list";
+  grid-template-rows: min-content auto;
+  overflow-y: hidden;
 }
