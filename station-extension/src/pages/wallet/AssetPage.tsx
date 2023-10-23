@@ -12,6 +12,8 @@ import { useNetworkName } from "data/wallet"
 import { SectionHeader } from "station-ui"
 import { useMemo } from "react"
 import WalletActionButtons from "./WalletActionButtons"
+import { useAccount } from "data/queries/vesting"
+import { parseVestingSchedule } from "data/queries/vesting"
 
 const AssetPage = () => {
   const currency = useCurrency()
@@ -27,6 +29,11 @@ const AssetPage = () => {
     : [undefined, routeDenom]
   const { token, symbol, icon, decimals } = readNativeDenom(denom, chain)
   const unknownIBCDenoms = useUnknownIBCDenoms()
+  const { data: account } = useAccount()
+  const schedule = useMemo(() => {
+    if (!account) return null
+    return parseVestingSchedule(account)
+  }, [account])
 
   const price = useMemo(() => {
     if (symbol === "LUNC" && networkName !== "classic") {
@@ -52,6 +59,20 @@ const AssetPage = () => {
     return unknownIBCDenoms[[b.denom, b.chain].join("*")]?.baseDenom === token
   }
 
+  const AssetVestingList = () => {
+    if (token !== "uluna" || symbol === "LUNC" || !schedule) return null
+    return (
+      <>
+        <SectionHeader
+          title={t("Vesting")}
+          withLine
+          className={styles.chainlist__title}
+        />
+        <AssetVesting schedule={schedule} />
+      </>
+    )
+  }
+
   const AssetChainList = ({
     title,
     data,
@@ -62,27 +83,26 @@ const AssetPage = () => {
     if (data.length === 0) return null
     return (
       <div className={styles.chainlist}>
-        <div className={styles.chainlist__title}>
-          <SectionHeader title={title} withLine />
-        </div>
+        <SectionHeader
+          title={title}
+          withLine
+          className={styles.chainlist__title}
+        />
         <div className={styles.chainlist__list}>
           {data
             .sort((a, b) => parseInt(b.amount) - parseInt(a.amount))
             .map((b, i) => (
-              <div key={i}>
-                <AssetChain
-                  symbol={symbol}
-                  balance={b.amount}
-                  chain={b.chain}
-                  price={price}
-                  denom={b.denom}
-                  decimals={decimals}
-                />
-              </div>
+              <AssetChain
+                key={b.denom + b.chain}
+                symbol={symbol}
+                balance={b.amount}
+                chain={b.chain}
+                price={price}
+                denom={b.denom}
+                decimals={decimals}
+              />
             ))}
-          {token === "uluna" && symbol !== "LUNC" && (
-            <AssetVesting token={token} chain={chain} />
-          )}
+          <AssetVestingList />
         </div>
       </div>
     )
@@ -110,13 +130,12 @@ const AssetPage = () => {
       </section>
     )
   }
-
   return (
     <>
       <AssetPageHeader />
       <section className={styles.chainlist__container}>
         <AssetChainList
-          title={t("Assets")}
+          title={t("Balances")}
           data={balances.filter(supportedFilter)}
         />
         <AssetChainList

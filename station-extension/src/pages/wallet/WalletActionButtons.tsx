@@ -49,9 +49,7 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
     {
       icon: <Swap />,
       label: t("swap"),
-      onClick: () => {
-        setRoute({ page: Page.swap })
-      },
+      onClick: () => setRoute({ page: Page.swap }),
       hide: route.page !== Page.wallet,
     },
     {
@@ -69,17 +67,20 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
 
   return (
     <div className={styles.networth__buttons}>
-      {buttons.map(({ icon, label, onClick, disabled, primary }) => (
-        <FlexColumn key={label}>
-          <RoundedButton
-            variant={primary ? "primary" : "secondary"}
-            onClick={onClick}
-            icon={icon}
-            disabled={disabled}
-          />
-          <span>{capitalize(label)}</span>
-        </FlexColumn>
-      ))}
+      {buttons.map(
+        ({ icon, label, onClick, disabled, primary, hide }) =>
+          !hide && (
+            <FlexColumn key={label}>
+              <RoundedButton
+                variant={primary ? "primary" : "secondary"}
+                onClick={onClick}
+                icon={icon}
+                disabled={disabled}
+              />
+              <span>{capitalize(label)}</span>
+            </FlexColumn>
+          )
+      )}
     </div>
   )
 }

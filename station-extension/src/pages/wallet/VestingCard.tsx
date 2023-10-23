@@ -2,42 +2,42 @@ import {
   parseVestingSchedule,
   isVestingAccount,
   useAccount,
+  ParsedVestingSchedule,
 } from "data/queries/vesting"
+import { useMemo } from "react"
 import { useNativeDenoms } from "data/token"
 import styles from "./Vesting.module.scss"
-import { useChainID, useNetwork } from "data/wallet"
+import { useNetwork } from "data/wallet"
 import { Read } from "components/token"
 import { VestingCard as Vesting, TokenSingleChainListItem } from "station-ui"
 import { useExchangeRates } from "data/queries/coingecko"
 import { toInput } from "txs/utils"
 
 interface Props {
-  token: string
-  chain?: string
+  schedule: ParsedVestingSchedule
 }
 
-const VestingCard = (props: Props) => {
-  const { data } = useAccount()
+const VestingCard = ({ schedule }: Props) => {
   const readNativeDenom = useNativeDenoms()
-  const { token, chain } = props
   const { data: prices } = useExchangeRates()
-  const chainID = useChainID()
   const network = useNetwork()
-  const { icon, decimals } = readNativeDenom(token, chain ?? chainID)
+  const {
+    icon: tokenImg,
+    decimals,
+    symbol,
+  } = readNativeDenom("uluna", "phoenix-1")
+  if (!schedule) return null
 
-  if (!data) return null
-  if (!isVestingAccount(data)) return null
-
-  const schedule = parseVestingSchedule(data)
+  const { icon, name } = network["phoenix-1"]
 
   return (
     <Vesting
       vestedAmount={toInput(schedule.amount.vested, decimals).toString()}
     >
       <TokenSingleChainListItem
-        tokenImg={icon ?? ""}
-        symbol="LUNA"
-        chain={{ icon: icon ?? "", label: network[chain ?? chainID].name }}
+        tokenImg={tokenImg ?? ""}
+        symbol={symbol}
+        chain={{ icon, label: name }}
         amountNode={
           <Read
             className={styles.amount}
@@ -52,7 +52,7 @@ const VestingCard = (props: Props) => {
           <Read
             className={styles.amount}
             amount={
-              Number(schedule.amount.vested) * (prices?.[token]?.price ?? 0)
+              Number(schedule.amount.vested) * (prices?.["uluna"]?.price ?? 0)
             }
             decimals={decimals}
             fixed={2}

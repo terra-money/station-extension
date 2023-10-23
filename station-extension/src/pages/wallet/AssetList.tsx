@@ -36,7 +36,7 @@ const AssetList = () => {
   const native = useCustomTokensNative()
   const cw20 = useCustomTokensCW20()
   const list = useParsedAssetList()
-  const [filter, setFilter] = useState(false)
+  const [showFilter, setShowFilter] = useState(false)
   const [filterChain, setFilterChain] = useState("all")
   const { route, setRoute } = useWalletRoute()
   const network = useNetwork()
@@ -48,7 +48,7 @@ const AssetList = () => {
   }
 
   const toggleFilter = () => {
-    setFilter(!filter)
+    setShowFilter(!showFilter)
     setFilterChain("all")
   }
 
@@ -123,46 +123,48 @@ const AssetList = () => {
     )
   }
 
+  const AssetListTokenFilter = () => {
+    return (
+      <Dropdown
+        value={filterChain}
+        onChange={(chain) => setFilterChain(chain)}
+        options={[
+          { value: "all", label: "All Chains" },
+          ...assets.baseAssets.map((c: any) => ({
+            value: c.chain,
+            image: c.tokenImg,
+            label: c.name,
+          })),
+        ]}
+      >
+        {assets.baseAssets.map((asset: any) => (
+          <TokenSingleChainListItem
+            {...asset}
+            symbol={asset.name}
+            onClick={() => setFilterChain(asset.chain)}
+            amountNode={
+              <Read amount={asset.balance} decimals={asset.decimals} />
+            }
+            chain={{
+              name: asset.name,
+              icon: asset.tokenImg,
+            }}
+          />
+        ))}
+      </Dropdown>
+    )
+  }
+
   const render = () => {
     if (!assets) return
 
     return (
-      <div>
+      <section>
         {isWalletEmpty && (
           <FormError>{t("Coins required to post transactions")}</FormError>
         )}
-        <section>
-          {filter && (
-            <Dropdown
-              value={filterChain}
-              onChange={(chain) => setFilterChain(chain)}
-              options={[
-                { value: "all", label: "All Chains" },
-                ...assets.baseAssets.map((c: any) => ({
-                  value: c.chain,
-                  image: c.tokenImg,
-                  label: c.name,
-                })),
-              ]}
-            >
-              {assets.baseAssets.map((asset: any) => (
-                <TokenSingleChainListItem
-                  {...asset}
-                  symbol={asset.name}
-                  onClick={() => setFilterChain(asset.chain)}
-                  amountNode={
-                    <Read amount={asset.balance} decimals={asset.decimals} />
-                  }
-                  chain={{
-                    name: asset.name,
-                    icon: asset.tokenImg,
-                  }}
-                />
-              ))}
-            </Dropdown>
-          )}
-          {assets.visible.map(renderAsset)}
-        </section>
+        {showFilter && <AssetListTokenFilter />}
+        {assets.visible.map(renderAsset)}
         {assets.lowBal.length > 0 && (
           <>
             <SectionHeader
@@ -170,10 +172,10 @@ const AssetList = () => {
               withLine
               onClick={toggleHideLowBal}
             />
-            {!hideLowBal && <section>{assets.lowBal.map(renderAsset)}</section>}
+            {!hideLowBal && assets.lowBal.map(renderAsset)}
           </>
         )}
-      </div>
+      </section>
     )
   }
 
@@ -182,12 +184,12 @@ const AssetList = () => {
       <div className={styles.assetlist__title}>
         <SectionHeader title={t("Assets")} />
         <FilterListIcon
-          className={cx(styles.filter, filter ? styles.active : null)}
+          className={cx(styles.filter, showFilter ? styles.active : null)}
           onClick={toggleFilter}
         />
       </div>
       <div className={styles.assetlist__list}>{render()}</div>
-      {filter && (
+      {showFilter && (
         <Button
           onClick={toggleFilter}
           label={t("Clear Filter")}
