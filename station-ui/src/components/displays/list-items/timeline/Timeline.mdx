@@ -1,0 +1,209 @@
+import {
+  Meta,
+  Canvas,
+  Source,
+} from "@storybook/blocks";
+import { RequiredText } from "../../../../DocsHelpers.tsx";
+import * as TimelineStories from "./Timeline.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/List Items/Timeline" />
+
+# Timeline
+
+##### Timeline component to show details of a transaction.
+
+## Props
+- **`startItem`** - `**object below**` - The first item of the timeline. It is different from the middle items.
+  - `{`
+    - **chain:** `{ icon: string, label: string },`
+    - **coin:** `{ icon: string, label: string },`
+    - **msg:** `ReactNode`
+  - `}`
+- **`middleItems`** - `**object below**` - All middle items of the timeline. **Note: if one is passed in the line is not displayed**
+  - `{`
+    - **variant:** `"default" | "success" | "warning",`
+    - **msg:** `ReactNode,`
+    - **warningPillText?:** `string`
+  - `}[]`
+- **`endItem`** - `**object below**` - The last item of the timeline.
+  - `{`
+    - **chain:** `{ icon: string, label: string },`
+    - **coin:** `{ icon: string, label: string },`
+    - **msg:** `ReactNode`
+  - `}`
+
+## Import
+```jsx
+import { Timeline } from "station-ui";
+```
+
+## Stories
+
+## Transaction Page Example
+This is an example of a Swap transaction detail page with a timeline.
+<div className="story_with_source_below">
+  <Canvas of={TimelineStories.TransactionPageExample} />
+  <Source code={`
+    <Timeline
+  startItem={{
+    chain: { icon: "https://station-assets.terra.dev/img/chains/Axelar.svg", label: "Axelar" },
+    coin: {icon: "https://station-assets.terra.dev/img/coins/axlUSDC.svg", label: "axlUSDC" },
+    msg: "1,500 axlUSDC",
+  }}
+  middleItems={[
+    {
+      variant: 'success',
+      msg: (
+        <div>Transfer <span>axlUSDC</span> from <span>Axelar</span> to <span>Terra</span></div>
+      ),
+      warningPillText: 'Requires Additional Tx'
+    },
+    {
+      variant: 'success',
+      msg: (
+        <div>Swap <span>axlUSDC</span> for <span>LUNA</span> on <span>TFM</span></div>
+      )
+    },
+  ]}
+  endItem={{
+    chain: { icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" },
+    coin: {icon: "https://station-assets.terra.dev/img/coins/Luna.svg", label: "LUNA" },
+    msg: "3,422.65 LUNA",
+  }}
+/>
+  `} />
+</div>
+
+## Start Item
+The first item of the timeline.
+<div className="story_with_source_below">
+  <Canvas of={TimelineStories.StartItem} />
+  <Source code={`
+    <Timeline
+  startItem={{
+    chain: { icon: "https://station-assets.terra.dev/img/chains/Axelar.svg", label: "Axelar" },
+    coin: {icon: "https://station-assets.terra.dev/img/coins/axlUSDC.svg", label: "axlUSDC" },
+    msg: "1,500 axlUSDC",
+  }}
+/>
+  `} />
+</div>
+
+## Middle Item Default
+The default middle item of the timeline.
+<div className="story_with_source_below">
+  <Canvas of={TimelineStories.MiddleItemDefault} />
+  <Source code={`
+    <Timeline
+  middleItems={[
+    {
+      variant: 'default',
+      msg: (
+        <div>
+          Transfer <span>axlUSDC</span> from <span>Axelar</span> to <span>Terra</span>
+        </div>
+      ),
+    },
+  ]}
+/>
+  `} />
+</div>
+
+## Middle Item Success
+The success middle item of the timeline.
+<div className="story_with_source_below">
+  <Canvas of={TimelineStories.MiddleItemSuccess} />
+  <Source code={`
+    <Timeline
+  middleItems={[
+    {
+      variant: 'success',
+      msg: (
+        <div>
+          Transfer <span>axlUSDC</span> from <span>Axelar</span> to <span>Terra</span>
+        </div>
+      ),
+    },
+  ]}
+/>
+  `} />
+</div>
+
+## Middle Item Warning
+The warning middle item of the timeline.
+<div className="story_with_source_below">
+  <Canvas of={TimelineStories.MiddleItemWarning} />
+  <Source code={`
+    <Timeline
+  middleItems={[
+    {
+      variant: 'warning',
+      msg: (
+        <div>
+          Transfer <span>axlUSDC</span> from <span>Axelar</span> to <span>Terra</span>
+        </div>
+      ),
+    },
+  ]}
+/>
+  `} />
+</div>
+
+## Middle Item With Pill
+The default middle item of the timeline with a pill.
+<div className="story_with_source_below">
+  <Canvas of={TimelineStories.MiddleItemWithPill} />
+  <Source code={`
+    <Timeline
+  middleItems={[
+    {
+      variant: 'default',
+      msg: (
+        <div>
+          Transfer <span>axlUSDC</span> from <span>Axelar</span> to <span>Terra</span>
+        </div>
+      ),
+      warningPillText: 'Requires Additional Tx'
+    },
+  ]}
+/>
+  `} />
+</div>
+
+## End Item
+The end item of the timeline.
+<div className="story_with_source_below">
+  <Canvas of={TimelineStories.EndItem} />
+  <Source code={`
+    <Timeline
+  endItem={{
+    chain: { icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" },
+    coin: {icon: "https://station-assets.terra.dev/img/coins/Luna.svg", label: "LUNA" },
+    msg: "3,422.65 LUNA",
+  }}
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

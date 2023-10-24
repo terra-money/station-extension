@@ -1,0 +1,130 @@
+@import "scss/font_mixins";
+
+.timeline__container {
+  .start__item, .end__item {
+    display: flex;
+    gap: 16px;
+    padding-top: 1px;
+
+    .img__wrapper {
+      position: relative;
+      margin-top: 3px;
+
+      .item__coin {
+        height: 32px;
+        width: 32px;
+      }
+
+      .dashed__line {
+        position: absolute;
+        top: 32px;
+        left: 50%;
+        height: calc(100% - 32px);
+        width: 1px;
+
+        background-image: linear-gradient(to bottom, var(--token-dark-900) 50%, transparent 50%);
+        background-size: 1px 8px;
+      }
+    }
+
+    .details__wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 25px;
+
+      h3 {
+        @include Medium;
+        color: var(--token-light-white);
+      }
+
+      .item__chain {
+        display: flex;
+        gap: 8px;
+
+        img {
+          width: 14px;
+          height: 14px;
+        }
+
+        .details__msg {
+          @include Small;
+          color: var(--token-light-100);
+        }
+      }
+    }
+  }
+
+  .middle__items__container {
+    .middle__item {
+      display: flex;
+      gap: 24px;
+
+      .img__wrapper {
+        position: relative;
+        margin-top: 1px;
+
+        svg {
+          height: 16px;
+          width: 16px;
+          margin-left: 8px;
+        }
+
+        .grey__circle {
+          display: block;
+          height: 16px;
+          width: 16px;
+          border-radius: 50%;
+          border: 2px solid var(--token-dark-900);
+          margin-left: 8px;
+        }
+
+        .dashed__line {
+          position: absolute;
+          top: 16px;
+          left: calc(50% + 4px);
+          height: calc(100% - 16px);
+          width: 1px;
+
+          background-image: linear-gradient(to bottom, var(--token-dark-900) 50%, transparent 50%);
+          background-size: 1px 8px;
+        }
+      }
+
+      .details__wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 24px;
+
+        &.hasPill {
+          margin-bottom: 22px;
+        }
+
+        h4 {
+          @include SmallLH;
+          color: var(--token-light-100);
+
+          span {
+            color: var(--token-light-white);
+          }
+        }
+
+        .item__chain {
+          display: flex;
+          gap: 8px;
+
+          img {
+            width: 14px;
+            height: 14px;
+          }
+
+          .details__msg {
+            @include Small;
+            color: var(--token-light-100);
+          }
+        }
+      }
+    }
+  }
+}
