@@ -88,6 +88,11 @@ import { ActivityListItem } from "station-ui";
     - **variant:** `"default" | "success" | "warning",`
     - **msg:** `ReactNode,`
     - **warningPillText?:** `string`
+    - **transactionButton?:** `{`
+      - **label:** `string`
+      - **onClick:*** `() => void`
+    - `}`
+    - **disabled?:** `boolean`
   - `}[]`
 - **`endItem`** - `**object below**` - The last item of the timeline.
   - `{`
@@ -107,6 +112,13 @@ import { Timeline } from "station-ui";
     <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="start-item">
       <h6 className="h6">Start Item</h6>
       <Story of={TimelineStories.StartItem} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="end-item">
+      <h6 className="h6">End Item</h6>
+      <Story of={TimelineStories.EndItem} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
@@ -139,9 +151,16 @@ import { Timeline } from "station-ui";
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="end-item">
-      <h6 className="h6">End Item</h6>
-      <Story of={TimelineStories.EndItem} />
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="middle-item-with-button">
+      <h6 className="h6">Middle Item With Button</h6>
+      <Story of={TimelineStories.MiddleItemWithButton} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="middle-item-with-button-disabled">
+      <h6 className="h6">Middle Item With Button Disabled</h6>
+      <Story of={TimelineStories.MiddleItemWithButtonDisabled} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
@@ -149,6 +168,20 @@ import { Timeline } from "station-ui";
     <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="transaction-page-example">
       <h6 className="h6">Transaction Page Example</h6>
       <Story of={TimelineStories.TransactionPageExample} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="three-middle-items-example">
+      <h6 className="h6">Three Middle Items Example</h6>
+      <Story of={TimelineStories.ThreeMiddleItemsExample} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="transactions-required-example">
+      <h6 className="h6">Transactions Required Example</h6>
+      <Story of={TimelineStories.TransactionsRequiredExample} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>

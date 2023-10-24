@@ -25,6 +25,11 @@ import "scss/storybookoverrides.scss";
     - **variant:** `"default" | "success" | "warning",`
     - **msg:** `ReactNode,`
     - **warningPillText?:** `string`
+    - **transactionButton?:** `{`
+      - **label:** `string`
+      - **onClick:*** `() => void`
+    - `}`
+    - **disabled?:** `boolean`
   - `}[]`
 - **`endItem`** - `**object below**` - The last item of the timeline.
   - `{`
@@ -71,6 +76,89 @@ This is an example of a Swap transaction detail page with a timeline.
     coin: {icon: "https://station-assets.terra.dev/img/coins/Luna.svg", label: "LUNA" },
     msg: "3,422.65 LUNA",
   }}
+/>
+  `} />
+</div>
+
+## Transactions Required Example
+Has an example of a timeline with a transaction buttons.
+<div className="story_with_source_below">
+  <Canvas of={TimelineStories.TransactionsRequiredExample} />
+  <Source code={`
+    <Timeline
+  startItem={{
+    chain: { icon: "https://station-assets.terra.dev/img/chains/Osmosis.svg", label: "Osmosis" },
+    coin: {icon: "https://station-assets.terra.dev/img/coins/axlUSDC.svg", label: "axlUSDC" },
+    msg: "1,500 axlUSDC",
+  }}
+  middleItems={[
+    {
+      variant: 'success',
+      msg: (
+        <div>Transfer <span>axlUSDC</span> from <span>Osmosis</span> to <span>Terra</span></div>
+      ),
+    },
+    {
+      variant: 'warning',
+      msg: (
+        <div>Swapping <span>axlUSDC</span> for <span>LUNA</span> on <span>Terra</span></div>
+      ),
+      warningPillText: 'Transaction Required',
+      transactionButton: {
+        label: 'Confirm Transaction',
+        onClick: () => console.log('clicked')
+      },
+    },
+    {
+      variant: 'warning',
+      msg: (
+        <div>Swapping <span>axlUSDC</span> for <span>LUNA</span> on <span>Terra</span></div>
+      ),
+      warningPillText: 'Transaction Required',
+      transactionButton: {
+        label: 'Confirm Transaction',
+        onClick: () => console.log('clicked')
+      },
+      disabled: true
+    },
+  ]}
+  endItem={{
+    chain: { icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" },
+    coin: {icon: "https://station-assets.terra.dev/img/coins/Luna.svg", label: "LUNA" },
+    msg: "3,422.65 LUNA",
+  }}
+/>
+  `} />
+</div>
+
+## Three Middle Items Example
+Just 3 middle items.
+<div className="story_with_source_below">
+  <Canvas of={TimelineStories.ThreeMiddleItemsExample} />
+  <Source code={`
+    <Timeline
+  middleItems={[
+    {
+      variant: 'success',
+      msg: (
+        <div>Transfer <span>axlUSDC</span> from <span>Osmosis</span> to <span>Terra</span></div>
+      ),
+    },
+    {
+      variant: 'warning',
+      msg: (
+        <div>Swapping <span>axlUSDC</span> for <span>LUNA</span> on <span>Terra</span></div>
+      ),
+      warningPillText: 'Transaction Required',
+    },
+    {
+      variant: 'warning',
+      msg: (
+        <div>Swapping <span>axlUSDC</span> for <span>LUNA</span> on <span>Terra</span></div>
+      ),
+      warningPillText: 'Transaction Required',
+    },
+  ]}
 />
   `} />
 </div>
@@ -165,6 +253,57 @@ The default middle item of the timeline with a pill.
         </div>
       ),
       warningPillText: 'Requires Additional Tx'
+    },
+  ]}
+/>
+  `} />
+</div>
+
+## Middle Item With Button
+A middle item with a button and warning pill.
+<div className="story_with_source_below">
+  <Canvas of={TimelineStories.MiddleItemWithButton} />
+  <Source code={`
+    <Timeline
+  middleItems={[
+    {
+      variant: 'warning',
+      msg: (
+        <div>
+          Transfer <span>axlUSDC</span> from <span>Axelar</span> to <span>Terra</span>
+        </div>
+      ),
+      warningPillText: 'Transaction Required',
+      transactionButton: {
+        label: 'Confirm Transaction',
+        onClick: () => console.log('clicked')
+      }
+    },
+  ]}
+/>
+  `} />
+</div>
+
+## Middle Item With Button Disabled
+A **Disabled** middle item with a button and warning pill.
+<div className="story_with_source_below">
+  <Canvas of={TimelineStories.MiddleItemWithButtonDisabled} />
+  <Source code={`
+    <Timeline
+  middleItems={[
+    {
+      variant: 'warning',
+      msg: (
+        <div>
+          Transfer <span>axlUSDC</span> from <span>Axelar</span> to <span>Terra</span>
+        </div>
+      ),
+      warningPillText: 'Transaction Required',
+      transactionButton: {
+        label: 'Confirm Transaction',
+        onClick: () => console.log('clicked')
+      },
+      disabled: true
     },
   ]}
 />

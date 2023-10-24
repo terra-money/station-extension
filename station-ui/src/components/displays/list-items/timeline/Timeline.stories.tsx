@@ -43,6 +43,87 @@ export const TransactionPageExample: StoryObj<TimelineProps> = {
   },
 };
 
+export const TransactionsRequiredExample: StoryObj<TimelineProps> = {
+  render: () => {
+    return (
+      <Timeline
+        startItem={{
+          chain: { icon: "https://station-assets.terra.dev/img/chains/Osmosis.svg", label: "Osmosis" },
+          coin: {icon: "https://station-assets.terra.dev/img/coins/axlUSDC.svg", label: "axlUSDC" },
+          msg: "1,500 axlUSDC",
+        }}
+        middleItems={[
+          {
+            variant: 'success',
+            msg: (
+              <div>Transfer <span>axlUSDC</span> from <span>Osmosis</span> to <span>Terra</span></div>
+            ),
+          },
+          {
+            variant: 'warning',
+            msg: (
+              <div>Swapping <span>axlUSDC</span> for <span>LUNA</span> on <span>Terra</span></div>
+            ),
+            warningPillText: 'Transaction Required',
+            transactionButton: {
+              label: 'Confirm Transaction',
+              onClick: () => console.log('clicked')
+            },
+          },
+          {
+            variant: 'warning',
+            msg: (
+              <div>Swapping <span>axlUSDC</span> for <span>LUNA</span> on <span>Terra</span></div>
+            ),
+            warningPillText: 'Transaction Required',
+            transactionButton: {
+              label: 'Confirm Transaction',
+              onClick: () => console.log('clicked')
+            },
+            disabled: true
+          },
+        ]}
+        endItem={{
+          chain: { icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" },
+          coin: {icon: "https://station-assets.terra.dev/img/coins/Luna.svg", label: "LUNA" },
+          msg: "3,422.65 LUNA",
+        }}
+      />
+    )
+  },
+};
+
+export const ThreeMiddleItemsExample: StoryObj<TimelineProps> = {
+  render: () => {
+    return (
+      <Timeline
+        middleItems={[
+          {
+            variant: 'success',
+            msg: (
+              <div>Transfer <span>axlUSDC</span> from <span>Osmosis</span> to <span>Terra</span></div>
+            ),
+          },
+          {
+            variant: 'warning',
+            msg: (
+              <div>Swapping <span>axlUSDC</span> for <span>LUNA</span> on <span>Terra</span></div>
+            ),
+            warningPillText: 'Transaction Required',
+          },
+          {
+            variant: 'warning',
+            msg: (
+              <div>Swapping <span>axlUSDC</span> for <span>LUNA</span> on <span>Terra</span></div>
+            ),
+            warningPillText: 'Transaction Required',
+          },
+        ]}
+      />
+    )
+  },
+};
+
 export const StartItem: StoryObj<TimelineProps> = {
   render: () => {
     return (
@@ -134,6 +215,56 @@ export const MiddleItemWithPill: StoryObj<TimelineProps> = {
     )
   },
 };
+
+export const MiddleItemWithButton: StoryObj<TimelineProps> = {
+  render: () => {
+    return (
+      <Timeline
+        middleItems={[
+          {
+            variant: 'warning',
+            msg: (
+              <div>
+                Transfer <span>axlUSDC</span> from <span>Axelar</span> to <span>Terra</span>
+              </div>
+            ),
+            warningPillText: 'Transaction Required',
+            transactionButton: {
+              label: 'Confirm Transaction',
+              onClick: () => console.log('clicked')
+            }
+          },
+        ]}
+      />
+    )
+  },
+};
+
+export const MiddleItemWithButtonDisabled: StoryObj<TimelineProps> = {
+  render: () => {
+    return (
+      <Timeline
+        middleItems={[
+          {
+            variant: 'warning',
+            msg: (
+              <div>
+                Transfer <span>axlUSDC</span> from <span>Axelar</span> to <span>Terra</span>
+              </div>
+            ),
+            warningPillText: 'Transaction Required',
+            transactionButton: {
+              label: 'Confirm Transaction',
+              onClick: () => console.log('clicked')
+            },
+            disabled: true
+          },
+        ]}
+      />
+    )
+  },
+};
+
 
 export const EndItem: StoryObj<TimelineProps> = {
   render: () => {

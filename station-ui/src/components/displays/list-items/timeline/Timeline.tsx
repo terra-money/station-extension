@@ -4,6 +4,7 @@ import { ReactComponent as CircleCheck } from "assets/icon/SmallCircleCheck.svg"
 import { ReactComponent as Alert } from "assets/icon/Alert.svg"
 import Pill from "components/general/pill/Pill"
 import styles from "./Timeline.module.scss"
+import { Button } from 'components'
 
 const cx = classNames.bind(styles)
 
@@ -17,6 +18,11 @@ export interface TimelineProps {
     variant: "default" | "success" | "warning"
     msg: ReactNode
     warningPillText?: string
+    transactionButton?: {
+      label: string
+      onClick: () => void
+    }
+    disabled?: boolean
   }[]
   endItem?: {
     chain: { icon: string, label: string }
@@ -60,30 +66,40 @@ const Timeline = ({
       {middleItems && (
         <div className={styles.middle__items__container}>
           {middleItems.map((item, i) => (
-            <div className={styles.middle__item} key={i}>
-              <div className={styles.img__wrapper}>
-                {item.variant === "success" ? (
-                  <CircleCheck fill="var(--token-success-500)" />
-                ) : (
-                  item.variant === "warning" ? (
-                    <Alert fill="var(--token-warning-500)" />
+            <div className={cx(styles.middle__item, { disabled: item?.disabled })} key={i}>
+              <div className={styles.middle__info}>
+                <div className={styles.img__wrapper}>
+                  {item.variant === "success" ? (
+                    <CircleCheck fill="var(--token-success-500)" />
                   ) : (
-                    <span className={styles.grey__circle} />
-                  )
-                )}
-                {middleItems.length - 1 !== 0 && (
-                  <span className={styles.dashed__line} />
-                )}
+                    item.variant === "warning" ? (
+                      <Alert fill={item?.disabled ? "var(--token-dark-900)" : "var(--token-warning-500)"} />
+                    ) : (
+                      <span className={styles.grey__circle} />
+                    )
+                  )}
+                  {!(!endItem && !item.transactionButton && i === middleItems.length - 1) && (
+                    <span className={styles.dashed__line} />
+                  )}
+                </div>
+                <div className={cx(styles.details__wrapper, { hasPill: item.warningPillText } )}>
+                  {item.warningPillText && (
+                    <Pill
+                      variant={item?.disabled ? "disabled" : "warning"}
+                      text={item.warningPillText}
+                    />
+                  )}
+                  <h4>{item.msg}</h4>
+                </div>
               </div>
-              <div className={cx(styles.details__wrapper, { hasPill: item.warningPillText } )}>
-                {item.warningPillText && (
-                  <Pill
-                    variant={"warning"}
-                    text={item.warningPillText}
-                  />
-                )}
-                <h4>{item.msg}</h4>
-              </div>
+              {item.transactionButton && (
+                <Button
+                  variant="primary"
+                  label={item.transactionButton.label}
+                  onClick={item.transactionButton.onClick}
+                  disabled={item?.disabled}
+                />
+              )}
             </div>
           ))}
         </div>
