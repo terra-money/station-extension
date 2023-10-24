@@ -2,8 +2,11 @@ import { Grid } from "components/layout"
 import QRCode from "auth/components/QRCode"
 import { InputWrapper, Copy, TextArea } from "station-ui"
 import styles from "./AddressChain.module.scss"
+import { useParams } from "react-router-dom"
 
-const AddressChain = ({ address }: { address: string }) => {
+const AddressChain = () => {
+  const { address } = useParams()
+  if (!address) return null
   return (
     <div className={styles.container}>
       <Grid gap={30}>

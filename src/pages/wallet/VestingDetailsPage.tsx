@@ -10,8 +10,6 @@ interface Props {
 }
 
 const AssetVesting = ({ schedule }: Props) => {
-  if (!schedule) return null
-
   const renderSummaryRows = (item: VestingScheduleItem) => {
     const dateRange = `${item.start?.toLocaleDateString()} - ${item.end.toLocaleDateString()}`
     const rows = [

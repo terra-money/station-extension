@@ -5,6 +5,7 @@ import { isFuture, isPast } from "date-fns"
 import { last } from "ramda"
 import { useAddress, useChainID } from "../wallet"
 import { useInterchainLCDClient } from "./lcdClient"
+import { RefetchOptions } from "data/query"
 
 /* types */
 interface Coin {
@@ -144,6 +145,7 @@ export const parseVestingSchedule = (
 
 /* query */
 export const queryAccounts = async (address: string, lcd: string) => {
+  console.log(" queryAccounts called")
   const path = "cosmos/auth/v1beta1/accounts"
   const { data } = await axios.get<{ account: Account }>(
     [path, address].join("/"),
@@ -159,10 +161,16 @@ export const useAccount = () => {
   const chainID = useChainID()
   const lcd = useInterchainLCDClient()
 
-  return useQuery(["accounts", address], async () => {
-    if (!address) return null
-    return await queryAccounts(address, lcd.config[chainID].lcd)
-  })
+  return useQuery(
+    ["accounts", chainID, address],
+    async () => {
+      if (!address) return null
+      return await queryAccounts(address, lcd.config[chainID].lcd)
+    },
+    {
+      ...RefetchOptions.INFINITY,
+    }
+  )
 }
 
 export const isVestingAccount = (data: any) => {

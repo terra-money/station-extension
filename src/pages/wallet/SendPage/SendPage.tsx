@@ -32,8 +32,8 @@ import OtherWallets from "./OtherWallets"
 import { WalletList } from "./OtherWallets"
 import { truncate } from "@terra-money/terra-utils"
 import { SearchChains } from "../ReceivePage"
-import { useWalletRoute, Page } from "../Wallet"
 import { useNetwork } from "data/wallet"
+import { Routes, Route, useNavigate } from "react-router-dom"
 
 interface TxValues {
   asset?: string
@@ -56,10 +56,11 @@ interface AssetType {
 
 const SendPage = () => {
   const { t } = useTranslation()
-  const { route, setRoute } = useWalletRoute()
   const balances = useBankBalance()
   const networks = useNetwork()
   const assetList = useParsedAssetList()
+  const navigate = useNavigate()
+  console.log("render")
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange" })
@@ -73,7 +74,7 @@ const SendPage = () => {
       setValue("recipient", address)
       trigger("recipient")
       if (validateRecipient(address)) {
-        setRoute({ page: Page.sendChain })
+        navigate("/send/chain")
       }
     }
 
@@ -115,7 +116,7 @@ const SendPage = () => {
           name: getChainNamefromID(chain, networks) ?? chain,
           onClick: () => {
             setValue("chain", chain)
-            setRoute({ page: Page.sendToken })
+            navigate("/send/token")
           },
           id: chain,
           address: convertAddress(recipient!, networks[chain]?.prefix),
@@ -140,22 +141,15 @@ const SendPage = () => {
     )
   }
 
-  const render = () => {
-    switch (route.page) {
-      case Page.send:
-        return <Address />
-      case Page.sendChain:
-        return <Chain />
-      case Page.sendToken:
-        return <Token />
-      default:
-        return null
-    }
-  }
-
   return (
     <Form>
-      <Grid gap={20}>{render()}</Grid>
+      <Grid gap={20}>
+        <Routes>
+          <Route path="address" element={<Address />} />
+          <Route path="chain" element={<Chain />} />
+          <Route path="token" element={<Token />} />
+        </Routes>
+      </Grid>
     </Form>
   )
 }

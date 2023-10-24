@@ -1,5 +1,4 @@
 import { useNativeDenoms, useUnknownIBCDenoms } from "data/token"
-import { useWalletRoute, Page } from "./Wallet"
 import styles from "./AssetPage.module.scss"
 import { Read, TokenIcon } from "components/token"
 import { useCurrency } from "data/settings/Currency"
@@ -9,11 +8,14 @@ import AssetChain from "./AssetChain"
 import { useTranslation } from "react-i18next"
 import AssetVesting from "./AssetVesting"
 import { useNetworkName } from "data/wallet"
-import { SectionHeader } from "station-ui"
+import { SectionHeader, ModalButton } from "station-ui"
 import { useMemo } from "react"
 import WalletActionButtons from "./WalletActionButtons"
 import { useAccount } from "data/queries/vesting"
 import { parseVestingSchedule } from "data/queries/vesting"
+import VestingCard from "./VestingCard"
+import VestingDetailsPage from "./VestingDetailsPage"
+import { useParams } from "react-router-dom"
 
 const AssetPage = () => {
   const currency = useCurrency()
@@ -21,18 +23,18 @@ const AssetPage = () => {
   const balances = useBankBalance()
   const readNativeDenom = useNativeDenoms()
   const { t } = useTranslation()
-  const { route } = useWalletRoute()
   const networkName = useNetworkName()
-  const routeDenom = route.page === Page.coin ? route.denom ?? "uluna" : "uluna"
+  const params = useParams()
+  const routeDenom = params.denom ?? "uluna"
   const [chain, denom] = routeDenom.includes("*")
     ? routeDenom.split("*")
     : [undefined, routeDenom]
   const { token, symbol, icon, decimals } = readNativeDenom(denom, chain)
   const unknownIBCDenoms = useUnknownIBCDenoms()
   const { data: account } = useAccount()
+
   const schedule = useMemo(() => {
     if (!account) return null
-    console.log("account", account)
     return parseVestingSchedule(account)
   }, [account])
 
@@ -44,35 +46,38 @@ const AssetPage = () => {
     } else return 0
   }, [prices, symbol, token, networkName])
 
-  const supportedFilter = (b: CoinBalance) => {
-    const balToken = readNativeDenom(b.denom, b.chain)
-    return balToken.token === token && balToken.symbol === symbol
-  }
+  const supportedAssets = useMemo(() => {
+    return balances.filter((b) => {
+      const balToken = readNativeDenom(b.denom, b.chain)
+      return balToken.token === token && balToken.symbol === symbol
+    })
+  }, [balances, readNativeDenom, token, symbol])
 
-  const unsupportedFilter = (b: CoinBalance) => {
-    // only return unsupported token if the current chain is found in the ibc path
-    if (chain) {
-      return (
-        unknownIBCDenoms[[b.denom, b.chain].join("*")]?.baseDenom === token &&
-        unknownIBCDenoms[[b.denom, b.chain].join("*")]?.chains?.[0] === chain
-      )
-    }
-    return unknownIBCDenoms[[b.denom, b.chain].join("*")]?.baseDenom === token
-  }
+  const unsupportedAssets = useMemo(() => {
+    return balances.filter((b) => {
+      if (chain) {
+        return (
+          unknownIBCDenoms[[b.denom, b.chain].join("*")]?.baseDenom === token &&
+          unknownIBCDenoms[[b.denom, b.chain].join("*")]?.chains?.[0] === chain
+        )
+      }
+      return unknownIBCDenoms[[b.denom, b.chain].join("*")]?.baseDenom === token
+    })
+  }, [balances, unknownIBCDenoms, token, chain])
 
-  const AssetVestingList = () => {
-    if (token !== "uluna" || symbol === "LUNC" || !schedule) return null
-    return (
-      <>
-        <SectionHeader
-          title={t("Vesting")}
-          withLine
-          className={styles.chainlist__title}
-        />
-        <AssetVesting schedule={schedule} />
-      </>
-    )
-  }
+  // const AssetVestingList = () => {
+  //   if (token !== "uluna" || symbol === "LUNC" || !schedule) return null
+  //   return (
+  //     <>
+  //       <SectionHeader
+  //         title={t("Vesting")}
+  //         withLine
+  //         className={styles.chainlist__title}
+  //       />
+  //       <AssetVesting schedule={schedule} />
+  //     </>
+  //   )
+  // }
 
   const AssetChainList = ({
     title,
@@ -92,7 +97,7 @@ const AssetPage = () => {
         <div className={styles.chainlist__list}>
           {data
             .sort((a, b) => parseInt(b.amount) - parseInt(a.amount))
-            .map((b, i) => (
+            .map((b) => (
               <AssetChain
                 key={b.denom + b.chain}
                 symbol={symbol}
@@ -103,17 +108,26 @@ const AssetPage = () => {
                 decimals={decimals}
               />
             ))}
-          <AssetVestingList />
+          <SectionHeader
+            title={t("Vesting")}
+            withLine
+            className={styles.chainlist__title}
+          />
+          {schedule && <AssetVesting schedule={schedule} />}
         </div>
       </div>
     )
   }
 
   const AssetPageHeader = () => {
-    const totalBalance = [
-      ...balances.filter(supportedFilter),
-      ...balances.filter(unsupportedFilter),
-    ].reduce((acc, b) => acc + parseInt(b.amount), 0)
+    const totalBalance = useMemo(
+      () =>
+        [...supportedAssets, ...unsupportedAssets].reduce(
+          (acc, b) => acc + parseInt(b.amount),
+          0
+        ),
+      []
+    )
 
     return (
       <section className={styles.details}>
@@ -135,13 +149,10 @@ const AssetPage = () => {
     <>
       <AssetPageHeader />
       <section className={styles.chainlist__container}>
-        <AssetChainList
-          title={t("Balances")}
-          data={balances.filter(supportedFilter)}
-        />
+        <AssetChainList title={t("Balances")} data={supportedAssets} />
         <AssetChainList
           title={t("Unsupported Assets")}
-          data={balances.filter(unsupportedFilter)}
+          data={unsupportedAssets}
         />
       </section>
     </>
