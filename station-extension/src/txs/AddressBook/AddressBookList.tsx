@@ -64,7 +64,7 @@ const AddressBookList = ({ onClick }: Props) => {
   }
 
   return open ? (
-    <AddressBookForm close={() => setOpen(false)} />
+    <AddressBookForm />
   ) : (
     <section>
       <Grid gap={12}>
