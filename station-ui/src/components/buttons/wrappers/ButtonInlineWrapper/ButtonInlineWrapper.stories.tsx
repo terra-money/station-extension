@@ -23,7 +23,7 @@ export default meta;
 export const CancelWithSubmit: StoryObj<ButtonInlineWrapperProps> = {
   render: () => (
     <ButtonInlineWrapper>
-        <SubmitButton variant='secondary' label='Cancel' />,
+        <SubmitButton variant='secondary' label='Cancel' />
         <SubmitButton variant='primary' label='Submit'/>
       </ButtonInlineWrapper>
   ),

@@ -8,7 +8,7 @@ import {
   Description,
   Source,
 } from "@storybook/blocks";
-import { RightArrow, DocsLink, RequiredText } from "../../DocsHelpers.tsx";
+import { RightArrow, DocsLink, RequiredText, InLineDocsLink } from "../../DocsHelpers.tsx";
 import { Button } from "./";
 import * as ButtonStories from "./base/Button.stories";
 import * as SubmitButtonStories from "./submit/SubmitButton/SubmitButton.stories";
@@ -20,6 +20,7 @@ import * as RoundedActionButtonStories from "./navigation/rounded action/Rounded
 import * as CheckedButtonStories from "./checked/CheckedButton.stories";
 import * as TabsStories from "./tabs/Tabs.stories";
 import * as ValidatorButtonStories from "./validator/ValidatorButton.stories";
+import * as WalletButtonStories from "./wallet/WalletButton.stories.tsx";
 import "scss/storybookoverrides.scss";
 
 <Meta title="Components/Buttons" />
@@ -538,6 +539,45 @@ import { ValidatorButton } from "@terra-money/station-ui/components/buttons";
     >
       <h6 className="h6">Default</h6>
       <Story of={ValidatorButtonStories.Default} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+</div>
+
+<br />
+<br />
+<br />
+<br />
+
+# WalletButton [<InLineDocsLink />](/docs/components-buttons-wallet--docs)
+
+##### Selector button for wallets.
+
+## WalletButton Props
+- **`emoji`** - **`string`** - An emoji that is passed in.
+- **`walletName`** - <RequiredText /> - **`string`** - The name of the wallet.
+- **`walletAddress`** - <RequiredText /> - **`string`** - The address of the wallet.
+- **`chainIcon`** - <RequiredText /> - **`string`** - The chain icon of the wallet.
+- **`onClick`** - <RequiredText /> - **`() => void`** - Onclick functionality for the button.
+
+## Import
+```jsx
+import { WalletButton } from "station-ui";
+```
+
+## Variants
+<div className="sub__items">
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/Buttons/Wallet" linkToID="with-emoji">
+      <h6 className="h6">With Emoji</h6>
+      <Story of={WalletButtonStories.WithEmoji} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/Buttons/Wallet" linkToID="no-emoji">
+      <h6 className="h6">No Emoji</h6>
+      <Story of={WalletButtonStories.NoEmoji} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
