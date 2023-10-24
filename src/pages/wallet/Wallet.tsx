@@ -1,20 +1,17 @@
-import styles from "./Wallet.module.scss"
 import { ReactComponent as BackIcon } from "styles/images/icons/BackButton.svg"
-import NetWorth from "./NetWorth"
-import AssetList from "./AssetList"
-import React, { useState } from "react"
-import createContext from "utils/createContext"
-import AssetPage from "./AssetPage"
-import ReceivePage from "./ReceivePage"
-import SendPage from "./SendPage"
-import VestingDetailsPage from "./VestingDetailsPage"
-import { PageTabs, Modal } from "station-ui"
-import { useTranslation } from "react-i18next"
 import ActivityList from "pages/activity/ActivityList"
-import ActivityDetailsPage from "pages/activity/ActivityDetailsPage"
+import React, { useState, ReactElement } from "react"
+import VestingDetailsPage from "./VestingDetailsPage"
 import { InterchainNetwork } from "types/network"
-import { ReactElement } from "react"
-import ExtensionPage from "extension/components/ExtensionPage"
+import createContext from "utils/createContext"
+import { useTranslation } from "react-i18next"
+import styles from "./Wallet.module.scss"
+import ReceivePage from "./ReceivePage"
+import { PageTabs } from "station-ui"
+import AssetList from "./AssetList"
+import AssetPage from "./AssetPage"
+import SendPage from "./SendPage"
+import NetWorth from "./NetWorth"
 
 enum Path {
   wallet = "wallet",
@@ -110,21 +107,6 @@ const Wallet = () => {
             <BackButton />
             <VestingDetailsPage token={route.denom} />
           </>
-        )
-      case Path.activity:
-        return (
-          <ExtensionPage title={t("Transaction")} fullHeight modal>
-            <ActivityDetailsPage
-              variant={route.variant}
-              chain={route.chain}
-              msg={route.msg}
-              type={route.type}
-              time={route.time}
-              timelineMessages={route.timelineMessages}
-              txHash={route.txHash}
-              fee={route.fee}
-            />
-          </ExtensionPage>
         )
     }
   }

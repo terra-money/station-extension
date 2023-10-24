@@ -32,10 +32,10 @@ const ActivityList = () => {
             header = <SectionHeader title={displayDate} />
           }
           return (
-            <React.Fragment>
+            <div className={styles.activitylist}>
               {header}
               <ActivityItem {...activityItem} key={activityItem.txhash} />
-            </React.Fragment>
+            </div>
           )
         })}
       </div>
