@@ -1,6 +1,7 @@
 name: deploy-mobile
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
