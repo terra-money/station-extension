@@ -39,3 +39,26 @@ export const Default: StoryObj = {
     />
   ),
 };
+
+export const OthersOnly: StoryObj = {
+  render: () => (
+    <WalletList
+      otherWallets={
+        [{
+          name: 'other-wallet-1',
+          address: 'terra5dnwe3fc...pazdy5',
+          onClick: () => {},
+        },
+        {
+          name: 'other-wallet-2',
+          address: 'terra5dnwe3fc...pazdy5',
+          onClick: () => {},
+        },{
+          name: 'other-wallet-3',
+          address: 'terra5dnwe3fc...pazdy5',
+          onClick: () => {},
+        }]
+      }
+    />
+  ),
+};
