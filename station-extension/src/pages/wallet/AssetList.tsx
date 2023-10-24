@@ -20,9 +20,9 @@ import {
   Button,
 } from "station-ui"
 import classNames from "classnames"
-import { useWalletRoute, Page } from "./Wallet"
 import { useNetwork } from "data/wallet"
 import { Read } from "components/token"
+import { useNavigate } from "react-router-dom"
 
 const cx = classNames.bind(styles)
 
@@ -38,14 +38,8 @@ const AssetList = () => {
   const list = useParsedAssetList()
   const [showFilter, setShowFilter] = useState(false)
   const [filterChain, setFilterChain] = useState("all")
-  const { route, setRoute } = useWalletRoute()
   const network = useNetwork()
-
-  const handleAssetClick = (denom: Denom) => {
-    if (route.page !== Page.coin) {
-      setRoute({ page: Page.coin, denom })
-    }
-  }
+  const navigate = useNavigate()
 
   const toggleFilter = () => {
     setShowFilter(!showFilter)
@@ -118,7 +112,7 @@ const AssetList = () => {
         {...item}
         key={item.id}
         coins={coins}
-        onClick={() => handleAssetClick(denom)}
+        onClick={() => navigate(`/wallet/asset/${denom}`)}
       />
     )
   }

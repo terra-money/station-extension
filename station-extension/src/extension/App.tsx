@@ -82,7 +82,7 @@ const App = () => {
 
     /* auth */
     { path: "/auth/*", element: <Auth /> },
-    { path: "/wallet/*", element: <ManageWalletRouter /> },
+    { path: "/manage-wallet/*", element: <ManageWalletRouter /> },
     { path: "/preferences/*", element: <PreferencesRouter /> },
 
     /* default txs */
@@ -102,7 +102,7 @@ const App = () => {
       return <Welcome />
     }
     // main page
-    const hidePaths = ["/auth/", "/wallet/", "/preferences"]
+    const hidePaths = ["/auth/", "/manage-wallet/", "/preferences"]
     const hideHeader = hidePaths.some((p) => location.pathname.startsWith(p))
 
     return (

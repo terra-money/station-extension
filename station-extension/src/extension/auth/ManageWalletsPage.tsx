@@ -11,7 +11,7 @@ export default function ManageWalletsPage() {
   const navigate = useNavigate()
 
   if (!manageWallet || !wallet) {
-    navigate("/wallet/select")
+    navigate("/manage-wallet/select")
     return null
   }
 
@@ -20,7 +20,7 @@ export default function ManageWalletsPage() {
       title={t("Manage wallet")}
       fullHeight
       modal
-      backButtonPath="/wallet/select"
+      backButtonPath="/manage-wallet/select"
       subtitle={wallet}
     >
       <ExtensionList list={manageWallet} />

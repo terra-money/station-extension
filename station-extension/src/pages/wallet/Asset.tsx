@@ -7,11 +7,11 @@ import { WithFetching } from "components/feedback"
 import { useMemo } from "react"
 
 import styles from "./Asset.module.scss"
-import { useWalletRoute, Page } from "./Wallet"
 import { TokenListItem } from "station-ui"
 import { useBankBalance } from "data/queries/bank"
 import { useNativeDenoms } from "data/token"
 import { useNetwork } from "data/wallet"
+import { useNavigate } from "react-router-dom"
 
 export interface Props extends TokenItem, QueryState {
   balance?: Amount
@@ -37,16 +37,12 @@ const Asset = (props: Props) => {
   const readNativeDenom = useNativeDenoms()
   const network = useNetwork()
   const coins = useBankBalance()
+  const navigate = useNavigate()
 
   const { data: prices, ...pricesState } = useExchangeRates()
-  const { route, setRoute } = useWalletRoute()
 
   const price = props.price ?? prices?.[props.token]?.price
   const change = props.change ?? prices?.[props.token]?.change
-
-  const handleAssetClick = () => {
-    if (route.page !== Page.coin) setRoute({ page: Page.coin, denom: id })
-  }
 
   const chains = useMemo(() => {
     return props.chains.reduce((acc, chain) => {
@@ -136,7 +132,7 @@ const Asset = (props: Props) => {
     <div className={styles.asset}>
       <TokenListItem
         chains={chains}
-        onClick={handleAssetClick}
+        onClick={() => navigate(`/wallet/asset/${denom}`)}
         amountNode={<AmountNode />}
         priceNode={<PriceNode />}
         change={change}

@@ -7,8 +7,8 @@ import { AddressSelectableListItem, Button } from "station-ui"
 import { truncate } from "@terra-money/terra-utils"
 import { capitalize } from "@mui/material"
 import styles from "./ReceivePage.module.scss"
-import { useWalletRoute, Page } from "./Wallet"
 import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
 
 interface SearchChainsProps {
   data: {
@@ -49,9 +49,9 @@ export const SearchChains = ({ data }: SearchChainsProps) => {
 
 const ReceivePage = () => {
   const addresses = useInterchainAddresses()
-  const { setRoute } = useWalletRoute()
   const networks = useNetwork()
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   const data = useMemo(() => {
     if (!addresses) return []
@@ -59,14 +59,9 @@ const ReceivePage = () => {
       address: addresses[key],
       name: getChainNamefromID(key, networks) ?? key,
       id: key,
-      onClick: () => {
-        setRoute({
-          page: Page.address,
-          address: addresses[key],
-        })
-      },
+      onClick: () => navigate("/receive/" + key + "/" + addresses[key]),
     }))
-  }, [addresses, networks, setRoute])
+  }, [addresses, networks, navigate])
 
   if (!data.length) return null
 
@@ -76,7 +71,7 @@ const ReceivePage = () => {
       <Button
         label={t("Back")}
         className={styles.back}
-        onClick={() => setRoute({ page: Page.wallet })}
+        onClick={() => navigate("/wallet")}
         variant="secondary"
       />
     </>

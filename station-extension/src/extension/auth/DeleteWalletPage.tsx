@@ -12,7 +12,7 @@ const DeleteWalletPage = () => {
     <ExtensionPage
       title={t("Delete wallet")}
       subtitle={walletName}
-      backButtonPath={`/wallet/manage/${walletName}`}
+      backButtonPath={`/manage-wallet/manage/${walletName}`}
       fullHeight
       modal
     >

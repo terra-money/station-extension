@@ -4,13 +4,13 @@ import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
 import { useNetworkName, useNetwork, useChainID } from "data/wallet"
 import { useIsWalletEmpty } from "data/queries/bank"
 import { useKado } from "pages/wallet/Buy"
-import { useWalletRoute, Page } from "./Wallet"
 import { useTranslation } from "react-i18next"
 import styles from "./NetWorth.module.scss"
 import { capitalize } from "@mui/material"
 import { useMemo } from "react"
 import { FlexColumn, RoundedButton } from "station-ui"
 import { ReactComponent as Swap } from "styles/images/icons/Swap.svg"
+import { useLocation, useNavigate } from "react-router-dom"
 
 interface WalletActionButton {
   icon: JSX.Element
@@ -27,9 +27,10 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
   const isWalletEmpty = useIsWalletEmpty()
   const networks = useNetwork()
   const chainID = useChainID()
-  const { setRoute, route } = useWalletRoute()
   const { openModal } = useKado()
+  const navigate = useNavigate()
   const networkName = useNetworkName()
+  const location = useLocation()
 
   const availableGasDenoms = useMemo(
     () => Object.keys(networks[chainID]?.gasPrices ?? {}),
@@ -43,19 +44,19 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
       icon: <SendIcon />,
       primary: true,
       label: t("send"),
-      onClick: () => setRoute({ page: Page.send, denom }),
+      onClick: () => navigate(`/wallet/send/${denom}`),
       disabled: sendButtonDisabled,
     },
     {
       icon: <Swap />,
       label: t("swap"),
-      onClick: () => setRoute({ page: Page.swap }),
-      hide: route.page !== Page.wallet,
+      onClick: () => navigate(`/wallet/swap/${denom}`),
+      hide: location.pathname.includes("swap"),
     },
     {
       icon: <ReceiveIcon />,
       label: t("receive"),
-      onClick: () => setRoute({ page: Page.receive }),
+      onClick: () => navigate(`/wallet/receive`),
     },
     {
       icon: <AddIcon />,
