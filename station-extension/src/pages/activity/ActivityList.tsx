@@ -1,10 +1,12 @@
 import { Card, Page } from "components/layout"
 import { Empty } from "components/feedback"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { LoadingCircular } from "station-ui"
+import { LoadingCircular, SectionHeader } from "station-ui"
 import ActivityItem from "./ActivityItem"
 import styles from "./ActivityList.module.scss"
 import { useInitialAccountInfo } from "data/queries/accountInfo"
+import moment from "moment"
+import React from "react"
 
 const ActivityList = () => {
   const addresses = useInterchainAddresses()
@@ -12,6 +14,7 @@ const ActivityList = () => {
 
   const render = () => {
     if (addresses && !activity) return null
+    let priorDisplayDate = ""
 
     return !activity?.length ? (
       <Card>
@@ -20,14 +23,21 @@ const ActivityList = () => {
     ) : (
       <div className={styles.activitylist}>
         {state.isLoading ? <LoadingCircular size={36} thickness={2} /> : null}
-        {activity.map((activityItem) => (
-          <ActivityItem {...activityItem} key={activityItem.txhash} />
-        ))}
-        {/* {state.isLoading ? (
-          <LoadingCircular size={36} thickness={2} />
-        ) : (
-          activity.map((item) => <ActivityItem {...item} key={item.txhash} />)
-        )} */}
+        {activity.map((activityItem) => {
+          const activityItemDate = new Date(activityItem.timestamp)
+          const displayDate = getDisplayDate(activityItemDate)
+          let header = null
+          if (displayDate !== priorDisplayDate) {
+            priorDisplayDate = displayDate
+            header = <SectionHeader title={displayDate} />
+          }
+          return (
+            <React.Fragment>
+              {header}
+              <ActivityItem {...activityItem} key={activityItem.txhash} />
+            </React.Fragment>
+          )
+        })}
       </div>
     )
   }
@@ -37,6 +47,18 @@ const ActivityList = () => {
       {render()}
     </Page>
   )
+}
+
+const getDisplayDate = (activityItemDate: Date) => {
+  if (moment(activityItemDate).isSame(moment(), "day")) {
+    return "Today"
+  } else if (
+    moment(activityItemDate).isSame(moment().subtract(1, "days"), "day")
+  ) {
+    return "Yesterday"
+  } else {
+    return moment(activityItemDate).format("D MMM YYYY")
+  }
 }
 
 export default ActivityList
