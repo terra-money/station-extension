@@ -1,10 +1,4 @@
-import {
-  parseVestingSchedule,
-  isVestingAccount,
-  useAccount,
-  ParsedVestingSchedule,
-} from "data/queries/vesting"
-import { useMemo } from "react"
+import { ParsedVestingSchedule } from "data/queries/vesting"
 import { useNativeDenoms } from "data/token"
 import styles from "./Vesting.module.scss"
 import { useNetwork } from "data/wallet"
@@ -12,6 +6,7 @@ import { Read } from "components/token"
 import { VestingCard as Vesting, TokenSingleChainListItem } from "station-ui"
 import { useExchangeRates } from "data/queries/coingecko"
 import { toInput } from "txs/utils"
+import { useCurrency } from "data/settings/Currency"
 
 interface Props {
   schedule: ParsedVestingSchedule
@@ -26,6 +21,7 @@ const VestingCard = ({ schedule }: Props) => {
     decimals,
     symbol,
   } = readNativeDenom("uluna", "phoenix-1")
+  const currency = useCurrency()
   if (!schedule) return null
 
   const { icon, name } = network["phoenix-1"]
@@ -49,16 +45,19 @@ const VestingCard = ({ schedule }: Props) => {
           />
         }
         priceNode={
-          <Read
-            className={styles.amount}
-            amount={
-              Number(schedule.amount.vested) * (prices?.["uluna"]?.price ?? 0)
-            }
-            decimals={decimals}
-            fixed={2}
-            denom=""
-            token=""
-          />
+          <>
+            {currency.symbol + " "}
+            <Read
+              className={styles.amount}
+              amount={
+                Number(schedule.amount.vested) * (prices?.["uluna"]?.price ?? 0)
+              }
+              decimals={decimals}
+              fixed={2}
+              denom=""
+              token=""
+            />
+          </>
         }
       />
     </Vesting>

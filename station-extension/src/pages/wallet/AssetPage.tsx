@@ -32,6 +32,7 @@ const AssetPage = () => {
   const { data: account } = useAccount()
   const schedule = useMemo(() => {
     if (!account) return null
+    console.log("account", account)
     return parseVestingSchedule(account)
   }, [account])
 
