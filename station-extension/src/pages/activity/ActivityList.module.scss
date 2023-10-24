@@ -1,10 +1,9 @@
 @import "mixins";
 
-.activitylist {
-  background-color: var(--card-bg-muted);
+.activitylist > * {
+  padding: 8px 0px;
   padding-inline: 10px;
   display: grid;
-  grid-template-areas: "title" "list";
   grid-template-rows: min-content auto;
   overflow-y: hidden;
 }

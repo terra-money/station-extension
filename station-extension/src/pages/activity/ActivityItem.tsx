@@ -1,18 +1,16 @@
-import { useTranslation } from "react-i18next"
-import { ReadMultiple } from "components/token"
-import { useNetwork, useNetworkName } from "data/wallet"
 import {
   createActionRuleSet,
   createLogMatcherForActions,
   getTxCanonicalMsgs,
 } from "@terra-money/log-finder-ruleset"
+import { ActivityListItem, ModalButton } from "station-ui"
+import { useNetwork, useNetworkName } from "data/wallet"
+import ActivityDetailsPage from "./ActivityDetailsPage"
 import { TxInfo } from "@terra-money/feather.js"
-import { ActivityListItem } from "station-ui"
+import ActivityMessage from "./ActivityMessage"
+import { useTranslation } from "react-i18next"
 import { toNow } from "utils/date"
 import { last } from "ramda"
-import ActivityMessage from "./ActivityMessage"
-import styles from "./ActivityItem.module.scss"
-import { useWalletRoute, Path } from "pages/wallet/Wallet"
 
 const ActivityItem = ({
   txhash,
@@ -23,25 +21,16 @@ const ActivityItem = ({
   const {
     code,
     tx: {
-      body: { memo },
       auth_info: {
         fee: { amount: fee },
-        signer_infos,
       },
     },
-    raw_log,
   } = props
   const success = code === 0
   const activityVariant = success ? "success" : "failed"
   const { t } = useTranslation()
   const network = useNetwork()
   const networkName = useNetworkName()
-
-  const data = [
-    { title: t("Fee"), content: <ReadMultiple list={fee} /> },
-    { title: t("Memo"), content: memo },
-    { title: t("Log"), content: !success && raw_log },
-  ]
 
   const ruleset = createActionRuleSet(networkName)
   const logMatcher = createLogMatcherForActions(ruleset)
@@ -71,41 +60,34 @@ const ActivityItem = ({
 
   const activityType = msgType.charAt(0).toUpperCase() + msgType.substring(1)
 
-  const { route, setRoute } = useWalletRoute()
-
-  const handleActivityClick = () => {
-    if (route.path !== Path.activity) {
-      setRoute({
-        path: Path.activity,
-        variant: activityVariant,
-        chain: network[chain],
-        msg: activityMessages[0],
-        type: activityType,
-        time: timestamp,
-        timelineMessages: activityMessages.slice(1),
-        txHash: txhash,
-        fee: fee,
-        previousPage: route,
-      })
-    }
-  }
-
   return (
-    <div className={styles.item}>
-      {" "}
-      <ActivityListItem
+    <ModalButton
+      renderButton={(open) => (
+        <ActivityListItem
+          onClick={open}
+          variant={activityVariant}
+          chain={{
+            icon: network[chain].icon,
+            label: network[chain].name,
+          }}
+          msg={activityMessages[0]}
+          type={t(activityType)}
+          time={t(toNow(new Date(timestamp)))}
+          timelineMessages={activityMessages.slice(1)}
+        />
+      )}
+    >
+      <ActivityDetailsPage
         variant={activityVariant}
-        chain={{
-          icon: network[chain].icon,
-          label: network[chain].name,
-        }}
-        onClick={handleActivityClick}
+        chain={network[chain]}
         msg={activityMessages[0]}
         type={activityType}
-        time={toNow(new Date(timestamp))}
+        time={timestamp}
         timelineMessages={activityMessages.slice(1)}
+        txHash={txhash}
+        fee={fee}
       />
-    </div>
+    </ModalButton>
   )
 }
 

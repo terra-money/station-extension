@@ -84,7 +84,9 @@ export const useInitialAccountInfo = (
                       [paginationKeys.limit]: LIMIT,
                     },
                   })
-                } catch (e) {}
+                } catch (e) {
+                  return {}
+                }
               })
             )
           ).filter((request) => !!request) as { data: AccountHistory }[]
