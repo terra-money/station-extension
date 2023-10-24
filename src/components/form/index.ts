@@ -14,6 +14,7 @@ export { default as Checkbox } from "./Checkbox"
 export * from "./Checkbox"
 export { default as Toggle } from "./Toggle"
 export { default as Upload } from "./Upload"
+export { default as EmojiButton } from "./EmojiButton"
 
 /* modules */
 export { default as Paste } from "./Paste"

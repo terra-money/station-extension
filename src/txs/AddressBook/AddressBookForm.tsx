@@ -12,23 +12,29 @@ import {
   ButtonInlineWrapper,
 } from "station-ui"
 import DeleteButton from "components/form/DeleteButton"
+import { EmojiButton } from "components/form"
+import { useLocation, useNavigate } from "react-router-dom"
 
 interface Props {
   item?: AddressBook
-  close: () => void
+  icon?: string
   index?: number // exsisting item index for edit/remove
 }
 
 const AddressBookForm = (props: Props) => {
   const { t } = useTranslation()
   const { edit, add, list, remove } = useAddressBook()
-  const { close, index } = props
+  const { state } = useLocation()
+  const index = state?.walletIndex ?? props.index
+  const navigate = useNavigate()
 
   /* form */
   const form = useForm<AddressBook>({ mode: "onChange" })
-  const { register, handleSubmit, formState, watch } = form
+  const { register, handleSubmit, formState, watch, setValue } = form
   const { errors } = formState
-  const { favorite } = watch()
+  const { favorite, icon } = watch()
+
+  const close = () => navigate(`/preferences/address-book`)
 
   useEffect(() => {
     if (index !== undefined) form.reset(list[index])
@@ -44,11 +50,17 @@ const AddressBookForm = (props: Props) => {
     close()
   }
 
+  const emojiOnClick = (emoji: string) => {
+    setValue("icon", emoji)
+  }
+
   return (
     <Form onSubmit={handleSubmit(submit)}>
       <InputWrapper label={t("Wallet Name")} error={errors.name?.message}>
         <Input
-          placeholder="my-wallet"
+          actionIcon={{
+            icon: <EmojiButton icon={icon} onClick={emojiOnClick} />,
+          }}
           {...register("name", {
             required: true,
           })}
