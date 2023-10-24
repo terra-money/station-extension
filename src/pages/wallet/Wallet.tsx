@@ -113,12 +113,7 @@ const Wallet = () => {
         )
       case Path.activity:
         return (
-          <ExtensionPage
-            title={t("Transaction")}
-            fullHeight
-            modal
-            backButtonPath="/"
-          >
+          <ExtensionPage title={t("Transaction")} fullHeight modal>
             <ActivityDetailsPage
               variant={route.variant}
               chain={route.chain}
