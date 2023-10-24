@@ -1,11 +1,6 @@
 import { SectionHeader, SendHeader, SummaryTable } from "station-ui"
 import VestingCard from "./VestingCard"
-import {
-  ParsedVestingSchedule,
-  isVestingAccount,
-  parseVestingSchedule,
-  useAccount,
-} from "data/queries/vesting"
+import { ParsedVestingSchedule } from "data/queries/vesting"
 import styles from "./VestingDetailsPage.module.scss"
 import { VestingScheduleItem } from "data/queries/vesting"
 import { ReadPercent, Read } from "components/token"

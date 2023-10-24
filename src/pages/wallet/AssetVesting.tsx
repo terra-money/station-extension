@@ -8,8 +8,6 @@ interface Props {
 }
 
 const AssetVesting = ({ schedule }: Props) => {
-  if (!schedule) return null
-
   return (
     <ModalButton
       renderButton={(open) => (
