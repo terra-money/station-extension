@@ -5,6 +5,7 @@ import {
 } from "@storybook/blocks";
 import { RightArrow, DocsLink, RequiredText, InLineDocsLink } from "../../../DocsHelpers.tsx";
 import * as ActivityListItemStories from "./activity/ActivityListItem.stories.tsx";
+import * as TimelineStories from "./timeline/Timeline.stories.tsx";
 import * as AddressSelectableListItemStories from "./selectable/address/AddressSelectableListItem.stories.tsx";
 import * as WalletSelectableListItemStories from "./selectable/wallet/WalletSelectableListItem.stories.tsx";
 import * as TokenListItemStories from "./token/TokenListItem.stories.tsx";
@@ -32,7 +33,7 @@ List items are used to display information in a list format.
 
 ## Import
 ```jsx
-import { DelegationCard } from "station-ui";
+import { ActivityListItem } from "station-ui";
 ```
 
 ## Variants
@@ -58,10 +59,129 @@ import { DelegationCard } from "station-ui";
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
-  <div className="story__wrapper" style={{ width: "100%" }}>
+  {/* <div className="story__wrapper" style={{ width: "100%" }}>
     <DocsLink linkToRoute="Components/List Items/Activity" linkToID="timeline">
       <h6 className="h6">Timeline</h6>
       <Story of={ActivityListItemStories.Timeline} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div> */}
+</div>
+
+<br />
+<br />
+<br />
+
+# Timeline [<InLineDocsLink />](/docs/components-list-items-timeline--docs)
+
+##### Timeline component to show details of a transaction.
+
+## Props
+- **`startItem`** - `**object below**` - The first item of the timeline. It is different from the middle items.
+  - `{`
+    - **chain:** `{ icon: string, label: string },`
+    - **coin:** `{ icon: string, label: string },`
+    - **msg:** `ReactNode`
+  - `}`
+- **`middleItems`** - `**object below**` - All middle items of the timeline. **Note: if one is passed in the line is not displayed**
+  - `{`
+    - **variant:** `"default" | "success" | "warning",`
+    - **msg:** `ReactNode,`
+    - **warningPillText?:** `string`
+    - **transactionButton?:** `{`
+      - **label:** `string`
+      - **onClick:*** `() => void`
+    - `}`
+    - **disabled?:** `boolean`
+  - `}[]`
+- **`endItem`** - `**object below**` - The last item of the timeline.
+  - `{`
+    - **chain:** `{ icon: string, label: string },`
+    - **coin:** `{ icon: string, label: string },`
+    - **msg:** `ReactNode`
+  - `}`
+
+## Import
+```jsx
+import { Timeline } from "station-ui";
+```
+
+## Variants
+<div className="sub__items">
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="start-item">
+      <h6 className="h6">Start Item</h6>
+      <Story of={TimelineStories.StartItem} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="end-item">
+      <h6 className="h6">End Item</h6>
+      <Story of={TimelineStories.EndItem} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="middle-item-default">
+      <h6 className="h6">Middle Item Default</h6>
+      <Story of={TimelineStories.MiddleItemDefault} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="middle-item-success">
+      <h6 className="h6">Middle Item Success</h6>
+      <Story of={TimelineStories.MiddleItemSuccess} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="middle-item-warning">
+      <h6 className="h6">Middle Item Warning</h6>
+      <Story of={TimelineStories.MiddleItemWarning} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="middle-item-with-pill">
+      <h6 className="h6">Middle Item With Pill</h6>
+      <Story of={TimelineStories.MiddleItemWithPill} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="middle-item-with-button">
+      <h6 className="h6">Middle Item With Button</h6>
+      <Story of={TimelineStories.MiddleItemWithButton} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="middle-item-with-button-disabled">
+      <h6 className="h6">Middle Item With Button Disabled</h6>
+      <Story of={TimelineStories.MiddleItemWithButtonDisabled} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="transaction-page-example">
+      <h6 className="h6">Transaction Page Example</h6>
+      <Story of={TimelineStories.TransactionPageExample} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="three-middle-items-example">
+      <h6 className="h6">Three Middle Items Example</h6>
+      <Story of={TimelineStories.ThreeMiddleItemsExample} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
+    <DocsLink linkToRoute="Components/List Items/Timeline" linkToID="transactions-required-example">
+      <h6 className="h6">Transactions Required Example</h6>
+      <Story of={TimelineStories.TransactionsRequiredExample} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
@@ -161,16 +281,13 @@ import { WalletSelectableListItem } from "station-ui";
 ##### Displays a single token item.
 
 ## Props
-- **`balance`** - `string` - The balance of the token.
-  - If this is not provided, the balance will default to "0".
-- **`chains`** - <RequiredText /> - `string[]` - A list of chains this token is on.
-- **`currency`** - <RequiredText /> - `**object below**` - The currency a user uses.
-  - `{ id: string, symbol: string, name: string }`
+- **`chains`** - <RequiredText /> - `{*object*}[]` - A list of chains this token is on.
+  - `{ name: string, icon: string, balance: string }`
 - **`tokenImg`** - <RequiredText /> - `string` - The Image for the token.
 - **`symbol`** - <RequiredText /> - `string` - The label to display the token.
-- **`price`** - `number` - The current price of the token.
 - **`change`** - `number` - The percent change of the token in 24 hours.
 - **`amountNode`** - <RequiredText /> - `ReactNode` - The amount of the token.
+- **`priceNode`** - <RequiredText /> - `ReactNode` - The price of the token.
 - **`onClick`** - <RequiredText /> - `() => void` - Function that is called when the item is clicked.
 
 ## Import

@@ -22,7 +22,6 @@ export const Default: StoryObj<TokenListItemProps> = {
           chains={[{name: "terra",  icon: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }, { balance: '320' , name: "axelar", icon: "https://station-assets.terra.dev/img/chains/Axelar.svg"}]}
           tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
           symbol={"LUNA"}
-          price={1}
           change={0.1}
           amountNode={<span>420.00</span>}
         />
@@ -40,7 +39,6 @@ export const DefaultSingleChain: StoryObj<TokenListItemProps> = {
         chains={[{name: "terra",  icon: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }]}
         tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
         symbol={"LUNA"}
-        price={1}
         change={0.1}
         amountNode={<span>420.00</span>}
       />

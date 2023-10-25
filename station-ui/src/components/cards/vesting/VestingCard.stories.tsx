@@ -1,14 +1,14 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import VestingCard, { VestingCardProps } from './VestingCard';
-import { TokenSingleChainListItem } from 'components';
+import type { Meta, StoryObj } from "@storybook/react"
+import VestingCard, { VestingCardProps } from "./VestingCard"
+import { TokenSingleChainListItem } from "components"
 
 const meta: Meta<VestingCardProps> = {
-  title: 'Components/Cards/Vesting/Stories',
+  title: "Components/Cards/Vesting/Stories",
   component: VestingCard,
   argTypes: {},
-} as Meta;
+} as Meta
 
-export default meta;
+export default meta
 
 export const Default: StoryObj<VestingCardProps> = {
   render: () => {
@@ -27,4 +27,4 @@ export const Default: StoryObj<VestingCardProps> = {
     )
   },
   argTypes: {},
-};
+}
