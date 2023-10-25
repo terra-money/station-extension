@@ -1,0 +1,75 @@
+import { Meta, Canvas, Source } from "@storybook/blocks"
+import { RequiredText } from "../../../DocsHelpers.tsx"
+import * as WalletButtonStories from "./WalletButton.stories.tsx";
+import "scss/storybookoverrides.scss";
+
+<Meta title="Components/Buttons/Wallet" />
+
+# WalletButton
+
+##### Selector button for wallets.
+
+## Props
+- **`emoji`** - **`string`** - An emoji that is passed in.
+- **`walletName`** - <RequiredText /> - **`string`** - The name of the wallet.
+- **`walletAddress`** - <RequiredText /> - **`string`** - The address of the wallet.
+- **`chainIcon`** - <RequiredText /> - **`string`** - The chain icon of the wallet.
+- **`onClick`** - <RequiredText /> - **`() => void`** - Onclick functionality for the button.
+
+## Import
+```jsx
+import { WalletButton } from "station-ui";
+```
+
+## Stories
+
+## With Emoji
+Wallet button with an emoji.
+<div className="story_with_source_below">
+  <Canvas of={WalletButtonStories.WithEmoji} />
+  <Source code={`
+    <WalletButton
+  emoji={"🔥"}
+  walletName="my-wallet"
+  walletAddress="terra1hod3...pazdy5"
+  chainIcon="https://station-assets.terra.dev/img/chains/Terra.svg"
+  onClick={() => console.log("clicked!")}
+/>
+  `} />
+</div>
+
+## No Emoji
+Wallet button without an emoji.
+<div className="story_with_source_below">
+  <Canvas of={WalletButtonStories.NoEmoji} />
+  <Source code={`
+    <WalletButton
+  walletName="my-wallet"
+  walletAddress="terra1hod3...pazdy5"
+  chainIcon="https://station-assets.terra.dev/img/chains/Terra.svg"
+  onClick={() => console.log("clicked!")}
+/>
+  `} />
+</div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

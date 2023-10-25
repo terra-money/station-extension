@@ -11,7 +11,6 @@ interface Option {
   label: string
   image?: string
 }
-
 export interface DropdownProps {
   options: Option[]
   onChange: (value: string) => void
