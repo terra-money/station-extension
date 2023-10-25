@@ -6,16 +6,12 @@ import { useExchangeRates } from "data/queries/coingecko"
 import { CoinBalance, useBankBalance } from "data/queries/bank"
 import AssetChain from "./AssetChain"
 import { useTranslation } from "react-i18next"
-import AssetVesting from "./AssetVesting"
 import { useNetworkName } from "data/wallet"
-import { SectionHeader, ModalButton } from "station-ui"
+import { SectionHeader } from "station-ui"
 import { useMemo } from "react"
 import WalletActionButtons from "./WalletActionButtons"
-import { useAccount } from "data/queries/vesting"
-import { parseVestingSchedule } from "data/queries/vesting"
+import { useNavigate, useParams } from "react-router-dom"
 import VestingCard from "./VestingCard"
-import VestingDetailsPage from "./VestingDetailsPage"
-import { useParams } from "react-router-dom"
 
 const AssetPage = () => {
   const currency = useCurrency()
@@ -25,18 +21,14 @@ const AssetPage = () => {
   const { t } = useTranslation()
   const networkName = useNetworkName()
   const params = useParams()
+  console.log("params", params)
   const routeDenom = params.denom ?? "uluna"
   const [chain, denom] = routeDenom.includes("*")
     ? routeDenom.split("*")
     : [undefined, routeDenom]
   const { token, symbol, icon, decimals } = readNativeDenom(denom, chain)
   const unknownIBCDenoms = useUnknownIBCDenoms()
-  const { data: account } = useAccount()
-
-  const schedule = useMemo(() => {
-    if (!account) return null
-    return parseVestingSchedule(account)
-  }, [account])
+  const navigate = useNavigate()
 
   const price = useMemo(() => {
     if (symbol === "LUNC" && networkName !== "classic") {
@@ -64,20 +56,6 @@ const AssetPage = () => {
       return unknownIBCDenoms[[b.denom, b.chain].join("*")]?.baseDenom === token
     })
   }, [balances, unknownIBCDenoms, token, chain])
-
-  // const AssetVestingList = () => {
-  //   if (token !== "uluna" || symbol === "LUNC" || !schedule) return null
-  //   return (
-  //     <>
-  //       <SectionHeader
-  //         title={t("Vesting")}
-  //         withLine
-  //         className={styles.chainlist__title}
-  //       />
-  //       <AssetVesting schedule={schedule} />
-  //     </>
-  //   )
-  // }
 
   const AssetChainList = ({
     title,
@@ -108,12 +86,6 @@ const AssetPage = () => {
                 decimals={decimals}
               />
             ))}
-          <SectionHeader
-            title={t("Vesting")}
-            withLine
-            className={styles.chainlist__title}
-          />
-          {schedule && <AssetVesting schedule={schedule} />}
         </div>
       </div>
     )
@@ -131,7 +103,11 @@ const AssetPage = () => {
 
     return (
       <section className={styles.details}>
-        <TokenIcon token={token} icon={icon} size={50} />
+        <span className={styles.token}>
+          <TokenIcon token={token} size={15} />
+          <Read decimals={decimals} amount={totalBalance} fixed={2} />
+          {symbol}
+        </span>
         <h1>
           {currency.symbol}{" "}
           {price ? (
@@ -140,11 +116,32 @@ const AssetPage = () => {
             <span>—</span>
           )}
         </h1>
-        <Read decimals={decimals} amount={totalBalance} fixed={2} /> {symbol}
         <WalletActionButtons denom={token} />
       </section>
     )
   }
+
+  const VestingSection = () => {
+    if (token === "uluna" && symbol !== "LUNC") {
+      return (
+        <>
+          <SectionHeader
+            className={styles.chainlist__title}
+            withLine
+            title={t("Vesting")}
+          />
+          <div
+            className={styles.vesting}
+            onClick={() => navigate(`/asset/${token}/vesting`)}
+          >
+            <VestingCard />
+          </div>
+        </>
+      )
+    }
+    return null
+  }
+
   return (
     <>
       <AssetPageHeader />
@@ -154,6 +151,7 @@ const AssetPage = () => {
           title={t("Unsupported Assets")}
           data={unsupportedAssets}
         />
+        <VestingSection />
       </section>
     </>
   )

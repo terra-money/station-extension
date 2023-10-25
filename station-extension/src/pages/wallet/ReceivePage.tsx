@@ -55,11 +55,11 @@ const ReceivePage = () => {
 
   const data = useMemo(() => {
     if (!addresses) return []
-    return Object.keys(addresses ?? {}).map((key) => ({
-      address: addresses[key],
-      name: getChainNamefromID(key, networks) ?? key,
-      id: key,
-      onClick: () => navigate("/receive/" + key + "/" + addresses[key]),
+    return Object.keys(addresses ?? {}).map((chain) => ({
+      address: addresses[chain],
+      name: getChainNamefromID(chain, networks) ?? chain,
+      id: chain,
+      onClick: () => navigate("/receive/" + addresses[chain]),
     }))
   }, [addresses, networks, navigate])
 
@@ -71,7 +71,7 @@ const ReceivePage = () => {
       <Button
         label={t("Back")}
         className={styles.back}
-        onClick={() => navigate("/wallet")}
+        onClick={() => navigate("/")}
         variant="secondary"
       />
     </>

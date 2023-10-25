@@ -1,4 +1,8 @@
-import { ParsedVestingSchedule } from "data/queries/vesting"
+import {
+  ParsedVestingSchedule,
+  parseVestingSchedule,
+  useAccount,
+} from "data/queries/vesting"
 import { useNativeDenoms } from "data/token"
 import styles from "./Vesting.module.scss"
 import { useNetwork } from "data/wallet"
@@ -8,11 +12,8 @@ import { useExchangeRates } from "data/queries/coingecko"
 import { toInput } from "txs/utils"
 import { useCurrency } from "data/settings/Currency"
 
-interface Props {
-  schedule: ParsedVestingSchedule
-}
-
-const VestingCard = ({ schedule }: Props) => {
+const VestingCard = () => {
+  const { data: account } = useAccount()
   const readNativeDenom = useNativeDenoms()
   const { data: prices } = useExchangeRates()
   const network = useNetwork()
@@ -22,7 +23,9 @@ const VestingCard = ({ schedule }: Props) => {
     symbol,
   } = readNativeDenom("uluna", "phoenix-1")
   const currency = useCurrency()
-  if (!schedule) return null
+  if (!account) return null
+
+  const schedule = parseVestingSchedule(account)
 
   const { icon, name } = network["phoenix-1"]
 

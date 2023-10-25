@@ -103,6 +103,7 @@ const AssetList = () => {
   ])
 
   const renderAsset = ({ denom, chainID, ...item }: any) => {
+    console.log("denom 2", denom)
     return (
       <Asset
         {...readNativeDenom(
@@ -110,9 +111,10 @@ const AssetList = () => {
           unknownIBCDenoms[[denom, chainID].join("*")]?.chainID ?? chainID
         )}
         {...item}
+        denom={denom}
         key={item.id}
         coins={coins}
-        onClick={() => navigate(`/wallet/asset/${denom}`)}
+        onClick={() => navigate(`asset/${denom}`)}
       />
     )
   }

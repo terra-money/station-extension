@@ -132,7 +132,7 @@ const Asset = (props: Props) => {
     <div className={styles.asset}>
       <TokenListItem
         chains={chains}
-        onClick={() => navigate(`/wallet/asset/${denom}`)}
+        onClick={() => navigate(`asset/${denom}`)}
         amountNode={<AmountNode />}
         priceNode={<PriceNode />}
         change={change}

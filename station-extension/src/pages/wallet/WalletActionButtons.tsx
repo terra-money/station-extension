@@ -30,7 +30,7 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
   const { openModal } = useKado()
   const navigate = useNavigate()
   const networkName = useNetworkName()
-  const location = useLocation()
+  const { pathname } = useLocation()
 
   const availableGasDenoms = useMemo(
     () => Object.keys(networks[chainID]?.gasPrices ?? {}),
@@ -44,25 +44,26 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
       icon: <SendIcon />,
       primary: true,
       label: t("send"),
-      onClick: () => navigate(`/wallet/send/${denom}`),
+      onClick: () => navigate(`/send`),
       disabled: sendButtonDisabled,
     },
     {
       icon: <Swap />,
       label: t("swap"),
-      onClick: () => navigate(`/wallet/swap/${denom}`),
-      hide: location.pathname.includes("swap"),
+      onClick: () => navigate(`swap/${denom}`),
+      hide: pathname.includes("/swap/"),
     },
     {
       icon: <ReceiveIcon />,
       label: t("receive"),
-      onClick: () => navigate(`/wallet/receive`),
+      onClick: () => navigate(`/receive`),
     },
     {
       icon: <AddIcon />,
       label: t("buy"),
       onClick: () => openModal(),
       disabled: networkName !== "mainnet",
+      hide: pathname.includes("/asset/"),
     },
   ]
 

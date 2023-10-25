@@ -60,7 +60,6 @@ const SendPage = () => {
   const networks = useNetwork()
   const assetList = useParsedAssetList()
   const navigate = useNavigate()
-  console.log("render")
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange" })
@@ -74,7 +73,7 @@ const SendPage = () => {
       setValue("recipient", address)
       trigger("recipient")
       if (validateRecipient(address)) {
-        navigate("/send/chain")
+        navigate("send/chain")
       }
     }
 
@@ -116,7 +115,7 @@ const SendPage = () => {
           name: getChainNamefromID(chain, networks) ?? chain,
           onClick: () => {
             setValue("chain", chain)
-            navigate("/send/token")
+            navigate("send/token")
           },
           id: chain,
           address: convertAddress(recipient!, networks[chain]?.prefix),
