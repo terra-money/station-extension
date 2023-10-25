@@ -8,9 +8,8 @@ const useIsUpdateAvailable = () => {
   return useQuery(
     [],
     async () => {
-      return (
-        (await browser.runtime.requestUpdateCheck())[0] === "update_available"
-      )
+      const updateStatus = await browser?.runtime?.requestUpdateCheck()
+      if (updateStatus) return updateStatus[0] === "update_available"
     },
     { ...RefetchOptions.DEFAULT }
   )
