@@ -21,12 +21,11 @@ const AssetPage = () => {
   const { t } = useTranslation()
   const networkName = useNetworkName()
   const params = useParams()
-  console.log("params", params)
   const routeDenom = params.denom ?? "uluna"
   const [chain, denom] = routeDenom.includes("*")
     ? routeDenom.split("*")
     : [undefined, routeDenom]
-  const { token, symbol, icon, decimals } = readNativeDenom(denom, chain)
+  const { token, symbol, decimals } = readNativeDenom(denom, chain)
   const unknownIBCDenoms = useUnknownIBCDenoms()
   const navigate = useNavigate()
 

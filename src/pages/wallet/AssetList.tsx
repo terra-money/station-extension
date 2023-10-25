@@ -103,7 +103,6 @@ const AssetList = () => {
   ])
 
   const renderAsset = ({ denom, chainID, ...item }: any) => {
-    console.log("denom 2", denom)
     return (
       <Asset
         {...readNativeDenom(
