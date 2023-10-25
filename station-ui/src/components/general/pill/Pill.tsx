@@ -1,10 +1,10 @@
-import classNames from 'classnames/bind';
-import styles from './Pill.module.scss';
+import classNames from "classnames/bind"
+import styles from "./Pill.module.scss"
 
-const cx = classNames.bind(styles);
+const cx = classNames.bind(styles)
 
 export interface PillProps {
-  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger'
+  variant?: "primary" | "secondary" | "success" | "warning" | "danger" | "disabled"
   text: string
 }
 
@@ -13,7 +13,7 @@ const Pill = ({ variant, text }: PillProps) => {
     <span className={cx(styles.pill, variant )}>
       {text}
     </span>
-  );
-};
+  )
+}
 
-export default Pill;
+export default Pill

@@ -42,8 +42,7 @@ const Checkbox_StorybookComponent = (args: CheckboxProps) => {
         setChecked(!checked);
       }}
       label={args.label}
-    >
-    </Checkbox>
+    />
   )
 }
 

@@ -92,7 +92,6 @@ const StorybookExample = () => {
                 priceNode={<span>$ {tokenPrices[token]}</span>}
                 tokenImg={tokensBySymbol[token].tokenIcon}
                 symbol={tokensBySymbol[token].symbol}
-                price={tokenPrices[token]}
                 amountNode={<span>{walletBalance[token]}</span>}
                 chain={{ icon: tokensBySymbol[token].chainIcon, label: tokensBySymbol[token].chainName }}
                 onClick={() => handleTokenSelection(token)}
