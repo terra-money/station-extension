@@ -145,7 +145,6 @@ export const parseVestingSchedule = (
 
 /* query */
 export const queryAccounts = async (address: string, lcd: string) => {
-  console.log(" queryAccounts called")
   const path = "cosmos/auth/v1beta1/accounts"
   const { data } = await axios.get<{ account: Account }>(
     [path, address].join("/"),

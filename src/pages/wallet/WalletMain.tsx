@@ -1,5 +1,3 @@
-import styles from "./Wallet.module.scss"
-import { ReactComponent as BackIcon } from "styles/images/icons/BackButton.svg"
 import NetWorth from "./NetWorth"
 import AssetList from "./AssetList"
 import { useState } from "react"
