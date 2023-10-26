@@ -184,8 +184,9 @@ const AssetList = () => {
         />
       </div>
       <div className={styles.assetlist__list}>{render()}</div>
-      {showFilter && (
+      {filterChain !== "all" && (
         <Button
+          className={cx(styles.filter, { [styles.inactive]: !showFilter })}
           onClick={toggleFilter}
           label={t("Clear Filter")}
           variant="secondary"

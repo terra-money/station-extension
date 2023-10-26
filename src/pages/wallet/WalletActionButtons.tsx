@@ -11,6 +11,8 @@ import { useMemo } from "react"
 import { FlexColumn, RoundedButton } from "station-ui"
 import { ReactComponent as Swap } from "styles/images/icons/Swap.svg"
 import { useLocation, useNavigate } from "react-router-dom"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { useNativeDenoms } from "data/token"
 
 interface WalletActionButton {
   icon: JSX.Element
@@ -19,10 +21,9 @@ interface WalletActionButton {
   disabled?: boolean
   primary?: boolean
   hide?: boolean
-  denom?: string
 }
 
-const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
+const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
   const networks = useNetwork()
@@ -31,6 +32,14 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
   const navigate = useNavigate()
   const networkName = useNetworkName()
   const { pathname } = useLocation()
+  const readNativeDenom = useNativeDenoms()
+  const token = readNativeDenom(denom ?? "")
+  const addresses = useInterchainAddresses()
+
+  const address = useMemo(() => {
+    if (!addresses) return ""
+    return addresses[token.chainID]
+  }, [addresses, token])
 
   const availableGasDenoms = useMemo(
     () => Object.keys(networks[chainID]?.gasPrices ?? {}),
@@ -50,13 +59,13 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: string }) => {
     {
       icon: <Swap />,
       label: t("swap"),
-      onClick: () => navigate(`swap/${denom}`),
+      onClick: () => navigate(`swap`),
       hide: pathname.includes("/swap/"),
     },
     {
       icon: <ReceiveIcon />,
       label: t("receive"),
-      onClick: () => navigate(`/receive`),
+      onClick: () => navigate(`/receive/${address ?? ""}`),
     },
     {
       icon: <AddIcon />,

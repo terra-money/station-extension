@@ -25,7 +25,7 @@ const AssetPage = () => {
   const [chain, denom] = routeDenom.includes("*")
     ? routeDenom.split("*")
     : [undefined, routeDenom]
-  const { token, symbol, decimals } = readNativeDenom(denom, chain)
+  const { token, symbol, decimals, icon } = readNativeDenom(denom, chain)
   const unknownIBCDenoms = useUnknownIBCDenoms()
   const navigate = useNavigate()
 
@@ -103,7 +103,7 @@ const AssetPage = () => {
     return (
       <section className={styles.details}>
         <span className={styles.token}>
-          <TokenIcon token={token} size={15} />
+          <TokenIcon token={token} icon={icon} size={15} />
           <Read decimals={decimals} amount={totalBalance} fixed={2} />
           {symbol}
         </span>
