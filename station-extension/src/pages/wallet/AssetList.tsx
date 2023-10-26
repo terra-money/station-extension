@@ -179,7 +179,7 @@ const AssetList = () => {
       <div className={styles.assetlist__title}>
         <SectionHeader title={t("Assets")} />
         <FilterListIcon
-          className={cx(styles.filter, showFilter ? styles.active : null)}
+          className={cx(styles.filter, { [styles.inactive]: !showFilter })}
           onClick={toggleFilter}
         />
       </div>

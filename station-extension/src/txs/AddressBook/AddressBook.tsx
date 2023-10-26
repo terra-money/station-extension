@@ -61,6 +61,8 @@ const AddressBook = ({ onClick }: Props) => {
         {items.map((item) => (
           <WalletSelectableListItem
             copyValue={item.recipient}
+            walletName={item.name}
+            emoji={item.icon}
             key={item.name}
             settingsOnClick={
               item.index !== undefined

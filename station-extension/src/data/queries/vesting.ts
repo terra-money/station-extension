@@ -5,7 +5,6 @@ import { isFuture, isPast } from "date-fns"
 import { last } from "ramda"
 import { useAddress, useChainID } from "../wallet"
 import { useInterchainLCDClient } from "./lcdClient"
-import { RefetchOptions } from "data/query"
 
 /* types */
 interface Coin {
