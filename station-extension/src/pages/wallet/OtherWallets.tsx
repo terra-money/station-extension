@@ -11,6 +11,7 @@ import {
 
 interface Props {
   onClick?: (address: string) => void
+  tab: string
 }
 
 export const WalletList = ({
@@ -38,29 +39,13 @@ export const WalletList = ({
   )
 }
 
-const OtherWallets = ({ onClick }: Props) => {
+const OtherWallets = ({ tab, onClick }: Props) => {
   const { list: addressList } = useAddressBook()
-  const [tabKey, setTabKey] = useState("address")
-  // const { wallets } = useAuth()
   const { t } = useTranslation()
-
-  const tabs = [
-    {
-      key: "address",
-      label: "Address Book",
-      onClick: () => setTabKey("address"),
-    },
-    {
-      key: "wallets",
-      label: "My Wallets",
-      onClick: () => setTabKey("wallets"),
-    },
-  ]
 
   return (
     <>
-      <Tabs activeTabKey={tabKey} tabs={tabs} />
-      {tabKey === "address" ? (
+      {tab === "address" ? (
         <>
           <WalletList
             onClick={onClick}
