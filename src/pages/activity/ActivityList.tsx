@@ -1,10 +1,10 @@
-import { Card, Page } from "components/layout"
-import { Empty } from "components/feedback"
+import { useInitialAccountInfo } from "data/queries/accountInfo"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { LoadingCircular, SectionHeader } from "station-ui"
-import ActivityItem from "./ActivityItem"
 import styles from "./ActivityList.module.scss"
-import { useInitialAccountInfo } from "data/queries/accountInfo"
+import { Card, Page } from "components/layout"
+import { Empty } from "components/feedback"
+import ActivityItem from "./ActivityItem"
 import moment from "moment"
 import React from "react"
 
@@ -23,21 +23,23 @@ const ActivityList = () => {
     ) : (
       <div className={styles.activitylist}>
         {state.isLoading ? <LoadingCircular size={36} thickness={2} /> : null}
-        {activity.map((activityItem) => {
-          const activityItemDate = new Date(activityItem.timestamp)
-          const displayDate = getDisplayDate(activityItemDate)
-          let header = null
-          if (displayDate !== priorDisplayDate) {
-            priorDisplayDate = displayDate
-            header = <SectionHeader title={displayDate} />
+        {activity.map(
+          (activityItem: AccountHistoryItem & { chain: string }) => {
+            const activityItemDate = new Date(activityItem.timestamp)
+            const displayDate = getDisplayDate(activityItemDate)
+            let header = null
+            if (displayDate !== priorDisplayDate) {
+              priorDisplayDate = displayDate
+              header = <SectionHeader title={displayDate} />
+            }
+            return (
+              <div key={activityItem.txhash} className={styles.activitylist}>
+                {header}
+                <ActivityItem {...activityItem} />
+              </div>
+            )
           }
-          return (
-            <div className={styles.activitylist}>
-              {header}
-              <ActivityItem {...activityItem} key={activityItem.txhash} />
-            </div>
-          )
-        })}
+        )}
       </div>
     )
   }

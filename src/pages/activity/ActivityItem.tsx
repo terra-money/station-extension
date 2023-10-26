@@ -62,6 +62,7 @@ const ActivityItem = ({
 
   return (
     <ModalButton
+      title={t("Transaction")}
       renderButton={(open) => (
         <ActivityListItem
           onClick={open}

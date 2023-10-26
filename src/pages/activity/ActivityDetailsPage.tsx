@@ -3,6 +3,7 @@ import {
   SectionHeader,
   SummaryColumn,
   SummaryTable,
+  Timeline,
 } from "station-ui"
 import React from "react"
 import { useTranslation } from "react-i18next"
@@ -15,6 +16,10 @@ const ActivityDetailsPage = ({ ...props }) => {
   const { t } = useTranslation()
   const { variant, chain, msg, type, time, timelineMessages, txHash, fee } =
     props
+
+  const timelineDisplayMessages = timelineMessages.map((message: string[]) => {
+    return { variant: variant, msg: message }
+  })
 
   const detailRows = [
     {
@@ -40,17 +45,7 @@ const ActivityDetailsPage = ({ ...props }) => {
       {timelineMessages.length > 0 ? (
         <React.Fragment>
           <SectionHeader title={t("Timeline")} withLine />
-          <ActivityListItem
-            variant={variant}
-            chain={{
-              icon: chain.icon,
-              label: chain.name,
-            }}
-            msg={msg}
-            type={type}
-            time={toNow(new Date(time))}
-            timelineMessages={timelineMessages}
-          />
+          <Timeline middleItems={timelineDisplayMessages} />
         </React.Fragment>
       ) : null}
       <SectionHeader title={t("Details")} withLine />
