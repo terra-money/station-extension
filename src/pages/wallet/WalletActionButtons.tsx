@@ -53,7 +53,7 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
       icon: <SendIcon />,
       primary: true,
       label: t("send"),
-      onClick: () => navigate(`/send/address`),
+      onClick: () => navigate(`/send/1`),
       disabled: sendButtonDisabled,
     },
     {

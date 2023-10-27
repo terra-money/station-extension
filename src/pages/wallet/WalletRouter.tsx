@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom"
+import { Route, Routes, useLocation } from "react-router-dom"
 import AssetPage from "./AssetPage"
 import ReceivePage from "./ReceivePage"
 import AddressChain from "pages/wallet/AddressChain"
@@ -54,8 +54,20 @@ export const useWalletRoutes = (): IRoute[] => {
   ]
 }
 
+const getBackPath = (pathname: string) => {
+  if (pathname.includes("/send/")) {
+    const stepMatch = pathname.match(/\/send\/(\d+)/)
+    if (stepMatch?.[1]) {
+      const step = Number(stepMatch[1])
+      return step > 1 ? `/send/${step - 1}` : "/"
+    }
+  }
+}
+
 export default function WalletRouter() {
   const routes = useWalletRoutes()
+  const { pathname } = useLocation()
+
   return (
     <Routes>
       {routes.map((route, i) => (
@@ -66,7 +78,7 @@ export default function WalletRouter() {
             <ExtensionPage
               fullHeight
               title={route.title}
-              backButtonPath={route.backPath}
+              backButtonPath={getBackPath(pathname) ?? route.backPath}
               modal
             >
               {route.element}

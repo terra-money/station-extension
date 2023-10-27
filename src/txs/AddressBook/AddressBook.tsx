@@ -25,11 +25,11 @@ const AddressBook = ({ onClick }: Props) => {
   const navigate = useNavigate()
   const { wallets } = useAuth()
 
-  const myWallets = wallets.map((wallet) => {
-    const { words } = getWallet(wallet.name)
+  const myWallets = wallets.map((w) => {
+    const { words } = getWallet(w.name)
 
     return {
-      name: wallet.name,
+      name: w.name,
       recipient: addressFromWords(words["330"]),
     }
   })
