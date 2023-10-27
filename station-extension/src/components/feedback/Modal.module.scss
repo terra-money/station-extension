@@ -14,7 +14,6 @@
 }
 
 .modal {
-  max-height: calc(100% - 40px);
   display: grid;
   gap: 32px;
 
@@ -27,11 +26,9 @@
   //overflow: hidden;
 
   padding: 40px 30px;
-  width: var(--modal-width);
 
   @media (max-width: 600px) {
     padding: 48px 20px;
-    width: calc(100% - 40px);
     overflow-y: scroll;
   }
 

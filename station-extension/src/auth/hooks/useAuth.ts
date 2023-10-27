@@ -43,7 +43,11 @@ const useAuth = () => {
   const [wallet, setWallet] = useRecoilState(walletState)
 
   useEffect(() => {
-    setWallet(getWallet())
+    if (!isLoggedIn) {
+      setWallet(undefined)
+    } else if (!wallet) {
+      setWallet(getWallet())
+    }
   }, [isLoggedIn]) // eslint-disable-line
 
   const wallets = getStoredWallets()
