@@ -6,3 +6,6 @@ export * from './paste/Paste';
 
 export { default as Pill } from './pill/Pill';
 export * from './pill/Pill';
+
+export { default as WalletIcon } from './wallet-icon/WalletIcon';
+export * from './wallet-icon/WalletIcon'

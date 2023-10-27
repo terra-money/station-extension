@@ -1,26 +1,16 @@
-import { SectionHeader, SendHeader, SummaryTable } from "station-ui"
+import { Grid, SectionHeader, SummaryTable } from "station-ui"
 import VestingCard from "./VestingCard"
-import {
-  isVestingAccount,
-  parseVestingSchedule,
-  useAccount,
-} from "data/queries/vesting"
+import { parseVestingSchedule, useAccount } from "data/queries/vesting"
 import styles from "./VestingDetailsPage.module.scss"
 import { VestingScheduleItem } from "data/queries/vesting"
 import { ReadPercent, Read } from "components/token"
 
-interface Props {
-  token?: string
-  chain?: string
-}
+const AssetVesting = () => {
+  const { data: account } = useAccount()
 
-const AssetVesting = ({ token = "uluna" }: Props) => {
-  const { data } = useAccount()
+  if (!account) return null
 
-  if (!data || !isVestingAccount(data)) return null
-
-  const { schedule } = parseVestingSchedule(data)
-
+  const schedule = parseVestingSchedule(account)
   const renderSummaryRows = (item: VestingScheduleItem) => {
     const dateRange = `${item.start?.toLocaleDateString()} - ${item.end.toLocaleDateString()}`
     const rows = [
@@ -32,30 +22,16 @@ const AssetVesting = ({ token = "uluna" }: Props) => {
   }
 
   return (
-    <div className={styles.container}>
-      <SendHeader heading="" label="Vesting Details" subLabel="" />
-      <VestingCard token={token} />
-      {schedule.map((item, index) => (
-        <>
-          <SectionHeader
-            title={`Period ${index + 1}`}
-            className={styles.header}
-          />
-          <section className={styles.wrapper}>
-            <SummaryTable
-              rows={[
-                {
-                  label: "Start Date",
-                  value: item.start?.toLocaleDateString(),
-                },
-                { label: "End Date", value: item.end.toLocaleDateString() },
-              ]}
-            />
-            {renderSummaryRows(item)}
-          </section>
-        </>
+    <Grid gap={10} className={styles.container}>
+      {/* <SendHeader heading="" label="Vesting Details" subLabel="" /> */}
+      <VestingCard />
+      {schedule.schedule.map((item, i) => (
+        <div key={i}>
+          <SectionHeader title={`Period ${i + 1}`} className={styles.header} />
+          {renderSummaryRows(item)}
+        </div>
       ))}
-    </div>
+    </Grid>
   )
 }
 

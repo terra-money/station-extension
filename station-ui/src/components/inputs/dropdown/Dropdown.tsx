@@ -6,8 +6,13 @@ import styles from "./Dropdown.module.scss"
 
 const cx = classNames.bind(styles)
 
+interface Option {
+  value: string
+  label: string
+  image?: string
+}
 export interface DropdownProps {
-  options: { value: string; label: string; image?: string }[]
+  options: Option[]
   onChange: (value: string) => void
   value: string
   children?: ReactNode
@@ -43,7 +48,7 @@ const Dropdown = ({
   const optionsById = options?.reduce((acc, option) => {
     acc[option.value] = option
     return acc
-  }, {} as Record<string, { value: string; label: string; image?: string }>)
+  }, {} as Record<string, Option>)
 
   const searchTokens = (searchTerm: string) => {
     setSearchValue && setSearchValue(searchTerm)
