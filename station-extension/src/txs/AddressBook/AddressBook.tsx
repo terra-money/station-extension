@@ -53,8 +53,6 @@ const AddressBook = ({ onClick }: Props) => {
     items: AddressBook[]
     title: string
   }) => {
-    if (!items.length) return null
-
     return (
       <Grid gap={12}>
         {title && <SectionHeader withLine title={title} />}

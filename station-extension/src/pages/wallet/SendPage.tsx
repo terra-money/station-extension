@@ -27,7 +27,7 @@ import { getChainIDFromAddress } from "utils/bech32"
 import { useNetwork, useNetworkName } from "data/wallet"
 import { queryKey } from "data/query"
 import Tx from "txs/Tx"
-import AddressBookList from "txs/AddressBook/AddressBookList"
+// import AddressBookList from "txs/AddressBook/AddressBookList"
 import { ModalButton } from "components/feedback"
 import ChainSelector from "components/form/ChainSelector"
 import AssetSelector from "components/form/AssetSelector"
@@ -411,13 +411,13 @@ const SendPage = () => {
                     />
                   )}
                 >
-                  <AddressBookList
+                  {/* <AddressBookList
                     onClick={async ({ recipient, memo }) => {
                       setValue("recipient", recipient)
                       memo && setValue("memo", memo)
                       await trigger("recipient")
                     }}
-                  />
+                  /> */}
                 </ModalButton>
 
                 <input {...register("address")} readOnly hidden />

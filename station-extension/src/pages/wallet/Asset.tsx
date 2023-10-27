@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next"
 import { Read } from "components/token"
-import { useExchangeRates } from "data/queries/coingecko"
 import { combineState } from "data/query"
 import { useCurrency } from "data/settings/Currency"
 import { WithFetching } from "components/feedback"
@@ -8,7 +7,7 @@ import { useMemo } from "react"
 
 import styles from "./Asset.module.scss"
 import { TokenListItem } from "station-ui"
-import { useBankBalance } from "data/queries/bank"
+import { CoinBalance } from "data/queries/bank"
 import { useNativeDenoms } from "data/token"
 import { useNetwork } from "data/wallet"
 import { useNavigate } from "react-router-dom"
@@ -21,6 +20,8 @@ export interface Props extends TokenItem, QueryState {
   hideActions?: boolean
   chains: string[]
   id: string
+  coins: CoinBalance[]
+  onClick?: () => void
 }
 
 interface AssetInfo {
@@ -31,18 +32,22 @@ interface AssetInfo {
 }
 
 const Asset = (props: Props) => {
-  const { icon, denom, decimals, id, balance, ...state } = props
+  const {
+    icon,
+    denom,
+    decimals,
+    id,
+    balance,
+    onClick,
+    coins,
+    price,
+    change,
+    ...state
+  } = props
   const { t } = useTranslation()
   const currency = useCurrency()
   const readNativeDenom = useNativeDenoms()
   const network = useNetwork()
-  const coins = useBankBalance()
-  const navigate = useNavigate()
-
-  const { data: prices, ...pricesState } = useExchangeRates()
-
-  const price = props.price ?? prices?.[props.token]?.price
-  const change = props.change ?? prices?.[props.token]?.change
 
   const chains = useMemo(() => {
     return props.chains.reduce((acc, chain) => {
@@ -83,11 +88,7 @@ const Asset = (props: Props) => {
 
   const AmountNode = () => {
     return (
-      <WithFetching
-        {...combineState(state, pricesState)}
-        yOffset={-5}
-        height={1}
-      >
+      <WithFetching {...combineState(state)} yOffset={-5} height={1}>
         {(progress, wrong) => (
           <>
             {progress}
@@ -132,7 +133,7 @@ const Asset = (props: Props) => {
     <div className={styles.asset}>
       <TokenListItem
         chains={chains}
-        onClick={() => navigate(`asset/${denom}`)}
+        onClick={onClick}
         amountNode={<AmountNode />}
         priceNode={<PriceNode />}
         change={change}

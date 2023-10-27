@@ -1,6 +1,6 @@
-import { useTranslation } from "react-i18next"
 import { useAddressBook } from "data/settings/AddressBook"
 import { truncate } from "@terra-money/terra-utils"
+import { getWallet } from "auth/scripts/keystore"
 import { useState } from "react"
 import {
   Grid,
@@ -8,9 +8,13 @@ import {
   Tabs,
   AddressSelectableListItem,
 } from "station-ui"
+import { useAuth } from "auth"
+import { Empty } from "components/feedback"
+import { addressFromWords } from "utils/bech32"
 
 interface Props {
   onClick?: (address: string) => void
+  tab: string
 }
 
 export const WalletList = ({
@@ -19,14 +23,15 @@ export const WalletList = ({
   onClick,
 }: {
   items: AddressBook[]
-  title: string
+  title?: string
   onClick?: (address: string) => void
 }) => {
-  if (!items.length) return null
   return (
     <Grid gap={10}>
-      <SectionHeader withLine title={title} />
+      {title && <SectionHeader withLine title={title} />}
+      {!items.length && <Empty />}
       {items.map((w) => (
+        // {w.icon}
         <AddressSelectableListItem
           key={w.name}
           onClick={() => onClick?.(w.recipient)}
@@ -38,33 +43,26 @@ export const WalletList = ({
   )
 }
 
-const OtherWallets = ({ onClick }: Props) => {
+const OtherWallets = ({ onClick, tab }: Props) => {
   const { list: addressList } = useAddressBook()
-  const [tabKey, setTabKey] = useState("address")
-  // const { wallets } = useAuth()
-  const { t } = useTranslation()
+  const { wallets } = useAuth()
 
-  const tabs = [
-    {
-      key: "address",
-      label: "Address Book",
-      onClick: () => setTabKey("address"),
-    },
-    {
-      key: "wallets",
-      label: "My Wallets",
-      onClick: () => setTabKey("wallets"),
-    },
-  ]
+  const myWallets = wallets.map((w) => {
+    const { words = {} } = getWallet(w.name)
+    return {
+      name: w.name,
+      recipient: addressFromWords(words?.["330"]),
+      icon: w?.icon,
+    }
+  })
 
   return (
     <>
-      <Tabs activeTabKey={tabKey} tabs={tabs} />
-      {tabKey === "address" ? (
+      {tab === "address" ? (
         <>
           <WalletList
-            onClick={onClick}
             title="Favorites"
+            onClick={onClick}
             items={addressList.filter((i) => i.favorite)}
           />
           <WalletList
@@ -74,7 +72,7 @@ const OtherWallets = ({ onClick }: Props) => {
           />
         </>
       ) : (
-        <WalletList title={t("Other Wallets")} items={[]} />
+        <WalletList onClick={onClick} items={myWallets} />
       )}
     </>
   )

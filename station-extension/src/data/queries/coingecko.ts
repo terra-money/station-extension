@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { useQuery } from "react-query"
+import { useQuery, UseQueryResult } from "react-query"
 import { queryKey, RefetchOptions } from "../query"
 import { CURRENCY_KEY, STATION_ASSETS, ASSETS } from "config/constants"
 import axios from "axios"
@@ -49,6 +49,13 @@ const STAKED_TOKENS: Record<string, string> = {
   terra1lertn5hx2gpw940a0sspds6kydja3c07x0mfg0xu66gvu9p4l30q7ttd2p: "sCOR",
   terra15rqy5xh7sclu3yltuz8ndl8lzudcqcv3laldxxsxaph085v6mdpqdjrucv: "sATR",
   terra14y9aa87v4mjvpf0vu8xm7nvldvjvk4h3wly2240u0586j4l6qm2q7ngp7t: "sHAR",
+}
+
+export interface PriceObject {
+  [k: string]: {
+    price: number
+    change: number
+  }
 }
 
 export const useExchangeRates = () => {

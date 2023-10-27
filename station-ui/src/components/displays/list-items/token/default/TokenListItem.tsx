@@ -59,7 +59,7 @@ const TokenListItem = ({
                   <span className={cx(styles.chain__details, styles.num)}>{chains.length}</span>
                 </Tooltip>
               ) : (
-                <span className={cx(styles.chain__details, styles.single)}>{chains?.[0]?.name ?? ""}</span>
+                chains.length === 1 && <span className={cx(styles.chain__details, styles.single)}>{chains[0].name}</span>
               )}
             </h2>
             <h3 className={styles.amount}>
