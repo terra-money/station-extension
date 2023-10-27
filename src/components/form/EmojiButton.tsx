@@ -1,6 +1,5 @@
-import { ModalButton, Input, InputWrapper, Button } from "station-ui"
+import { ModalButton, Input, InputWrapper, Button, useModal } from "station-ui"
 import { useState } from "react"
-import ExtensionPage from "extension/components/ExtensionPage"
 import { ReactComponent as EmptyEmoji } from "styles/images/icons/EmptyEmoji.svg"
 import styles from "./EmojiButton.module.scss"
 const emojiOptions = [
@@ -25,37 +24,25 @@ interface Props {
   onClick: (emoji: string) => void
 }
 
-const EmojiButton = ({ onClick, icon }: Props) => {
-  const [emoji, setEmoji] = useState<string>(icon ?? "")
-
+const EmojiPage = (props: Props) => {
+  const { closeModal } = useModal()
+  const icon = props.icon ?? ""
+  const [emoji, setEmoji] = useState(icon)
   return (
-    <ModalButton
-      title="Icon"
-      renderButton={(open) =>
-        icon ? (
-          <span onClick={open}>{icon}</span>
-        ) : (
-          <EmptyEmoji onClick={open} />
-        )
-      }
-    >
+    <>
       <InputWrapper label="Icon">
         <Input
           placeholder="Letter or Emoji"
           maxLength={1}
           value={emoji}
-          onChange={(e) => {
-            setEmoji(e.target.value)
-          }}
+          onChange={(e) => setEmoji(e.target.value)}
         />
       </InputWrapper>
       <div className={styles.picker}>
         {emojiOptions.map((emoji) => (
           <button
             key={emoji}
-            onClick={() => {
-              setEmoji(emoji)
-            }}
+            onClick={() => setEmoji(emoji)}
             className={styles.emojiButton}
           >
             {emoji}
@@ -68,9 +55,27 @@ const EmojiButton = ({ onClick, icon }: Props) => {
         disabled={!emoji}
         label="Save"
         onClick={() => {
-          onClick(emoji)
+          props.onClick(emoji)
+          closeModal()
         }}
       />
+    </>
+  )
+}
+
+const EmojiButton = (props: Props) => {
+  return (
+    <ModalButton
+      title="Icon"
+      renderButton={(open) =>
+        props.icon ? (
+          <span onClick={open}>{props.icon}</span>
+        ) : (
+          <EmptyEmoji onClick={open} />
+        )
+      }
+    >
+      <EmojiPage {...props} />
     </ModalButton>
   )
 }

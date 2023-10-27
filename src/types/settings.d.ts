@@ -5,6 +5,7 @@ interface AddressBook {
   memo?: string
   favorite?: boolean
   icon?: string
+  index?: number
 }
 
 /* Tokens */

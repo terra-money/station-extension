@@ -4,32 +4,42 @@ import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
 import { useNetworkName, useNetwork, useChainID } from "data/wallet"
 import { useIsWalletEmpty } from "data/queries/bank"
 import { useKado } from "pages/wallet/Buy"
-import { useWalletRoute, Page } from "./Wallet"
 import { useTranslation } from "react-i18next"
 import styles from "./NetWorth.module.scss"
 import { capitalize } from "@mui/material"
 import { useMemo } from "react"
 import { FlexColumn, RoundedButton } from "station-ui"
 import { ReactComponent as Swap } from "styles/images/icons/Swap.svg"
+import { useLocation, useNavigate } from "react-router-dom"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { useNativeDenoms } from "data/token"
 
 interface WalletActionButton {
   icon: JSX.Element
   label: string
   onClick: () => void
   disabled?: boolean
-  hidden?: boolean
-  denom?: string
-  variant: "primary" | "secondary"
+  primary?: boolean
+  hide?: boolean
 }
 
-const WalletActionButtons = ({ denom = "uluna" }: { denom?: Denom }) => {
+const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
   const networks = useNetwork()
   const chainID = useChainID()
-  const { setRoute, route } = useWalletRoute()
   const { openModal } = useKado()
+  const navigate = useNavigate()
   const networkName = useNetworkName()
+  const { pathname } = useLocation()
+  const readNativeDenom = useNativeDenoms()
+  const token = readNativeDenom(denom ?? "")
+  const addresses = useInterchainAddresses()
+
+  const address = useMemo(() => {
+    if (!addresses) return ""
+    return addresses[token.chainID]
+  }, [addresses, token])
 
   const availableGasDenoms = useMemo(
     () => Object.keys(networks[chainID]?.gasPrices ?? {}),
@@ -41,44 +51,47 @@ const WalletActionButtons = ({ denom = "uluna" }: { denom?: Denom }) => {
   const buttons: WalletActionButton[] = [
     {
       icon: <SendIcon />,
-      variant: "primary",
       label: t("send"),
-      onClick: () => setRoute({ page: Page.send, denom }),
+      primary: true,
+      onClick: () => navigate(`/send`),
       disabled: sendButtonDisabled,
     },
     {
       icon: <Swap />,
       label: t("swap"),
-      variant: "secondary",
-      onClick: () => setRoute({ page: Page.swap }),
-      hidden: route.page !== Page.wallet,
+      onClick: () => navigate(`swap`),
+      hide: pathname.includes("/swap/"),
     },
     {
       icon: <ReceiveIcon />,
       label: t("receive"),
-      variant: "secondary",
-      onClick: () => setRoute({ page: Page.receive }),
+      onClick: () => navigate(`/receive/${address ?? ""}`),
     },
     {
       icon: <AddIcon />,
       label: t("buy"),
       onClick: openModal,
-      variant: "secondary",
       disabled: networkName !== "mainnet",
+      hide: pathname.includes("/asset/"),
     },
   ]
 
   return (
     <div className={styles.networth__buttons}>
-      {buttons.map((button) => {
-        if (button.hidden) return null
-        return (
-          <FlexColumn key={button.label}>
-            <RoundedButton {...button} />
-            <span>{capitalize(button.label)}</span>
-          </FlexColumn>
-        )
-      })}
+      {buttons.map(
+        ({ icon, label, onClick, disabled, primary, hide }) =>
+          !hide && (
+            <FlexColumn key={label}>
+              <RoundedButton
+                variant={primary ? "primary" : "secondary"}
+                onClick={onClick}
+                icon={icon}
+                disabled={disabled}
+              />
+              <span>{capitalize(label)}</span>
+            </FlexColumn>
+          )
+      )}
     </div>
   )
 }

@@ -10,6 +10,7 @@ import { TokenListItem } from "station-ui"
 import { CoinBalance } from "data/queries/bank"
 import { useNativeDenoms } from "data/token"
 import { useNetwork } from "data/wallet"
+import { useNavigate } from "react-router-dom"
 
 export interface Props extends TokenItem, QueryState {
   balance?: Amount

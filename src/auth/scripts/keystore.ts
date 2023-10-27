@@ -230,6 +230,21 @@ export const addWallet = (params: AddWalletParams, password: string) => {
   }
 }
 
+export const addMultisigWallet = (params: MultisigWallet) => {
+  const wallets = getStoredWallets()
+
+  if (wallets.find((wallet) => wallet.name === params.name))
+    throw new Error("Wallet already exists")
+
+  const next = wallets.filter((wallet) =>
+    "words" in wallet
+      ? wallet.words["330"] !== params.words["330"]
+      : wallet.address !== addressFromWords(params.words["330"])
+  )
+
+  storeWallets([...next, params])
+}
+
 interface ChangePasswordParams {
   oldPassword: string
   newPassword: string
