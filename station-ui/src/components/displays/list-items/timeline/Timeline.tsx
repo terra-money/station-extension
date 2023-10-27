@@ -23,7 +23,7 @@ export interface TimelineProps {
       onClick: () => void
     }
     disabled?: boolean
-  }[]
+  }[] | undefined
   endItem?: {
     chain: { icon: string, label: string }
     coin: { icon: string, label: string }

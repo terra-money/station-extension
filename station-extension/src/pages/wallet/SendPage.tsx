@@ -25,6 +25,7 @@ import {
   InputWrapper,
   Form,
   InputInLine,
+  TimelineProps,
   Paste,
   SectionHeader,
   TokenSingleChainListItem,
@@ -34,6 +35,7 @@ import {
   Input,
   SendHeader,
   SummaryTable,
+  Timeline,
   Tabs,
 } from "station-ui"
 
@@ -46,7 +48,7 @@ import { useNetwork, useNetworkName } from "data/wallet"
 import { Read } from "components/token"
 import WithSearchInput from "pages/custom/WithSearchInput"
 import { Empty } from "components/feedback"
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom"
+import { Routes, Route, useNavigate } from "react-router-dom"
 
 interface TxValues {
   asset?: string
@@ -84,8 +86,6 @@ const SendPage = () => {
   const [asset, setAsset] = useState<AssetType>()
   const [tab, setTab] = useState("address")
   const navigate = useNavigate()
-  const location = useLocation()
-  const defaultDenom = location.state?.denom
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange" })
@@ -115,7 +115,7 @@ const SendPage = () => {
 
     const onClick = (recipient: AccAddress) => {
       setValue("recipient", recipient)
-      navigate("/send/chain")
+      navigate("/send/2")
     }
 
     const onPaste = (recipient: AccAddress) => {
@@ -124,7 +124,7 @@ const SendPage = () => {
       trigger("recipient")
       if (validateRecipient(recipient)) {
         setValue("destination", getChainIDFromAddress(recipient, networks))
-        navigate("/send/token")
+        navigate("/send/3")
       }
     }
 
@@ -166,7 +166,7 @@ const SendPage = () => {
           name: getChainNamefromID(chain, networks) ?? chain,
           onClick: () => {
             setValue("destination", chain)
-            navigate("/send/token")
+            navigate("/send/3")
           },
           id: chain,
           address: convertAddress(recipient!, networks[chain]?.prefix),
@@ -188,7 +188,7 @@ const SendPage = () => {
               ?.amount ?? "0"
           )
           if (balance === 0) return acc
-          if (defaultDenom !== a.denom) return acc
+          // if (defaultDenom !== undefined && defaultDenom !== a.denom) return acc
 
           const isNative = tokenChain === destination
           const channel = getIBCChannel({
@@ -241,7 +241,7 @@ const SendPage = () => {
       setValue("asset", asset.denom)
       setValue("chain", asset.tokenChain)
       setAsset(asset)
-      navigate("/send/submit")
+      navigate("/send/4")
     }
 
     return (
@@ -289,7 +289,7 @@ const SendPage = () => {
   }
 
   // View #4
-  const Submit = ({ max }: { max: any }) => {
+  const Submit = () => {
     if (!asset) return null
     return (
       <>
@@ -318,13 +318,13 @@ const SendPage = () => {
             }),
           }}
         />
-        <TokenSingleChainListItem {...asset} onClick={max?.render()} />
+        <TokenSingleChainListItem {...asset} />
         <InputWrapper
           label={`${t("Memo")} (${t("optional")})`}
           error={errors.memo?.message}
         >
           <Input
-            onFocus={() => max?.reset()}
+            // onFocus={() => max?.reset()}
             {...register("memo", {
               validate: {
                 size: validate.size(256, "Memo"),
@@ -335,8 +335,9 @@ const SendPage = () => {
           />
         </InputWrapper>
         <Button
+          disabled={input !== undefined && !formState.isValid}
           variant="primary"
-          onClick={() => navigate(`/send/confirm`)}
+          onClick={() => navigate(`/send/5`)}
           label={t("Continue")}
         />
       </>
@@ -344,7 +345,7 @@ const SendPage = () => {
   }
 
   const Confirm = () => {
-    if (!input || !asset?.price) return null
+    if (!input || !asset?.price || !destination) return null
     const value = input * asset?.price
     const rows = [
       { label: t("Total Value"), value: value.toFixed(2) },
@@ -354,6 +355,47 @@ const SendPage = () => {
       },
       { label: t("From"), value: truncate(asset?.senderAddress) },
     ]
+    const msg = `${input} ${asset?.symbol}`
+    const coin = {
+      icon: asset?.tokenImg,
+      label: asset?.symbol,
+    }
+
+    const endItem = {
+      chain: {
+        label: capitalize(
+          getChainNamefromID(destination, networks) ?? destination
+        ),
+        icon: networks[destination]?.icon,
+      },
+      coin,
+      msg,
+    }
+    const startItem = {
+      chain: asset?.chain,
+      coin,
+      msg,
+    }
+
+    const middleItems = [
+      {
+        variant: "success",
+        msg: (
+          <div>
+            Transfer <span>{asset.symbol}</span> from{" "}
+            <span>{asset.chain.label}</span> to{" "}
+            <span>{endItem.chain.label}</span>
+          </div>
+        ),
+      },
+    ]
+
+    const timelineProps = {
+      startItem,
+      ...(destination !== asset?.tokenChain ? { middleItems } : {}),
+      endItem,
+    } as TimelineProps
+
     return (
       <>
         <SendHeader
@@ -362,11 +404,12 @@ const SendPage = () => {
           subLabel={currency.symbol + " " + value.toFixed(2) ?? "—"}
         />
         <SectionHeader withLine title={t("Send Path")} />
+        <Timeline {...timelineProps} />
         <InputInLine
           disabled
           label={"To"}
           extra={truncate(recipient)}
-          value={"🥹"}
+          value={recipient}
         />
         <SummaryTable rows={rows} />
       </>
@@ -471,9 +514,10 @@ const SendPage = () => {
       {({ max, fee, submit }) => (
         <Form onSubmit={() => handleSubmit(submit.fn)}>
           <Routes>
-            <Route element={<Address />} path="send/address" />
-            <Route element={<Chain />} path="send/chain" />
-            <Route element={<Token />} path="send/token" />
+            <Route element={<Address />} path="1" />
+            <Route element={<Chain />} path="2" />
+            <Route element={<Token />} path="3" />
+            <Route element={<Submit />} path="4" />
             <Route
               element={
                 <>
@@ -481,7 +525,7 @@ const SendPage = () => {
                   {submit.button}
                 </>
               }
-              path="send/confirm"
+              path="5"
             />
           </Routes>
         </Form>
