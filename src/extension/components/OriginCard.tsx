@@ -11,11 +11,7 @@ interface ManifestResult {
   faviconUrl?: string
 }
 
-async function getIconAndTitle(hostname: string): Promise<ManifestResult> {
-  const baseUrl =
-    hostname.startsWith("https://") || hostname.startsWith("http://")
-      ? hostname
-      : `https://${hostname}`
+async function getIconAndTitle(baseUrl: string): Promise<ManifestResult> {
   try {
     const { data: manifest } = await axios.get(`${baseUrl}/manifest.json`)
 
@@ -50,29 +46,32 @@ async function getIconAndTitle(hostname: string): Promise<ManifestResult> {
 }
 
 const OriginCard = ({ hostname }: Props) => {
+  const baseUrl =
+    hostname.startsWith("https://") || hostname.startsWith("http://")
+      ? hostname
+      : `https://${hostname}`
+
   const [metadata, setMetadata] = useState<ManifestResult>({})
 
   useEffect(() => {
     ;(async () => {
-      const res = await getIconAndTitle(hostname)
+      const res = await getIconAndTitle(baseUrl)
       setMetadata(res)
     })()
-  }, [hostname])
+  }, [baseUrl])
 
   return (
     <div className={styles.origin}>
       {metadata.faviconUrl && (
         <img
           src={metadata.faviconUrl}
-          alt={metadata.title ?? hostname}
+          alt={metadata.title ?? baseUrl}
           className={styles.icon}
           onError={() => setMetadata((m) => ({ ...m, faviconUrl: undefined }))}
         />
       )}
-      <div className={styles.details}>
-        <h2>{metadata.title ?? hostname}</h2>
-        <p>{hostname}</p>
-      </div>
+      <h2>{metadata.title ?? baseUrl}</h2>
+      <p>{baseUrl}</p>
     </div>
   )
 }

@@ -27,10 +27,11 @@ const Front = () => {
     )
   }
 
-  if (connect) {
-    return <ConfirmConnect {...connect} />
+  if (true) {
+    return <ConfirmConnect origin="https://station.money" /> //{...connect} />
   }
 
+  /*
   if (pubkey) {
     //return <ConfirmPubkey origin={pubkey} />
   }
@@ -43,7 +44,7 @@ const Front = () => {
   }
   if (network) {
     return <ConfirmSwitchNetwork {...network} />
-  }
+  }*/
 
   return <Wallet />
 }

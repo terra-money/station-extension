@@ -1,5 +1,14 @@
 @import "mixins";
 
+.container {
+  height: calc(100vh - var(--header-height) - 40px);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .overlay {
   @include flex;
 
