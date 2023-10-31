@@ -8,57 +8,44 @@ import { isJSON } from "utils/json"
 import { capitalize } from "@mui/material"
 import { FinderLink } from "components/general"
 import { AccAddress } from "@terra-money/feather.js"
+import { Input, InputWrapper, SummaryTable, TextArea } from "station-ui"
+import { Value } from "components/form"
+import { truncate } from "@terra-money/terra-utils"
 
 const SignBytesDetails = ({ origin, timestamp, bytes }: SignBytesRequest) => {
   const { t } = useTranslation()
 
   const contents = [
-    { title: t("Origin"), content: origin },
-    { title: t("Timestamp"), content: <ToNow update>{timestamp}</ToNow> },
+    { label: t("Timestamp"), value: <ToNow update>{timestamp}</ToNow> },
   ]
 
   const content = bytes.toString("utf-8")
 
   return (
     <Grid gap={12}>
-      <Dl className={styles.dl}>
-        {contents.map(({ title, content }) => {
-          if (!content) return null
-          return (
-            <Fragment key={title}>
-              <dt>{title}</dt>
-              <dd>{content}</dd>
-            </Fragment>
-          )
-        })}
-      </Dl>
+      <SummaryTable rows={contents.filter(({ value }) => !!value)} />
 
-      <Card size="small" bordered className={styles.bytes__card}>
-        <header className={styles.header}>
-          <p className={styles.title}>Signature Request</p>
-        </header>
-
+      <InputWrapper label={t("Sign bytes")}>
         {isJSON(content) ? (
-          <Dl>
-            {Object.entries(JSON.parse(content)).map(([key, value]) => (
-              <Fragment key={key}>
-                <dt>{capitalize(key)}</dt>
-                <dd>
-                  {typeof value === "string" && AccAddress.validate(value) ? (
-                    <FinderLink value={value}>{value}</FinderLink>
-                  ) : typeof value === "object" ? (
-                    JSON.stringify(value)
-                  ) : (
-                    (value as any).toString()
-                  )}
-                </dd>
-              </Fragment>
-            ))}
-          </Dl>
+          <SummaryTable
+            rows={Object.entries(JSON.parse(content)).map(([key, value]) => ({
+              label: capitalize(key),
+              value:
+                typeof value === "string" && AccAddress.validate(value) ? (
+                  <FinderLink value={value}>
+                    {truncate(value, [10, 14])}
+                  </FinderLink>
+                ) : typeof value === "object" ? (
+                  JSON.stringify(value)
+                ) : (
+                  (value as any).toString()
+                ),
+            }))}
+          />
         ) : (
-          <p>{bytes.toString("utf-8")}</p>
+          <TextArea readOnly={true} value={bytes.toString("utf-8")} />
         )}
-      </Card>
+      </InputWrapper>
     </Grid>
   )
 }

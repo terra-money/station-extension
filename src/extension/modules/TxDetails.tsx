@@ -1,13 +1,12 @@
-import { Fragment, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { useNetwork } from "data/wallet"
 import { Grid } from "components/layout"
-import { Dl, ToNow } from "components/display"
+import { ToNow } from "components/display"
 import { Read } from "components/token"
 import { getIsNativeMsgFromExternal, TxRequest } from "../utils"
 import Message from "./Message"
-import styles from "./TxDetails.module.scss"
 import { useNativeDenoms, DEFAULT_NATIVE_DECIMALS } from "data/token"
+import { SummaryTable } from "station-ui"
 
 const TxDetails = ({ origin, timestamp, tx }: TxRequest) => {
   const { msgs, memo, fee, chainID } = tx
@@ -16,48 +15,34 @@ const TxDetails = ({ origin, timestamp, tx }: TxRequest) => {
   const network = useNetwork()
   const readNativeDenom = useNativeDenoms()
 
-  const decimals = useMemo(() => {
-    const baseAsset = network[chainID]?.baseAsset
-
-    if (typeof baseAsset !== "string") {
-      return DEFAULT_NATIVE_DECIMALS
-    }
-
-    const nativeDenom = readNativeDenom(baseAsset)
-
-    return nativeDenom?.decimals ?? DEFAULT_NATIVE_DECIMALS
-  }, [network, chainID, readNativeDenom])
-
   const fees = fee?.amount.toData()
   const contents = [
-    { title: t("Network"), content: `${network[chainID]?.name} (${chainID})` },
-    { title: t("Origin"), content: origin },
-    { title: t("Timestamp"), content: <ToNow update>{timestamp}</ToNow> },
+    { label: t("Network"), value: `${network[chainID]?.name} (${chainID})` },
+    { label: t("Timestamp"), value: <ToNow update>{timestamp}</ToNow> },
     {
-      title: t("Fee"),
-      content: fees && <Read {...fees[0]} decimals={decimals} />,
+      label: t("Fee"),
+      value:
+        fees &&
+        fees.map((fee) => (
+          <Read
+            {...fee}
+            decimals={
+              readNativeDenom(fee.denom).decimals ?? DEFAULT_NATIVE_DECIMALS
+            }
+          />
+        )),
     },
-    { title: t("Memo"), content: memo },
+    { label: t("Memo"), value: memo },
   ]
 
   return (
     <Grid gap={12}>
-      <Dl className={styles.dl}>
-        {contents.map(({ title, content }) => {
-          if (!content) return null
-          return (
-            <Fragment key={title}>
-              <dt>{title}</dt>
-              <dd>{content}</dd>
-            </Fragment>
-          )
-        })}
-      </Dl>
-
       {msgs.map((msg, index) => {
         const isNative = getIsNativeMsgFromExternal(origin)
         return <Message msg={msg} warn={isNative(msg)} key={index} />
       })}
+
+      <SummaryTable rows={contents.filter(({ value }) => !!value)} />
     </Grid>
   )
 }
