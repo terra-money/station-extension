@@ -25,9 +25,7 @@ const Welcome = () => {
             otherWallets={wallets.map((w) => ({
               name: w.name,
               address: truncate(
-                "address" in w
-                  ? w.address
-                  : addressFromWords(w.words["330"], "terra"),
+                "address" in w ? w.address : addressFromWords(w.words["330"]),
                 [11, 6]
               ),
               onClick: () => {

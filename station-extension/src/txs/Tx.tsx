@@ -258,6 +258,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
         throw new Error("Fee is not estimated")
 
       const tx = createTx(values)
+      console.log("tx", tx)
 
       if (!tx) throw new Error("Tx is not defined")
 

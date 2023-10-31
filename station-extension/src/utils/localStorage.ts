@@ -107,10 +107,7 @@ export const savedNetworkState = atom({
 
 export const recentRecipients = atom({
   key: "recentRecipients",
-  default: getLocalSetting(SettingKey.RecentRecipients) as (
-    | string
-    | undefined
-  )[],
+  default: getLocalSetting(SettingKey.RecentRecipients) as AddressBook[],
 })
 
 export const customLCDState = atom({
@@ -214,8 +211,8 @@ export const useTokenFilters = () => {
 export const useRecentRecipients = () => {
   const [recipients, setRecipients] = useRecoilState(recentRecipients)
   const addRecipient = useCallback(
-    (recipient: string) => {
-      const newRecipients = [recipient, ...recipients].splice(0, 5)
+    (recipient: AddressBook) => {
+      const newRecipients = [recipient, ...recipients].splice(0, 2)
       setLocalSetting(SettingKey.RecentRecipients, newRecipients)
       setRecipients(newRecipients)
     },
