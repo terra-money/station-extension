@@ -41,7 +41,7 @@ import {
 
 import { useParsedAssetList } from "data/token"
 import validate, { validateRecipient } from "txs/validate"
-import OtherWallets from "./OtherWallets"
+import OtherWallets, { WalletButtonList } from "./OtherWallets"
 import { truncate } from "@terra-money/terra-utils"
 import { SearchChains } from "./ReceivePage"
 import { useNetwork, useNetworkName } from "data/wallet"
@@ -49,6 +49,8 @@ import { Read } from "components/token"
 import WithSearchInput from "pages/custom/WithSearchInput"
 import { Empty } from "components/feedback"
 import { Routes, Route, useNavigate } from "react-router-dom"
+import { useRecentRecipients } from "utils/localStorage"
+import { useGetWalletName } from "auth/hooks/useAddress"
 
 interface TxValues {
   asset?: string
@@ -82,10 +84,13 @@ const SendPage = () => {
   const networkName = useNetworkName()
   const { getIBCChannel, getICSContract } = useIBCChannels()
   const currency = useCurrency()
+  const { recipients, addRecipient } = useRecentRecipients()
   const addresses = useInterchainAddresses()
   const [asset, setAsset] = useState<AssetType>()
-  const [tab, setTab] = useState("address")
+  const [tab, setTab] = useState("wallets")
   const navigate = useNavigate()
+  const goToStep = (step: number) => navigate(`/send/${step}`)
+  const getWalletName = useGetWalletName()
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange" })
@@ -102,50 +107,59 @@ const SendPage = () => {
   const Address = () => {
     const tabs = [
       {
-        key: "address",
-        label: "Address Book",
-        onClick: () => setTab("address"),
-      },
-      {
         key: "wallets",
         label: "My Wallets",
         onClick: () => setTab("wallets"),
+      },
+      {
+        key: "address",
+        label: "Address Book",
+        onClick: () => setTab("address"),
       },
     ]
 
     const onClick = (recipient: AccAddress) => {
       setValue("recipient", recipient)
-      navigate("/send/2")
+      goToStep(2)
     }
 
-    const onPaste = (recipient: AccAddress) => {
-      if (!recipient) return
+    const handleKnownChain = (recipient: AccAddress) => {
       setValue("recipient", recipient)
       trigger("recipient")
       if (validateRecipient(recipient)) {
         setValue("destination", getChainIDFromAddress(recipient, networks))
-        navigate("/send/3")
+        goToStep(3)
       }
     }
 
     return (
       <>
-        <InputWrapper
-          label={t("Wallet Address")}
-          error={errors.recipient?.message}
-        >
+        <InputWrapper error={errors.recipient?.message}>
           <InputInLine
             type="text"
             label="To"
-            extra={<Paste onPaste={(recipient) => onPaste(recipient)} />}
+            placeholder="Wallet Address"
+            extra={
+              <Paste onPaste={(recipient) => handleKnownChain(recipient)} />
+            }
             {...register("recipient", {
               validate: { ...validate.recipient() },
             })}
           />
         </InputWrapper>
-        <SectionHeader title="Recently Used" />
-        {/* <WalletList items={} title={t("Recently Used")} onClick={onClick} /> */}
-        <SectionHeader title="Other Wallets" />
+        {recipients.length > 0 && (
+          <>
+            <SectionHeader title="Recently Used" withLine />
+            <WalletButtonList
+              items={recipients.map((r) => ({
+                ...r,
+                name: getWalletName(r.recipient),
+              }))}
+              onClick={(recipient) => handleKnownChain(recipient)}
+            />
+          </>
+        )}
+        <SectionHeader title="Other Wallets" withLine />
         <Tabs activeTabKey={tab} tabs={tabs} />
         <OtherWallets tab={tab} onClick={onClick} />
       </>
@@ -162,15 +176,23 @@ const SendPage = () => {
 
     const chains = useMemo(
       () =>
-        availableChains.map((chain) => ({
-          name: getChainNamefromID(chain, networks) ?? chain,
-          onClick: () => {
-            setValue("destination", chain)
-            navigate("/send/3")
-          },
-          id: chain,
-          address: convertAddress(recipient!, networks[chain]?.prefix),
-        })),
+        availableChains.map((chain) => {
+          const address = convertAddress(
+            recipient ?? "",
+            networks[chain]?.prefix
+          )
+          const name = getChainNamefromID(chain, networks) ?? chain
+          return {
+            name,
+            onClick: () => {
+              setValue("destination", chain)
+              setValue("recipient", address)
+              goToStep(3)
+            },
+            id: chain,
+            address,
+          }
+        }),
       [availableChains]
     )
     return <SearchChains data={chains} />
@@ -188,7 +210,6 @@ const SendPage = () => {
               ?.amount ?? "0"
           )
           if (balance === 0) return acc
-          // if (defaultDenom !== undefined && defaultDenom !== a.denom) return acc
 
           const isNative = tokenChain === destination
           const channel = getIBCChannel({
@@ -241,16 +262,17 @@ const SendPage = () => {
       setValue("asset", asset.denom)
       setValue("chain", asset.tokenChain)
       setAsset(asset)
-      navigate("/send/4")
+      goToStep(4)
     }
 
+    if (!recipient) return null
     return (
       <>
         <InputInLine
           disabled
           label={"To"}
           extra={truncate(recipient)}
-          value={recipient}
+          value={getWalletName(recipient)}
         />
         <SectionHeader title={t("My Tokens")} withLine />
         <WithSearchInput
@@ -290,17 +312,17 @@ const SendPage = () => {
 
   // View #4
   const Submit = () => {
-    if (!asset) return null
+    if (!asset || !recipient) return null
+    console.log("render")
     return (
       <>
         <InputInLine
           disabled
           label={"To"}
           extra={truncate(recipient)}
-          value={"🥹"}
+          value={getWalletName(recipient)}
         />
         <SendAmount
-          displayType="token"
           tokenIcon={asset.tokenImg}
           symbol={asset.symbol}
           amount={input ?? 0}
@@ -337,7 +359,7 @@ const SendPage = () => {
         <Button
           disabled={input !== undefined && !formState.isValid}
           variant="primary"
-          onClick={() => navigate(`/send/5`)}
+          onClick={() => goToStep(5)}
           label={t("Continue")}
         />
       </>
@@ -345,7 +367,7 @@ const SendPage = () => {
   }
 
   const Confirm = () => {
-    if (!input || !asset?.price || !destination) return null
+    if (!input || !asset?.price || !destination || !recipient) return null
     const value = input * asset?.price
     const rows = [
       { label: t("Total Value"), value: value.toFixed(2) },
@@ -360,7 +382,6 @@ const SendPage = () => {
       icon: asset?.tokenImg,
       label: asset?.symbol,
     }
-
     const endItem = {
       chain: {
         label: capitalize(
@@ -409,7 +430,7 @@ const SendPage = () => {
           disabled
           label={"To"}
           extra={truncate(recipient)}
-          value={recipient}
+          value={getWalletName(recipient)}
         />
         <SummaryTable rows={rows} />
       </>
@@ -417,7 +438,7 @@ const SendPage = () => {
   }
 
   const createTx = useCallback(
-    ({ address, input, memo }: TxValues) => {
+    ({ address, memo }: TxValues) => {
       const amount = toAmount(input, { decimals: asset?.decimals })
       const { senderAddress, denom, channel } = asset ?? {}
       if (!senderAddress) return
@@ -426,7 +447,7 @@ const SendPage = () => {
 
       const execute_msg = { transfer: { recipient: address, amount } }
 
-      const destination = getChainIDFromAddress(address, networks)
+      const destination = getChainIDFromAddress(recipient, networks)
 
       if (!chain || !destination || !denom || !amount) return
 
@@ -469,11 +490,10 @@ const SendPage = () => {
                 undefined
               ),
             ]
-
         return { msgs, memo, chainID: chain }
       }
     },
-    [asset, recipient, networks, chain, getICSContract]
+    [asset, recipient, networks, chain, getICSContract, input]
   )
 
   const onChangeMax = useCallback(
@@ -504,7 +524,11 @@ const SendPage = () => {
     estimationTxValues,
     createTx,
     onChangeMax,
-    onSuccess: () => navigate("/"),
+    onSuccess: () => {
+      if (!recipient) return
+      addRecipient({ recipient, name: "wallet" })
+      navigate("/")
+    },
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     gasAdjustment: destination !== chain ? 2 : 1,
   }
@@ -512,7 +536,7 @@ const SendPage = () => {
   return (
     <Tx {...tx}>
       {({ max, fee, submit }) => (
-        <Form onSubmit={() => handleSubmit(submit.fn)}>
+        <Form onSubmit={handleSubmit(submit.fn)}>
           <Routes>
             <Route element={<Address />} path="1" />
             <Route element={<Chain />} path="2" />
