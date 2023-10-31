@@ -10,6 +10,7 @@ import Welcome from "./Welcome"
 import Wallet from "pages/wallet/Wallet"
 import ConfirmNewChain from "./ConfirmNewChain"
 import ConfirmSwitchNetwork from "./ConfirmSwitchNetwork"
+import { MsgSend } from "@terra-money/feather.js"
 
 const Front = () => {
   const { wallet, wallets } = useAuth()
@@ -27,11 +28,14 @@ const Front = () => {
     )
   }
 
-  if (true) {
-    return <ConfirmConnect origin="https://station.money" /> //{...connect} />
+  if (connect) {
+    return <ConfirmConnect {...connect} />
   }
 
-  /*
+  if (tx) {
+    return <ConfirmTx {...tx} />
+  }
+
   if (pubkey) {
     //return <ConfirmPubkey origin={pubkey} />
   }
@@ -39,12 +43,10 @@ const Front = () => {
   if (chain) {
     return <ConfirmNewChain {...chain} />
   }
-  if (tx) {
-    return <ConfirmTx {...tx} />
-  }
+
   if (network) {
     return <ConfirmSwitchNetwork {...network} />
-  }*/
+  }
 
   return <Wallet />
 }
