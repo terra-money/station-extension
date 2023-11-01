@@ -178,7 +178,6 @@ const SingleSwapContext = ({ children }: PropsWithChildren<{}>) => {
     if (!context) return null
     return <SingleSwapProvider value={context}>{children}</SingleSwapProvider>
   }
-
   return <Card {...state}>{render()}</Card>
 }
 

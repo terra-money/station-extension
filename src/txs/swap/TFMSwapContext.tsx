@@ -90,6 +90,9 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
   }, [cw20TokensBalanceRequired, cw20TokensBalancesState])
 
   const context = useMemo(() => {
+    console.log("availableList", availableList)
+    console.log("ibcWhitelist", ibcWhitelist)
+    console.log("cw20Whitelist", cw20Whitelist)
     if (!(availableList && ibcWhitelist && cw20Whitelist)) return
     if (!cw20TokensBalances) return
 
@@ -142,11 +145,13 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
   )
 
   const render = () => {
+    console.log("context", context)
     if (!context) return null
     return <TFMSwapProvider value={context}>{children}</TFMSwapProvider>
   }
+  console.log("state", state)
 
-  return <Card {...state}>{render()}</Card>
+  return render()
 }
 
 export default TFMSwapContext
