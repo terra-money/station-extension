@@ -1,7 +1,15 @@
 import axios from "axios"
+import { useQueries } from "react-query"
 import { SQUID_SWAP_API } from "config/constants"
+import {
+  TokenData as SquidToken,
+  ChainData as SquidChain,
+} from "@0xsquid/sdk/dist/types"
+import { useNetwork } from "data/wallet"
 
-type SupportedSource = "squid" | "skip"
+type SwapToken = SquidToken
+type SwapChain = SquidChain
+type SupportedSource = "squid"
 
 const sources = {
   squid: {
@@ -24,11 +32,42 @@ const sources = {
   },
 }
 
-export const querySwapTokens = async (source: SupportedSource[]) => {
-  const tokens = await Promise.all(
-    source.map(async (source) => {
-      return await sources[source].queryTokens()
-    })
+export const useSwapTokens = (source: SupportedSource[]) => {
+  const network = useNetwork()
+  const res = useQueries(
+    source.map((source) => ({
+      queryKey: ["swapTokens", source],
+      queryFn: async () => sources[source].queryTokens(),
+    }))
   )
-  return tokens.flat()
+  const tokens = res
+    .reduce(
+      (acc, { data }) => (data ? [...data.tokens, ...acc] : acc),
+      [] as SwapToken[]
+    )
+    .filter(
+      ({ chainId }) =>
+        typeof chainId === "string" && Object.keys(network).includes(chainId)
+    )
+  return tokens
+}
+
+export const useSwapChains = (source: SupportedSource[]) => {
+  const network = useNetwork()
+  const res = useQueries(
+    source.map((source) => ({
+      queryKey: ["swapChains", source],
+      queryFn: async () => sources[source].queryChains(),
+    }))
+  )
+  const chains = res
+    .reduce(
+      (acc, { data }) => (data ? [...data.chains, ...acc] : acc),
+      [] as SwapChain[]
+    )
+    .filter(
+      ({ chainId }) =>
+        typeof chainId === "string" && Object.keys(network).includes(chainId)
+    )
+  return chains
 }
