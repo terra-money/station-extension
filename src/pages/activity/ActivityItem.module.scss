@@ -1,5 +1,9 @@
 @import "mixins";
 
-.item {
-  padding: 10px;
+.activityitem > * {
+  padding: 14px 0px;
+  padding-inline: 15px;
+  display: grid;
+  grid-template-rows: min-content auto;
+  overflow-y: hidden;
 }
