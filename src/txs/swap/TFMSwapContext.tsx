@@ -15,6 +15,8 @@ import { useTFMTokens } from "data/external/tfm"
 import { Card } from "components/layout"
 import { SwapAssets, validateAssets } from "./useSwapUtils"
 import { useSwapChains, useSwapTokens } from "data/queries/swap"
+import { useChainID, useNetworkName } from "data/wallet"
+import { useWhitelist } from "data/queries/chains"
 
 export interface SlippageParams extends SwapAssets {
   input: number
@@ -45,12 +47,19 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
   const bankBalance = useBankBalance()
   const { list } = useCustomTokensCW20()
   const readNativeDenom = useNativeDenoms()
+  const terraChainID = useChainID()
+  const { ibcDenoms } = useWhitelist()
+  const networkName = useNetworkName()
+
   const customTokens = list.map(({ token }) => token)
 
   /* contracts */
   const { data: ibcWhitelist, ...ibcWhitelistState } = useIBCWhitelist()
   const { data: cw20Whitelist, ...cw20WhitelistState } = useCW20Whitelist()
+  const { data: TFMTokens, ...TFMTokensState } = useTFMTokens()
   const swapTokens = useSwapTokens(["squid"])
+  const swapChains = useSwapChains(["squid"])
+  console.log("swapTokens", swapTokens)
 
   // Why?
   // To search tokens with symbol (ibc, cw20)
@@ -58,24 +67,33 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
   const availableList = useMemo(() => {
     if (!(swapTokens && ibcWhitelist && cw20Whitelist)) return
 
-    const tokens = swapTokens.map(({ contract_addr }) => contract_addr)
+    const tokens = swapTokens.map(
+      ({ ibcDenom, address }) => ibcDenom ?? address
+    )
 
-    const ibc = tokens
-      .filter(isDenomIBC)
-      .filter((denom) => ibcWhitelist[denom.replace("ibc/", "")])
+    const ibc = tokens.filter(
+      (denom) =>
+        ibcWhitelist[denom.replace("ibc/", "")] ||
+        Object.values(ibcWhitelist).find(
+          ({ base_denom }) => denom === base_denom
+        )
+    )
 
     const cw20 = tokens
       .filter((addr) => AccAddress.validate(addr))
       .filter((token) => cw20Whitelist[token])
 
     return { ibc, cw20 }
-  }, [TFMTokens, cw20Whitelist, ibcWhitelist])
+  }, [cw20Whitelist, ibcWhitelist, swapTokens])
 
   // Fetch cw20 balances: only listed and added by the user
   const cw20TokensBalanceRequired = useMemo(() => {
     if (!availableList) return []
-    return customTokens.filter((token) => availableList.cw20.includes(token))
+    return customTokens.filter((token) =>
+      availableList.cw20.find((address) => token === address)
+    )
   }, [customTokens, availableList])
+  console.log("availableList", availableList)
 
   const cw20TokensBalancesState = useTokenBalances(cw20TokensBalanceRequired)
   const cw20TokensBalances = useMemo(() => {
@@ -101,9 +119,9 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
       },
     ]
 
-    const ibc = availableList.ibc.map((denom) => {
-      const item = ibcWhitelist[denom.replace("ibc/", "")]
-      const balance = getAmount(bankBalance, denom)
+    const ibc = availableList.ibc.map((token) => {
+      const item = ibcWhitelist[token.replace("ibc/", "")]
+      const balance = getAmount(bankBalance, token)
       return { ...readIBCDenom(item), balance }
     })
 
@@ -112,7 +130,21 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
       return { ...cw20Whitelist[token], balance }
     })
 
-    const options = { coins, tokens: [...ibc, ...cw20] }
+    const options = {
+      coins,
+      tokens: [
+        ...ibc,
+        ...cw20,
+        ...Object.entries(ibcDenoms[networkName] ?? {})
+          .filter(([_, { chainID }]) => chainID === terraChainID)
+          .map(([ibc, { token, chainID }]) => ({
+            ...readNativeDenom(token, chainID),
+            token: ibc.split(":")[1],
+            balance: getAmount(bankBalance, token),
+          }))
+          .filter((entry) => (entry.isNonWhitelisted ? false : true)),
+      ].filter(Boolean),
+    }
 
     const findTokenItem = (token: Token) => {
       const key =
@@ -130,6 +162,9 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
     bankBalance,
     ibcWhitelist,
     cw20Whitelist,
+    ibcDenoms,
+    networkName,
+    terraChainID,
     availableList,
     cw20TokensBalances,
     readNativeDenom,
