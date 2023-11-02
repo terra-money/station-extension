@@ -1,7 +1,6 @@
 import { useInitialAccountInfo } from "data/queries/accountInfo"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { LoadingCircular, SectionHeader } from "station-ui"
-import styles from "./ActivityList.module.scss"
 import { Card, Page } from "components/layout"
 import { Empty } from "components/feedback"
 import ActivityItem from "./ActivityItem"
@@ -10,16 +9,7 @@ import React from "react"
 
 const ActivityList = () => {
   const addresses = useInterchainAddresses()
-  const { activitySorted: oldactivity, state } =
-    useInitialAccountInfo(addresses)
-  const activity = oldactivity.filter((obj) => {
-    const msgs = obj.tx.body.messages.map((x: any) => x["@type"])
-    return (
-      msgs.includes("/ibc.core.client.v1.MsgUpdateClien") ||
-      obj.txhash ===
-        "29301F429C2F000BAB35E8959F69AF3E7539D0D2019A7B6C01C0112A2588802D"
-    )
-  })
+  const { activitySorted: activity, state } = useInitialAccountInfo(addresses)
 
   const render = () => {
     if (addresses && !activity) return null
@@ -30,7 +20,7 @@ const ActivityList = () => {
         <Empty />
       </Card>
     ) : (
-      <div className={styles.activitylist}>
+      <div>
         {state.isLoading ? <LoadingCircular size={36} thickness={2} /> : null}
         {activity.map(
           (activityItem: AccountHistoryItem & { chain: string }) => {
@@ -42,10 +32,11 @@ const ActivityList = () => {
               header = <SectionHeader title={displayDate} />
             }
             return (
-              <div key={activityItem.txhash} className={styles.activitylist}>
-                {header}
-                <ActivityItem {...activityItem} />
-              </div>
+              <ActivityItem
+                key={activityItem.txhash}
+                {...activityItem}
+                dateHeader={header}
+              />
             )
           }
         )}

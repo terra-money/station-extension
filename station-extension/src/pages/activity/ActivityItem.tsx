@@ -1,3 +1,4 @@
+import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { ActivityListItem, ModalButton } from "station-ui"
 import ActivityDetailsPage from "./ActivityDetailsPage"
 import ActivityMessage from "./ActivityMessage"
@@ -6,13 +7,15 @@ import { useMessages } from "./useMessages"
 import { useNetwork } from "data/wallet"
 import { toNow } from "utils/date"
 import { last } from "ramda"
+import styles from "./ActivityItem.module.scss"
 
 const ActivityItem = ({
   txhash,
   timestamp,
   chain,
+  dateHeader,
   ...props
-}: AccountHistoryItem & { chain: string }) => {
+}: AccountHistoryItem & { chain: string; dateHeader: JSX.Element | null }) => {
   const {
     code,
     tx: {
@@ -25,13 +28,16 @@ const ActivityItem = ({
   const activityVariant = success ? "success" : "failed"
   const { t } = useTranslation()
   const network = useNetwork()
-  // const networkName = useNetworkName()
+  const addresses = useInterchainAddresses() || {}
 
-  const canonicalMessages = useMessages({
-    txhash,
-    timestamp,
-    ...props,
-  } as any)
+  const canonicalMessages = useMessages(
+    {
+      txhash,
+      timestamp,
+      ...props,
+    } as any,
+    addresses
+  )
 
   let msgType = ""
 
@@ -52,36 +58,39 @@ const ActivityItem = ({
 
   const activityType = msgType.charAt(0).toUpperCase() + msgType.substring(1)
 
-  return (
-    <ModalButton
-      title={t("Transaction")}
-      renderButton={(open) => (
-        <ActivityListItem
-          onClick={open}
+  return activityMessages.length ? (
+    <div className={styles.activityitem}>
+      {dateHeader}
+      <ModalButton
+        title={t("Transaction")}
+        renderButton={(open) => (
+          <ActivityListItem
+            onClick={open}
+            variant={activityVariant}
+            chain={{
+              icon: network[chain].icon,
+              label: network[chain].name,
+            }}
+            msg={activityMessages[0]}
+            type={t(activityType)}
+            time={t(toNow(new Date(timestamp)))}
+            timelineMessages={activityMessages.slice(1)}
+          />
+        )}
+      >
+        <ActivityDetailsPage
           variant={activityVariant}
-          chain={{
-            icon: network[chain].icon,
-            label: network[chain].name,
-          }}
+          chain={network[chain]}
           msg={activityMessages[0]}
-          type={t(activityType)}
-          time={t(toNow(new Date(timestamp)))}
+          type={activityType}
+          time={timestamp}
           timelineMessages={activityMessages.slice(1)}
+          txHash={txhash}
+          fee={fee}
         />
-      )}
-    >
-      <ActivityDetailsPage
-        variant={activityVariant}
-        chain={network[chain]}
-        msg={activityMessages[0]}
-        type={activityType}
-        time={timestamp}
-        timelineMessages={activityMessages.slice(1)}
-        txHash={txhash}
-        fee={fee}
-      />
-    </ModalButton>
-  )
+      </ModalButton>
+    </div>
+  ) : null
 }
 
 export default ActivityItem
