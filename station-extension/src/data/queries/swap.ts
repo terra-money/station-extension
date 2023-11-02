@@ -6,6 +6,8 @@ import {
   ChainData as SquidChain,
 } from "@0xsquid/sdk/dist/types"
 import { useNetwork } from "data/wallet"
+import { useIBCBaseDenoms } from "./ibc"
+import { useIBCWhitelist } from "data/Terra/TerraAssets"
 
 type SwapToken = SquidToken
 type SwapChain = SquidChain
