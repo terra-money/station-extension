@@ -1,5 +1,5 @@
-import TxMessage from "app/containers/TxMessage"
 import ActivityTxMessage from "./ActivityTxMessage"
+import TxMessage from "app/containers/TxMessage"
 
 interface Props {
   msg: TxMessage
