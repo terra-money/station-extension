@@ -14,6 +14,7 @@ import { useCustomTokensCW20 } from "data/settings/CustomTokens"
 import { useTFMTokens } from "data/external/tfm"
 import { Card } from "components/layout"
 import { SwapAssets, validateAssets } from "./useSwapUtils"
+import { useSwapChains, useSwapTokens } from "data/queries/swap"
 
 export interface SlippageParams extends SwapAssets {
   input: number
@@ -49,15 +50,15 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
   /* contracts */
   const { data: ibcWhitelist, ...ibcWhitelistState } = useIBCWhitelist()
   const { data: cw20Whitelist, ...cw20WhitelistState } = useCW20Whitelist()
-  const { data: TFMTokens, ...TFMTokensState } = useTFMTokens()
+  const swapTokens = useSwapTokens(["squid"])
 
   // Why?
   // To search tokens with symbol (ibc, cw20)
   // To filter tokens with balance (cw20)
   const availableList = useMemo(() => {
-    if (!(TFMTokens && ibcWhitelist && cw20Whitelist)) return
+    if (!(swapTokens && ibcWhitelist && cw20Whitelist)) return
 
-    const tokens = TFMTokens.map(({ contract_addr }) => contract_addr)
+    const tokens = swapTokens.map(({ contract_addr }) => contract_addr)
 
     const ibc = tokens
       .filter(isDenomIBC)
@@ -90,9 +91,6 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
   }, [cw20TokensBalanceRequired, cw20TokensBalancesState])
 
   const context = useMemo(() => {
-    console.log("availableList", availableList)
-    console.log("ibcWhitelist", ibcWhitelist)
-    console.log("cw20Whitelist", cw20Whitelist)
     if (!(availableList && ibcWhitelist && cw20Whitelist)) return
     if (!cw20TokensBalances) return
 
@@ -145,13 +143,11 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
   )
 
   const render = () => {
-    console.log("context", context)
     if (!context) return null
     return <TFMSwapProvider value={context}>{children}</TFMSwapProvider>
   }
-  console.log("state", state)
 
-  return render()
+  return <Card {...state}>{render()}</Card>
 }
 
 export default TFMSwapContext
