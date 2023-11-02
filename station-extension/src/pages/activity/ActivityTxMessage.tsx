@@ -1,7 +1,7 @@
 import { AccAddress, Coin, Coins, ValAddress } from "@terra-money/feather.js"
 import { useCW20Contracts, useCW20Whitelist } from "data/Terra/TerraAssets"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { ExternalLink, FinderLink } from "components/general"
+import { FinderLink } from "components/general"
 import { isDenom, truncate } from "@terra-money/terra-utils"
 import { useAddress, useNetwork } from "data/wallet"
 import { getChainIDFromAddress } from "utils/bech32"
@@ -102,13 +102,12 @@ const Proposal = (props: ProposalProps) => {
     ? proposal.content.title
     : `Proposal ID ${proposalID}`
 
-  const href = `https://station.terra.money/proposal/${chainID}/${proposalID}`
+  const link =
+    chainID && proposalID
+      ? `https://station.terra.money/proposal/${chainID}/${proposalID}`
+      : "https://station.terra.money/gov"
 
-  return (
-    <ExternalLink href={href} icon>
-      {proposalName}
-    </ExternalLink>
-  )
+  return <FinderLink link={link}>{proposalName}</FinderLink>
 }
 
 interface Props {
@@ -147,7 +146,7 @@ const ActivityTxMessage = ({
     ) : parseFloat(word) ||
       voteTypes.includes(word) ||
       index === 1 ||
-      word === "transfer" ? (
+      ["IBC", "transfer"].includes(word) ? (
       <span>{word}</span>
     ) : (
       word
