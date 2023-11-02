@@ -1,14 +1,9 @@
-import {
-  createActionRuleSet,
-  createLogMatcherForActions,
-  getTxCanonicalMsgs,
-} from "@terra-money/log-finder-ruleset"
 import { ActivityListItem, ModalButton } from "station-ui"
-import { useNetwork, useNetworkName } from "data/wallet"
 import ActivityDetailsPage from "./ActivityDetailsPage"
-import { TxInfo } from "@terra-money/feather.js"
 import ActivityMessage from "./ActivityMessage"
 import { useTranslation } from "react-i18next"
+import { useMessages } from "./useMessages"
+import { useNetwork } from "data/wallet"
 import { toNow } from "utils/date"
 import { last } from "ramda"
 
@@ -30,20 +25,9 @@ const ActivityItem = ({
   const activityVariant = success ? "success" : "failed"
   const { t } = useTranslation()
   const network = useNetwork()
-  const networkName = useNetworkName()
+  // const networkName = useNetworkName()
 
-  const ruleset = createActionRuleSet(networkName)
-  const logMatcher = createLogMatcherForActions(ruleset)
-  const getCanonicalMsgs = (txInfo: TxInfo) => {
-    const matchedMsg = getTxCanonicalMsgs(txInfo, logMatcher)
-    return matchedMsg
-      ? matchedMsg
-          .map((matchedLog) => matchedLog.map(({ transformed }) => transformed))
-          .flat(2)
-      : []
-  }
-
-  const canonicalMessages = getCanonicalMsgs({
+  const canonicalMessages = useMessages({
     txhash,
     timestamp,
     ...props,
@@ -55,7 +39,15 @@ const ActivityItem = ({
     if (index === 0 && msg?.msgType) {
       msgType = last(msg?.msgType.split("/")) ?? ""
     }
-    return msg && <ActivityMessage msg={msg} key={index} />
+    return (
+      msg && (
+        <ActivityMessage
+          chainID={network[chain].chainID}
+          msg={msg}
+          key={index}
+        />
+      )
+    )
   })
 
   const activityType = msgType.charAt(0).toUpperCase() + msgType.substring(1)

@@ -1,14 +1,15 @@
-import { ReactNode, useMemo } from "react"
-import { capitalize } from "@mui/material"
-import { isDenom, truncate } from "@terra-money/terra-utils"
 import { AccAddress, Coin, Coins, ValAddress } from "@terra-money/feather.js"
-import { useAddress, useNetwork } from "data/wallet"
-import { useValidators } from "data/queries/staking"
-import { WithTokenItem } from "data/token"
 import { useCW20Contracts, useCW20Whitelist } from "data/Terra/TerraAssets"
-import { Read } from "components/token"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { ExternalLink, FinderLink } from "components/general"
+import { isDenom, truncate } from "@terra-money/terra-utils"
+import { useAddress, useNetwork } from "data/wallet"
 import { getChainIDFromAddress } from "utils/bech32"
+import { useValidators } from "data/queries/staking"
+import { useProposal } from "data/queries/gov"
+import { ReactNode, useMemo } from "react"
+import { WithTokenItem } from "data/token"
+import { Read } from "components/token"
 import { Fragment } from "react"
 
 const ValidatorAddress = ({ children: address }: { children: string }) => {
@@ -19,25 +20,47 @@ const ValidatorAddress = ({ children: address }: { children: string }) => {
     ({ operator_address }) => operator_address === address
   )?.description.moniker
 
-  return <span>{moniker ?? address}</span>
+  return (
+    <FinderLink value={address} short={!moniker} validator>
+      {moniker ?? address}
+    </FinderLink>
+  )
 }
 
-const TerraAddress = ({ children: address }: { children: string }) => {
+const Address = ({
+  chainID,
+  children: address,
+}: {
+  chainID: string
+  children: string
+}) => {
   const { data: contracts } = useCW20Contracts()
   const { data: tokens } = useCW20Whitelist()
-  const addresses = useInterchainAddresses()
+
+  const addresses = useInterchainAddresses() || {}
+  const networks = useNetwork()
 
   const name = useMemo(() => {
-    if (addresses && Object.values(addresses ?? {}).includes(address))
-      return "my wallet" // Do not translate this
+    if (
+      address ===
+      "terra1jwyzzsaag4t0evnuukc35ysyrx9arzdde2kg9cld28alhjurtthq0prs2s"
+    ) {
+      return "Alliance Hub"
+    }
+
+    // If the address is the user's wallet.
+    if (Object.keys(addresses).find((key) => addresses[key] === address)) {
+      return `my ${networks[chainID].name} wallet`
+    }
     if (!(contracts && tokens)) return
     const contract = contracts[address] ?? tokens[address]
     if (!contract) return
     const { protocol, name } = contract
     return [protocol, name].join(" ")
-  }, [address, addresses, contracts, tokens])
+    // eslint-disable-next-line
+  }, [address, networks, contracts, tokens, chainID])
 
-  return <span>{name ?? truncate(address)}</span>
+  return <FinderLink value={address}>{name ?? truncate(address)}</FinderLink>
 }
 
 const Tokens = ({ children: coins }: { children: string }) => {
@@ -65,12 +88,40 @@ const Tokens = ({ children: coins }: { children: string }) => {
   )
 }
 
+interface ProposalProps {
+  proposalID: number
+  chainID: string
+}
+
+const Proposal = (props: ProposalProps) => {
+  const { proposalID, chainID } = props
+
+  const { data: proposal } = useProposal(proposalID, chainID)
+
+  const proposalName = proposal?.content?.title
+    ? proposal.content.title
+    : `Proposal ID ${proposalID}`
+
+  const href = `https://station.terra.money/proposal/${chainID}/${proposalID}`
+
+  return (
+    <ExternalLink href={href} icon>
+      {proposalName}
+    </ExternalLink>
+  )
+}
+
 interface Props {
   children?: string
   className?: string
+  chainID?: string
 }
 
-const ActivityTxMessage = ({ children: sentence, className }: Props) => {
+const ActivityTxMessage = ({
+  children: sentence,
+  className,
+  chainID,
+}: Props) => {
   const address = useAddress()
   if (!sentence) return null
 
@@ -78,16 +129,26 @@ const ActivityTxMessage = ({ children: sentence, className }: Props) => {
     if (!word) return null
     if (word.endsWith(",")) return <>{parse(word.slice(0, -1), index)},</>
 
+    const voteTypes = ["Yes", "No", "No With Veto", "Abstain"]
+
     return validateTokens(word) ? (
       <span>
         <Tokens>{word}</Tokens>
       </span>
+    ) : /^proposal:(\d+)/.exec(word)?.[1] ? (
+      <Proposal
+        proposalID={parseInt(/^proposal:(\d+)$/.exec(word)?.[1] || "")}
+        chainID={chainID || ""}
+      />
     ) : ValAddress.validate(word) ? (
       <ValidatorAddress>{word}</ValidatorAddress>
     ) : AccAddress.validate(word) ? (
-      <TerraAddress>{word}</TerraAddress>
-    ) : !index ? (
-      capitalize(word)
+      <Address chainID={chainID ?? ""}>{word}</Address>
+    ) : parseFloat(word) ||
+      voteTypes.includes(word) ||
+      index === 1 ||
+      word === "transfer" ? (
+      <span>{word}</span>
     ) : (
       word
     )
