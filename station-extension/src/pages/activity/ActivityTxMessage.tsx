@@ -1,16 +1,15 @@
 import { AccAddress, Coin, Coins, ValAddress } from "@terra-money/feather.js"
 import { useCW20Contracts, useCW20Whitelist } from "data/Terra/TerraAssets"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { FinderLink } from "components/general"
 import { isDenom, truncate } from "@terra-money/terra-utils"
 import { useAddress, useNetwork } from "data/wallet"
 import { getChainIDFromAddress } from "utils/bech32"
+import { Fragment, ReactNode, useMemo } from "react"
 import { useValidators } from "data/queries/staking"
+import { FinderLink } from "components/general"
 import { useProposal } from "data/queries/gov"
-import { ReactNode, useMemo } from "react"
 import { WithTokenItem } from "data/token"
 import { Read } from "components/token"
-import { Fragment } from "react"
 
 const ValidatorAddress = ({ children: address }: { children: string }) => {
   const networks = useNetwork()

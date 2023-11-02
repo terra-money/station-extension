@@ -5,12 +5,12 @@ import {
   SummaryTable,
   Timeline,
 } from "station-ui"
-import React from "react"
+import styles from "./ActivityDetailsPage.module.scss"
+import { ReadMultiple } from "components/token"
 import { useTranslation } from "react-i18next"
 import { toNow } from "utils/date"
-import { ReadMultiple } from "components/token"
 import moment from "moment"
-import styles from "./ActivityDetailsPage.module.scss"
+import React from "react"
 
 const ActivityDetailsPage = ({ ...props }) => {
   const { t } = useTranslation()

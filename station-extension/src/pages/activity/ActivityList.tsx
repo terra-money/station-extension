@@ -1,6 +1,7 @@
 import { useInitialAccountInfo } from "data/queries/accountInfo"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { LoadingCircular, SectionHeader } from "station-ui"
+import styles from "./ActivityList.module.scss"
 import { Card, Page } from "components/layout"
 import { Empty } from "components/feedback"
 import ActivityItem from "./ActivityItem"
@@ -20,7 +21,7 @@ const ActivityList = () => {
         <Empty />
       </Card>
     ) : (
-      <div>
+      <div className={styles.activitylist}>
         {state.isLoading ? <LoadingCircular size={36} thickness={2} /> : null}
         {activity.map(
           (activityItem: AccountHistoryItem & { chain: string }) => {

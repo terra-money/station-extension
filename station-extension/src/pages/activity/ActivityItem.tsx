@@ -2,12 +2,12 @@ import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { ActivityListItem, ModalButton } from "station-ui"
 import ActivityDetailsPage from "./ActivityDetailsPage"
 import ActivityMessage from "./ActivityMessage"
+import styles from "./ActivityItem.module.scss"
 import { useTranslation } from "react-i18next"
 import { useMessages } from "./useMessages"
 import { useNetwork } from "data/wallet"
 import { toNow } from "utils/date"
 import { last } from "ramda"
-import styles from "./ActivityItem.module.scss"
 
 const ActivityItem = ({
   txhash,
