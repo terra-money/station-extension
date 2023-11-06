@@ -27,7 +27,7 @@ import {
   MultisigWalletIcon,
   QRCodeIcon,
   ReceiveIcon,
-  RightArrow,
+  RightArrowIcon,
   RoughlyEqualsIcon,
   SearchIcon,
   SendArrowIcon,
@@ -39,7 +39,7 @@ import {
   TrendUpIcon,
   WalletIcon,
   WalletConnectIcon,
-} from "assets"
+} from "components"
 import ColorDropdown from "./ColorDropdown.tsx"
 
 const FullIconContainer = () => {
@@ -179,8 +179,8 @@ const FullIconContainer = () => {
     },
     {
       name: "RightArrow",
-      icon: <RightArrow fill={`var(${selectedColor})`} width={size} height={size} />,
-      iconCopy: `<RightArrow fill={"var(${selectedColor})"} />`
+      icon: <RightArrowIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<RightArrowIcon fill={"var(${selectedColor})"} />`
     },
     {
       name: "RoughlyEquals",

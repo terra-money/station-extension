@@ -19,7 +19,7 @@
   "scripts": {
     "dev": "vite",
     "build-dictionary": "style-dictionary build --config ./style-dictionary/config.json",
-    "build": "npm run build-dictionary && tsc && vite build && cp src/index.d.ts dist/index.d.ts && cp -r src/assets/* dist/assets/",
+    "build": "npm run build-dictionary && tsc && vite build && cp src/index.d.ts dist/index.d.ts",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",

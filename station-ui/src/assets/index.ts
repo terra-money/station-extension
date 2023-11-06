@@ -1,38 +1,77 @@
-export { ReactComponent as AddressBookIcon } from "./icon/AddressBook.svg"
-export { ReactComponent as AlertIcon } from "./icon/Alert.svg"
-export { ReactComponent as BackArrowIcon } from "./icon/BackArrow.svg"
-export { ReactComponent as BridgeIcon } from "./icon/Bridge.svg"
-export { ReactComponent as BroadcastingIcon } from "./icon/Broadcasting.svg"
-export { ReactComponent as BuyIcon } from "./icon/Buy.svg"
-export { ReactComponent as CloseIcon } from "./icon/Close.svg"
-export { ReactComponent as SettingsIcon } from "./icon/Cog.svg"
-export { ReactComponent as ConnectIcon } from "./icon/Connect.svg"
-export { ReactComponent as CopyIcon } from "./icon/Copy.svg"
-export { ReactComponent as DropdownArrowIcon } from "./icon/DropdownArrow.svg"
-export { ReactComponent as ExternalLinkIcon } from "./icon/ExternalLink.svg"
-export { ReactComponent as FavoriteIcon } from "./icon/Favorite.svg"
-export { ReactComponent as FilterIcon } from "./icon/Filter.svg"
-export { ReactComponent as FlipArrowsIcon } from "./icon/FlipArrows.svg"
-export { ReactComponent as GovernanceIcon } from "./icon/Governance.svg"
-export { ReactComponent as ImportSeedIcon } from "./icon/ImportSeed.svg"
-export { ReactComponent as KeyIcon } from "./icon/Key.svg"
-export { ReactComponent as LaughIcon } from "./icon/Laugh.svg"
-export { ReactComponent as LedgerIcon } from "./icon/Ledger.svg"
-export { ReactComponent as LoadingIcon } from "./icon/Loading.svg"
-export { ReactComponent as LockIcon } from "./icon/Lock.svg"
-export { ReactComponent as ManageAssetIcon } from "./icon/ManageAsset.svg"
-export { ReactComponent as MultisigWalletIcon } from "./icon/MultisigWallet.svg"
-export { ReactComponent as QRCodeIcon } from "./icon/QRCode.svg"
-export { ReactComponent as ReceiveIcon } from "./icon/Receive.svg"
-export { ReactComponent as RightArrow } from "./icon/RightArrow.svg"
-export { ReactComponent as RoughlyEqualsIcon } from "./icon/RoughlyEquals.svg"
-export { ReactComponent as SearchIcon } from "./icon/Search.svg"
-export { ReactComponent as SendArrowIcon } from "./icon/SendArrow.svg"
-export { ReactComponent as SmallCircleCheckIcon } from "./icon/SmallCircleCheck.svg"
-export { ReactComponent as StakeIcon } from "./icon/Stake.svg"
-export { ReactComponent as SwapArrowsIcon } from "./icon/SwapArrows.svg"
-export { ReactComponent as TrashIcon } from "./icon/Trash.svg"
-export { ReactComponent as TrendDownIcon } from "./icon/TrendDown.svg"
-export { ReactComponent as TrendUpIcon } from "./icon/TrendUp.svg"
-export { ReactComponent as WalletIcon } from "./icon/Wallet.svg"
-export { ReactComponent as WalletConnectIcon } from "./icon/WalletConnect.svg"
+import { ReactComponent as AddressBookIconSVG } from "./icon/AddressBook.svg"
+import { ReactComponent as AlertIconSVG } from "./icon/Alert.svg"
+import { ReactComponent as BackArrowIconSVG } from "./icon/BackArrow.svg"
+import { ReactComponent as BridgeIconSVG } from "./icon/Bridge.svg"
+import { ReactComponent as BroadcastingIconSVG } from "./icon/Broadcasting.svg"
+import { ReactComponent as BuyIconSVG } from "./icon/Buy.svg"
+import { ReactComponent as CloseIconSVG } from "./icon/Close.svg"
+import { ReactComponent as SettingsIconSVG } from "./icon/Cog.svg"
+import { ReactComponent as ConnectIconSVG } from "./icon/Connect.svg"
+import { ReactComponent as CopyIconSVG } from "./icon/Copy.svg"
+import { ReactComponent as DropdownArrowIconSVG } from "./icon/DropdownArrow.svg"
+import { ReactComponent as ExternalLinkIconSVG } from "./icon/ExternalLink.svg"
+import { ReactComponent as FavoriteIconSVG } from "./icon/Favorite.svg"
+import { ReactComponent as FilterIconSVG } from "./icon/Filter.svg"
+import { ReactComponent as FlipArrowsIconSVG } from "./icon/FlipArrows.svg"
+import { ReactComponent as GovernanceIconSVG } from "./icon/Governance.svg"
+import { ReactComponent as ImportSeedIconSVG } from "./icon/ImportSeed.svg"
+import { ReactComponent as KeyIconSVG } from "./icon/Key.svg"
+import { ReactComponent as LaughIconSVG } from "./icon/Laugh.svg"
+import { ReactComponent as LedgerIconSVG } from "./icon/Ledger.svg"
+import { ReactComponent as LoadingIconSVG } from "./icon/Loading.svg"
+import { ReactComponent as LockIconSVG } from "./icon/Lock.svg"
+import { ReactComponent as ManageAssetIconSVG } from "./icon/ManageAsset.svg"
+import { ReactComponent as MultisigWalletIconSVG } from "./icon/MultisigWallet.svg"
+import { ReactComponent as QRCodeIconSVG } from "./icon/QRCode.svg"
+import { ReactComponent as ReceiveIconSVG } from "./icon/Receive.svg"
+import { ReactComponent as RightArrowIconSVG } from "./icon/RightArrow.svg"
+import { ReactComponent as RoughlyEqualsIconSVG } from "./icon/RoughlyEquals.svg"
+import { ReactComponent as SearchIconSVG } from "./icon/Search.svg"
+import { ReactComponent as SendArrowIconSVG } from "./icon/SendArrow.svg"
+import { ReactComponent as SmallCircleCheckIconSVG } from "./icon/SmallCircleCheck.svg"
+import { ReactComponent as StakeIconSVG } from "./icon/Stake.svg"
+import { ReactComponent as SwapArrowsIconSVG } from "./icon/SwapArrows.svg"
+import { ReactComponent as TrashIconSVG } from "./icon/Trash.svg"
+import { ReactComponent as TrendDownIconSVG } from "./icon/TrendDown.svg"
+import { ReactComponent as TrendUpIconSVG } from "./icon/TrendUp.svg"
+import { ReactComponent as WalletIconSVG } from "./icon/Wallet.svg"
+import { ReactComponent as WalletConnectIconSVG } from "./icon/WalletConnect.svg"
+
+export const AddressBookIcon = AddressBookIconSVG
+export const AlertIcon = AlertIconSVG
+export const BackArrowIcon = BackArrowIconSVG
+export const BridgeIcon = BridgeIconSVG
+export const BroadcastingIcon = BroadcastingIconSVG
+export const BuyIcon = BuyIconSVG
+export const CloseIcon = CloseIconSVG
+export const SettingsIcon = SettingsIconSVG
+export const ConnectIcon = ConnectIconSVG
+export const CopyIcon = CopyIconSVG
+export const DropdownArrowIcon = DropdownArrowIconSVG
+export const ExternalLinkIcon = ExternalLinkIconSVG
+export const FavoriteIcon = FavoriteIconSVG
+export const FilterIcon = FilterIconSVG
+export const FlipArrowsIcon = FlipArrowsIconSVG
+export const GovernanceIcon = GovernanceIconSVG
+export const ImportSeedIcon = ImportSeedIconSVG
+export const KeyIcon = KeyIconSVG
+export const LaughIcon = LaughIconSVG
+export const LedgerIcon = LedgerIconSVG
+export const LoadingIcon = LoadingIconSVG
+export const LockIcon = LockIconSVG
+export const ManageAssetIcon = ManageAssetIconSVG
+export const MultisigWalletIcon = MultisigWalletIconSVG
+export const QRCodeIcon = QRCodeIconSVG
+export const ReceiveIcon = ReceiveIconSVG
+export const RightArrowIcon = RightArrowIconSVG
+export const RoughlyEqualsIcon = RoughlyEqualsIconSVG
+export const SearchIcon = SearchIconSVG
+export const SendArrowIcon = SendArrowIconSVG
+export const SmallCircleCheckIcon = SmallCircleCheckIconSVG
+export const StakeIcon = StakeIconSVG
+export const SwapArrowsIcon = SwapArrowsIconSVG
+export const TrashIcon = TrashIconSVG
+export const TrendDownIcon = TrendDownIconSVG
+export const TrendUpIcon = TrendUpIconSVG
+export const WalletIcon = WalletIconSVG
+export const WalletConnectIcon = WalletConnectIconSVG
