@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useQueries } from "react-query"
-import { SQUID_SWAP_API } from "config/constants"
+import { SQUID_SWAP_API, SKIP_SWAP_API } from "config/constants"
 import {
   TokenData as SquidToken,
   ChainData as SquidChain,
@@ -11,7 +11,7 @@ import { useIBCWhitelist } from "data/Terra/TerraAssets"
 
 type SwapToken = SquidToken
 type SwapChain = SquidChain
-type SupportedSource = "squid"
+type SupportedSource = "squid" | "skip"
 
 const sources = {
   squid: {
@@ -32,6 +32,22 @@ const sources = {
       return result.data
     },
   },
+  skip: {
+    queryTokens: async () => {
+      const result = await axios.get(SKIP_SWAP_API.routes.tokens, {
+        baseURL: SKIP_SWAP_API.baseUrl,
+        headers: { accept: "application/json" },
+      })
+      return result.data
+    },
+    queryChains: async () => {
+      const result = await axios.get(SKIP_SWAP_API.routes.chains, {
+        baseURL: SKIP_SWAP_API.baseUrl,
+        headers: { accept: "application/json" },
+      })
+      return result.data
+    },
+  },
 }
 
 export const useSwapTokens = (source: SupportedSource[]) => {
@@ -42,6 +58,7 @@ export const useSwapTokens = (source: SupportedSource[]) => {
       queryFn: async () => sources[source].queryTokens(),
     }))
   )
+  console.log("tokens res", res)
   const tokens = res
     .reduce(
       (acc, { data }) => (data ? [...data.tokens, ...acc] : acc),
@@ -62,6 +79,7 @@ export const useSwapChains = (source: SupportedSource[]) => {
       queryFn: async () => sources[source].queryChains(),
     }))
   )
+  console.log("chains res", res)
   const chains = res
     .reduce(
       (acc, { data }) => (data ? [...data.chains, ...acc] : acc),

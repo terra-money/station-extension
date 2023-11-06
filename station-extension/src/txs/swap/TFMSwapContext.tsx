@@ -57,9 +57,10 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
   const { data: ibcWhitelist, ...ibcWhitelistState } = useIBCWhitelist()
   const { data: cw20Whitelist, ...cw20WhitelistState } = useCW20Whitelist()
   const { data: TFMTokens, ...TFMTokensState } = useTFMTokens()
-  const swapTokens = useSwapTokens(["squid"])
-  const swapChains = useSwapChains(["squid"])
+  const swapTokens = useSwapTokens(["skip"])
+  const swapChains = useSwapChains(["skip"])
   console.log("swapTokens", swapTokens)
+  console.log("swap Chains", swapChains)
 
   // Why?
   // To search tokens with symbol (ibc, cw20)
@@ -93,7 +94,6 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
       availableList.cw20.find((address) => token === address)
     )
   }, [customTokens, availableList])
-  console.log("availableList", availableList)
 
   const cw20TokensBalancesState = useTokenBalances(cw20TokensBalanceRequired)
   const cw20TokensBalances = useMemo(() => {
