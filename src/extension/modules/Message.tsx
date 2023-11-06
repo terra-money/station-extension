@@ -13,7 +13,7 @@ function parseAminoType(type: string) {
   return type.split("/")[type.split("/").length - 1].split("-").join(" ")
 }
 
-const Message = ({ msg, warn }: { msg: Msg; warn: boolean }) => {
+const Message = ({ msg }: { msg: Msg; warn: boolean }) => {
   const summary =
     msg instanceof MsgAminoCustom
       ? parseAminoType(msg.toAmino()["type"] ?? "")
@@ -38,7 +38,7 @@ const Message = ({ msg, warn }: { msg: Msg; warn: boolean }) => {
   }
 
   return (
-    <article className={cx(styles.component, { warn })}>
+    <article className={cx(styles.component)}>
       <button className={cx(styles.header, { collapsed })} onClick={toggle}>
         <div className={styles.icon__container}>
           <ActivityIcon width={18} height={18} className={styles.icon} />
