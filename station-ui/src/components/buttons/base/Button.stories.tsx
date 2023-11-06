@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { ReactComponent as SmallCircleCheck } from 'assets/icon/SmallCircleCheck.svg';
-import { ReactComponent as TrashCan } from 'assets/icon/TrashCan.svg';
+import { ReactComponent as TrashIcon } from 'assets/icon/Trash.svg';
 import Button, { ButtonConfig } from './Button';
 
 const meta: Meta<ButtonConfig> = {
@@ -154,7 +154,7 @@ export const Warning: StoryObj<ButtonConfig> = {
     <Button
       variant='warning'
       label='Button'
-      icon={<TrashCan fill='var(--token-error-500)' stroke='var(--token-error-500)' />}
+      icon={<TrashIcon fill='var(--token-error-500)' stroke='var(--token-error-500)' />}
     />,
   argTypes: {
     variant: {

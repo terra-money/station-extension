@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import InputWrapper,{ InputWrapperProps} from './InputWrapper';
 import { Input } from 'components/inputs';
 
-import { ReactComponent as WalletIcon } from 'assets/icon/Wallet16.svg';
+import { ReactComponent as WalletIcon } from 'assets/icon/Wallet.svg';
 
 const meta: Meta = {
   title: 'Components/Form Helpers/Wrappers/InputWrapper',
