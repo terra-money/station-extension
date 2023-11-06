@@ -1,10 +1,11 @@
 import { useState } from "react"
 import classNames from "classnames/bind"
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import { Coins, Msg, MsgAminoCustom } from "@terra-money/feather.js"
 import { readMsg } from "@terra-money/msg-reader"
 import TxMessage from "app/containers/TxMessage"
 import styles from "./Message.module.scss"
+import { ReactComponent as ActivityIcon } from "styles/images/icons/Activity.svg"
+import { ReactComponent as ArrowIcon } from "styles/images/icons/DropdownArrow.svg"
 
 const cx = classNames.bind(styles)
 
@@ -38,13 +39,16 @@ const Message = ({ msg, warn }: { msg: Msg; warn: boolean }) => {
 
   return (
     <article className={cx(styles.component, { warn })}>
-      <button className={styles.header} onClick={toggle}>
-        <TxMessage>{summary}</TxMessage>
-        <KeyboardArrowDownIcon style={{ fontSize: 16 }} />
+      <button className={cx(styles.header, { collapsed })} onClick={toggle}>
+        <div className={styles.icon__container}>
+          <ActivityIcon width={18} height={18} className={styles.icon} />
+          <TxMessage>{summary}</TxMessage>
+        </div>
+        <ArrowIcon width={12} height={12} className={styles.arrow__icon} />
       </button>
 
       {!collapsed && (
-        <section>
+        <section className={styles.content}>
           {[
             ["type", type],
             ...Object.entries(
