@@ -14,7 +14,7 @@ import { useCustomTokensCW20 } from "data/settings/CustomTokens"
 import { useTFMTokens } from "data/external/tfm"
 import { Card } from "components/layout"
 import { SwapAssets, validateAssets } from "./useSwapUtils"
-import { useSwapChains, useSwapTokens } from "data/queries/swap"
+import { useSwapTokens } from "data/queries/swap/hook"
 import { useChainID, useNetworkName } from "data/wallet"
 import { useWhitelist } from "data/queries/chains"
 
@@ -57,20 +57,15 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
   const { data: ibcWhitelist, ...ibcWhitelistState } = useIBCWhitelist()
   const { data: cw20Whitelist, ...cw20WhitelistState } = useCW20Whitelist()
   const { data: TFMTokens, ...TFMTokensState } = useTFMTokens()
-  const swapTokens = useSwapTokens(["skip"])
-  const swapChains = useSwapChains(["skip"])
-  console.log("swapTokens", swapTokens)
-  console.log("swap Chains", swapChains)
+  const swapTokens = useSwapTokens()
 
   // Why?
   // To search tokens with symbol (ibc, cw20)
   // To filter tokens with balance (cw20)
   const availableList = useMemo(() => {
-    if (!(swapTokens && ibcWhitelist && cw20Whitelist)) return
+    if (!(TFMTokens && ibcWhitelist && cw20Whitelist)) return
 
-    const tokens = swapTokens.map(
-      ({ ibcDenom, address }) => ibcDenom ?? address
-    )
+    const tokens = TFMTokens.map(({ contract_addr }) => contract_addr)
 
     const ibc = tokens.filter(
       (denom) =>
@@ -85,7 +80,7 @@ const TFMSwapContext = ({ children }: PropsWithChildren<{}>) => {
       .filter((token) => cw20Whitelist[token])
 
     return { ibc, cw20 }
-  }, [cw20Whitelist, ibcWhitelist, swapTokens])
+  }, [cw20Whitelist, ibcWhitelist, TFMTokens])
 
   // Fetch cw20 balances: only listed and added by the user
   const cw20TokensBalanceRequired = useMemo(() => {
