@@ -31,9 +31,9 @@ export enum SwapSource {
 export type SupportedSource = SwapSource.SKIP | SwapSource.SQUID
 
 export interface SwapState {
-  offerAsset: SwapAsset
+  offerAsset: SwapAssetExtra
   offerAmount: number
-  askAsset: SwapAsset
+  askAsset: SwapAssetExtra
   fromAddress: string // get this from wallet
 }
 
@@ -41,7 +41,7 @@ export interface RouteParams {
   slippage?: number
 }
 
-export interface SwapAsset {
+export interface SwapAssetBase {
   symbol: string // human readable name axlUSDC
   denom: string // denom axlusdc or IBC/asdfasdfadsfawe
   originDenom: string // denom on home chain
@@ -50,8 +50,12 @@ export interface SwapAsset {
   chainId: string // chain id
 }
 
-export interface SwapAssetWithBalanceAndValue extends SwapAsset {
+export interface SwapAssetExtra extends SwapAssetBase {
   balance: number
   value: number
   price: number
+  chain: {
+    name: string
+    icon: string
+  }
 }
