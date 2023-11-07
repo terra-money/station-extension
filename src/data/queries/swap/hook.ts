@@ -3,8 +3,8 @@ import { useNetwork } from "data/wallet"
 import {
   SupportedSource,
   SwapSource,
-  SwapAsset,
-  SwapAssetWithBalanceAndValue,
+  SwapAssetBase,
+  SwapAssetExtra,
 } from "./types"
 import { querySkipTokens } from "./skip"
 import { querySquidTokens } from "./squid"
@@ -12,7 +12,7 @@ import { useBankBalance } from "../bank"
 import { useExchangeRates } from "../coingecko"
 
 const queryMap = {
-  [SwapSource.SKIP]: querySkipTokens,
+  [SwapSource.SKIP]: querySkipTokens, // queries should return SwapAsset[]
   [SwapSource.SQUID]: querySquidTokens,
 }
 
@@ -31,28 +31,40 @@ export const useSwapTokens = (selectedSources?: SupportedSource[]) => {
     }))
   )
 
+  const encounteredDenoms = new Set()
+
   const tokens = res
     .reduce(
       (acc, { data }) => (data ? [...data, ...acc] : acc),
-      [] as SwapAsset[]
+      [] as SwapAssetBase[]
     )
-    .filter(
-      ({ chainId }) =>
-        typeof chainId === "string" && Object.keys(network).includes(chainId)
-    )
+    .filter(({ chainId, denom }) => {
+      const isValidChain = Object.keys(network).includes(chainId)
+      const isUnique = !encounteredDenoms.has(denom)
+      if (isValidChain && isUnique) {
+        encounteredDenoms.add(denom)
+        return true
+      }
+      return false
+    })
     .map((token) => {
       const balance =
         balances.find(({ denom }) => denom === token.denom)?.amount ?? 0
       const price = prices?.[token.denom]?.price ?? 0
       const value = Number(balance) * price * Math.pow(10, -token.decimals)
+      const { icon, name } = network[token.chainId]
 
       return {
         ...token,
         balance,
         price,
         value,
+        chain: {
+          icon,
+          name,
+        },
       }
     })
 
-  return tokens as SwapAssetWithBalanceAndValue[]
+  return tokens as SwapAssetExtra[]
 }

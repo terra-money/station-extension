@@ -7,6 +7,8 @@ import TFMSwapForm from "./TFMSwapForm"
 import TFMPoweredBy from "./TFMPoweredBy"
 import { ExternalLink } from "components/general"
 import ExtensionPage from "extension/components/ExtensionPage"
+import { AssetSelectorTo } from "station-ui"
+import SwapForm from "./SwapForm"
 
 // The sequence below is required before rendering the Swap form:
 // 1. `SwapContext` - Complete the network request related to swap.
@@ -40,11 +42,7 @@ const SwapTx = () => {
 
   return (
     <ExtensionPage title={t("Swap")} modal>
-      <TFMSwapContext>
-        <ChainFilter outside title={"Select a chain to perform swaps on"} swap>
-          {(chainID) => <TFMSwapForm chainID={chainID ?? ""} />}
-        </ChainFilter>
-      </TFMSwapContext>
+      <SwapForm />
     </ExtensionPage>
   )
 }

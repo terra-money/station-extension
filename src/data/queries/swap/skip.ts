@@ -1,6 +1,6 @@
 import axios from "axios"
 import { SKIP_SWAP_API } from "config/constants"
-import { SkipTokenResponse, SwapAsset } from "./types"
+import { SkipTokenResponse, SwapAssetBase } from "./types"
 
 export const querySkipTokens = async () => {
   try {
@@ -11,9 +11,10 @@ export const querySkipTokens = async () => {
       },
     })
 
-    let tokens: SwapAsset[] = []
-    // @ts-ignore
+    let tokens: SwapAssetBase[] = []
+
     Object.entries(result.data.chain_to_assets_map).forEach(
+      // @ts-ignore
       ([chainId, { assets }]) => {
         assets.forEach((asset: SkipTokenResponse) => {
           tokens.push({
@@ -28,7 +29,7 @@ export const querySkipTokens = async () => {
       }
     )
 
-    return tokens as SwapAsset[]
+    return tokens
   } catch (err) {
     console.log("Skip Token Error", err)
   }
