@@ -2,13 +2,11 @@ import { useTranslation } from "react-i18next"
 import { useNetworkName } from "data/wallet"
 import { Card, ChainFilter, Page } from "components/layout"
 import { Wrong } from "components/feedback"
-import TFMSwapContext from "./TFMSwapContext"
-import TFMSwapForm from "./TFMSwapForm"
-import TFMPoweredBy from "./TFMPoweredBy"
 import { ExternalLink } from "components/general"
 import ExtensionPage from "extension/components/ExtensionPage"
 import { AssetSelectorTo } from "station-ui"
 import SwapForm from "./SwapForm"
+import SwapContext from "./SwapContext"
 
 // The sequence below is required before rendering the Swap form:
 // 1. `SwapContext` - Complete the network request related to swap.
@@ -42,7 +40,9 @@ const SwapTx = () => {
 
   return (
     <ExtensionPage title={t("Swap")} modal>
-      <SwapForm />
+      <SwapContext>
+        <SwapForm />
+      </SwapContext>
     </ExtensionPage>
   )
 }
