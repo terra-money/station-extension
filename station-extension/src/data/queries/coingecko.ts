@@ -1,5 +1,5 @@
 import { useCallback } from "react"
-import { useQuery, UseQueryResult } from "react-query"
+import { useQuery } from "react-query"
 import { queryKey, RefetchOptions } from "../query"
 import { CURRENCY_KEY, STATION_ASSETS, ASSETS } from "config/constants"
 import axios from "axios"

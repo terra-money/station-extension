@@ -13,19 +13,6 @@ const Welcome = () => {
   const icon = useThemeFavicon()
   const { wallets, connect } = useAuth()
   const existsWallets = wallets.length > 0
-  const otherWallets = wallets.map((wallet) => ({
-    name: wallet.name,
-    address: truncate(
-      "address" in wallet
-        ? wallet.address
-        : addressFromWords(wallet.words["330"], "terra"),
-      [11, 6]
-    ),
-    onClick: () => {
-      connect(wallet.name)
-    },
-    settingsOnClick: () => {},
-  }))
 
   return (
     <ExtensionPage
@@ -35,8 +22,18 @@ const Welcome = () => {
       <main className={styles.welcome__container}>
         {existsWallets ? (
           <WalletList
-            otherWallets={otherWallets}
-            activeWallet={otherWallets[0]}
+            otherWallets={wallets.map((wallet) => ({
+              name: wallet.name,
+              address: truncate(
+                "address" in wallet
+                  ? wallet.address
+                  : addressFromWords(wallet.words["330"], "terra"),
+                [11, 6]
+              ),
+              onClick: () => {
+                connect(wallet.name)
+              },
+            }))}
           />
         ) : (
           <section className={styles.welcome}>
