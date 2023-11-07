@@ -53,7 +53,7 @@ const FinderLink = forwardRef(
       short && typeof children === "string" ? truncate(children) : children
 
     return href ? (
-      <ExternalLink {...attrs} href={href} className={className} ref={ref} icon>
+      <ExternalLink {...attrs} href={href} className={className} ref={ref}>
         {linkText}
       </ExternalLink>
     ) : (

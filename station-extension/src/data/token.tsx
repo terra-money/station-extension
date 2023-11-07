@@ -94,6 +94,8 @@ export enum TokenType {
   STRIDE = "stride",
 }
 
+// React Hooks cannot be called inside of a callback like the one used by map.
+// This custom React Hook function allows for calling this Hook in a callback.
 export const useNativeDenoms = () => {
   const { whitelist, ibcDenoms } = useWhitelist()
   const { list: cw20 } = useCustomTokensCW20()

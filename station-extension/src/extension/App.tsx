@@ -33,7 +33,6 @@ import { useReplaceKeplr } from "utils/localStorage"
 import EnableCoinType from "app/sections/EnableCoinType"
 import UpdateNotification from "./update/UpdateNotification"
 import ChangeLogModal from "./update/ChangeLogModal"
-import InitActivity from "pages/activity/InitActivity"
 import Welcome from "./modules/Welcome"
 import ExtensionPage from "./components/ExtensionPage"
 import { getErrorMessage } from "utils/error"
@@ -129,9 +128,7 @@ const App = () => {
   return (
     <ErrorBoundary fallback={fallback}>
       <InitBankBalance>
-        <InitActivity>
-          <RequestContainer>{render()}</RequestContainer>
-        </InitActivity>
+        <RequestContainer>{render()}</RequestContainer>
       </InitBankBalance>
       <ChangeLogModal />
       <UpdateNotification />

@@ -32,16 +32,18 @@ const ActivityDetailsPage = ({ ...props }) => {
 
   return (
     <div className={styles.txcontainer}>
-      <ActivityListItem
-        variant={variant}
-        chain={{
-          icon: chain.icon,
-          label: chain.name,
-        }}
-        msg={msg}
-        type={type}
-        time={toNow(new Date(time))}
-      />
+      <div className={styles.activityitem}>
+        <ActivityListItem
+          variant={variant}
+          chain={{
+            icon: chain.icon,
+            label: chain.name,
+          }}
+          msg={msg}
+          type={type}
+          time={toNow(new Date(time))}
+        />
+      </div>
       {timelineMessages.length > 0 ? (
         <React.Fragment>
           <SectionHeader title={t("Timeline")} withLine />
