@@ -17,27 +17,24 @@ const queryMap = {
 }
 
 export const useSwapTokens = (selectedSources?: SupportedSource[]) => {
-  const network = useNetwork()
-  const balances = useBankBalance()
-  const { data: prices } = useExchangeRates()
-
   const querySources =
     selectedSources ?? (Object.keys(queryMap) as SupportedSource[])
 
-  const res = useQueries(
+  return useQueries(
     querySources.map((source) => ({
       queryKey: ["swapTokens", source],
       queryFn: async () => queryMap[source](),
     }))
   )
+}
 
+export const useParseSwapTokens = (tokens: SwapAssetBase[]) => {
   const encounteredDenoms = new Set()
+  const network = useNetwork()
+  const balances = useBankBalance()
+  const { data: prices } = useExchangeRates()
 
-  const tokens = res
-    .reduce(
-      (acc, { data }) => (data ? [...data, ...acc] : acc),
-      [] as SwapAssetBase[]
-    )
+  return tokens
     .filter(({ chainId, denom }) => {
       const isValidChain = Object.keys(network).includes(chainId)
       const isUnique = !encounteredDenoms.has(denom)
@@ -63,8 +60,6 @@ export const useSwapTokens = (selectedSources?: SupportedSource[]) => {
           icon,
           name,
         },
-      }
+      } as SwapAssetExtra
     })
-
-  return tokens as SwapAssetExtra[]
 }
