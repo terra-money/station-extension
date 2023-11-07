@@ -59,23 +59,25 @@ const ActivityItem = ({
   const activityType = msgType.charAt(0).toUpperCase() + msgType.substring(1)
 
   return activityMessages.length ? (
-    <div className={styles.activityitem}>
+    <div className={styles.activityitems}>
       {dateHeader}
       <ModalButton
         title={t("Transaction")}
         renderButton={(open) => (
-          <ActivityListItem
-            onClick={open}
-            variant={activityVariant}
-            chain={{
-              icon: network[chain].icon,
-              label: network[chain].name,
-            }}
-            msg={activityMessages[0]}
-            type={t(activityType)}
-            time={t(toNow(new Date(timestamp)))}
-            timelineMessages={activityMessages.slice(1)}
-          />
+          <div className={styles.activityitem}>
+            <ActivityListItem
+              onClick={open}
+              variant={activityVariant}
+              chain={{
+                icon: network[chain].icon,
+                label: network[chain].name,
+              }}
+              msg={activityMessages[0]}
+              type={t(activityType)}
+              time={t(toNow(new Date(timestamp)))}
+              timelineMessages={activityMessages.slice(1)}
+            />
+          </div>
         )}
       >
         <ActivityDetailsPage

@@ -1,5 +1,14 @@
 @import "mixins";
 
-.txcontainer > * {
-  margin: 30px 0px;
+.txcontainer {
+  padding-bottom: 1.6rem;
+  padding-inline: 15px;
+
+  & > * {
+    margin: 30px 0px;
+  }
+}
+
+.activityitem {
+  overflow-wrap: anywhere;
 }

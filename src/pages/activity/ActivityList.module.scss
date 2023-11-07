@@ -2,7 +2,20 @@
 
 .activitylist {
   padding-bottom: 1.6rem;
-  display: grid;
-  grid-template-rows: min-content auto;
-  overflow-y: hidden;
+  overflow-y: auto;
+  width: 100%;
+  padding-inline: 15px;
+}
+
+.seemore {
+  color: #065bed;
+  margin: auto;
+  width: 100%;
+}
+
+.loadingtext {
+  color: #065bed;
+  padding-top: 14px;
+  display: flex;
+  justify-content: center;
 }

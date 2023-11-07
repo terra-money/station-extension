@@ -26,13 +26,7 @@ const ValidatorAddress = ({ children: address }: { children: string }) => {
   )
 }
 
-const Address = ({
-  chainID,
-  children: address,
-}: {
-  chainID: string
-  children: string
-}) => {
+const Address = ({ children: address }: { children: string }) => {
   const { data: contracts } = useCW20Contracts()
   const { data: tokens } = useCW20Whitelist()
 
@@ -48,7 +42,10 @@ const Address = ({
     }
 
     // If the address is the user's wallet.
-    if (Object.keys(addresses).find((key) => addresses[key] === address)) {
+    const chainID = Object.keys(addresses).find(
+      (key) => addresses[key] === address
+    )
+    if (chainID) {
       return `my ${networks[chainID].name} wallet`
     }
     if (!(contracts && tokens)) return
@@ -57,7 +54,7 @@ const Address = ({
     const { protocol, name } = contract
     return [protocol, name].join(" ")
     // eslint-disable-next-line
-  }, [address, networks, contracts, tokens, chainID])
+  }, [address, networks, contracts, tokens])
 
   return <FinderLink value={address}>{name ?? truncate(address)}</FinderLink>
 }
@@ -72,10 +69,6 @@ const Tokens = ({ children: coins }: { children: string }) => {
         : list.map((coin) => {
             const data = coin.toData()
             const { denom } = data
-            // TODO: remove this when getCanonicalMsgs() is updated
-            if (denom !== "uluna" && denom.endsWith("uluna")) {
-              data.denom = denom.slice(0, -5)
-            }
 
             return (
               <WithTokenItem token={data.denom} key={denom}>
@@ -141,11 +134,11 @@ const ActivityTxMessage = ({
     ) : ValAddress.validate(word) ? (
       <ValidatorAddress>{word}</ValidatorAddress>
     ) : AccAddress.validate(word) ? (
-      <Address chainID={chainID ?? ""}>{word}</Address>
+      <Address>{word}</Address>
     ) : parseFloat(word) ||
       voteTypes.includes(word) ||
       index === 1 ||
-      ["IBC", "transfer"].includes(word) ? (
+      ["IBC", "transfer", "Coinhall", "TFM", "Astroport"].includes(word) ? (
       <span>{word}</span>
     ) : (
       word
@@ -175,7 +168,10 @@ export default ActivityTxMessage
 /* helpers */
 const validateTokens = (tokens: any) => {
   const validate = ({ denom }: Coin) =>
-    isDenom(denom) || AccAddress.validate(denom)
+    isDenom(denom) ||
+    AccAddress.validate(denom) ||
+    denom.startsWith("stu") ||
+    ["inj", "aarch"].includes(denom)
 
   try {
     const coins = new Coins(tokens)
