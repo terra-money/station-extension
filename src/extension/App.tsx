@@ -97,10 +97,9 @@ const App = () => {
   const location = useLocation()
 
   function render() {
-    // if (!wallet && !location.pathname.startsWith("/auth/")) {
-    //   {wallets.length ? <SwitchWallet /> : <Welcome />}
-    //   return <Welcome />
-    // }
+    if (!wallet && !location.pathname.startsWith("/auth/")) {
+      return <Welcome />
+    }
     // main page
     const hidePaths = ["/auth/", "/manage-wallet/", "/preferences"]
     const hideHeader = hidePaths.some((p) => location.pathname.startsWith(p))
