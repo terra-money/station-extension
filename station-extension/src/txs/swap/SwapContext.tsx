@@ -1,13 +1,9 @@
 import { PropsWithChildren } from "react"
 import createContext from "utils/createContext"
 import { combineState } from "data/query"
-import { useActiveDenoms } from "data/queries/coingecko"
-import { TerraContracts } from "data/Terra/TerraAssets"
-import { useCW20Pairs } from "data/Terra/TerraAssets"
-import { useTerraContracts } from "data/Terra/TerraAssets"
 import { Fetching } from "components/feedback"
-import { useSwapTokens } from "data/queries/swap/hook"
-import { SwapAssetExtra } from "data/queries/swap/types"
+import { useSwapTokens, useParseSwapTokens } from "data/queries/swap/hook"
+import { SwapAssetBase, SwapAssetExtra } from "data/queries/swap/types"
 
 interface Swap {
   tokens: SwapAssetExtra[]
@@ -16,15 +12,21 @@ interface Swap {
 export const [useSwap, SwapProvider] = createContext<Swap>("useSwap")
 
 const SwapContext = ({ children }: PropsWithChildren<{}>) => {
-  const tokens = useSwapTokens()
+  const swap = useSwapTokens()
+  const tokens = swap.reduce(
+    (acc, { data }) => (data ? [...acc, ...data] : acc),
+    [] as SwapAssetBase[]
+  )
+  const state = combineState(...swap)
+  const parsed = useParseSwapTokens(tokens)
 
   const render = () => {
-    if (!tokens) return null
-    const value = { tokens }
+    if (!parsed) return null
+    const value = { tokens: parsed }
     return <SwapProvider value={value}>{children}</SwapProvider>
   }
 
-  return !tokens.length ? null : render()
+  return !state.isSuccess ? null : <Fetching {...state}>{render()}</Fetching>
 }
 
 export default SwapContext

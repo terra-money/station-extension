@@ -22,7 +22,7 @@ const SwapForm = () => {
         tokenIcon={asset.icon ?? ""}
         onSymbolClick={() => {}}
         currencyAmount={asset.value.toString()}
-        amountInputAttrs={{ ...register("offerAsset.amount") }}
+        amountInputAttrs={{ ...register("offerAmount") }}
       />
       <AssetSelectorFrom
         extra={asset.balance}
@@ -32,7 +32,7 @@ const SwapForm = () => {
         tokenIcon={asset.icon ?? ""}
         onSymbolClick={() => {}}
         currencyAmount={asset.value.toString()}
-        amountInputAttrs={register("offerAsset.value")}
+        amountInputAttrs={{}}
       />
     </Form>
   )
