@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Timeline, { TimelineProps } from './Timeline';
+import { ActivityListItem } from '..';
 
 const meta: Meta<TimelineProps> = {
   title: 'Components/List Items/Timeline/Stories',
@@ -8,6 +9,84 @@ const meta: Meta<TimelineProps> = {
 } as Meta;
 
 export default meta;
+
+export const StartItemOverriddenWithShowMore: StoryObj<TimelineProps> = {
+  render: () => {
+    return (
+      <Timeline
+        startOverride={
+          <ActivityListItem
+            variant={"success"}
+            chain={{ icon: "https://station-assets.terra.dev/img/chains/Axelar.svg", label: "Axelar" }}
+            msg={
+              <div>
+                Sent <span>420.00 axlUSDC</span> to <span>terra1...20k38v</span>
+              </div>
+            }
+            type={"Execute Contract"}
+            msgCount={6}
+            hasTimeline
+          />
+        }
+        middleItems={[
+          {
+            variant: 'success',
+            msg: (
+              <div>Transfer <span>axlUSDC</span> from <span>Axelar</span> to <span>Terra</span></div>
+            ),
+            warningPillText: 'Requires Additional Tx'
+          },
+          {
+            variant: 'success',
+            msg: (
+              <div>Swap <span>axlUSDC</span> for <span>LUNA</span> on <span>TFM</span></div>
+            )
+          },
+          {
+            variant: 'success',
+            msg: (
+              <div>Swap <span>axlUSDC</span> for <span>LUNA</span> on <span>TFM</span></div>
+            )
+          },
+          {
+            variant: 'warning',
+            msg: (
+              <div>Swapping <span>axlUSDC</span> for <span>LUNA</span> on <span>Terra</span></div>
+            ),
+            warningPillText: 'Transaction Required',
+            transactionButton: {
+              label: 'Confirm Transaction',
+              onClick: () => console.log('clicked')
+            },
+          },
+          {
+            variant: 'success',
+            msg: (
+              <div>Swap <span>axlUSDC</span> for <span>LUNA</span> on <span>TFM</span></div>
+            )
+          },
+          {
+            variant: 'success',
+            msg: (
+              <div>Swap <span>axlUSDC</span> for <span>LUNA</span> on <span>TFM</span></div>
+            )
+          },
+          {
+            variant: 'success',
+            msg: (
+              <div>Swap <span>axlUSDC</span> for <span>LUNA</span> on <span>TFM</span></div>
+            )
+          },
+        ]}
+        endItem={{
+          chain: { icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" },
+          coin: {icon: "https://station-assets.terra.dev/img/coins/Luna.svg", label: "LUNA" },
+          msg: "3,422.65 LUNA",
+        }}
+      />
+    )
+  },
+};
 
 export const TransactionPageExample: StoryObj<TimelineProps> = {
   render: () => {
@@ -119,6 +198,38 @@ export const ThreeMiddleItemsExample: StoryObj<TimelineProps> = {
             warningPillText: 'Transaction Required',
           },
         ]}
+      />
+    )
+  },
+};
+
+export const ThreeMiddleItemsExampleForceShowAll: StoryObj<TimelineProps> = {
+  render: () => {
+    return (
+      <Timeline
+        middleItems={[
+          {
+            variant: 'success',
+            msg: (
+              <div>Transfer <span>axlUSDC</span> from <span>Osmosis</span> to <span>Terra</span></div>
+            ),
+          },
+          {
+            variant: 'warning',
+            msg: (
+              <div>Swapping <span>axlUSDC</span> for <span>LUNA</span> on <span>Terra</span></div>
+            ),
+            warningPillText: 'Transaction Required',
+          },
+          {
+            variant: 'warning',
+            msg: (
+              <div>Swapping <span>axlUSDC</span> for <span>LUNA</span> on <span>Terra</span></div>
+            ),
+            warningPillText: 'Transaction Required',
+          },
+        ]}
+        forceShowAll
       />
     )
   },
@@ -264,7 +375,6 @@ export const MiddleItemWithButtonDisabled: StoryObj<TimelineProps> = {
     )
   },
 };
-
 
 export const EndItem: StoryObj<TimelineProps> = {
   render: () => {
