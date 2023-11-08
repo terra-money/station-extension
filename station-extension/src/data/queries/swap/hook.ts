@@ -29,21 +29,12 @@ export const useSwapTokens = (selectedSources?: SupportedSource[]) => {
 }
 
 export const useParseSwapTokens = (tokens: SwapAssetBase[]) => {
-  const encounteredDenoms = new Set()
   const network = useNetwork()
   const balances = useBankBalance()
   const { data: prices } = useExchangeRates()
 
   return tokens
-    .filter(({ chainId, denom }) => {
-      const isValidChain = Object.keys(network).includes(chainId)
-      const isUnique = !encounteredDenoms.has(denom)
-      if (isValidChain && isUnique) {
-        encounteredDenoms.add(denom)
-        return true
-      }
-      return false
-    })
+    .filter(({ chainId }) => Object.keys(network).includes(chainId))
     .map((token) => {
       const balance =
         balances.find(({ denom }) => denom === token.denom)?.amount ?? 0
