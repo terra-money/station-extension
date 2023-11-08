@@ -66,7 +66,7 @@ export const useGammTokens = () => {
     for (const [poolId, poolAsset] of Object.entries(fetch.data) ?? {}) {
       gammTokens.set(
         "gamm/pool/" + poolId,
-        poolAsset.map((asset) => asset.symbol).join("-") + " LP"
+        poolAsset?.map((asset) => asset.symbol).join("-") + " LP"
       )
     }
   }

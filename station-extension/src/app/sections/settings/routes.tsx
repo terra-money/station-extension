@@ -43,6 +43,12 @@ export const useSettingsRoutes = () => {
       element: <ManageCustomTokens />,
       icon: <ManageAssets />,
     },
+    lockWallet: {
+      route: "lock-wallet",
+      title: t("Lock Wallet"),
+      element: <span></span>,
+      icon: <LockOutlinedIcon />,
+    },
   }
 
   const settings = {

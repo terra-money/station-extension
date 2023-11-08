@@ -53,14 +53,14 @@ const AddressBook = ({ onClick }: Props) => {
     items: AddressBook[]
     title: string
   }) => {
-    if (!items.length) return null
-
     return (
       <Grid gap={12}>
         {title && <SectionHeader withLine title={title} />}
         {items.map((item) => (
           <WalletSelectableListItem
             copyValue={item.recipient}
+            walletName={item.name}
+            emoji={item.icon}
             key={item.name}
             settingsOnClick={
               item.index !== undefined
