@@ -318,7 +318,7 @@ export const useParsedAssetList = () => {
   const networkName = useNetworkName()
   const unknownIBCDenoms = useUnknownIBCDenoms()
 
-  const list: any = useMemo(
+  const list = useMemo(
     () => [
       ...Object.values(
         coins.reduce((acc, { denom, amount, chain }) => {
@@ -329,7 +329,6 @@ export const useParsedAssetList = () => {
 
           const key = [
             unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs[0] ??
-              // @ts-expect-error
               data?.chainID ??
               chain,
             data.token,

@@ -37,7 +37,7 @@ export default function ManageWalletsButton() {
     <button
       className={styles.manage__wallets}
       data-testid="manage-wallets-button"
-      onClick={() => navigate("/wallet/select")}
+      onClick={() => navigate("/manage-wallet/select")}
     >
       {isLedger ? (
         wallet.bluetooth ? (
