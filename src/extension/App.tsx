@@ -108,11 +108,13 @@ const App = () => {
       <>
         {!hideHeader && (
           <Header>
-            <ManageWalletsButton />
+            <Flex gap={0}>
+              <ManageWalletsButton />
+              <NetworkHeader />
+            </Flex>
             <Flex gap={5}>
               <LatestTx />
               <EnableCoinType />
-              <NetworkHeader />
               <NetworkStatus />
               <PreferencesButton />
             </Flex>
