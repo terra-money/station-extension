@@ -5,6 +5,7 @@ import { PageTabs } from "station-ui"
 import { useTranslation } from "react-i18next"
 import styles from "./WalletMain.module.scss"
 import ExtensionFooter from "extension/components/ExtensionFooter"
+import UpdateNotification from "extension/update/UpdateNotification"
 
 const WalletMain = () => {
   const [tab, setTab] = useState(0)
@@ -12,6 +13,7 @@ const WalletMain = () => {
   return (
     <>
       <section className={styles.wallet__page}>
+        <UpdateNotification />
         <NetWorth />
         <div className={styles.tabs__container}>
           <PageTabs
