@@ -70,7 +70,7 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                         className={styles.back__icon}
                         width={20}
                         height={20}
-                        onClick={() => openURL(backButtonPath)}
+                        onClick={() => navigate(backButtonPath)}
                         fill="currentColor"
                       />
                     )}
