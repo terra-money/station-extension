@@ -3,6 +3,7 @@ import AssetList from "./AssetList"
 import { useState } from "react"
 import { PageTabs } from "station-ui"
 import { useTranslation } from "react-i18next"
+import ActivityList from "../activity/ActivityList"
 
 const WalletMain = () => {
   const [tab, setTab] = useState(0)
@@ -15,7 +16,7 @@ const WalletMain = () => {
         onClick={setTab}
         tabs={[t("Assets"), t("Activity")]}
       />
-      {tab === 0 ? <AssetList /> : <p>Activty component</p>}
+      {tab === 0 ? <AssetList /> : <ActivityList />}
     </>
   )
 }

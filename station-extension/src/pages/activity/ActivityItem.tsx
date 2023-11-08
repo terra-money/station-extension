@@ -75,7 +75,7 @@ const ActivityItem = ({
               msg={activityMessages[0]}
               type={t(activityType)}
               time={t(toNow(new Date(timestamp)))}
-              timelineMessages={activityMessages.slice(1)}
+              msgCount={activityMessages.slice(1).length}
             />
           </div>
         )}
