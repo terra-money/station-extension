@@ -3,7 +3,6 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import MultisigBadge from "auth/components/MultisigBadge"
 import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import ExtensionList from "../components/ExtensionList"
-import { clearStoredPassword } from "../storage"
 import { addressFromWords } from "utils/bech32"
 import { useNavigate } from "react-router-dom"
 import { Flex, Grid } from "components/layout"
@@ -49,7 +48,6 @@ const SwitchWallet = ({
       .map((wallet) => {
         const select = () => {
           connect(name)
-          clearStoredPassword()
           onSwitch && onSwitch()
           navigate("/")
         }

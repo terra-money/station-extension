@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
 import { Form } from "components/form"
@@ -11,34 +11,60 @@ import {
   SubmitButton,
   Flex,
   Button,
+  Checkbox,
 } from "station-ui"
 import styles from "./CreateWalletForm.module.scss"
-import { isPasswordValid, passwordExists } from "auth/scripts/keystore"
+import {
+  getStoredPassword,
+  isPasswordValid,
+  passwordExists,
+  setShouldStorePassword,
+  shouldStorePassword,
+  storePassword,
+} from "auth/scripts/keystore"
 
 interface Values {
   password: string
   confirm: string
+  rememberPassword: boolean
 }
 
 const PasswordForm = () => {
   const { t } = useTranslation()
   const { values, createWallet, setStep } = useCreateWallet()
+  // loading while checking if there is a stored password
+  const [isLoading, setLoading] = useState(true)
+
+  // check if there is a stored password
+  useEffect(() => {
+    getStoredPassword().then((password) => {
+      if (password) {
+        createWallet(password)
+      } else {
+        setLoading(false)
+      }
+    })
+  }, []) // eslint-disable-line
 
   /* form */
   const form = useForm<Values>({
     mode: "onChange",
-    defaultValues: { ...values, confirm: "" },
+    defaultValues: {
+      ...values,
+      confirm: "",
+      rememberPassword: shouldStorePassword(),
+    },
   })
 
   const { register, watch, handleSubmit, formState, reset, setError } = form
   const { errors, isValid } = formState
-  const { password } = watch()
+  const { password, rememberPassword } = watch()
 
   useEffect(() => {
     return () => reset()
   }, [reset])
 
-  const submit = ({ password }: Values) => {
+  const submit = ({ password, rememberPassword }: Values) => {
     if (passwordExists() && !isPasswordValid(password)) {
       setError(
         "password",
@@ -47,8 +73,19 @@ const PasswordForm = () => {
       )
       return
     }
+
+    if (rememberPassword) {
+      setShouldStorePassword(true)
+      storePassword(password)
+    } else {
+      setShouldStorePassword(false)
+    }
+
     createWallet(password)
   }
+
+  // don't show the form while checking for stored passwords
+  if (isLoading) return null
 
   return (
     <Form onSubmit={handleSubmit(submit)} className={styles.form}>
@@ -76,6 +113,14 @@ const PasswordForm = () => {
             />
           </InputWrapper>
         )}
+
+        <InputWrapper>
+          <Checkbox
+            label={t("Don't ask for password again")}
+            checked={rememberPassword}
+            {...register("rememberPassword")}
+          />
+        </InputWrapper>
         <Flex gap={12} style={{ marginTop: 22 }}>
           <Button variant="secondary" onClick={() => setStep(2)} block>
             {t("Back")}
