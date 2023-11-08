@@ -1,12 +1,11 @@
+import { LoadingCircular, SectionHeader, SubmitButton } from "station-ui"
 import { useInitialAccountInfo } from "data/queries/accountInfo"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { LoadingCircular, SectionHeader } from "station-ui"
 import styles from "./ActivityList.module.scss"
-import { Card, Page } from "components/layout"
-import { Empty } from "components/feedback"
 import ActivityItem from "./ActivityItem"
-import moment from "moment"
+import { Page } from "components/layout"
 import React, { useState } from "react"
+import moment from "moment"
 
 const ActivityList = () => {
   const addresses = useInterchainAddresses()
@@ -14,17 +13,9 @@ const ActivityList = () => {
 
   const activityItemsPerPage = 20
   const [visibleActivity, setVisibleActivity] = useState(activityItemsPerPage)
-  const moreToShow = activity.length > activityItemsPerPage
-  const [hasMoreActivity, setHasMoreActivity] = useState(moreToShow)
 
-  const handleClick = () => {
-    setVisibleActivity((prevVisibleActivity) => {
-      const updatedActivityLength = prevVisibleActivity + 20
-      if (updatedActivityLength >= activity.length) {
-        setHasMoreActivity(false)
-      }
-      return prevVisibleActivity + 20
-    })
+  const handleClick = async () => {
+    await setVisibleActivity((prevVisibleActivity) => prevVisibleActivity + 20)
   }
 
   let priorDisplayDate = ""
@@ -48,19 +39,21 @@ const ActivityList = () => {
     })
 
   const allActivityDisplayed = visibleActivityItems.length === activity.length
-  const seeMoreButton = !allActivityDisplayed ? (
-    <button onClick={handleClick} className={styles.seemore}>
-      See more
-    </button>
+  const loadMoreButton = !allActivityDisplayed ? (
+    <SubmitButton
+      onClick={handleClick}
+      variant={"secondary"}
+      label={"Load More"}
+    />
   ) : null
 
   const render = () => {
     if (addresses && !activity) return null
 
     return !activity?.length ? (
-      <Card>
-        <Empty />
-      </Card>
+      <div className={styles.loader}>
+        <LoadingCircular size={40} />
+      </div>
     ) : (
       <div className={styles.activitylist}>
         {state.isLoading ? (
@@ -69,11 +62,7 @@ const ActivityList = () => {
           </span>
         ) : null}
         {visibleActivityItems}
-        {hasMoreActivity ? (
-          seeMoreButton
-        ) : (
-          <LoadingCircular size={36} thickness={2} />
-        )}
+        {loadMoreButton}
       </div>
     )
   }

@@ -33,23 +33,25 @@ const ActivityDetailsPage = ({ ...props }) => {
   return (
     <div className={styles.txcontainer}>
       <div className={styles.activityitem}>
-        <ActivityListItem
-          variant={variant}
-          chain={{
-            icon: chain.icon,
-            label: chain.name,
-          }}
-          msg={msg}
-          type={type}
-          time={toNow(new Date(time))}
+        <Timeline
+          startOverride={
+            <ActivityListItem
+              variant={variant}
+              chain={{
+                icon: chain.icon,
+                label: chain.name,
+              }}
+              msg={msg}
+              type={type}
+              time={toNow(new Date(time))}
+              msgCount={timelineDisplayMessages.length}
+              hasTimeline={timelineDisplayMessages.length ? true : false}
+            />
+          }
+          middleItems={timelineDisplayMessages}
         />
       </div>
-      {timelineMessages.length > 0 ? (
-        <React.Fragment>
-          <SectionHeader title={t("Timeline")} withLine />
-          <Timeline middleItems={timelineDisplayMessages} />
-        </React.Fragment>
-      ) : null}
+
       <SectionHeader title={t("Details")} withLine />
       <SummaryColumn
         title={t("Transaction Hash")}

@@ -7,10 +7,11 @@
   padding-inline: 15px;
 }
 
-.seemore {
+.loader {
   color: #065bed;
-  margin: auto;
-  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 100px;
 }
 
 .loadingtext {

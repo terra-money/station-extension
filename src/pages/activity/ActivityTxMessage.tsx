@@ -2,11 +2,10 @@ import { AccAddress, Coin, Coins, ValAddress } from "@terra-money/feather.js"
 import { useCW20Contracts, useCW20Whitelist } from "data/Terra/TerraAssets"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { isDenom, truncate } from "@terra-money/terra-utils"
+import { Fragment, ReactNode, useMemo } from "react"
 import { useAddress, useNetwork } from "data/wallet"
 import { getChainIDFromAddress } from "utils/bech32"
-import { Fragment, ReactNode, useMemo } from "react"
 import { useValidators } from "data/queries/staking"
-import { FinderLink } from "components/general"
 import { useProposal } from "data/queries/gov"
 import { WithTokenItem } from "data/token"
 import { Read } from "components/token"
@@ -19,11 +18,7 @@ const ValidatorAddress = ({ children: address }: { children: string }) => {
     ({ operator_address }) => operator_address === address
   )?.description.moniker
 
-  return (
-    <FinderLink value={address} short={!moniker} validator>
-      {moniker ?? address}
-    </FinderLink>
-  )
+  return <span>{moniker ?? address}</span>
 }
 
 const Address = ({ children: address }: { children: string }) => {
@@ -56,28 +51,27 @@ const Address = ({ children: address }: { children: string }) => {
     // eslint-disable-next-line
   }, [address, networks, contracts, tokens])
 
-  return <FinderLink value={address}>{name ?? truncate(address)}</FinderLink>
+  return <span>{name ?? truncate(address)}</span>
 }
 
 const Tokens = ({ children: coins }: { children: string }) => {
   const list = new Coins(coins).toArray()
 
-  return (
-    <>
-      {list.length > 1
-        ? "multiple tokens" // Do not translate this
-        : list.map((coin) => {
-            const data = coin.toData()
-            const { denom } = data
+  const tokenWords =
+    list.length > 1
+      ? "multiple tokens" // Do not translate this
+      : list.map((coin) => {
+          let data = coin.toData()
+          const { denom } = data
 
-            return (
-              <WithTokenItem token={data.denom} key={denom}>
-                {({ decimals }) => <Read {...data} decimals={decimals} />}
-              </WithTokenItem>
-            )
-          })}
-    </>
-  )
+          return (
+            <WithTokenItem token={denom} key={denom}>
+              {({ decimals }) => <Read {...data} decimals={decimals} />}
+            </WithTokenItem>
+          )
+        })
+
+  return <span>{tokenWords}</span>
 }
 
 interface ProposalProps {
@@ -94,12 +88,7 @@ const Proposal = (props: ProposalProps) => {
     ? proposal.content.title
     : `Proposal ID ${proposalID}`
 
-  const link =
-    chainID && proposalID
-      ? `https://station.terra.money/proposal/${chainID}/${proposalID}`
-      : "https://station.terra.money/gov"
-
-  return <FinderLink link={link}>{proposalName}</FinderLink>
+  return <span>{proposalName}</span>
 }
 
 interface Props {
@@ -123,9 +112,7 @@ const ActivityTxMessage = ({
     const voteTypes = ["Yes", "No", "No With Veto", "Abstain"]
 
     return validateTokens(word) ? (
-      <span>
-        <Tokens>{word}</Tokens>
-      </span>
+      <Tokens>{word}</Tokens>
     ) : /^proposal:(\d+)/.exec(word)?.[1] ? (
       <Proposal
         proposalID={parseInt(/^proposal:(\d+)$/.exec(word)?.[1] || "")}
