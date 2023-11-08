@@ -1,4 +1,3 @@
-import { FormError } from "components/form"
 import { useBankBalance, useIsWalletEmpty } from "data/queries/bank"
 import { useNativeDenoms } from "data/token"
 import { useMemo, useState } from "react"
