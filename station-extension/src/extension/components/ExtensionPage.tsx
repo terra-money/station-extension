@@ -7,7 +7,6 @@ import { ReactComponent as CloseIcon } from "styles/images/icons/Close.svg"
 import Container from "../layouts/Container"
 import { Card } from "components/layout"
 import classNames from "classnames"
-import { openURL } from "extension/storage"
 import ExtensionFooter from "./ExtensionFooter"
 import { useNavigate } from "react-router-dom"
 
