@@ -1,14 +1,3 @@
-// 1. build proto interface for swap and assets
-// 2. create interface for swap state
-//    2a. fed to route
-//    2b. squid route input params
-//    2c. skip route input params
-// 3. create interface for assets
-//  3a. what squid gives
-//  3b. what skip gives
-// 4. handle route selection
-// 5. handle route/swap execution
-
 export interface SkipTokenResponse {
   denom: string
   chain_id: string
@@ -58,4 +47,16 @@ export interface SwapAssetExtra extends SwapAssetBase {
     name: string
     icon: string
   }
+}
+
+export type SwapVenue = "osmosis-poolmanager"
+export type SwapOperation = "swap" | "transfer"
+
+export interface RouteInfo {
+  amountIn: string
+  amountOut: string
+  txsRequired: number
+  swapVenue: SwapVenue
+  operations: SwapOperation[]
+  source: SupportedSource
 }
