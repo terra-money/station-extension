@@ -55,7 +55,7 @@ export const SQUID_SWAP_API = {
 export const SKIP_SWAP_API = {
   baseUrl: "https://api.skip.money/v1",
   routes: {
-    chains: "/info/chains",
+    route: "/fungible/route",
     tokens: "/fungible/assets",
   },
 }

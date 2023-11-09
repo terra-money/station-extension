@@ -47,12 +47,12 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
       <WithSearchInput gap={8} small label={t("Search tokens...")}>
         {(input) => (
           <div
-          //   style={{
-          //     width: "100%",
-          //     display: "flex",
-          //     gap: 20,
-          //     flexDirection: "column",
-          //   }}
+            style={{
+              width: "100%",
+              display: "flex",
+              gap: 20,
+              flexDirection: "column",
+            }}
           >
             {tokens
               .filter((t) => {

@@ -5,20 +5,23 @@ import {
   SwapSource,
   SwapAssetBase,
   SwapAssetExtra,
+  SwapState,
+  RouteInfo,
 } from "./types"
-import { querySkipTokens } from "./skip"
-import { querySquidTokens } from "./squid"
+import { skipApi } from "./skip"
+import { squidApi } from "./squid"
 import { useBankBalance } from "../bank"
 import { useExchangeRates } from "../coingecko"
+import { useCallback } from "react"
 
+// Tokens
 const queryMap = {
-  [SwapSource.SKIP]: querySkipTokens, // queries should return SwapAsset[]
-  [SwapSource.SQUID]: querySquidTokens,
+  [SwapSource.SKIP]: skipApi.queryTokens, // queries should return SwapAsset[]
+  [SwapSource.SQUID]: squidApi.queryTokens,
 }
 
-export const useSwapTokens = (selectedSources?: SupportedSource[]) => {
-  const querySources =
-    selectedSources ?? (Object.keys(queryMap) as SupportedSource[])
+export const useSwapTokens = (sources?: SupportedSource[]) => {
+  const querySources = sources ?? (Object.keys(queryMap) as SupportedSource[])
 
   return useQueries(
     querySources.map((source) => ({
@@ -53,4 +56,42 @@ export const useParseSwapTokens = (tokens: SwapAssetBase[]) => {
         },
       } as SwapAssetExtra
     })
+}
+
+// Routing
+const routeMap = {
+  [SwapSource.SKIP]: (swap: SwapState) => skipApi.queryRoute(swap),
+  [SwapSource.SQUID]: (swap: SwapState) => {},
+}
+export const useGetBestRoute = (sources?: SupportedSource[]) => {
+  const routeSources = sources ?? (Object.keys(routeMap) as SupportedSource[])
+
+  const getBestRoute = useCallback(
+    async (swap: SwapState) => {
+      const routePromises = routeSources.map(async (source) => {
+        try {
+          return await routeMap[source]?.(swap)
+        } catch (error) {
+          console.error(`Error getting route from ${source}:`, error)
+          return null // Return null in case of error to not break Promise.all
+        }
+      })
+
+      const results = await Promise.all(routePromises)
+      const routes = results.filter(
+        (result): result is RouteInfo => result !== null
+      )
+
+      if (routes.length === 0) {
+        throw new Error("No routes available for this swap.")
+      }
+      const bestRoute = routes.sort(
+        (a, b) => Number(b.amountOut) - Number(a.amountOut)
+      )[0]
+      return bestRoute
+    },
+    [routeSources]
+  )
+
+  return getBestRoute
 }
