@@ -8,7 +8,7 @@ import { FlexColumn } from "components/layout"
 import Overlay from "app/components/Overlay"
 import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
 import { isWallet, useAuth } from "auth"
-import { getOpenURL, getStoredPassword } from "../storage"
+import { getOpenURL } from "../storage"
 import { getIsDangerousTx, SignBytesRequest, TxRequest } from "../utils"
 import { useRequest } from "../RequestContainer"
 import ExtensionPage from "../components/ExtensionPage"
@@ -25,12 +25,19 @@ import {
   Banner,
   Button,
   ButtonInlineWrapper,
+  Checkbox,
   Form,
   Input,
   InputWrapper,
   SubmitButton,
 } from "station-ui"
 import styles from "./ConfirmTx.module.scss"
+import {
+  getStoredPassword,
+  setShouldStorePassword,
+  shouldStorePassword,
+  storePassword,
+} from "auth/scripts/keystore"
 
 interface Values {
   password: string
@@ -58,13 +65,11 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const { password } = watch()
 
   /* store password */
-  const [storePassword, setStorePassword] = useState(false)
-  const nextPassword = storePassword ? password : ""
+  const [rememberPassword, setStorePassword] = useState(shouldStorePassword())
 
   useEffect(() => {
-    getStoredPassword((password) => {
-      setValue("password", password)
-      setStorePassword(!!password)
+    getStoredPassword().then((password) => {
+      setValue("password", password ?? "")
     })
   }, [setValue])
 
@@ -144,6 +149,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const toPostMultisigTx = useToPostMultisigTx()
   const submit = async ({ password }: Values) => {
     setSubmitting(true)
+    let failed = false
 
     if ("tx" in props) {
       const { requestType, tx, signMode } = props
@@ -162,15 +168,16 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
         } else {
           const result = await auth[requestType](txOptions, password, signMode)
           const response = { result, success: true }
-          actions.tx(requestType, props, response, nextPassword)
+          actions.tx(requestType, props, response)
         }
       } catch (error) {
         if (error instanceof Error) {
+          failed = true
           setIncorrect(error.message)
         } else {
           const message = getErrorMessage(error)
           const response = { success: false, error: { code: 3, message } }
-          actions.tx(requestType, props, response, nextPassword)
+          actions.tx(requestType, props, response)
         }
       }
     } else {
@@ -181,15 +188,25 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
         if (disabled) throw new Error(disabled)
         const result = await auth.signBytes(bytes, password)
         const response = { result, success: true }
-        actions.tx(requestType, props, response, nextPassword)
+        actions.tx(requestType, props, response)
       } catch (error) {
         if (error instanceof Error) {
+          failed = true
           setIncorrect(error.message)
         } else {
           const message = getErrorMessage(error)
           const response = { success: false, error: { code: 3, message } }
-          actions.tx(requestType, props, response, nextPassword)
+          actions.tx(requestType, props, response)
         }
+      }
+    }
+
+    if (passwordRequired && !failed) {
+      if (rememberPassword) {
+        setShouldStorePassword(true)
+        storePassword(password)
+      } else {
+        setShouldStorePassword(false)
       }
     }
 
@@ -200,7 +217,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
     const { requestType } = props
     const message = t("User denied")
     const response = { success: false, error: { code: 1, message } }
-    actions.tx(requestType, props, response, nextPassword)
+    actions.tx(requestType, props, response)
   }
 
   const warning = {
@@ -253,9 +270,17 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
 
           <Form onSubmit={handleSubmit(submit)}>
             {passwordRequired && (
-              <InputWrapper label={t("Password")} error={incorrect}>
-                <Input type="password" {...register("password")} autoFocus />
-              </InputWrapper>
+              <>
+                <InputWrapper label={t("Password")} error={incorrect}>
+                  <Input type="password" {...register("password")} autoFocus />
+                </InputWrapper>
+
+                <Checkbox
+                  checked={rememberPassword}
+                  onChange={() => setStorePassword(!rememberPassword)}
+                  label={t("Save password")}
+                />
+              </>
             )}
             <ButtonInlineWrapper>
               <Button variant="secondary" onClick={deny} label={t("Reject")} />

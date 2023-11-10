@@ -7,9 +7,10 @@ import { useSettingsRoutes } from "./routes"
 import { useNavigate } from "react-router-dom"
 
 export interface SettingsPage {
-  route: string
+  route?: string
+  onClick?: () => void
   title: string
-  element: ReactElement
+  element?: ReactElement
   value?: string
   icon?: ReactElement
 }
@@ -26,12 +27,12 @@ const PreferencesPage = () => {
     settings: Record<string, SettingsPage>
   }) => (
     <FlexColumn gap={6}>
-      {Object.values(settings).map(({ title, route, ...rest }) => (
+      {Object.values(settings).map(({ title, route, onClick, ...rest }) => (
         <NavButton
           label={title}
           key={route}
           {...rest}
-          onClick={() => navigate(`/preferences/${route}`)}
+          onClick={route ? () => navigate(`/preferences/${route}`) : onClick}
         />
       ))}
     </FlexColumn>
@@ -43,7 +44,11 @@ const PreferencesPage = () => {
         <NavButton
           {...routes.network}
           label={t(routes.network.title)}
-          onClick={() => navigate(`/preferences/${routes.network.route}`)}
+          onClick={
+            routes.network.route
+              ? () => navigate(`/preferences/${routes.network.route}`)
+              : routes.network.onClick
+          }
         />
       )}
       <SectionHeader withLine />

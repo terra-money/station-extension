@@ -28,6 +28,7 @@ interface SingleWallet {
     "60"?: string
   }
   name: string
+  icon?: string
   lock?: boolean
 }
 interface LedgerWallet {
@@ -43,6 +44,7 @@ interface LedgerWallet {
   ledger: true
   index: number
   bluetooth: boolean
+  icon?: string
   lock?: boolean
 }
 
@@ -85,4 +87,5 @@ interface PreconfiguredWallet extends SingleWallet {
 // super old legacy wallet
 interface StoredWalletLegacy extends LegacySingleWallet {
   wallet: string
+  icon?: string
 }

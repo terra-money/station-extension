@@ -149,7 +149,6 @@ export const queryAccounts = async (address: string, lcd: string) => {
     [path, address].join("/"),
     { baseURL: lcd }
   )
-
   return data.account
 }
 
@@ -159,7 +158,7 @@ export const useAccount = () => {
   const chainID = useChainID()
   const lcd = useInterchainLCDClient()
 
-  return useQuery(["accounts", address], async () => {
+  return useQuery(["accounts", chainID, address], async () => {
     if (!address) return null
     return await queryAccounts(address, lcd.config[chainID].lcd)
   })

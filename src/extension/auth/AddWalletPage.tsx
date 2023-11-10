@@ -10,7 +10,7 @@ export default function AddWalletPage() {
       title={t("Add wallet")}
       fullHeight
       modal
-      backButtonPath="/wallet/select"
+      backButtonPath="/manage-wallet/select"
     >
       <AddWallet />
     </ExtensionPage>

@@ -1,8 +1,6 @@
 @import "mixins";
 
 .assetlist {
-  background-color: var(--card-bg-muted);
-  padding-inline: 10px;
   display: grid;
   grid-template-areas: "title" "list";
   grid-template-rows: min-content auto;
@@ -22,5 +20,8 @@
 }
 
 .filter {
-  fill: var(--token-dark-500);
+  cursor: pointer;
+  &.inactive {
+    color: var(--token-light-100);
+  }
 }

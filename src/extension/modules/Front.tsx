@@ -7,7 +7,7 @@ import { useRequest } from "../RequestContainer"
 import ConfirmConnect from "./ConfirmConnect"
 import ConfirmTx from "./ConfirmTx"
 import Welcome from "./Welcome"
-import Wallet from "pages/wallet/Wallet"
+import WalletRouter from "pages/wallet/WalletRouter"
 import ConfirmNewChain from "./ConfirmNewChain"
 import ConfirmSwitchNetwork from "./ConfirmSwitchNetwork"
 //import { MsgSend } from "@terra-money/feather.js"
@@ -84,7 +84,7 @@ const Front = () => {
     return <ConfirmSwitchNetwork {...network} />
   }
 
-  return <Wallet />
+  return <WalletRouter />
 }
 
 export default Front
