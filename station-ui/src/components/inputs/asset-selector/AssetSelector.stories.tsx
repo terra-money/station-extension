@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import AssetSelectorFrom, { AssetSelectorFromProps } from './AssetSelectorFrom';
 import AssetSelectorTo from './AssetSelectorTo';
-import { ReactComponent as WalletIcon } from 'assets/icon/Wallet16.svg';
+import { ReactComponent as WalletIcon } from 'assets/icon/Wallet.svg';
 import { walletBalance, tokensBySymbol, tokenPrices } from './fakedata';
 import { useState } from 'react';
 import { useForm } from "react-hook-form";

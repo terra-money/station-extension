@@ -17,7 +17,7 @@ export default function SelectWalletsPage() {
       <FlexColumn gap={24} className={styles.select__wallet__container}>
         <NavButton
           label={t("Add Wallet")}
-          onClick={() => navigate("/wallet/add")}
+          onClick={() => navigate("/manage-wallet/add")}
         />
         <WalletList
           activeWallet={{
@@ -27,7 +27,7 @@ export default function SelectWalletsPage() {
               [11, 6]
             ),
             settingsOnClick: () =>
-              navigate(`/wallet/manage/${connectedWallet?.name ?? ""}`),
+              navigate(`/manage-wallet/manage/${connectedWallet?.name ?? ""}`),
           }}
           otherWallets={wallets
             .filter(({ name }) => name !== connectedWallet?.name)
@@ -44,7 +44,7 @@ export default function SelectWalletsPage() {
                 navigate("/")
               },
               settingsOnClick: () =>
-                navigate(`/wallet/manage/${wallet?.name ?? ""}`),
+                navigate(`/manage-wallet/manage/${wallet?.name ?? ""}`),
             }))}
         />
       </FlexColumn>

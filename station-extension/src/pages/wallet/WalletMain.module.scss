@@ -1,0 +1,15 @@
+.wallet__page {
+  margin: 0 auto;
+  max-width: var(--extension-width);
+  background-color: var(--token-dark-300);
+  min-height: calc(100vh - var(--header-height));
+
+  .tabs__container {
+    background-color: var(--token-dark-500);
+  }
+
+  .list__container {
+    padding: 0 24px;
+    height: 100%;
+  }
+}
