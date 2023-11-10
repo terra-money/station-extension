@@ -9,6 +9,7 @@ export interface SummaryColumnProps {
   title: string
   extra?: ReactNode
   description: string
+  noWordBreak?: boolean
 }
 
 const SummaryColumn = ({
@@ -16,6 +17,7 @@ const SummaryColumn = ({
   title,
   extra,
   description,
+  noWordBreak,
 }: SummaryColumnProps) => {
   return (
     <div className={cx(styles.summary__column__container, className)}>
@@ -23,7 +25,7 @@ const SummaryColumn = ({
         <h3 className={styles.title}>{title}</h3>
         <div className={styles.extra}>{extra}</div>
       </div>
-      <div className={styles.description}>
+      <div className={cx(styles.description, { noWordBreak })}>
         {description}
       </div>
     </div>

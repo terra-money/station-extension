@@ -4,9 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { getErrorMessage } from "utils/error"
 import { useThemeAnimation } from "data/settings/Theme"
-import { FlexColumn, Grid } from "components/layout"
-import { Form, FormError, FormItem, FormWarning } from "components/form"
-import { Input, Checkbox } from "components/form"
+import { FlexColumn } from "components/layout"
 import Overlay from "app/components/Overlay"
 import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
 import { isWallet, useAuth } from "auth"
@@ -14,7 +12,6 @@ import { getOpenURL } from "../storage"
 import { getIsDangerousTx, SignBytesRequest, TxRequest } from "../utils"
 import { useRequest } from "../RequestContainer"
 import ExtensionPage from "../components/ExtensionPage"
-import ConfirmButtons from "../components/ConfirmButtons"
 import TxDetails from "./TxDetails"
 import OriginCard from "extension/components/OriginCard"
 import { RefetchOptions, queryKey } from "data/query"
@@ -24,6 +21,17 @@ import { useChainID, useNetwork } from "data/wallet"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { Fee } from "@terra-money/feather.js"
 import SignBytesDetails from "./SignBytesDetails"
+import {
+  Banner,
+  Button,
+  ButtonInlineWrapper,
+  Checkbox,
+  Form,
+  Input,
+  InputWrapper,
+  SubmitButton,
+} from "station-ui"
+import styles from "./ConfirmTx.module.scss"
 import {
   getStoredPassword,
   setShouldStorePassword,
@@ -247,38 +255,40 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
       </FlexColumn>
     </Overlay>
   ) : (
-    <ExtensionPage header={<OriginCard hostname={props.origin} />}>
-      <Grid gap={20}>
-        {"tx" in props && <TxDetails {...props} tx={{ ...props.tx, fee }} />}
-        {"bytes" in props && <SignBytesDetails {...props} />}
+    <ExtensionPage>
+      <article className={styles.container}>
+        <div>
+          <OriginCard hostname={props.origin} />
 
-        {warning && <FormWarning>{warning}</FormWarning>}
-        {error && <FormError>{error}</FormError>}
+          {"tx" in props && <TxDetails {...props} tx={{ ...props.tx, fee }} />}
+          {"bytes" in props && <SignBytesDetails {...props} />}
+        </div>
 
-        <Form onSubmit={handleSubmit(submit)}>
-          {passwordRequired && (
-            <Grid gap={4}>
-              <FormItem label={t("Password")} error={incorrect}>
-                <Input type="password" {...register("password")} autoFocus />
-              </FormItem>
+        <FlexColumn gap={24} className={styles.buttons__container}>
+          {warning && <Banner variant="warning" title={warning} />}
+          {error && <Banner variant="error" title={error} />}
 
-              <Checkbox
-                checked={rememberPassword}
-                onChange={() => setStorePassword(!rememberPassword)}
-              >
-                {t("Save password")}
-              </Checkbox>
-            </Grid>
-          )}
+          <Form onSubmit={handleSubmit(submit)}>
+            {passwordRequired && (
+              <>
+                <InputWrapper label={t("Password")} error={incorrect}>
+                  <Input type="password" {...register("password")} autoFocus />
+                </InputWrapper>
 
-          <ConfirmButtons
-            buttons={[
-              { onClick: deny, children: t("Deny") },
-              { type: "submit", children: label },
-            ]}
-          />
-        </Form>
-      </Grid>
+                <Checkbox
+                  checked={rememberPassword}
+                  onChange={() => setStorePassword(!rememberPassword)}
+                  label={t("Save password")}
+                />
+              </>
+            )}
+            <ButtonInlineWrapper>
+              <Button variant="secondary" onClick={deny} label={t("Reject")} />
+              <SubmitButton variant="primary" label={label} />
+            </ButtonInlineWrapper>
+          </Form>
+        </FlexColumn>
+      </article>
     </ExtensionPage>
   )
 }
