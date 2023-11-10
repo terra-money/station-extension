@@ -1,15 +1,12 @@
-import { Fragment } from "react"
 import { useTranslation } from "react-i18next"
-import { Card, Grid } from "components/layout"
-import { Dl, ToNow } from "components/display"
+import { Grid } from "components/layout"
+import { ToNow } from "components/display"
 import { SignBytesRequest } from "../utils"
-import styles from "./SignBytesDetails.module.scss"
 import { isJSON } from "utils/json"
 import { capitalize } from "@mui/material"
 import { FinderLink } from "components/general"
 import { AccAddress } from "@terra-money/feather.js"
-import { Input, InputWrapper, SummaryTable, TextArea } from "station-ui"
-import { Value } from "components/form"
+import { InputWrapper, SummaryTable, TextArea } from "station-ui"
 import { truncate } from "@terra-money/terra-utils"
 
 const SignBytesDetails = ({ origin, timestamp, bytes }: SignBytesRequest) => {
