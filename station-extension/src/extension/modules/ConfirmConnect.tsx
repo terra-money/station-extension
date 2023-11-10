@@ -1,12 +1,9 @@
 import { useTranslation } from "react-i18next"
-import { Grid } from "components/layout"
 import { ConnectRequest } from "../utils"
-import ConfirmButtons from "../components/ConfirmButtons"
 import { useRequest } from "../RequestContainer"
 import styles from "./ConfirmConnect.module.scss"
 import ExtensionPage from "extension/components/ExtensionPage"
 import OriginCard from "extension/components/OriginCard"
-import BottomCard from "extension/components/BottomCard"
 import { Button, ButtonInlineWrapper, SummaryColumn } from "station-ui"
 
 const ConfirmConnect = ({ origin }: ConnectRequest) => {
@@ -21,6 +18,7 @@ const ConfirmConnect = ({ origin }: ConnectRequest) => {
           <OriginCard hostname={hostname} />
           <SummaryColumn
             title={t("App Connect")}
+            noWordBreak
             description={t(
               "{{website}} is requesting to connect to your wallet",
               {
