@@ -48,6 +48,12 @@ export const useGammTokens = () => {
           throw new Error("Invalid API response format")
         }
 
+        for (const key in data) {
+          if (!Array.isArray(data[key])) {
+            throw new Error("Invalid API response format: Expected asset array")
+          }
+        }
+
         return data
       } catch (error) {
         console.error(error)
@@ -64,13 +70,12 @@ export const useGammTokens = () => {
   const gammTokens = new Map<string, string>()
 
   if (fetch.data) {
-    for (const [poolId, poolAsset] of Object.entries(fetch.data) ?? {}) {
+    for (const [poolId, poolAsset] of Object.entries(fetch.data)) {
       gammTokens.set(
         "gamm/pool/" + poolId,
         poolAsset.map((asset) => asset.symbol).join("-") + " LP"
       )
     }
   }
-
   return gammTokens
 }
