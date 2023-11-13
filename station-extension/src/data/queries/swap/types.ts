@@ -21,7 +21,7 @@ export type SupportedSource = SwapSource.SKIP | SwapSource.SQUID
 
 export interface SwapState {
   offerAsset: SwapAssetExtra
-  offerAmount: number
+  offerAmount: string
   askAsset: SwapAssetExtra
   fromAddress: string // get this from wallet
 }
@@ -40,7 +40,7 @@ export interface SwapAssetBase {
 }
 
 export interface SwapAssetExtra extends SwapAssetBase {
-  balance: number
+  balance: string
   value: number
   price: number
   chain: {

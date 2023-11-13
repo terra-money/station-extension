@@ -86,7 +86,7 @@ const App = () => {
     { path: "/preferences/*", element: <PreferencesRouter /> },
 
     /* default txs */
-    { path: "/swap", element: <SwapTx /> },
+    { path: "/swap/*", element: <SwapTx /> },
     { path: "/multisig/sign", element: <SignMultisigTxPage /> },
     { path: "/multisig/post", element: <PostMultisigTxPage /> },
 
