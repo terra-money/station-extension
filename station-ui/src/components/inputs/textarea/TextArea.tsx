@@ -30,11 +30,11 @@ const TextArea = forwardRef(
 
     return (
       <textarea
-        {...attrs}
-        className={cx(styles.textarea, className)}
         rows={4}
+        className={cx(styles.textarea, className)}
         ref={ref}
         value={displayValue}
+        {...attrs}
       />
     )
   },
