@@ -10,7 +10,10 @@ import { addressFromWords } from "utils/bech32"
 import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
 import { ReactComponent as UsbIcon } from "styles/images/icons/Usb.svg"
 import { ReactComponent as WalletIcon } from "styles/images/icons/Wallet.svg"
-import { getStoredLegacyWallets } from "auth/scripts/keystore"
+import {
+  getStoredLegacyWallets,
+  isMigrationCompleted,
+} from "auth/scripts/keystore"
 
 const Welcome = () => {
   const { t } = useTranslation()
@@ -18,6 +21,7 @@ const Welcome = () => {
   const { wallets, connect } = useAuth()
   const existsWallets = wallets.length > 0
   const existsLegacyWallets = getStoredLegacyWallets().length > 0
+  const migrationCompleted = isMigrationCompleted()
 
   return (
     <ExtensionPage
@@ -54,7 +58,7 @@ const Welcome = () => {
           </section>
         )}
         <section className={styles.connect__options}>
-          {!existsWallets && existsLegacyWallets ? (
+          {!existsWallets && existsLegacyWallets && !migrationCompleted ? (
             <Button
               onClick={() => openURL("/auth/migration")}
               variant="white-filled"
@@ -86,6 +90,15 @@ const Welcome = () => {
                 icon={<UsbIcon />}
                 label={t("Connect Ledger wallet")}
               />
+              {existsLegacyWallets && (
+                <Button
+                  onClick={() => openURL("/auth/migration")}
+                  variant="outlined"
+                  block
+                  icon={<WalletIcon />}
+                  label={t("Finish wallets migration")}
+                />
+              )}
             </>
           )}
         </section>
