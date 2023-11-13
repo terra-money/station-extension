@@ -77,7 +77,7 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
   console.log(SAMPLE_ENCODED_TX)
 
   return (
-    <ReadTx tx={tx.trim()}>
+    <>
       <Form onSubmit={handleSubmit(submit)}>
         <InputWrapper label={t("Multisig Address")}>
           <Input
@@ -95,6 +95,7 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
             rows={6}
           />
         </InputWrapper>
+        <ReadTx tx={tx.trim()} />
         {passwordRequired && (
           <InputWrapper label={t("Password")} error={incorrect}>
             <Input
@@ -124,7 +125,7 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
           </Pre>
         </Modal>
       )}
-    </ReadTx>
+    </>
   )
 }
 

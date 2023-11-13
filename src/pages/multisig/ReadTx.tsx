@@ -1,13 +1,10 @@
-import { PropsWithChildren } from "react"
-import { useTranslation } from "react-i18next"
-import { useInterchainLCDClient } from "data/queries/lcdClient"
-import { Auto } from "components/layout"
-import { Wrong } from "components/feedback"
-import { ReadMultiple } from "components/token"
 import { SectionHeader, InputWrapper, TextArea, SummaryTable } from "station-ui"
+import { useInterchainLCDClient } from "data/queries/lcdClient"
+import { ReadMultiple } from "components/token"
+import { useTranslation } from "react-i18next"
+import { Wrong } from "components/feedback"
 
-const ReadTx = (props: PropsWithChildren<{ tx: string }>) => {
-  const { tx: encoded, children } = props
+const ReadTx = ({ tx: encoded }: { tx: string }) => {
   const { t } = useTranslation()
   const lcd = useInterchainLCDClient()
 
@@ -40,14 +37,12 @@ const ReadTx = (props: PropsWithChildren<{ tx: string }>) => {
             <TextArea readOnly={true} value={message.toJSON()} key={index} />
           ))}
         </InputWrapper>
-        <InputWrapper label={t("Message")}>
-          <SummaryTable rows={txDetails.filter((detail) => !!detail.value)} />
-        </InputWrapper>
+        <SummaryTable rows={txDetails.filter((detail) => !!detail.value)} />
       </>
     )
   }
 
-  return <Auto columns={[<>{children}</>, encoded ? render() : <></>]} />
+  return <>{encoded ? render() : null}</>
 }
 
 export default ReadTx
