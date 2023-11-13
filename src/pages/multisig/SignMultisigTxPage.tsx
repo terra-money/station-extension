@@ -25,21 +25,12 @@ const SignMultisigTxPage = () => {
     return <SignMultisigTxForm defaultValues={defaultValues} />
   }
 
-  const closeButton = (
-    <button
-      type="button"
-      onClick={() => {
-        navigate("/", { replace: true })
-      }}
-    >
-      <CloseIcon fontSize="inherit" />
-    </button>
-  )
-
   return (
     <Modal
       isOpen
-      closeIcon={closeButton}
+      onRequestClose={() => {
+        navigate("/", { replace: true })
+      }}
       backAction={() => {
         navigate("/", { replace: true })
       }}
