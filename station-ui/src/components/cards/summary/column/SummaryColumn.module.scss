@@ -23,4 +23,8 @@
     color: var(--token-light-100);
     word-break: break-all;
   }
+
+  .noWordBreak {
+    word-break: normal;
+  }
 }

@@ -1,8 +1,8 @@
 .component {
-  background-color: var(--warning);
-  color: white;
-  border-radius: 8px;
-  font-size: var(--font-size);
-  font-weight: var(--bold);
-  padding: 6px 12px;
+  background-color: var(--token-warning-500);
+  color: var(--token-dark-300);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 8px;
 }
