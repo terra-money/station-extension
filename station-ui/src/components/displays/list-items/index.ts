@@ -1,6 +1,8 @@
 export { default as ActivityListItem } from "./activity/ActivityListItem"
 export * from "./activity/ActivityListItem"
 
+export { default as SelectableListItem } from "./selectable/generic/SelectableListItem"
+export * from "./selectable/generic/SelectableListItem"
 export { default as AddressSelectableListItem } from "./selectable/address/AddressSelectableListItem"
 export * from "./selectable/address/AddressSelectableListItem"
 export { default as WalletSelectableListItem } from "./selectable/wallet/WalletSelectableListItem"

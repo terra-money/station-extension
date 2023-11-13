@@ -1,36 +1,58 @@
 import { useTranslation } from "react-i18next"
 import ExtensionPage from "../components/ExtensionPage"
 import { useState } from "react"
-import { getStoredLegacyWallets, passwordExists } from "auth/scripts/keystore"
+import {
+  connectWallet,
+  getStoredLegacyWallets,
+  getStoredWallets,
+  passwordExists,
+  setMigrationCompleted,
+  storeWallets,
+} from "auth/scripts/keystore"
 import PasswordForm from "./PasswordForm"
-import { NavButton } from "station-ui"
+import { SelectableListItem, Button, Grid } from "station-ui"
 import { FlexColumn } from "components/layout"
 
 import { ReactComponent as CheckIcon } from "styles/images/icons/Check.svg"
 import { ReactComponent as AlertIcon } from "styles/images/icons/Alert.svg"
-import MigrateWalletPage from "./MigrateWalletPage"
+import MigrateWalletPage, { MigratedWalletResult } from "./MigrateWalletPage"
+import { truncate } from "@terra-money/terra-utils"
+import { addressFromWords } from "utils/bech32"
+import { encrypt } from "auth/scripts/aes"
+import { useNavigate } from "react-router-dom"
 
 function needsMigration(w: any): boolean {
-  console.log(w.ledger && w.pubkey)
   // ledger wallets with pubkey do not need migration
   if (w.ledger && w.pubkey) return false
-  // TODO: add more edge cases
+  // multisig wallet do not need migratyion
+  if (w.multisig) return false
 
+  // TODO: add more edge cases
   return true
+}
+
+function isLegacyLedger(w: any): boolean {
+  // ledger wallets without pubkey cannot be migrated
+  if (w.ledger && !w.pubkey) return true
+
+  return false
 }
 
 const MigrationWizard = () => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   const [password, setPassword] = useState<string | undefined>()
   const [selectedWallet, setSelectedWallet] = useState<string | undefined>()
 
   const [legacyWallets, setLegacyWallets] = useState<any[]>(
-    getStoredLegacyWallets().filter((w) => needsMigration(w))
+    getStoredLegacyWallets().filter(
+      (w) => needsMigration(w) && !isLegacyLedger(w)
+    )
   )
-  const [migratedWallets, setMigratedWallets] = useState<any[]>(
-    getStoredLegacyWallets().filter((w) => !needsMigration(w))
-  )
+  const [migratedWallets, setMigratedWallets] = useState<
+    (MigratedWalletResult | ResultStoredWallet)[]
+  >(getStoredLegacyWallets().filter((w) => !needsMigration(w)))
 
   if (!password) {
     return (
@@ -65,6 +87,76 @@ const MigrationWizard = () => {
     )
   }
 
+  function completeMigration() {
+    if (!password) return
+
+    const currentWallets = getStoredWallets()
+
+    // MAKE SURE WALLET NAMES ARE UNIQUE
+    function fixWalletName(name: string): string {
+      if (currentWallets.find((w) => w.name === name)) {
+        // intentionally recursive, to make sure no wallet will have the same name
+        return fixWalletName(`${name} - (migrated)`)
+      } else {
+        return name
+      }
+    }
+
+    // store the new migrated wallets
+    storeWallets([
+      ...currentWallets,
+      ...migratedWallets.map((w) => {
+        if ("seed" in w) {
+          return {
+            name: fixWalletName(w.name),
+            encryptedSeed: encrypt(w.seed.toString("base64"), password),
+            words: w.words,
+            pubkey: w.pubkey,
+            legacy: w.legacy,
+            index: w.index,
+          }
+        } else if ("privatekey" in w) {
+          return {
+            name: fixWalletName(w.name),
+            encrypted: encrypt(w.privatekey.toString("base64"), password),
+            words: w.words,
+            pubkey: w.pubkey,
+          } as LegacyStoredWallet
+        } else {
+          return w as ResultStoredWallet
+        }
+      }),
+    ])
+
+    // non migrated wallets
+    const nonMigrated = JSON.parse(localStorage.getItem("keys") || "[]").filter(
+      ({ name }: { name: string }) =>
+        !migratedWallets.find((w) => w.name === name)
+    )
+    // delete migrated wallets from legacy storage, but keep non-migrated ones there
+    localStorage.setItem("keys", JSON.stringify(nonMigrated))
+
+    // mark migration as completed in local storage
+    setMigrationCompleted()
+
+    // cleanup sensitive data
+    setPassword(undefined)
+    setMigratedWallets([])
+
+    // if legacy active wallet is migrated, connect to it
+    const activeWallet =
+      JSON.parse(localStorage.getItem("user") ?? "{}")?.name ||
+      // otherwise, connect to the first migrated wallet
+      migratedWallets[0]?.name
+
+    // if we have a wallet to connect to (we will not if the user has choose to migrate no wallet), connect to it
+    activeWallet && connectWallet(activeWallet)
+
+    // redirect to homepage
+    // TODO: redirect to success page
+    navigate("/")
+  }
+
   return (
     <ExtensionPage
       title={t("Import wallets")}
@@ -73,24 +165,54 @@ const MigrationWizard = () => {
       )}
       fullHeight
     >
-      <FlexColumn gap={8}>
-        {legacyWallets.map((wallet, i) => (
-          <NavButton
-            key={`legacy-${i}`}
-            label={wallet.name}
-            onClick={() => setSelectedWallet(wallet.name)}
-            icon={<AlertIcon color="var(--token-dark-900)" />}
-          />
-        ))}
-        {migratedWallets.map((wallet, i) => (
-          <NavButton
-            key={`migrated-${i}`}
-            label={wallet.name}
-            icon={<CheckIcon color="var(--token-success-500)" />}
-            disabled
-          />
-        ))}
-      </FlexColumn>
+      <Grid gap={24}>
+        <FlexColumn gap={8}>
+          {legacyWallets.map((wallet, i) => (
+            <SelectableListItem
+              key={`legacy-${i}`}
+              label={wallet.name}
+              subLabel={truncate(
+                wallet.address ?? addressFromWords(wallet.words["330"])
+              )}
+              icon={
+                <AlertIcon
+                  width={32}
+                  height={32}
+                  color="var(--token-dark-900)"
+                />
+              }
+              onClick={() => setSelectedWallet(wallet.name)}
+            />
+          ))}
+          {migratedWallets.map((wallet, i) => (
+            <SelectableListItem
+              key={`legacy-${i}`}
+              label={wallet.name}
+              subLabel={truncate(
+                // @ts-expect-error
+                addressFromWords(wallet.words["330"])
+              )}
+              icon={
+                <CheckIcon
+                  width={32}
+                  height={32}
+                  color="var(--token-success-500)"
+                />
+              }
+              disabled
+              onClick={() => {}}
+            />
+          ))}
+        </FlexColumn>
+
+        <Button
+          variant="primary"
+          onClick={() => {
+            completeMigration()
+          }}
+          label={t("Confirm")}
+        />
+      </Grid>
     </ExtensionPage>
   )
 }
