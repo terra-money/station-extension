@@ -1,7 +1,8 @@
-import { PropsWithChildren } from "react"
+import { PropsWithChildren, useMemo } from "react"
 import createContext from "utils/createContext"
 import { combineState } from "data/query"
 import { Fetching } from "components/feedback"
+import { useForm, UseFormReturn } from "react-hook-form"
 import {
   useSwapTokens,
   useParseSwapTokens,
@@ -19,13 +20,24 @@ interface Swap {
   tokens: SwapAssetExtra[]
   getTokensWithBal: (tokens: SwapAssetExtra[]) => SwapAssetExtra[]
   getBestRoute: (swap: SwapState) => Promise<RouteInfo>
+  swapForm: UseFormReturn<SwapState, any, undefined>
 }
 
 export const [useSwap, SwapProvider] = createContext<Swap>("useSwap")
 
-const SOURCES = [SwapSource.SKIP]
+const DEFAULT_SWAP = {
+  ask: {
+    chainID: "phoenix-1",
+    symbol: "LUNA",
+  },
+  offer: {
+    chainID: "axelar-dojo-1",
+    symbol: "USDC",
+  },
+}
 
 const SwapContext = ({ children }: PropsWithChildren<{}>) => {
+  const SOURCES = [SwapSource.SKIP]
   const swap = useSwapTokens(SOURCES)
   const getBestRoute = useGetBestRoute(SOURCES)
 
@@ -33,16 +45,39 @@ const SwapContext = ({ children }: PropsWithChildren<{}>) => {
     (acc, { data }) => (data ? [...acc, ...data] : acc),
     [] as SwapAssetBase[]
   )
-  const state = combineState(...swap)
   const parsed = useParseSwapTokens(tokens)
+  const state = combineState(...swap)
+
+  const defaultValues = useMemo(
+    () => ({
+      askAsset:
+        parsed.find(
+          (t) =>
+            t.symbol === DEFAULT_SWAP.ask.symbol &&
+            t.chainId === DEFAULT_SWAP.ask.chainID
+        ) ?? parsed[0],
+      offerAsset:
+        parsed.find(
+          (t) =>
+            t.symbol === DEFAULT_SWAP.offer.symbol &&
+            t.chainId === DEFAULT_SWAP.offer.chainID
+        ) ?? parsed[1],
+    }),
+    [parsed]
+  )
+
+  const swapForm = useForm<SwapState>({
+    mode: "onChange",
+    defaultValues,
+  })
 
   const getTokensWithBal = (tokens: SwapAssetExtra[]) => {
-    return tokens.filter((t) => t.balance > 0)
+    return tokens.filter((t) => Number(t.balance) > 0)
   }
 
   const render = () => {
-    if (!parsed) return null
-    const value = { tokens: parsed, getTokensWithBal, getBestRoute }
+    if (!parsed || !swapForm.getValues()) return null
+    const value = { tokens: parsed, getTokensWithBal, getBestRoute, swapForm }
     return <SwapProvider value={value}>{children}</SwapProvider>
   }
 

@@ -59,6 +59,8 @@ export const skipApi = {
           },
         }
       )
+      if (!res?.data) throw new Error("No data returned from Skip API")
+
       const transformedRouteInfo: RouteInfo = {
         amountIn: res.data.amount_in,
         amountOut: res.data.estimated_amount_out,
