@@ -21,22 +21,23 @@ import AddNetworkPage from "./networks/AddNetworkPage"
 import Auth from "./auth/Auth"
 import Header from "./layouts/Header"
 import Front from "./modules/Front"
-import ManageWallets from "./auth/SelectWallets"
 import { useAllInterchainAddresses, usePubkey } from "auth/hooks/useAddress"
 import { Flex } from "components/layout"
 import NetworkStatus from "components/display/NetworkStatus"
-import Preferences from "app/sections/settings/Preferences"
+import PreferencesRouter from "app/sections/settings/PreferencesRouter"
 import { useAuth } from "auth"
 import is from "auth/scripts/is"
 import { useNetworks } from "app/InitNetworks"
 import { useTheme } from "data/settings/Theme"
 import { useReplaceKeplr } from "utils/localStorage"
 import EnableCoinType from "app/sections/EnableCoinType"
-import UpdateNotification from "./update/UpdateNotification"
 import ChangeLogModal from "./update/ChangeLogModal"
 import Welcome from "./modules/Welcome"
 import ExtensionPage from "./components/ExtensionPage"
 import { getErrorMessage } from "utils/error"
+import ManageWalletsButton from "./auth/ManageWalletsButton"
+import ManageWalletRouter from "./auth/ManageWalletRouter"
+import PreferencesButton from "app/sections/settings/PreferencesButton"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -80,6 +81,8 @@ const App = () => {
 
     /* auth */
     { path: "/auth/*", element: <Auth /> },
+    { path: "/manage-wallet/*", element: <ManageWalletRouter /> },
+    { path: "/preferences/*", element: <PreferencesRouter /> },
 
     /* default txs */
     { path: "/swap", element: <SwapTx /> },
@@ -94,21 +97,25 @@ const App = () => {
 
   function render() {
     if (!wallet && !location.pathname.startsWith("/auth/")) {
-      //{wallets.length ? <SwitchWallet /> : <Welcome />}
       return <Welcome />
     }
     // main page
+    const hidePaths = ["/auth/", "/manage-wallet/", "/preferences"]
+    const hideHeader = hidePaths.some((p) => location.pathname.startsWith(p))
+
     return (
       <>
-        {!location.pathname.startsWith("/auth/") && (
+        {!hideHeader && (
           <Header>
-            <ManageWallets />
+            <Flex gap={0}>
+              <ManageWalletsButton />
+              <NetworkHeader />
+            </Flex>
             <Flex gap={5}>
               <LatestTx />
               <EnableCoinType />
-              <NetworkHeader />
               <NetworkStatus />
-              <Preferences />
+              <PreferencesButton />
             </Flex>
           </Header>
         )}
@@ -124,7 +131,6 @@ const App = () => {
         <RequestContainer>{render()}</RequestContainer>
       </InitBankBalance>
       <ChangeLogModal />
-      <UpdateNotification />
     </ErrorBoundary>
   )
 }

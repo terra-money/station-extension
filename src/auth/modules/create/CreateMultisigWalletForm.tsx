@@ -2,29 +2,36 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useFieldArray, useForm } from "react-hook-form"
 import axios from "axios"
-import AddIcon from "@mui/icons-material/Add"
-import RemoveIcon from "@mui/icons-material/Remove"
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import { AccAddress, SimplePublicKey } from "@terra-money/feather.js"
 import { LegacyAminoMultisigPublicKey } from "@terra-money/feather.js"
 import { SAMPLE_ADDRESS } from "config/constants"
 import { getErrorMessage } from "utils/error"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
-import { Grid } from "components/layout"
-import { Form, FormGroup, FormItem } from "components/form"
-import { FormError, FormWarning } from "components/form"
-import { Input, Submit, Paste } from "components/form"
+import { Form } from "components/form"
 import validate from "auth/scripts/validate"
+import {
+  MultiInputWrapper,
+  Input,
+  Button,
+  InputWrapper,
+  Banner,
+  SubmitButton,
+} from "station-ui"
+import { wordsFromAddress } from "utils/bech32"
 
 interface Values {
+  name: string
   addresses: { value: AccAddress }[]
   threshold: number
 }
 
 interface Props {
-  onCreated: (publicKey: LegacyAminoMultisigPublicKey) => void
+  onCreated?: (publicKey: MultisigWallet) => void
+  onPubkey?: (publicKey: LegacyAminoMultisigPublicKey) => void
 }
 
-const CreateMultisigWalletForm = ({ onCreated }: Props) => {
+const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
   const { t } = useTranslation()
   const lcd = useInterchainLCDClient()
 
@@ -43,13 +50,6 @@ const CreateMultisigWalletForm = ({ onCreated }: Props) => {
   const { fields, append, remove } = fieldArray
 
   const [error, setError] = useState<Error>()
-
-  const paste = async (lines: string[]) => {
-    const values = lines
-      .filter((addr) => AccAddress.validate(addr, "terra"))
-      .map((value) => ({ value }))
-    if (values.length) fieldArray.replace(values)
-  }
 
   /* query */
   const getPublicKey = async (address: AccAddress) => {
@@ -78,14 +78,19 @@ const CreateMultisigWalletForm = ({ onCreated }: Props) => {
   /* submit */
   const [submitting, setSubmitting] = useState(false)
 
-  const submit = async ({ addresses, threshold }: Values) => {
+  const submit = async ({ addresses, threshold, name }: Values) => {
     setSubmitting(true)
 
     try {
       const values = addresses.map(({ value }) => value)
       const publicKeys = await getPublicKeys(values)
       const publicKey = new LegacyAminoMultisigPublicKey(threshold, publicKeys)
-      onCreated(publicKey)
+      onPubkey?.(publicKey)
+      if (!onCreated) return
+      const address = publicKey.address("terra")
+      const words = { "330": wordsFromAddress(address) }
+      const wallet = { name, words, multisig: true as const }
+      onCreated(wallet)
     } catch (error) {
       setError(error as Error)
     }
@@ -97,44 +102,47 @@ const CreateMultisigWalletForm = ({ onCreated }: Props) => {
   const length = fields.length
   return (
     <Form onSubmit={handleSubmit(submit)}>
-      <Grid gap={4}>
-        <FormWarning>
-          {t(
-            "A new multisig wallet is created when the order of addresses or the threshold change"
-          )}
-        </FormWarning>
-        <FormWarning>{t("Participants must have coins")}</FormWarning>
-      </Grid>
+      {onCreated && (
+        <InputWrapper label={t("Wallet Name")} error={errors.name?.message}>
+          <Input
+            {...register("name", { validate: validate.name })}
+            autoFocus
+            placeholder="e.g. 'my-multisig-wallet'"
+          />
+        </InputWrapper>
+      )}
+      <Banner
+        variant="warning"
+        title={t(
+          "All wallets must have enough coins or tokens to cover gas fees."
+        )}
+      />
 
-      <FormItem label={t("Address")} extra={<Paste paste={paste} />}>
+      <MultiInputWrapper label={t("Addresses")} layout="vertical">
         {fields.map(({ id }, index) => (
-          <FormGroup
-            button={
-              length - 1 === index
-                ? {
-                    onClick: () => append({ value: "" }),
-                    children: <AddIcon style={{ fontSize: 18 }} />,
-                  }
-                : {
-                    onClick: () => remove(index),
-                    children: <RemoveIcon style={{ fontSize: 18 }} />,
-                  }
-            }
+          <Input
+            {...register(`addresses.${index}.value`, {
+              validate: validate.address,
+            })}
+            placeholder={SAMPLE_ADDRESS}
             key={id}
-          >
-            <FormItem>
-              <Input
-                {...register(`addresses.${index}.value`, {
-                  validate: validate.address,
-                })}
-                placeholder={SAMPLE_ADDRESS}
-              />
-            </FormItem>
-          </FormGroup>
+            actionIcon={
+              fields.length > 2
+                ? {
+                    icon: <DeleteOutlineIcon />,
+                    onClick: () => remove(index),
+                  }
+                : undefined
+            }
+          />
         ))}
-      </FormItem>
 
-      <FormItem label={t("Threshold")} error={errors.threshold?.message}>
+        <Button variant="dashed" onClick={() => append({ value: "" })}>
+          {t("Add Wallet Address")}
+        </Button>
+      </MultiInputWrapper>
+
+      <InputWrapper label={t("Threshold")} error={errors.threshold?.message}>
         <Input
           {...register("threshold", {
             valueAsNumber: true,
@@ -142,11 +150,15 @@ const CreateMultisigWalletForm = ({ onCreated }: Props) => {
           })}
           placeholder={String(Math.ceil(length / 2))}
         />
-      </FormItem>
+      </InputWrapper>
 
-      {error && <FormError>{error.message}</FormError>}
+      {error && <Banner variant="error" title={error.message} />}
 
-      <Submit submitting={submitting} disabled={!isValid} />
+      <SubmitButton
+        loading={submitting}
+        disabled={!isValid}
+        label={t("Create")}
+      />
     </Form>
   )
 }

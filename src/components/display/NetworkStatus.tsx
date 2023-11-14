@@ -30,7 +30,9 @@ const NetworkStatus = () => {
   return (
     <HeaderIconButton>
       <Tooltip content={<NetworkDisabledTooltip />}>
-        <WarningIcon color="warning" style={{ fontSize: 18 }} />
+        <WarningIcon
+          style={{ fontSize: 18, color: "var(--token-warning-500)" }}
+        />
       </Tooltip>
     </HeaderIconButton>
   )

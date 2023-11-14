@@ -1,30 +1,61 @@
 @import "mixins";
 
 .component {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 4px;
+  background: var(--token-dark-300);
+  border-radius: 8px;
   font-size: var(--font-size-small);
-  padding: 15px;
   overflow: hidden;
 }
 
 .header {
   @include flex(space-between);
-  font-weight: var(--normal);
   width: 100%;
+  background: var(--token-dark-700);
+  padding: 24px;
+
+  * {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+  }
+
+  .arrow__icon {
+    color: var(--token-light-100);
+    transform: rotate(180deg);
+  }
+}
+
+.icon__container {
+  @include flex(flex-start);
+  gap: 16px;
+  .icon {
+    color: var(--token-light-100);
+  }
+}
+
+.collapsed {
+  background: var(--token-dark-500);
+  .arrow__icon {
+    transform: rotate(0deg);
+  }
 }
 
 /* details */
+.content {
+  padding: 16px 0;
+  //max-height: 280px;
+  //overflow-y: scroll;
+}
+
 .detail {
-  border-top: 1px solid var(--card-border);
-  margin-top: 15px;
-  padding-top: 15px;
+  padding: 8px 24px;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .value {
   overflow-x: auto;
   max-width: 100%;
+  color: var(--token-light-100);
 }
 
 /* warn */
