@@ -295,6 +295,7 @@ const MigrationWizard = () => {
               : setWarning(true)
           }
           label={t("Confirm")}
+          disabled={!migratedWallets.length}
         />
       </Grid>
     </ExtensionPage>
