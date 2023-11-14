@@ -51,6 +51,13 @@ const STAKED_TOKENS: Record<string, string> = {
   terra14y9aa87v4mjvpf0vu8xm7nvldvjvk4h3wly2240u0586j4l6qm2q7ngp7t: "sHAR",
 }
 
+export interface PriceObject {
+  [k: string]: {
+    price: number
+    change: number
+  }
+}
+
 export const useExchangeRates = () => {
   const currency = useCurrency()
   const isClassic = useNetworkName() === "classic"

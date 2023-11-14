@@ -5,19 +5,16 @@
   position: relative;
   margin: 0 auto;
   height: calc(100vh - var(--header-height));
-  display: grid;
-  grid-template-areas: "details" "list" "actions";
-  grid-template-rows: min-content auto min-content;
   transition: 400ms;
-  background-color: var(--card-bg-muted);
+  padding: 20px;
 }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-.back {
-  position: absolute;
-  top: 2rem;
-  left: 18px;
-
-  svg path {
-    fill: var(--text);
+  h1 {
+    font-size: x-large;
+    margin: 10px;
   }
 }

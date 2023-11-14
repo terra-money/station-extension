@@ -57,6 +57,7 @@ export const Playground: StoryObj<TextAreaProps> = {
 export const Default: StoryObj<TextAreaProps> = {
   render: () => (
     <TextArea
+      rows={10}
       readOnly={false}
       placeholder="We're proposing to spend 100,000 LUNA from the Community Pool to fund the creation of public goods for the Terra ecosystem"
     />

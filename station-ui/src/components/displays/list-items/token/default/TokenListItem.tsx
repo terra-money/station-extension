@@ -1,8 +1,8 @@
-import { ReactComponent as PriceUp } from "assets/icon/PriceUp.svg"
 import classNames from "classnames"
-import { ReactComponent as PriceDown } from "assets/icon/PriceDown.svg"
-import styles from "../TokenListItem.module.scss"
 import { Tooltip } from "components"
+import { ReactComponent as TrendUp } from "assets/icon/TrendUp.svg"
+import { ReactComponent as TrendDown } from "assets/icon/TrendDown.svg"
+import styles from "../TokenListItem.module.scss"
 
 const cx = classNames.bind(styles)
 
@@ -59,7 +59,7 @@ const TokenListItem = ({
                   <span className={cx(styles.chain__details, styles.num)}>{chains.length}</span>
                 </Tooltip>
               ) : (
-                <span className={cx(styles.chain__details, styles.single)}>{chains?.[0]?.name ?? ""}</span>
+                chains.length === 1 && <span className={cx(styles.chain__details, styles.single)}>{chains[0].name}</span>
               )}
             </h2>
             <h3 className={styles.amount}>
@@ -70,7 +70,7 @@ const TokenListItem = ({
             <h5
               className={change >= 0 ? styles.change__up : styles.change__down}
             >
-              {change >= 0 ? <PriceUp /> : <PriceDown />} {change.toFixed(2)}%
+              {change >= 0 ? <TrendUp /> : <TrendDown />} {change.toFixed(2)}%
             </h5>
             <h5 className={styles.price}>
               {priceNode}

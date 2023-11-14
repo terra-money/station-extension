@@ -1,24 +1,112 @@
 import is from "./is"
 import { decrypt, encrypt } from "./aes"
 import { addressFromWords } from "utils/bech32"
+import browser from "webextension-polyfill"
 
 enum LocalStorage {
   CONNECTED_WALLET_NAME = "connectedWallet",
   WALLETS = "wallets",
+  LEGACY_WALLETS = "keys",
   PASSWORD_CHALLENGE = "passwordChallenge",
-  SESSION_EXPIRES = "sessionExpires",
+  SHOULD_STORE_PASS = "storePassword",
 }
 
 const CHALLENGE_TEXT = "STATION_PASSWORD_CHALLENGE"
 
-/* wallet */
+/* helper functions */
+const getSessionItems = async (
+  args: string[]
+): Promise<Record<string, string | null>> => {
+  if (browser.storage?.session) {
+    return await browser.storage?.session.get(args)
+  } else {
+    return Object.fromEntries(
+      args.map((arg) => {
+        return [arg, sessionStorage.getItem(arg)]
+      })
+    )
+  }
+}
 
+const setSessionItems = (args: Record<string, string | null>) => {
+  if (browser.storage?.session) {
+    browser.storage?.session.set(args)
+  } else {
+    Object.entries(args).forEach(([key, value]) => {
+      if (value) sessionStorage.setItem(key, value)
+      else sessionStorage.removeItem(key)
+    })
+  }
+}
+
+/* password */
+const PASSWORD_ITERATIONS = 100
+
+export const shouldStorePassword = () => {
+  const storePassword = localStorage.getItem(LocalStorage.SHOULD_STORE_PASS)
+  return storePassword !== "false"
+}
+
+export const setShouldStorePassword = (value: boolean) => {
+  if (!value) clearStoredPassword()
+
+  localStorage.setItem(LocalStorage.SHOULD_STORE_PASS, String(value))
+}
+
+export const getStoredPassword = async () => {
+  if (!shouldStorePassword()) {
+    clearStoredPassword()
+    return
+  }
+
+  const { encrypted, timestamp } = await getSessionItems([
+    "encrypted",
+    "timestamp",
+  ])
+  if (!(encrypted && timestamp)) return
+  const password = decrypt(encrypted, String(timestamp), PASSWORD_ITERATIONS)
+
+  return password
+}
+
+export const storePassword = async (password: string) => {
+  if (!shouldStorePassword()) return
+  // make sure the password is valid
+  if (!isPasswordValid(password)) return
+
+  const timestamp = String(Date.now())
+
+  setSessionItems({
+    encrypted: encrypt(password, timestamp, PASSWORD_ITERATIONS),
+    timestamp,
+  })
+}
+
+export const clearStoredPassword = () => {
+  setSessionItems({ encrypted: null, timestamp: null })
+}
+
+export const isLoggedIn = async (): Promise<boolean> => {
+  const { loggedIn } = await getSessionItems(["loggedIn"])
+
+  return loggedIn === "true"
+}
+
+export const setLogin = (value: boolean) => {
+  setSessionItems({ loggedIn: String(value) })
+}
+
+/* wallet */
 // used to determine if it's needed to show the login screen
-export const isLoginNeeded = () => {
-  const expiresAt = localStorage.getItem(LocalStorage.SESSION_EXPIRES)
+export const isLoginNeeded = async () => {
   const wallets = localStorage.getItem(LocalStorage.WALLETS)
-  // user has some wallets and the session has expired
-  return !!wallets && Date.now() > parseInt(expiresAt ?? "0")
+  if (!wallets) return false
+
+  if (shouldStorePassword()) {
+    return !(await getStoredPassword())
+  } else {
+    return !(await isLoggedIn())
+  }
 }
 
 // used to determine if the user still have to set a password
@@ -38,11 +126,7 @@ export const unlockWallets = (password: string) => {
   if (decrypt(passwordChallenge, password) !== CHALLENGE_TEXT)
     throw new Error("Incorrect password")
 
-  // TODO: custom lock time?
-  localStorage.setItem(
-    LocalStorage.SESSION_EXPIRES,
-    (Date.now() + 1000 * 60 * 60 * 12).toString()
-  )
+  setLogin(true)
 }
 
 // checks if the given password is valid
@@ -61,12 +145,13 @@ export const isPasswordValid = (password: string) => {
   }
 }
 
-// get the active wallet (user must be logged in)
-export const getWallet = () => {
-  if (isLoginNeeded()) return undefined
+// get the active wallet
+export const getWallet = (name?: string) => {
+  //if (isLoginNeeded()) return undefined
 
   const wallets = localStorage.getItem(LocalStorage.WALLETS)
-  const walletName = localStorage.getItem(LocalStorage.CONNECTED_WALLET_NAME)
+  const walletName =
+    name ?? localStorage.getItem(LocalStorage.CONNECTED_WALLET_NAME)
 
   if (!wallets || !walletName) return
   const parsed = JSON.parse(wallets)
@@ -91,6 +176,12 @@ export const getStoredWallets = () => {
   return JSON.parse(wallets) as ResultStoredWallet[]
 }
 
+export const getStoredLegacyWallets = () => {
+  const wallets = localStorage.getItem(LocalStorage.LEGACY_WALLETS)
+  if (!wallets) return []
+  return JSON.parse(wallets) as ResultStoredWallet[]
+}
+
 export const storeWallets = (wallets: StoredWallet[]) => {
   const walletsString = JSON.stringify(wallets)
   localStorage.setItem(LocalStorage.WALLETS, walletsString)
@@ -105,11 +196,6 @@ export const getStoredWallet = (name: string): ResultStoredWallet => {
 }
 
 const storePasswordChallenge = (password: string) => {
-  // TODO: custom lock time?
-  localStorage.setItem(
-    LocalStorage.SESSION_EXPIRES,
-    (Date.now() + 1000 * 60 * 60 * 12).toString()
-  )
   localStorage.setItem(
     LocalStorage.PASSWORD_CHALLENGE,
     encrypt(CHALLENGE_TEXT, password)
@@ -217,6 +303,21 @@ export const addWallet = (params: AddWalletParams, password: string) => {
   }
 }
 
+export const addMultisigWallet = (params: MultisigWallet) => {
+  const wallets = getStoredWallets()
+
+  if (wallets.find((wallet) => wallet.name === params.name))
+    throw new Error("Wallet already exists")
+
+  const next = wallets.filter((wallet) =>
+    "words" in wallet
+      ? wallet.words["330"] !== params.words["330"]
+      : wallet.address !== addressFromWords(params.words["330"])
+  )
+
+  storeWallets([...next, params])
+}
+
 interface ChangePasswordParams {
   oldPassword: string
   newPassword: string
@@ -227,7 +328,6 @@ export const changePassword = (params: ChangePasswordParams) => {
   if (!isPasswordValid(oldPassword)) throw new Error("Invalid password")
 
   const wallets = getStoredWallets()
-  if (!wallets) throw new Error("Key does not exist, cannot change password")
   const result = wallets.map((key) => {
     if ("encryptedSeed" in key) {
       const encryptedSeed = encrypt(
@@ -258,6 +358,8 @@ export const changePassword = (params: ChangePasswordParams) => {
   })
 
   storePasswordChallenge(newPassword)
+  // remove the currently stored password
+  clearStoredPassword()
   storeWallets(result)
 }
 
@@ -268,5 +370,6 @@ export const deleteWallet = (name: string) => {
 }
 
 export const lockWallet = () => {
-  localStorage.removeItem(LocalStorage.SESSION_EXPIRES)
+  clearStoredPassword()
+  setLogin(false)
 }

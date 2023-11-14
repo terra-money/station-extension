@@ -35,6 +35,7 @@ interface TokenItem {
   type?: string
   name?: string
   icon?: string
+  chainID?: ChainID
   isAxelar?: boolean
   lsd?: string
 }

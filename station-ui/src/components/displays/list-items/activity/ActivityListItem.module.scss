@@ -40,7 +40,8 @@
         left: calc(50% - 1px);
         height: calc(100% - 32px);
         width: 1px;
-        border: 1px dashed var(--token-dark-900);
+        background-image: linear-gradient(to bottom, var(--token-dark-900) 50%, transparent 50%);
+        background-size: 1px 8px;
       }
     }
 
@@ -48,6 +49,12 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      width: 100%;
+
+      .pill__container {
+        display: flex;
+        gap: 8px;
+      }
 
       .activity__msg {
         @include MediumLH;
@@ -61,6 +68,10 @@
       .activity__time {
         @include X-Small;
         color: var(--token-light-100);
+      }
+
+      .progress__tracker {
+        margin-top: 8px;
       }
     }
 
