@@ -5,8 +5,8 @@ import {
   Button,
   RoundedButton,
 } from "station-ui"
-import { useState } from "react"
-import { SwapAssetExtra, SwapState, RouteInfo } from "data/queries/swap/types"
+import { useMemo, useState } from "react"
+import { SwapAssetExtra, SwapState } from "data/queries/swap/types"
 import { useForm } from "react-hook-form"
 import { useSwap } from "./SwapContext"
 import { useTranslation } from "react-i18next"
@@ -18,6 +18,7 @@ import validate from "txs/validate"
 import { useNavigate } from "react-router-dom"
 import { ReactComponent as SwapArrows } from "styles/images/icons/SwapArrows.svg"
 import styles from "./Swap.module.scss"
+import { useCurrency } from "data/settings/Currency"
 
 enum SwapAssetType {
   ASK = "askAsset",
@@ -26,9 +27,11 @@ enum SwapAssetType {
 
 const SwapForm = () => {
   // Hooks
-  const { tokens, getTokensWithBal, getBestRoute, defaultValues } = useSwap()
+  const { tokens, getTokensWithBal, getBestRoute, defaultValues, getMsgs } =
+    useSwap()
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const currency = useCurrency()
 
   // Form
   const form = useForm<SwapState>({
@@ -40,26 +43,33 @@ const SwapForm = () => {
   const { watch, getValues, setValue, setError, register } = form
   const [assetModal, setAssetModal] = useState<SwapAssetType | undefined>()
   const [displayTokens, setDisplayTokens] = useState<SwapAssetExtra[]>([])
-  const { offerAsset, askAsset, offerAmount, route } = watch()
+  const { offerAsset, askAsset, offerInput, route, msgs } = watch()
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    if (!offerAsset || !askAsset || !offerAmount) return
+    if (!offerAsset || !askAsset || !offerInput) return
     const swapState = getValues()
-    const amount = toAmount(offerAmount, { decimals: offerAsset.decimals })
-    const fetchRoute = async () => {
+    const amount = toAmount(offerInput, { decimals: offerAsset.decimals })
+    const fetchRouteAndMsgs = async () => {
       try {
-        const route = await getBestRoute({ ...swapState, offerAmount: amount })
+        setIsLoading(true)
+        const route = await getBestRoute({ ...swapState, offerInput: amount })
+        const msgs = await getMsgs({ ...swapState, offerInput: amount })
+        console.log("msgs", msgs)
+        setIsLoading(false)
+        setValue("msgs", msgs)
         setValue("route", route)
       } catch (err) {
         console.log("err", err)
       }
     }
 
-    fetchRoute()
+    fetchRouteAndMsgs()
   }, [
     offerAsset,
+    getMsgs,
     askAsset,
-    offerAmount,
+    offerInput,
     getBestRoute,
     getValues,
     setValue,
@@ -81,8 +91,23 @@ const SwapForm = () => {
   const swapAssetsOnClick = () => {
     setValue("askAsset", offerAsset)
     setValue("offerAsset", askAsset)
-    setValue("offerAmount", route?.amountOut ?? "0")
+    setValue("offerInput", route?.amountOut ?? "0")
   }
+
+  const buttonOnClick = async () => {
+    navigate("confirm", { state: getValues() })
+  }
+
+  const currencyAmount = useMemo(() => {
+    const offer = `${currency.symbol} ${(
+      offerAsset.price * Number(offerInput)
+    ).toString()}`
+    const ask = `${currency.symbol} ${toInput(
+      Number(route?.amountOut) * askAsset.price,
+      askAsset.decimals
+    )}`
+    return { offer: offer ?? "", ask: ask ?? "" }
+  }, [offerAsset, offerInput, askAsset, route, currency])
 
   return (
     <div className={styles.container}>
@@ -100,9 +125,9 @@ const SwapForm = () => {
         chainName={offerAsset.chain?.name}
         tokenIcon={offerAsset.icon ?? ""}
         onSymbolClick={() => handleOpenModal(SwapAssetType.OFFER)}
-        currencyAmount={offerAsset.value.toString()}
+        currencyAmount={currencyAmount.offer}
         amountInputAttrs={{
-          ...register("offerAmount", {
+          ...register("offerInput", {
             // @ts-ignore
             validate: validate.input(
               toInput(offerAsset.balance, offerAsset.decimals),
@@ -118,7 +143,7 @@ const SwapForm = () => {
         icon={<SwapArrows />}
       />
       <AssetSelectorTo
-        extra={askAsset?.balance}
+        extra={toInput(askAsset.balance, askAsset.decimals)}
         symbol={askAsset?.symbol}
         chainIcon={askAsset?.chain?.icon}
         chainName={askAsset?.chain?.name}
@@ -129,11 +154,13 @@ const SwapForm = () => {
             ? toInput(route?.amountOut, askAsset.decimals).toString()
             : "0"
         }
-        currencyAmount={askAsset?.value?.toString()}
+        currencyAmount={currencyAmount.ask}
       />
       <Button
         variant="primary"
-        onClick={() => navigate("confirm", { state: getValues() })}
+        loading={isLoading}
+        disabled={!offerInput || isLoading || !route || !msgs}
+        onClick={buttonOnClick}
         label={t("Continue")}
       />
     </div>

@@ -1,17 +1,17 @@
 import { Form, SubmitButton, SectionHeader, SummaryTable } from "station-ui"
 import { useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import Tx from "txs/Tx"
 import SwapTimeline from "./components/SwapTimeline"
+import { toInput } from "txs/utils"
 
 const Confirm = () => {
-  const location = useLocation()
+  const { state: swapState } = useLocation()
   const { t } = useTranslation()
-  const { state } = location
+
   const rows = [
     {
       label: t("Min Received"),
-      value: state.route.amountOut,
+      value: toInput(swapState.route.amountOut, swapState.askAsset.decimals),
     },
     {
       label: t("Transaction Fee"),
@@ -26,7 +26,7 @@ const Confirm = () => {
   return (
     // <Tx>
     <Form>
-      <SwapTimeline {...state} />
+      <SwapTimeline {...swapState} />
       <SectionHeader title={t("Details")} withLine />
       <SummaryTable rows={rows} />
       <SubmitButton label={t("Confirm")} icon={<span></span>} />

@@ -12,7 +12,9 @@ import { skipApi } from "./skip"
 import { squidApi } from "./squid"
 import { useBankBalance } from "../bank"
 import { useExchangeRates } from "../coingecko"
-import { useCallback } from "react"
+import { useCallback, useMemo } from "react"
+import { useAllInterchainAddresses } from "auth/hooks/useAddress"
+import { InterchainAddresses } from "types/network"
 
 // Tokens
 const queryMap = {
@@ -63,6 +65,7 @@ const routeMap = {
   [SwapSource.SKIP]: (swap: SwapState) => skipApi.queryRoute(swap),
   [SwapSource.SQUID]: (swap: SwapState) => {},
 }
+
 export const useGetBestRoute = (sources?: SupportedSource[]) => {
   const routeSources = sources ?? (Object.keys(routeMap) as SupportedSource[])
 
@@ -94,4 +97,69 @@ export const useGetBestRoute = (sources?: SupportedSource[]) => {
   )
 
   return getBestRoute
+}
+
+// Msgs
+const msgMap = {
+  [SwapSource.SKIP]: (swap: SwapState, addresses: InterchainAddresses) =>
+    skipApi.queryMsgs(swap, addresses),
+  [SwapSource.SQUID]: (swap: SwapState) => {},
+}
+export const useGetMsgs = (sources?: SupportedSource[]) => {
+  const msgSources = sources ?? (Object.keys(routeMap) as SupportedSource[])
+  const addresses = useAllInterchainAddresses() // use all in case intermediary network validation fails
+
+  const getMsgs = useCallback(
+    async (swap: SwapState) => {
+      if (!addresses) return null
+      const routePromises = msgSources.map((source) => {
+        try {
+          const res = msgMap[source]?.(swap, addresses)
+          console.log("res", res)
+          return res
+        } catch (error) {
+          console.error(`Error getting msgs from ${source}:`, error)
+          return null // Return null in case of error to not break Promise.all
+        }
+      })
+
+      return await Promise.all(routePromises)
+    },
+    [msgSources, addresses]
+  )
+
+  return getMsgs
+}
+
+const DEFAULT_SWAP = {
+  ask: {
+    chainID: "phoenix-1",
+    symbol: "LUNA",
+  },
+  offer: {
+    chainID: "axelar-dojo-1",
+    symbol: "USDC",
+  },
+}
+
+// Defaults
+export const useGetSwapDefaults = (assets: SwapAssetExtra[]) => {
+  const defaults = useMemo(() => {
+    const askAsset = assets.find(
+      (t) =>
+        t.symbol === DEFAULT_SWAP.ask.symbol &&
+        t.chainId === DEFAULT_SWAP.ask.chainID
+    )
+    const offerAsset = assets.find(
+      (t) =>
+        t.symbol === DEFAULT_SWAP.offer.symbol &&
+        t.chainId === DEFAULT_SWAP.offer.chainID
+    )
+
+    return {
+      askAsset: askAsset ?? assets[0],
+      offerAsset: offerAsset ?? assets[1],
+    }
+  }, [assets])
+  return defaults
 }
