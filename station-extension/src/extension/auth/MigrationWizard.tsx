@@ -10,7 +10,7 @@ import {
   storeWallets,
 } from "auth/scripts/keystore"
 import PasswordForm from "./PasswordForm"
-import { SelectableListItem, Button, Grid } from "station-ui"
+import { SelectableListItem, Button, Grid, Banner } from "station-ui"
 import { FlexColumn } from "components/layout"
 
 import { ReactComponent as CheckIcon } from "styles/images/icons/Check.svg"
@@ -20,6 +20,7 @@ import { truncate } from "@terra-money/terra-utils"
 import { addressFromWords } from "utils/bech32"
 import { encrypt } from "auth/scripts/aes"
 import { useNavigate } from "react-router-dom"
+import { useThemeFavicon } from "data/settings/Theme"
 
 function needsMigration(w: any): boolean {
   // ledger wallets with pubkey do not need migration
@@ -41,9 +42,11 @@ function isLegacyLedger(w: any): boolean {
 const MigrationWizard = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const icon = useThemeFavicon()
 
   const [password, setPassword] = useState<string | undefined>()
   const [selectedWallet, setSelectedWallet] = useState<string | undefined>()
+  const [warning, setWarning] = useState<boolean>(false)
 
   const [legacyWallets, setLegacyWallets] = useState<any[]>(
     getStoredLegacyWallets().filter(
@@ -78,11 +81,15 @@ const MigrationWizard = () => {
       <MigrateWalletPage
         wallet={wallet}
         onComplete={(res) => {
+          setWarning(false)
           setSelectedWallet(undefined)
           setMigratedWallets((w) => [...w, res])
           setLegacyWallets((w) => w.filter(({ name }) => name !== wallet.name))
         }}
-        onBack={() => setSelectedWallet(undefined)}
+        onBack={() => {
+          setWarning(false)
+          setSelectedWallet(undefined)
+        }}
       />
     )
   }
@@ -159,6 +166,7 @@ const MigrationWizard = () => {
 
   return (
     <ExtensionPage
+      img={icon}
       title={t("Import wallets")}
       subtitle={t(
         "You will be required to migrate your accounts to Station V3. Please provide your password or seed phrase for each wallet to proceed."
@@ -178,7 +186,11 @@ const MigrationWizard = () => {
                 <AlertIcon
                   width={32}
                   height={32}
-                  color="var(--token-dark-900)"
+                  color={
+                    warning
+                      ? "var(--token-error-500)"
+                      : "var(--token-warning-500)"
+                  }
                 />
               }
               onClick={() => setSelectedWallet(wallet.name)}
@@ -205,11 +217,26 @@ const MigrationWizard = () => {
           ))}
         </FlexColumn>
 
+        {warning && (
+          <Banner
+            variant="error"
+            title={t(
+              "You have only migrated {{migrated}} out of {{total}} wallets, are you sure you want to continue?",
+              {
+                migrated: migratedWallets.length,
+                total: migratedWallets.length + legacyWallets.length,
+              }
+            )}
+          />
+        )}
+
         <Button
           variant="primary"
-          onClick={() => {
-            completeMigration()
-          }}
+          onClick={() =>
+            !legacyWallets.length || warning
+              ? completeMigration()
+              : setWarning(true)
+          }
           label={t("Confirm")}
         />
       </Grid>
