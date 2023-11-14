@@ -31,7 +31,6 @@ import { useNetworks } from "app/InitNetworks"
 import { useTheme } from "data/settings/Theme"
 import { useReplaceKeplr } from "utils/localStorage"
 import EnableCoinType from "app/sections/EnableCoinType"
-import UpdateNotification from "./update/UpdateNotification"
 import ChangeLogModal from "./update/ChangeLogModal"
 import Welcome from "./modules/Welcome"
 import ExtensionPage from "./components/ExtensionPage"
@@ -97,10 +96,9 @@ const App = () => {
   const location = useLocation()
 
   function render() {
-    // if (!wallet && !location.pathname.startsWith("/auth/")) {
-    //   {wallets.length ? <SwitchWallet /> : <Welcome />}
-    //   return <Welcome />
-    // }
+    if (!wallet && !location.pathname.startsWith("/auth/")) {
+      return <Welcome />
+    }
     // main page
     const hidePaths = ["/auth/", "/manage-wallet/", "/preferences"]
     const hideHeader = hidePaths.some((p) => location.pathname.startsWith(p))
@@ -109,11 +107,13 @@ const App = () => {
       <>
         {!hideHeader && (
           <Header>
-            <ManageWalletsButton />
+            <Flex gap={0}>
+              <ManageWalletsButton />
+              <NetworkHeader />
+            </Flex>
             <Flex gap={5}>
               <LatestTx />
               <EnableCoinType />
-              <NetworkHeader />
               <NetworkStatus />
               <PreferencesButton />
             </Flex>
@@ -131,7 +131,6 @@ const App = () => {
         <RequestContainer>{render()}</RequestContainer>
       </InitBankBalance>
       <ChangeLogModal />
-      <UpdateNotification />
     </ErrorBoundary>
   )
 }

@@ -1,7 +1,6 @@
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import ReactModal from "react-modal"
-import classNames from "classnames/bind"
 import CloseIcon from "@mui/icons-material/Close"
 import { RenderButton } from "types/components"
 import createContext from "utils/createContext"
@@ -27,8 +26,7 @@ export interface Props extends ModalProps, ReactModal.Props {}
 
 const Modal = (props: PropsWithChildren<Props>) => {
   const { title, children, footer } = props
-  const { icon, closeIcon, onRequestClose, confirm, maxHeight, scrollable } =
-    props
+  const { icon, closeIcon, onRequestClose, maxHeight } = props
 
   return (
     <ReactModal {...props}>
