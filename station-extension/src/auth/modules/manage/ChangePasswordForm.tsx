@@ -3,16 +3,22 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 // import { Input } from "components/form"
-import { changePassword } from "../../scripts/keystore"
+import {
+  changePassword,
+  setShouldStorePassword,
+  shouldStorePassword,
+  storePassword,
+} from "../../scripts/keystore"
 import validate from "auth/scripts/validate"
 import useAuth from "../../hooks/useAuth"
 import ConfirmModal from "./ConfirmModal"
-import { Form, InputWrapper, SubmitButton, Input } from "station-ui"
+import { Form, InputWrapper, SubmitButton, Input, Checkbox } from "station-ui"
 
 interface Values {
   current: string
   password: string
   confirm: string
+  rememberPassword: boolean
 }
 
 const ChangePasswordForm = () => {
@@ -21,14 +27,23 @@ const ChangePasswordForm = () => {
   const { validatePassword } = useAuth()
 
   /* form */
-  const form = useForm<Values>({ mode: "onChange" })
+  const form = useForm<Values>({
+    mode: "onChange",
+    defaultValues: { rememberPassword: shouldStorePassword() },
+  })
   const { register, watch, handleSubmit, formState } = form
   const { errors } = formState
-  const { password } = watch()
+  const { password, rememberPassword } = watch()
 
   const [done, setDone] = useState(false)
-  const submit = ({ current, password }: Values) => {
+  const submit = ({ current, password, rememberPassword }: Values) => {
     changePassword({ oldPassword: current, newPassword: password })
+    if (rememberPassword) {
+      setShouldStorePassword(true)
+      storePassword(password)
+    } else {
+      setShouldStorePassword(false)
+    }
     setDone(true)
   }
 
@@ -72,6 +87,13 @@ const ChangePasswordForm = () => {
             })}
             onFocus={() => form.trigger("confirm")}
             type="password"
+          />
+        </InputWrapper>
+        <InputWrapper>
+          <Checkbox
+            label={t("Don't ask for password again")}
+            checked={rememberPassword}
+            {...register("rememberPassword")}
           />
         </InputWrapper>
         <SubmitButton

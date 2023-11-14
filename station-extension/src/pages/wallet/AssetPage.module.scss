@@ -4,15 +4,18 @@
   @include flex(center);
   flex-direction: column;
   width: 100%;
-
-  padding: 1.6rem;
+  padding-bottom: 1.6rem;
   height: fit-content;
-  background-color: var(--card-bg);
   grid-area: details;
+
+  .token {
+    @include flex(center);
+    color: var(--token-light-100);
+    gap: 10px;
+  }
 
   h1 {
     font-size: 20pt;
-    margin-top: 0.6rem;
   }
 
   p {
@@ -22,13 +25,7 @@
   }
 }
 
-.chainlist__container {
-  padding-top: 25px;
-  padding-bottom: 1.6rem;
-}
-
 .chainlist {
-  background-color: var(--card-bg-muted);
   padding-inline: 10px;
   grid-area: list;
   display: grid;
@@ -39,8 +36,7 @@
 
 .chainlist__title {
   grid-area: title;
-  margin-bottom: 5px;
-  padding-left: 10px;
+  margin-bottom: 10px;
 }
 
 .chainlist__list {
@@ -63,4 +59,9 @@
     padding-block: 20px;
     height: fit-content;
   }
+}
+
+.vesting {
+  width: 100%;
+  margin-bottom: 20px;
 }

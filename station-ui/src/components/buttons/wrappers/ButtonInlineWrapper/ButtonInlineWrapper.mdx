@@ -1,12 +1,4 @@
-import {
-  Meta,
-  Story,
-  Canvas,
-  Controls,
-  ArgTypes,
-  Description,
-  Source,
-} from "@storybook/blocks";
+import { Meta, Canvas, Source } from "@storybook/blocks";
 import { RequiredText } from "../../../../DocsHelpers.tsx";
 import SubmitButton from "../../submit/SubmitButton/SubmitButton.tsx";
 import ButtonInlineWrapper from "./ButtonInlineWrapper.tsx";
@@ -42,7 +34,7 @@ import {
   <Source
     code={`
     <ButtonInlineWrapper>
-     <SubmitButton
+    <SubmitButton
       variant='secondary'
       label='Cancel'
     />
@@ -68,7 +60,7 @@ import {
     <SubmitButton
       variant='warning'
       label='Delete'
-      icon={<TrashCan fill='var(--token-error-500)' stroke='var(--token-error-500)' />}
+      icon={<TrashIcon fill='var(--token-error-500)' stroke='var(--token-error-500)' />}
     />
 </ButtonInlineWrapper>
     `}

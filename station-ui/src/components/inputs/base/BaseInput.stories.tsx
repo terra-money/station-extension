@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ReactComponent as WalletIcon } from 'assets/icon/Wallet16.svg';
+import { ReactComponent as WalletIcon } from 'assets/icon/Wallet.svg';
 import Input, { InputProps } from './Input';
 
 const meta: Meta<InputProps> = {

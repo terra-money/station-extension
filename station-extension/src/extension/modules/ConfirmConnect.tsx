@@ -1,12 +1,10 @@
 import { useTranslation } from "react-i18next"
-import { Grid } from "components/layout"
 import { ConnectRequest } from "../utils"
-import ConfirmButtons from "../components/ConfirmButtons"
 import { useRequest } from "../RequestContainer"
 import styles from "./ConfirmConnect.module.scss"
 import ExtensionPage from "extension/components/ExtensionPage"
 import OriginCard from "extension/components/OriginCard"
-import BottomCard from "extension/components/BottomCard"
+import { Button, ButtonInlineWrapper, SummaryColumn } from "station-ui"
 
 const ConfirmConnect = ({ origin }: ConnectRequest) => {
   const { t } = useTranslation()
@@ -14,31 +12,36 @@ const ConfirmConnect = ({ origin }: ConnectRequest) => {
   const { hostname } = new URL(origin)
 
   return (
-    <ExtensionPage header={<OriginCard hostname={hostname} />}>
-      <Grid gap={28}>
-        <header className="center">
-          <Grid gap={8}>
-            <h1 className={styles.title}>{t("Connect to application")}</h1>
-            <p className="muted">
-              {t("Permission granted to this site")}: {t("View wallet address")}
-            </p>
-          </Grid>
-        </header>
-        <BottomCard>
-          <ConfirmButtons
-            buttons={[
+    <ExtensionPage>
+      <article className={styles.container}>
+        <div>
+          <OriginCard hostname={hostname} />
+          <SummaryColumn
+            title={t("App Connect")}
+            noWordBreak
+            description={t(
+              "{{website}} is requesting to connect to your wallet",
               {
-                onClick: () => actions.connect(origin, false),
-                children: t("Deny"),
-              },
-              {
-                onClick: () => actions.connect(origin, true),
-                children: t("Connect"),
-              },
-            ]}
+                website: hostname,
+              }
+            )}
           />
-        </BottomCard>
-      </Grid>
+        </div>
+        <section className={styles.buttons__container}>
+          <ButtonInlineWrapper>
+            <Button
+              variant="secondary"
+              onClick={() => actions.connect(origin, false)}
+              label={t("Reject")}
+            />
+            <Button
+              variant="primary"
+              onClick={() => actions.connect(origin, true)}
+              label={t("Connect")}
+            />
+          </ButtonInlineWrapper>
+        </section>
+      </article>
     </ExtensionPage>
   )
 }

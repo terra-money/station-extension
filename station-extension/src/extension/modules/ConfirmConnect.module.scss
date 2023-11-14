@@ -1,5 +1,14 @@
 @import "mixins";
 
+.container {
+  height: calc(100vh - var(--header-height) - 40px);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .overlay {
   @include flex;
 
@@ -13,4 +22,9 @@
 
 .title {
   font-size: 24px;
+}
+
+.buttons__container {
+  padding-top: 24px;
+  padding-bottom: 24px;
 }

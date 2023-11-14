@@ -11,7 +11,7 @@ const TextArea = forwardRef(
     attrs: TextAreaProps,
     ref: ForwardedRef<HTMLTextAreaElement>,
   ) => {
-    const { readOnly, className } = attrs
+    const { className } = attrs
 
     let displayValue = attrs.value
 
@@ -27,14 +27,14 @@ const TextArea = forwardRef(
       console.log("TextArea displayValue error: ", e)
     }
 
+
     return (
       <textarea
-        {...attrs}
-        className={cx(styles.textarea, className)}
         rows={4}
-        readOnly={readOnly}
+        className={cx(styles.textarea, className)}
         ref={ref}
         value={displayValue}
+        {...attrs}
       />
     )
   },

@@ -12,5 +12,5 @@ export * from "./summary/table/SummaryTable";
 export { default as VestingCard } from "./vesting/VestingCard";
 export * from "./vesting/VestingCard";
 
-export { default as WallerSummaryCard } from "./wallet-summary/WalletSummaryCard";
+export { default as WalletSummaryCard } from "./wallet-summary/WalletSummaryCard";
 export * from "./wallet-summary/WalletSummaryCard";
