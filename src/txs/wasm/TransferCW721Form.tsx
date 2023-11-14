@@ -12,11 +12,12 @@ import { useTnsAddress } from "data/external/tns"
 import { Auto, Card, InlineFlex } from "components/layout"
 import { Form, FormItem, FormHelp, Input } from "components/form"
 import NFTAssetItem from "pages/nft/NFTAssetItem"
-import AddressBookList from "../AddressBook/AddressBookList"
+// import AddressBookList from "../AddressBook/AddressBookList"
 import validate from "../validate"
 import Tx from "../Tx"
 import { getChainIDFromAddress } from "utils/bech32"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
+import AddressBook from "txs/AddressBook/AddressBook"
 
 interface TxValues {
   recipient?: string // AccAddress | TNS
@@ -175,7 +176,7 @@ const TransferCW721Form = ({ contract, id }: Props) => {
             )}
           </Tx>
         </Card>,
-        <AddressBookList onClick={onClickAddressBookItem} />,
+        <AddressBook onClick={onClickAddressBookItem} />,
       ]}
     />
   )

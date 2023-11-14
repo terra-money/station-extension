@@ -19,15 +19,17 @@ import {
   SubmitButton,
 } from "station-ui"
 import styles from "./CreateWalletForm.module.scss"
+import { decrypt } from "auth/scripts/aes"
 
 interface Values extends DefaultValues {
   confirm: string
   checked?: boolean
+  seedPassword?: string
 }
 
 enum ImportOptions {
   MNEMONIC = "mnemonic",
-  PRIVATE_KEY = "private-key",
+  SEED_KEY = "seed-key",
 }
 
 const CreateWalletForm = () => {
@@ -45,17 +47,79 @@ const CreateWalletForm = () => {
     defaultValues: { ...values, confirm: "", checked: false },
   })
 
-  const { register, watch, handleSubmit, formState, reset, setValue } = form
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState,
+    reset,
+    setValue,
+    setError,
+  } = form
   const { errors, isValid } = formState
-  const { mnemonic, index, checked } = watch()
+  const formValues = watch()
+  const { mnemonic, index, checked } = formValues
 
   useEffect(() => {
     return () => reset()
   }, [reset])
 
-  const submit = ({ name, mnemonic, index }: Values) => {
-    setValues({ name, mnemonic: mnemonic.trim(), index })
-    setStep(2)
+  const submit = ({ name, mnemonic, index, seedPassword }: Values) => {
+    if (importOption === ImportOptions.SEED_KEY) {
+      if (!seedPassword || !validateSeedPassword(mnemonic, seedPassword)) {
+        setError("seedPassword", { message: t("Invalid password") })
+        return
+      }
+
+      const { seed, index, legacy } = JSON.parse(
+        Buffer.from(mnemonic, "base64").toString("ascii")
+      )
+
+      setValues({
+        name,
+        mnemonic: seed,
+        index,
+        coinType: legacy ? 118 : 330,
+        seedPassword,
+      })
+      setStep(3)
+    } else {
+      setValues({ name, mnemonic: mnemonic.trim(), index })
+      setStep(2)
+    }
+  }
+
+  function validateSeed(value?: string) {
+    if (!value) return t("Invalid seed key")
+    try {
+      const { name, seed } = JSON.parse(
+        Buffer.from(value, "base64").toString("ascii")
+      )
+
+      if (typeof seed !== "string") {
+        return typeof name === "string"
+          ? t("this key has been exported from an old version of Station")
+          : t("Invalid seed key")
+      }
+
+      return true
+    } catch {
+      return t("Invalid seed key")
+    }
+  }
+
+  function validateSeedPassword(value: string, password: string) {
+    try {
+      const { seed } = JSON.parse(
+        Buffer.from(value, "base64").toString("ascii")
+      )
+
+      decrypt(seed, password)
+
+      return true
+    } catch {
+      return false
+    }
   }
 
   function renderImportOption() {
@@ -120,11 +184,11 @@ const CreateWalletForm = () => {
             )}
           </>
         )
-      case ImportOptions.PRIVATE_KEY:
+      case ImportOptions.SEED_KEY:
         return (
           <>
             <InputWrapper
-              label={t("Private key")}
+              label={t("Seed key")}
               error={errors.mnemonic?.message}
               extra={
                 <Paste
@@ -137,9 +201,28 @@ const CreateWalletForm = () => {
             >
               <Input
                 type="password"
-                {...register("mnemonic", { validate: validate.mnemonic })}
+                {...register("mnemonic", { validate: validateSeed })}
               />
             </InputWrapper>
+
+            <InputWrapper
+              label={t("Password")}
+              error={errors.seedPassword?.message}
+            >
+              <Input
+                {...register("seedPassword", {
+                  value: "",
+                })}
+                type="password"
+              />
+            </InputWrapper>
+
+            <Banner
+              variant="info"
+              title={t(
+                "This is the password you use on the device from where you exported the key."
+              )}
+            />
           </>
         )
     }
@@ -190,12 +273,18 @@ const CreateWalletForm = () => {
                 {
                   key: ImportOptions.MNEMONIC,
                   label: t("Mnemonic Phrase"),
-                  onClick: () => setImportOption(ImportOptions.MNEMONIC),
+                  onClick: () => {
+                    setValues({ ...formValues, mnemonic: "" })
+                    setImportOption(ImportOptions.MNEMONIC)
+                  },
                 },
                 {
-                  key: ImportOptions.PRIVATE_KEY,
-                  label: t("Private Key"),
-                  onClick: () => setImportOption(ImportOptions.PRIVATE_KEY),
+                  key: ImportOptions.SEED_KEY,
+                  label: t("Seed Key"),
+                  onClick: () => {
+                    setValues({ ...formValues, mnemonic: "" })
+                    setImportOption(ImportOptions.SEED_KEY)
+                  },
                 },
               ]}
               activeTabKey={importOption}
