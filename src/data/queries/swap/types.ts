@@ -24,6 +24,7 @@ export interface SwapState {
   offerAmount: string
   askAsset: SwapAssetExtra
   fromAddress: string // get this from wallet
+  route: RouteInfo | undefined
 }
 
 export interface RouteParams {

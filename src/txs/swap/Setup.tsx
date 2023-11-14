@@ -26,18 +26,21 @@ enum SwapAssetType {
 
 const SwapForm = () => {
   // Hooks
-  const { tokens, getTokensWithBal, getBestRoute, swapForm } = useSwap()
+  const { tokens, getTokensWithBal, getBestRoute, defaultValues } = useSwap()
   const { t } = useTranslation()
   const navigate = useNavigate()
 
   // Form
-  const { watch, getValues, setValue, setError, register } = swapForm
+  const form = useForm<SwapState>({
+    mode: "onChange",
+    defaultValues,
+  })
 
   // State
+  const { watch, getValues, setValue, setError, register } = form
   const [assetModal, setAssetModal] = useState<SwapAssetType | undefined>()
-  const [route, setRoute] = useState<RouteInfo | undefined>()
   const [displayTokens, setDisplayTokens] = useState<SwapAssetExtra[]>([])
-  const { offerAsset, askAsset, offerAmount } = watch()
+  const { offerAsset, askAsset, offerAmount, route } = watch()
 
   useEffect(() => {
     if (!offerAsset || !askAsset || !offerAmount) return
@@ -46,14 +49,22 @@ const SwapForm = () => {
     const fetchRoute = async () => {
       try {
         const route = await getBestRoute({ ...swapState, offerAmount: amount })
-        setRoute(route)
+        setValue("route", route)
       } catch (err) {
         console.log("err", err)
       }
     }
 
     fetchRoute()
-  }, [offerAsset, askAsset, offerAmount, getBestRoute, getValues, setError])
+  }, [
+    offerAsset,
+    askAsset,
+    offerAmount,
+    getBestRoute,
+    getValues,
+    setValue,
+    setError,
+  ])
 
   // Handlers
   const handleOpenModal = (type: SwapAssetType) => {
@@ -122,7 +133,7 @@ const SwapForm = () => {
       />
       <Button
         variant="primary"
-        onClick={() => navigate("confirm")}
+        onClick={() => navigate("confirm", { state: getValues() })}
         label={t("Continue")}
       />
     </div>
