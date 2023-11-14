@@ -1,3 +1,5 @@
+import { ChainID } from "types/network"
+
 export interface SkipTokenResponse {
   denom: string
   chain_id: string
@@ -21,10 +23,11 @@ export type SupportedSource = SwapSource.SKIP | SwapSource.SQUID
 
 export interface SwapState {
   offerAsset: SwapAssetExtra
-  offerAmount: string
+  offerInput: string
   askAsset: SwapAssetExtra
   fromAddress: string // get this from wallet
   route: RouteInfo | undefined
+  msgs: any[] // TODO: typing
 }
 
 export interface RouteParams {
@@ -51,7 +54,7 @@ export interface SwapAssetExtra extends SwapAssetBase {
 }
 
 export type SwapVenue = "osmosis-poolmanager"
-export type SwapOperation = "swap" | "transfer"
+export type SwapOperation = any // TODO: typing
 
 export interface RouteInfo {
   amountIn: string
@@ -60,4 +63,5 @@ export interface RouteInfo {
   swapVenue: SwapVenue
   operations: SwapOperation[]
   source: SupportedSource
+  chainIds: ChainID[]
 }

@@ -7,7 +7,7 @@ const SwapTimeline = ({
   offerAsset,
   askAsset,
   route,
-  offerAmount,
+  offerInput,
 }: SwapState) => {
   const { t } = useTranslation()
   if (!route) return null
@@ -21,8 +21,26 @@ const SwapTimeline = ({
       icon: offerAsset.icon ?? "",
       label: offerAsset.symbol,
     },
-    msg: toInput(offerAmount, offerAsset.decimals) + " " + offerAsset.symbol,
+    msg: offerInput + " " + offerAsset.symbol,
   }
+  //   variant: "default" | "warning" | "success";
+  //     msg: ReactNode;
+  //     warningPillText?: string | undefined;
+  //     transactionButton?: {
+  //         label: string;
+  //         onClick: () => void;
+  //     } | undefined;
+  //     disabled?: boolean | undefined;
+  // }[]
+  // const getMiddleItems = () => {
+  //   const first = {
+  //     msg:
+
+  //   }
+  const middleItems = route.operations.map((o, i) => {
+    const type = Object.keys(o)[0]
+    console.log("type", type)
+  })
   const endItem = {
     chain: {
       label: askAsset.chain.name,

@@ -9,6 +9,7 @@ import {
   SwapOperation,
   SwapSource,
 } from "./types"
+import { ChainID, InterchainAddresses } from "types/network"
 
 export const skipApi = {
   queryTokens: async () => {
@@ -40,12 +41,45 @@ export const skipApi = {
       console.log("Skip Token Error", err)
     }
   },
-  queryRoute: async ({ askAsset, offerAmount, offerAsset }: SwapState) => {
+  queryMsgs: async (state: SwapState, addresses: InterchainAddresses) => {
+    try {
+      const { askAsset, offerInput, offerAsset, route } = state
+      if (!route || !addresses) return null
+      const res = await axios.post(
+        SKIP_SWAP_API.routes.msgs,
+        {
+          amount_in: offerInput,
+          amount_out: route.amountOut,
+          source_asset_denom: offerAsset.denom,
+          source_asset_chain_id: offerAsset.chainId,
+          dest_asset_denom: askAsset.denom,
+          dest_asset_chain_id: askAsset.chainId,
+          address_list: route.chainIds.map((chainId) => addresses[chainId]),
+          operations: route.operations,
+          slippageTolerancePercent: "1",
+        },
+        {
+          baseURL: SKIP_SWAP_API.baseUrl,
+          headers: {
+            accept: "application/json",
+          },
+        }
+      )
+      if (!res.data.msgs) {
+        throw new Error("No msgs returned from Skip API")
+      }
+      return res.data.msgs
+    } catch (err) {
+      console.log("Skip Msgs Error", err)
+    }
+  },
+
+  queryRoute: async ({ askAsset, offerInput, offerAsset }: SwapState) => {
     try {
       const res = await axios.post(
         SKIP_SWAP_API.routes.route,
         {
-          amount_in: offerAmount,
+          amount_in: offerInput,
           source_asset_denom: offerAsset.denom,
           source_asset_chain_id: offerAsset.chainId,
           dest_asset_denom: askAsset.denom,
@@ -66,10 +100,9 @@ export const skipApi = {
         amountOut: res.data.estimated_amount_out,
         txsRequired: res.data.txs_required,
         source: SwapSource.SKIP,
+        chainIds: res.data.chain_ids,
         swapVenue: res.data.swap_venue.name as SwapVenue,
-        operations: res.data.operations.map((operation: any) =>
-          operation.transfer ? "transfer" : ("swap" as SwapOperation)
-        ),
+        operations: res.data.operations as SwapOperation[],
       }
 
       return transformedRouteInfo

@@ -57,5 +57,6 @@ export const SKIP_SWAP_API = {
   routes: {
     route: "/fungible/route",
     tokens: "/fungible/assets",
+    msgs: "/fungible/msgs",
   },
 }
