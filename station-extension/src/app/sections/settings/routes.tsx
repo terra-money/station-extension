@@ -16,6 +16,7 @@ import AddressBook from "txs/AddressBook/AddressBook"
 import { useTranslation } from "react-i18next"
 import AddAddressBookForm from "txs/AddressBook/AddressBookForm"
 import PreferencesPage, { SettingsPage } from "./PreferencesPage"
+import { lockWallet } from "auth/scripts/keystore"
 
 export const useSettingsRoutes = () => {
   const { i18n, t } = useTranslation()
@@ -44,9 +45,11 @@ export const useSettingsRoutes = () => {
       icon: <ManageAssets />,
     },
     lockWallet: {
-      route: "lock-wallet",
+      onClick: () => {
+        lockWallet()
+        window.location.reload()
+      },
       title: t("Lock Wallet"),
-      element: <span></span>,
       icon: <LockOutlinedIcon />,
     },
   }

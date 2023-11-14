@@ -5,7 +5,9 @@ export default function PreferencesButton() {
   const navigate = useNavigate()
   return (
     <button onClick={() => navigate("/preferences")}>
-      <SettingsIcon />
+      <SettingsIcon
+        style={{ color: "var(--token-dark-900)", width: 20, height: 20 }}
+      />
     </button>
   )
 }
