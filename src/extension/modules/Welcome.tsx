@@ -59,13 +59,29 @@ const Welcome = () => {
         )}
         <section className={styles.connect__options}>
           {!existsWallets && existsLegacyWallets && !migrationCompleted ? (
-            <Button
-              onClick={() => openURL("/auth/migration")}
-              variant="white-filled"
-              block
-              icon={<WalletIcon />}
-              label={t("Upgrade wallets")}
-            />
+            <>
+              <Button
+                onClick={() => openURL("/auth/migration")}
+                variant="white-filled"
+                block
+                icon={<WalletIcon />}
+                label={t("Upgrade wallets")}
+              />
+              <Button
+                onClick={() => openURL("/auth/new")}
+                variant="outlined"
+                block
+                icon={<AddIcon />}
+                label={t("Create new wallet")}
+              />
+              <Button
+                onClick={() => openURL("/auth/ledger")}
+                variant="outlined"
+                block
+                icon={<UsbIcon />}
+                label={t("Connect Ledger wallet")}
+              />
+            </>
           ) : (
             <>
               <Button

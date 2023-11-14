@@ -16,7 +16,9 @@ import {
   Form,
   Banner,
 } from "station-ui"
-import { wordsFromAddress } from "utils/bech32"
+import { addressFromWords, wordsFromAddress } from "utils/bech32"
+import { ReactComponent as WalletIcon } from "styles/images/icons/Wallet.svg"
+import { truncate } from "@terra-money/terra-utils"
 
 export type MigratedWalletResult =
   | {
@@ -58,7 +60,6 @@ interface Values {
 
 const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
   const { t } = useTranslation()
-  console.log(wallet)
 
   const form = useForm<Values>({
     mode: "onChange",
@@ -193,8 +194,12 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
 
   return (
     <ExtensionPage
-      // TODO: do we need the logo here?
+      img={<WalletIcon width={40} height={40} />}
       title={wallet.name}
+      label={truncate(
+        wallet.address || addressFromWords(wallet.words?.["330"] || ""),
+        [10, 10]
+      )}
       subtitle={t(
         "Enter the password for this wallet to import it into Station v3."
       )}
@@ -241,8 +246,12 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
                 />
               </InputWrapper>
               {!wallet.encryptedSeed && (
-                // TODO: fix wording for this banner
-                <Banner variant="info" title={t("This is a legacy wallet")} />
+                <Banner
+                  variant="warning"
+                  title={t(
+                    "Importing your wallet using only password means you will experience limited features for this wallet. For best results, import using your seed phrase instead!"
+                  )}
+                />
               )}
             </>
           ) : (
