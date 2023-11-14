@@ -10,7 +10,13 @@ import {
   storeWallets,
 } from "auth/scripts/keystore"
 import PasswordForm from "./PasswordForm"
-import { SelectableListItem, Button, Grid, Banner } from "station-ui"
+import {
+  SelectableListItem,
+  Button,
+  Grid,
+  Banner,
+  SummaryHeader,
+} from "station-ui"
 import { FlexColumn } from "components/layout"
 
 import { ReactComponent as CheckIcon } from "styles/images/icons/Check.svg"
@@ -47,6 +53,7 @@ const MigrationWizard = () => {
   const [password, setPassword] = useState<string | undefined>()
   const [selectedWallet, setSelectedWallet] = useState<string | undefined>()
   const [warning, setWarning] = useState<boolean>(false)
+  const [completed, setCompleted] = useState<boolean>(false)
 
   const [legacyWallets, setLegacyWallets] = useState<any[]>(
     getStoredLegacyWallets().filter(
@@ -56,6 +63,58 @@ const MigrationWizard = () => {
   const [migratedWallets, setMigratedWallets] = useState<
     (MigratedWalletResult | ResultStoredWallet)[]
   >(getStoredLegacyWallets().filter((w) => !needsMigration(w)))
+
+  if (completed) {
+    return (
+      <ExtensionPage>
+        <Grid gap={24} style={{ marginTop: 50 }}>
+          <SummaryHeader
+            statusLabel={t("Success!")}
+            statusMessage={t("Your wallets have been imported.")}
+            status={"success"}
+          />
+          <FlexColumn gap={8}>
+            {migratedWallets.map((wallet, i) => (
+              <SelectableListItem
+                key={`legacy-${i}`}
+                label={wallet.name}
+                subLabel={truncate(
+                  // @ts-expect-error
+                  addressFromWords(wallet.words["330"])
+                )}
+                icon={
+                  <CheckIcon
+                    width={32}
+                    height={32}
+                    color="var(--token-success-500)"
+                  />
+                }
+                disabled
+                onClick={() => {}}
+              />
+            ))}
+          </FlexColumn>
+          {legacyWallets.length && (
+            <Banner
+              variant="info"
+              title={t(
+                "You can import other wallets later from the settings page."
+              )}
+            />
+          )}
+          <Button
+            variant="primary"
+            onClick={() => {
+              navigate("/")
+              setMigratedWallets([])
+            }}
+          >
+            {t("Done")}
+          </Button>
+        </Grid>
+      </ExtensionPage>
+    )
+  }
 
   if (!password) {
     return (
@@ -148,7 +207,6 @@ const MigrationWizard = () => {
 
     // cleanup sensitive data
     setPassword(undefined)
-    setMigratedWallets([])
 
     // if legacy active wallet is migrated, connect to it
     const activeWallet =
@@ -159,9 +217,8 @@ const MigrationWizard = () => {
     // if we have a wallet to connect to (we will not if the user has choose to migrate no wallet), connect to it
     activeWallet && connectWallet(activeWallet)
 
-    // redirect to homepage
-    // TODO: redirect to success page
-    navigate("/")
+    // redirect to success page
+    setCompleted(true)
   }
 
   return (
