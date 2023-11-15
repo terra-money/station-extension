@@ -5,8 +5,7 @@ import { Wrong } from "components/feedback"
 import { isWallet, useAuth } from "auth"
 import { Card } from "components/layout"
 import { Modal } from "station-ui"
-import { Link, useNavigate } from "react-router-dom"
-import CloseIcon from "@mui/icons-material/Close"
+import { useNavigate } from "react-router-dom"
 
 const SignMultisigTxPage = () => {
   const { t } = useTranslation()
@@ -25,6 +24,8 @@ const SignMultisigTxPage = () => {
     return <SignMultisigTxForm defaultValues={defaultValues} />
   }
 
+  console.log("address", defaultValues)
+
   return (
     <Modal
       isOpen
@@ -32,10 +33,10 @@ const SignMultisigTxPage = () => {
         navigate("/", { replace: true })
       }}
       backAction={() => {
-        navigate("/", { replace: true })
+        navigate(`/manage-wallet/manage/${wallet.name}`)
       }}
       title={t("Sign Multisig Tx")}
-      subtitle={wallet.address}
+      subtitle={defaultValues.address}
     >
       {render()}
     </Modal>
