@@ -13,26 +13,34 @@ const TextArea = forwardRef(
     attrs: TextAreaProps,
     ref: ForwardedRef<HTMLTextAreaElement>,
   ) => {
-    const { className, value, ...otherProps } = attrs
+    const { className, value, onChange, ...otherProps } = attrs
     const [displayValue, setDisplayValue] = useState<string>("")
 
-    useEffect(() => {
+    const handleFormat = (value: string) => {
       if (typeof value === "string") {
         try {
-          // Try to parse the string as JSON
           const parsed = JSON.parse(value)
-          // If parsing is successful, format the string
-          setDisplayValue(JSON.stringify(parsed, null, 6))
+          return JSON.stringify(parsed, null, 6)
         } catch (e) {
-          // If parsing fails, just use the original string
-          console.log("TextArea displayValue error: ", e)
-          setDisplayValue(value)
+          return value
         }
       } else if (value && typeof value === "object") {
-        // Handle the case where value is already an object
-        setDisplayValue(JSON.stringify(value, null, 2))
+        return JSON.stringify(value, null, 6)
       }
-    }, [value]);
+    }
+
+    useEffect(() => {
+      const formatted = handleFormat(value as string || "")
+      setDisplayValue(formatted || '')
+    }, [value])
+
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const formatted = handleFormat(e.target.value)
+      setDisplayValue(formatted || '')
+      if (onChange) {
+        onChange(e)
+      }
+    }
 
     return (
       <textarea
@@ -40,6 +48,7 @@ const TextArea = forwardRef(
         className={cx(styles.textarea, className)}
         ref={ref}
         value={displayValue}
+        onChange={handleChange}
         {...otherProps}
       />
     )
