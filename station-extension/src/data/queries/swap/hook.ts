@@ -15,6 +15,7 @@ import { useExchangeRates } from "../coingecko"
 import { useCallback, useMemo } from "react"
 import { useAllInterchainAddresses } from "auth/hooks/useAddress"
 import { InterchainAddresses } from "types/network"
+import { toAmount } from "@terra-money/terra-utils"
 
 // Tokens
 const queryMap = {
@@ -73,7 +74,10 @@ export const useGetBestRoute = (sources?: SupportedSource[]) => {
     async (swap: SwapState) => {
       const routePromises = routeSources.map(async (source) => {
         try {
-          return await routeMap[source]?.(swap)
+          const amount = toAmount(swap.offerInput, {
+            decimals: swap.offerAsset.decimals,
+          })
+          return await routeMap[source]?.({ ...swap, offerInput: amount })
         } catch (error) {
           console.error(`Error getting route from ${source}:`, error)
           return null // Return null in case of error to not break Promise.all
@@ -114,8 +118,13 @@ export const useGetMsgs = (sources?: SupportedSource[]) => {
       if (!addresses) return null
       const routePromises = msgSources.map((source) => {
         try {
-          const res = msgMap[source]?.(swap, addresses)
-          console.log("res", res)
+          const amount = toAmount(swap.offerInput, {
+            decimals: swap.offerAsset.decimals,
+          })
+          const res = msgMap[source]?.(
+            { ...swap, offerInput: amount },
+            addresses
+          )
           return res
         } catch (error) {
           console.error(`Error getting msgs from ${source}:`, error)
