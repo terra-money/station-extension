@@ -66,6 +66,23 @@ import { TextArea } from "station-ui";
   `} />
 </div>
 
+## Object Example
+<div className="story_with_source_below">
+  <Canvas of={TextAreaStories.ObjectExample} />
+  <Source code={`
+    <InputWrapper
+  label="Textbox label"
+>
+  <TextArea
+    readOnly={true}
+    value={
+      '{"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"amount":"1000000","denom":"uluna"}],"from_address":"terra195lqjqrjdq7mfdzyyfl6ctn8vtkwt43gvyutla","to_address":"terra195lqjqrjdq7mfdzyyfl6ctn8vtkwt43gvyutla"}'
+    }
+  />
+</InputWrapper>
+  `} />
+</div>
+
 <br />
 <br />
 <br />

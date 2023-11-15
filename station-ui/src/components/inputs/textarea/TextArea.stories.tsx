@@ -116,8 +116,9 @@ export const ObjectExample: StoryObj<TextAreaProps> = {
         <TextArea
           readOnly={true}
           value={
-            `{"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"amount":"1000000","denom":"uluna"}],"from_address":"terra195lqjqrjdq7mfdzyyfl6ctn8vtkwt43gvyutla","to_address":"terra195lqjqrjdq7mfdzyyfl6ctn8vtkwt43gvyutla"}`
+            '{"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"amount":"1000000","denom":"uluna"}],"from_address":"terra195lqjqrjdq7mfdzyyfl6ctn8vtkwt43gvyutla","to_address":"terra195lqjqrjdq7mfdzyyfl6ctn8vtkwt43gvyutla"}'
           }
+          rows={10}
         />
       </InputWrapper>
     );
