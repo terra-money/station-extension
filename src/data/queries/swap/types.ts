@@ -28,7 +28,6 @@ export interface SwapState {
   fromAddress: string // get this from wallet
   route: RouteInfo | undefined
   msgs: any[] // TODO: typing
-  handleSubmit: any
 }
 
 export interface RouteParams {

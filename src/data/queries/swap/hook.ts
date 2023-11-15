@@ -127,6 +127,7 @@ export const useGetMsgs = (sources?: SupportedSource[]) => {
           )
           return res
         } catch (error) {
+          console.log("getMsgs error", error)
           console.error(`Error getting msgs from ${source}:`, error)
           return null // Return null in case of error to not break Promise.all
         }
