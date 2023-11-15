@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   AssetSelectorTo,
   AssetSelectorFrom,
@@ -7,13 +8,11 @@ import {
 } from "station-ui"
 import { useMemo, useState } from "react"
 import { SwapAssetExtra, SwapState } from "data/queries/swap/types"
-import { useForm } from "react-hook-form"
 import { useSwap } from "./SwapContext"
 import { useTranslation } from "react-i18next"
 import { toInput } from "txs/utils"
 import SwapTokenSelector from "./components/SwapTokenSelector"
 import { useEffect } from "react"
-import { toAmount } from "@terra-money/terra-utils"
 import validate from "txs/validate"
 import { useNavigate } from "react-router-dom"
 import { ReactComponent as SwapArrows } from "styles/images/icons/SwapArrows.svg"
@@ -27,17 +26,17 @@ enum SwapAssetType {
 
 const SwapForm = () => {
   // Hooks
-  const { tokens, getTokensWithBal, getBestRoute, defaultValues, getMsgs } =
-    useSwap()
+  const { tokens, getTokensWithBal, getBestRoute, form, getMsgs } = useSwap()
+
   const { t } = useTranslation()
   const navigate = useNavigate()
   const currency = useCurrency()
 
   // Form
-  const form = useForm<SwapState>({
-    mode: "onChange",
-    defaultValues,
-  })
+  // const form = useForm<SwapState>({
+  //   mode: "onChange",
+  //   defaultValues,
+  // })
 
   // State
   const { watch, getValues, setValue, setError, register } = form
@@ -49,32 +48,23 @@ const SwapForm = () => {
   useEffect(() => {
     if (!offerAsset || !askAsset || !offerInput) return
     const swapState = getValues()
-    const amount = toAmount(offerInput, { decimals: offerAsset.decimals })
     const fetchRouteAndMsgs = async () => {
       try {
         setIsLoading(true)
-        const route = await getBestRoute({ ...swapState, offerInput: amount })
-        const msgs = await getMsgs({ ...swapState, offerInput: amount })
+        const route = await getBestRoute(swapState)
+        const msgs = await getMsgs(swapState)
         console.log("msgs", msgs)
-        setIsLoading(false)
         setValue("msgs", msgs)
         setValue("route", route)
-      } catch (err) {
+        setIsLoading(false)
+      } catch (err: any) {
         console.log("err", err)
+        setError("offerInput", { message: err.message })
       }
     }
 
     fetchRouteAndMsgs()
-  }, [
-    offerAsset,
-    getMsgs,
-    askAsset,
-    offerInput,
-    getBestRoute,
-    getValues,
-    setValue,
-    setError,
-  ])
+  }, [offerAsset.denom, askAsset.denom, offerInput])
 
   // Handlers
   const handleOpenModal = (type: SwapAssetType) => {
@@ -159,7 +149,7 @@ const SwapForm = () => {
       <Button
         variant="primary"
         loading={isLoading}
-        disabled={!offerInput || isLoading || !route || !msgs}
+        disabled={!offerInput || isLoading || !route || !msgs.length}
         onClick={buttonOnClick}
         label={t("Continue")}
       />

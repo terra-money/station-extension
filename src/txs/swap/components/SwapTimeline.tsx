@@ -39,7 +39,6 @@ const SwapTimeline = ({
   //   }
   const middleItems = route.operations.map((o, i) => {
     const type = Object.keys(o)[0]
-    console.log("type", type)
   })
   const endItem = {
     chain: {
