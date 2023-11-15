@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactNode, useEffect, useState } from "react"
 import classNames from "classnames/bind"
-import { Button } from "components"
 import { BuyIcon, AlertIcon, SmallCircleCheckIcon } from "components"
 import Pill from "components/general/pill/Pill"
 import styles from "./Timeline.module.scss"
@@ -19,10 +18,7 @@ export interface TimelineProps {
     variant: "default" | "success" | "warning"
     msg: ReactNode
     warningPillText?: string
-    transactionButton?: {
-      label: string
-      onClick: () => void
-    }
+    transactionButton?: ReactNode
     disabled?: boolean
   }[]
   endItem?: {
@@ -48,10 +44,7 @@ const Timeline = ({
       variant: "default" | "success" | "warning"
       msg: ReactNode
       warningPillText?: string
-      transactionButton?: {
-        label: string
-        onClick: () => void
-      }
+      transactionButton?: ReactNode
       disabled?: boolean
     }
 
@@ -157,14 +150,7 @@ const Timeline = ({
                     <h4>{item.msg}</h4>
                   </div>
                 </div>
-                {item.transactionButton && (
-                  <Button
-                    variant="primary"
-                    label={item.transactionButton.label}
-                    onClick={item.transactionButton.onClick}
-                    disabled={item?.disabled}
-                  />
-                )}
+                {item.transactionButton}
               </div>
             )
           })}
