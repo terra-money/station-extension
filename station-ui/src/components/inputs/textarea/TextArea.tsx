@@ -13,24 +13,24 @@ const TextArea = forwardRef(
     attrs: TextAreaProps,
     ref: ForwardedRef<HTMLTextAreaElement>,
   ) => {
-    const { className, value, ...otherProps } = attrs;
-    const [displayValue, setDisplayValue] = useState<string>("");
+    const { className, value, ...otherProps } = attrs
+    const [displayValue, setDisplayValue] = useState<string>("")
 
     useEffect(() => {
-      if (typeof value === 'string') {
+      if (typeof value === "string") {
         try {
           // Try to parse the string as JSON
-          const parsed = JSON.parse(value);
+          const parsed = JSON.parse(value)
           // If parsing is successful, format the string
-          setDisplayValue(JSON.stringify(parsed, null, 6));
+          setDisplayValue(JSON.stringify(parsed, null, 6))
         } catch (e) {
           // If parsing fails, just use the original string
           console.log("TextArea displayValue error: ", e)
-          setDisplayValue(value);
+          setDisplayValue(value)
         }
-      } else if (value && typeof value === 'object') {
+      } else if (value && typeof value === "object") {
         // Handle the case where value is already an object
-        setDisplayValue(JSON.stringify(value, null, 2));
+        setDisplayValue(JSON.stringify(value, null, 2))
       }
     }, [value]);
 
