@@ -1,6 +1,7 @@
 @import "scss/font_mixins.scss";
 
 .selectable__li {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -72,6 +73,10 @@
         color: var(--token-light-100);
       }
     }
+  }
+
+  &.disabled {
+    background-color: var(--token-dark-500);
   }
 
   &.address__li {
