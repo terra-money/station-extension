@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect } from "react"
+import { PropsWithChildren, useMemo, useEffect } from "react"
 import createContext from "utils/createContext"
 import { combineState } from "data/query"
 import { Fetching } from "components/feedback"
@@ -25,6 +25,10 @@ interface Swap {
   getBestRoute: (swap: SwapState) => Promise<RouteInfo>
   getMsgs: (swap: SwapState) => any
   form: UseFormReturn<SwapState>
+  // defaultValues: {
+  //   askAsset: SwapAssetExtra
+  //   offerAsset: SwapAssetExtra
+  // }
 }
 
 export const [useSwap, SwapProvider] = createContext<Swap>("useSwap")
@@ -45,23 +49,24 @@ const SwapContext = ({ children }: PropsWithChildren<{}>) => {
   const state = combineState(...swap)
 
   const form = useForm<SwapState>({ mode: "onChange" })
-  const { askAsset, offerAsset } = form.watch()
+  const { offerAsset } = form.watch()
 
   useEffect(() => {
-    if (!askAsset || !offerAsset) {
+    if (!offerAsset) {
       form.reset({
         askAsset: defaultValues.askAsset,
         offerAsset: defaultValues.offerAsset,
       })
     }
-  }, [defaultValues, form, askAsset, offerAsset])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultValues.askAsset, defaultValues.offerAsset])
 
   const getTokensWithBal = (tokens: SwapAssetExtra[]) => {
     return tokens.filter((t) => Number(t.balance) > 0)
   }
 
   const render = () => {
-    if (!offerAsset || !askAsset) return null
+    if (!offerAsset) return null
     const value = {
       tokens: parsed,
       getTokensWithBal,
