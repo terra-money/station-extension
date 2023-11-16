@@ -8,8 +8,12 @@ import {
   SwapVenue,
   SwapOperation,
   SwapSource,
+  TimelineMessage,
+  OperationType,
+  SwapTimelineMessage,
 } from "./types"
-import { InterchainAddresses } from "types/network"
+import { InterchainAddresses, InterchainNetworks } from "types/network"
+import { IInterchainNetworks } from "data/wallet"
 
 export const skipApi = {
   queryTokens: async () => {
@@ -73,9 +77,9 @@ export const skipApi = {
       console.log("Skip Msgs Error", err)
     }
   },
-
-  queryRoute: async ({ askAsset, offerInput, offerAsset }: SwapState) => {
+  queryRoute: async (swap: SwapState, network: IInterchainNetworks) => {
     try {
+      const { askAsset, offerInput, offerAsset } = swap
       const res = await axios.post(
         SKIP_SWAP_API.routes.route,
         {
@@ -103,8 +107,9 @@ export const skipApi = {
         txsRequired: res.data.txs_required,
         source: SwapSource.SKIP,
         chainIds: res.data.chain_ids,
-        swapVenue: res.data.swap_venue.name as SwapVenue,
+        swapVenue: res.data?.swap_venue?.name as SwapVenue,
         operations: res.data.operations as SwapOperation[],
+        timelineMsgs: getTimelineMessages(res.data, swap, network),
       }
 
       return transformedRouteInfo
@@ -113,4 +118,46 @@ export const skipApi = {
       throw err
     }
   },
+}
+
+// UTILS
+
+const getTimelineMessages = (
+  route: any,
+  swap: SwapState,
+  network: IInterchainNetworks
+) => {
+  let swapOccured = false
+
+  const timelineMsgs: TimelineMessage[] = route.operations.map(
+    (op: any, i: number) => {
+      const type = Object.keys(op)[0] as OperationType
+
+      if (type === "transfer") {
+        const fromChainId = op[type].chain_id
+        const toChainId =
+          route.operations[i + 1]?.transfer?.chain_id ??
+          route.operations[i + 1]?.swap.swap_in.swap_venue.chain_id
+        return {
+          type,
+          symbol: swapOccured ? swap.askAsset.symbol : swap.offerAsset.symbol, // TODO: make robust against multiple swaps
+          from: network[fromChainId].name ?? "Unknown network",
+          to:
+            network[toChainId ?? swap.askAsset.chainId].name ??
+            "Unknown network", // get final chainId from askAsset or next one in ops
+        }
+      }
+
+      if (type === "swap") {
+        swapOccured = true
+        return {
+          type,
+          venue: op[type].swap_in.swap_venue.name as SwapVenue,
+          askAssetSymbol: swap.askAsset.symbol,
+          offerAssetSymbol: swap.offerAsset.symbol,
+        }
+      }
+    }
+  )
+  return timelineMsgs
 }

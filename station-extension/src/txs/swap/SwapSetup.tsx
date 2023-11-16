@@ -14,7 +14,7 @@ import { toInput } from "txs/utils"
 import SwapTokenSelector from "./components/SwapTokenSelector"
 import { useEffect } from "react"
 import validate from "txs/validate"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { ReactComponent as SwapArrows } from "styles/images/icons/SwapArrows.svg"
 import styles from "./Swap.module.scss"
 import { useCurrency } from "data/settings/Currency"
@@ -30,6 +30,7 @@ const SwapForm = () => {
   const { tokens, getTokensWithBal, getBestRoute, form, getMsgs } = useSwap()
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { state } = useLocation()
   const currency = useCurrency()
   const [msgs, setMsgs] = useState<any[]>()
 
@@ -47,12 +48,26 @@ const SwapForm = () => {
 
   // Lifecycle
   useEffect(() => {
+    if (!state?.denom) return
+    const token = tokens.find(
+      (t) => t.originDenom === state.denom && has(t.balance)
+    )
+    if (!token) return
+    setValue("offerAsset", token)
+  }, [])
+
+  useEffect(() => {
+    console.log("offerInput", has(offerInput))
     if (!has(offerInput)) return
+    console.log("offerInput 2", offerInput)
     setValue("route", undefined) // for loading purposees
     const fetchRoute = async () => {
       try {
+        console.log("before")
         setValue("route", await getBestRoute(getValues()))
+        console.log("route", route)
       } catch (err: any) {
+        console.log("err", err)
         setError("offerInput", { message: err.message })
       }
     }

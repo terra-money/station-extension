@@ -1,5 +1,5 @@
 import { useQueries } from "react-query"
-import { useNetwork } from "data/wallet"
+import { IInterchainNetworks, useNetwork } from "data/wallet"
 import {
   SupportedSource,
   SwapSource,
@@ -14,7 +14,7 @@ import { useBankBalance } from "../bank"
 import { useExchangeRates } from "../coingecko"
 import { useCallback, useMemo } from "react"
 import { useAllInterchainAddresses } from "auth/hooks/useAddress"
-import { InterchainAddresses } from "types/network"
+import { InterchainAddresses, InterchainNetworks } from "types/network"
 import { toAmount } from "@terra-money/terra-utils"
 
 // Tokens
@@ -63,12 +63,14 @@ export const useParseSwapTokens = (tokens: SwapAssetBase[]) => {
 
 // Routing
 const routeMap = {
-  [SwapSource.SKIP]: (swap: SwapState) => skipApi.queryRoute(swap),
+  [SwapSource.SKIP]: (swap: SwapState, network: IInterchainNetworks) =>
+    skipApi.queryRoute(swap, network),
   [SwapSource.SQUID]: (swap: SwapState) => {},
 }
 
 export const useGetBestRoute = (sources?: SupportedSource[]) => {
   const routeSources = sources ?? (Object.keys(routeMap) as SupportedSource[])
+  const network = useNetwork()
 
   const getBestRoute = useCallback(
     async (swap: SwapState) => {
@@ -77,7 +79,10 @@ export const useGetBestRoute = (sources?: SupportedSource[]) => {
           const amount = toAmount(swap.offerInput, {
             decimals: swap.offerAsset.decimals,
           })
-          return await routeMap[source]?.({ ...swap, offerInput: amount })
+          return await routeMap[source]?.(
+            { ...swap, offerInput: amount },
+            network
+          )
         } catch (error) {
           console.error(`Error getting route from ${source}:`, error)
           return null // Return null in case of error to not break Promise.all
@@ -97,7 +102,7 @@ export const useGetBestRoute = (sources?: SupportedSource[]) => {
       )[0]
       return bestRoute
     },
-    [routeSources]
+    [routeSources, network]
   )
 
   return getBestRoute
