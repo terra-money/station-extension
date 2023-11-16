@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next"
 import { LegacyAminoMultisigPublicKey } from "@terra-money/feather.js"
 import { useChainID } from "data/wallet"
 import { useAccountInfo } from "data/queries/auth"
-import { Card, Grid, Page } from "components/layout"
+import { Card, Grid } from "components/layout"
+import ExtensionPage from "extension/components/ExtensionPage"
 import { Wrong } from "components/feedback"
 import { isWallet, useAuth } from "auth"
 import CreateMultisigWalletForm from "auth/modules/create/CreateMultisigWalletForm"
@@ -11,13 +12,17 @@ import ConfirmModal from "auth/modules/manage/ConfirmModal"
 import useDefaultValues from "./utils/useDefaultValues"
 import PostMultisigTxForm from "./PostMultisigTxForm"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { Banner } from "station-ui"
+import { Banner, Modal } from "station-ui"
+import { useNavigate } from "react-router-dom"
 
 const PostMultisigTxPage = () => {
   const { t } = useTranslation()
   const addresses = useInterchainAddresses()
   const chainID = useChainID()
   const { wallet } = useAuth()
+  const navigate = useNavigate()
+
+  console.log("wallet", wallet, wallet.threshold)
 
   /* account info */
   const { data: account, ...state } = useAccountInfo()
@@ -50,12 +55,12 @@ const PostMultisigTxPage = () => {
 
     if (!(publicKey instanceof LegacyAminoMultisigPublicKey))
       return (
-        <Card>
+        <>
           <Grid gap={4}>
             <Banner
               variant="info"
               title={t(
-                "This multisig wallet has no transaction history. The addresses and the threshold must be submitted again until a transaction history exist for this wallet."
+                "This multisig wallet has no transaction history. The addresses and the threshold must be submitted again until a transaction history exists for this wallet."
               )}
             />
             <CreateMultisigWalletForm onPubkey={onCreated} />
@@ -66,7 +71,7 @@ const PostMultisigTxPage = () => {
               {errorMessage}
             </ConfirmModal>
           )}
-        </Card>
+        </>
       )
 
     const signatures = publicKey.pubkeys.map((pubKey) => {
@@ -90,9 +95,19 @@ const PostMultisigTxPage = () => {
 
   const publicKey = account?.getPublicKey() ?? publicKeyFromNetwork
   return (
-    <Page {...state} title={t("Post a multisig tx")} small={!publicKey}>
+    <Modal
+      isOpen
+      onRequestClose={() => {
+        navigate("/", { replace: true })
+      }}
+      backAction={() => {
+        navigate(`/manage-wallet/manage/${wallet.name}`)
+      }}
+      title={t("Post a multisig tx")}
+      subtitle={wallet.address}
+    >
       {render()}
-    </Page>
+    </Modal>
   )
 }
 

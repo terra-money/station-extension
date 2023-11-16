@@ -9,13 +9,22 @@ import { SignatureV2, MultiSignature } from "@terra-money/feather.js"
 import { SAMPLE_ADDRESS } from "config/constants"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { latestTxState } from "data/queries/tx"
-import { Copy } from "components/general"
 import { Form, FormError, FormGroup, FormItem } from "components/form"
-import { Input, Submit, TextArea } from "components/form"
+import {
+  Copy,
+  Input,
+  TextArea,
+  InputWrapper,
+  SubmitButton,
+  SectionHeader,
+} from "station-ui"
+import { Submit } from "components/form"
 import { SAMPLE_ENCODED_TX, SAMPLE_SIGNATURE } from "./utils/placeholder"
 import ReadTx from "./ReadTx"
 import { useChainID } from "data/wallet"
 import validate from "auth/scripts/validate"
+import { truncate } from "@terra-money/terra-utils"
+import styles from "./MultisigTxForm.module.scss"
 
 interface Values {
   address: AccAddress
@@ -93,48 +102,52 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
     setSubmitting(false)
   }
 
+  console.log(SAMPLE_ENCODED_TX)
+
   return (
-    <>
-      <Form onSubmit={handleSubmit(submit)}>
-        <FormItem label={t("Multisig address")}>
-          <Input
-            {...register("address", {
-              validate: validate.address,
-            })}
-            placeholder={SAMPLE_ADDRESS}
-          />
-        </FormItem>
+    <Form onSubmit={handleSubmit(submit)} className={styles.form}>
+      <InputWrapper label={t("Multisig Address")}>
+        <Input
+          {...register("address", {
+            validate: validate.address,
+          })}
+          placeholder={SAMPLE_ADDRESS}
+          autoFocus
+        />
+      </InputWrapper>
+      <InputWrapper
+        label={t("Hashed Transaction")}
+        extra={<Copy copyText={tx} />}
+      >
+        <TextArea
+          {...register("tx", { required: true })}
+          placeholder={SAMPLE_ENCODED_TX}
+          rows={4}
+        />
+      </InputWrapper>
 
-        <FormItem label={t("Tx")} extra={<Copy text={tx} />}>
-          <TextArea
-            {...register("tx", { required: true })}
-            placeholder={SAMPLE_ENCODED_TX}
-            rows={6}
-          />
-        </FormItem>
+      <SectionHeader title={t("Signatures")} withLine />
 
-        <ReadTx tx={tx.trim()} />
+      {fields.map(({ address, id }, index) => (
+        <FormGroup key={id}>
+          <InputWrapper label={truncate(address, [13, 6])}>
+            <TextArea
+              {...register(`signatures.${index}.signature`)}
+              rows={2}
+              autoFocus={!index}
+            />
+          </InputWrapper>
+        </FormGroup>
+      ))}
 
-        <FormItem label={t("Signature")}>
-          {fields.map(({ address, id }, index) => (
-            <FormGroup key={id}>
-              <FormItem label={address}>
-                <TextArea
-                  {...register(`signatures.${index}.signature`)}
-                  placeholder={SAMPLE_SIGNATURE}
-                  rows={6}
-                  autoFocus={!index}
-                />
-              </FormItem>
-            </FormGroup>
-          ))}
-        </FormItem>
+      {error && <FormError>{error.message}</FormError>}
 
-        {error && <FormError>{error.message}</FormError>}
+      <ReadTx tx={tx.trim()} />
 
-        <Submit submitting={submitting} disabled={!isValid} />
-      </Form>
-    </>
+      <SectionHeader title={t("Confirm")} withLine />
+
+      <SubmitButton label={"Submit"} loading={submitting} disabled={!isValid} />
+    </Form>
   )
 }
 
