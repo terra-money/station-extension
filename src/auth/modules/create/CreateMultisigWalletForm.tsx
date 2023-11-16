@@ -19,6 +19,7 @@ import {
   SubmitButton,
 } from "station-ui"
 import { wordsFromAddress } from "utils/bech32"
+import { addMultisigWallet } from "auth/scripts/keystore"
 
 interface Values {
   name: string
@@ -89,7 +90,14 @@ const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
       if (!onCreated) return
       const address = publicKey.address("terra")
       const words = { "330": wordsFromAddress(address) }
-      const wallet = { name, words, multisig: true as const }
+      const wallet = {
+        name,
+        words,
+        multisig: true as const,
+        addresses: addresses.map(({ value }) => value),
+        threshold,
+      }
+      addMultisigWallet(wallet)
       onCreated(wallet)
     } catch (error) {
       setError(error as Error)
