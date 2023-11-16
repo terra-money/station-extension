@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
 import ExtensionPage from "extension/components/ExtensionPage"
-import Setup from "./Setup"
-import Confirm from "./Confirm"
+import Setup from "./SwapSetup"
+import Confirm from "./SwapConfirm"
 import SwapContext from "./SwapContext"
 import { Routes, Route, useLocation } from "react-router-dom"
 
