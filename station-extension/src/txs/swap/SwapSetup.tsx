@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom"
 import { ReactComponent as SwapArrows } from "styles/images/icons/SwapArrows.svg"
 import styles from "./Swap.module.scss"
 import { useCurrency } from "data/settings/Currency"
+import { has } from "utils/num"
 
 enum SwapAssetType {
   ASK = "askAsset",
@@ -44,8 +45,9 @@ const SwapForm = () => {
       : "0"
   }, [route, askAsset])
 
+  // Lifecycle
   useEffect(() => {
-    if (!offerInput) return
+    if (!has(offerInput)) return
     setValue("route", undefined) // for loading purposees
     const fetchRoute = async () => {
       try {
@@ -90,6 +92,7 @@ const SwapForm = () => {
     navigate("confirm", { state: msgs })
   }
 
+  // Values
   const currencyAmount = useMemo(() => {
     const offer = `${currency.symbol} ${(
       offerAsset.price * Number(offerInput)
@@ -146,7 +149,7 @@ const SwapForm = () => {
       />
       <Button
         variant="primary"
-        loading={!!(offerInput && !route)}
+        loading={!!(has(offerInput) && !route)}
         disabled={!offerInput || !route}
         onClick={buttonOnClick}
         label={t("Continue")}
