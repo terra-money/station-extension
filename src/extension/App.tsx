@@ -1,8 +1,7 @@
 import { useEffect } from "react"
-import { useRoutes } from "react-router-dom"
+import { useRoutes, useLocation } from "react-router-dom"
 import { useAddress, useChainID, useNetworkName } from "data/wallet"
-import { ErrorBoundary } from "components/feedback"
-import { fallback } from "app/App"
+import { ErrorBoundary, Wrong } from "components/feedback"
 import InitBankBalance from "app/InitBankBalance"
 import LatestTx from "app/sections/LatestTx"
 import NetworkHeader from "app/sections/NetworkHeader"
@@ -22,19 +21,23 @@ import AddNetworkPage from "./networks/AddNetworkPage"
 import Auth from "./auth/Auth"
 import Header from "./layouts/Header"
 import Front from "./modules/Front"
-import ManageWallets from "./auth/SelectWallets"
 import { useAllInterchainAddresses, usePubkey } from "auth/hooks/useAddress"
 import { Flex } from "components/layout"
 import NetworkStatus from "components/display/NetworkStatus"
-import Preferences from "app/sections/settings/Preferences"
+import PreferencesRouter from "app/sections/settings/PreferencesRouter"
 import { useAuth } from "auth"
 import is from "auth/scripts/is"
 import { useNetworks } from "app/InitNetworks"
 import { useTheme } from "data/settings/Theme"
 import { useReplaceKeplr } from "utils/localStorage"
 import EnableCoinType from "app/sections/EnableCoinType"
-import UpdateNotification from "./update/UpdateNotification"
 import ChangeLogModal from "./update/ChangeLogModal"
+import Welcome from "./modules/Welcome"
+import ExtensionPage from "./components/ExtensionPage"
+import { getErrorMessage } from "utils/error"
+import ManageWalletsButton from "./auth/ManageWalletsButton"
+import ManageWalletRouter from "./auth/ManageWalletRouter"
+import PreferencesButton from "app/sections/settings/PreferencesButton"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -78,6 +81,8 @@ const App = () => {
 
     /* auth */
     { path: "/auth/*", element: <Auth /> },
+    { path: "/manage-wallet/*", element: <ManageWalletRouter /> },
+    { path: "/preferences/*", element: <PreferencesRouter /> },
 
     /* default txs */
     { path: "/swap", element: <SwapTx /> },
@@ -88,28 +93,53 @@ const App = () => {
     { path: "*", element: <Front /> },
   ])
 
-  return (
-    <ErrorBoundary fallback={fallback}>
-      <InitBankBalance>
-        <RequestContainer>
+  const location = useLocation()
+
+  function render() {
+    if (!wallet && !location.pathname.startsWith("/auth/")) {
+      return <Welcome />
+    }
+    // main page
+    const hidePaths = ["/auth/", "/manage-wallet/", "/preferences"]
+    const hideHeader = hidePaths.some((p) => location.pathname.startsWith(p))
+
+    return (
+      <>
+        {!hideHeader && (
           <Header>
-            <ManageWallets />
+            <Flex gap={0}>
+              <ManageWalletsButton />
+              <NetworkHeader />
+            </Flex>
             <Flex gap={5}>
               <LatestTx />
               <EnableCoinType />
-              <NetworkHeader />
               <NetworkStatus />
-              <Preferences />
+              <PreferencesButton />
             </Flex>
           </Header>
+        )}
 
-          <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
-        </RequestContainer>
+        <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
+      </>
+    )
+  }
+
+  return (
+    <ErrorBoundary fallback={fallback}>
+      <InitBankBalance>
+        <RequestContainer>{render()}</RequestContainer>
       </InitBankBalance>
       <ChangeLogModal />
-      <UpdateNotification />
     </ErrorBoundary>
   )
 }
+
+/* error */
+export const fallback = (error: Error) => (
+  <ExtensionPage>
+    <Wrong>{getErrorMessage(error)}</Wrong>
+  </ExtensionPage>
+)
 
 export default App

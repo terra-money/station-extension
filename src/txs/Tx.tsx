@@ -26,14 +26,13 @@ import { useIsWalletEmpty } from "data/queries/bank"
 
 import { Pre } from "components/general"
 import { Grid, Flex } from "components/layout"
-import { FormError, Select, Input, FormItem, Submit } from "components/form"
+import { Select } from "components/form"
 import { Modal } from "components/feedback"
 import { Details } from "components/display"
 import { Read } from "components/token"
 import ConnectWallet from "app/sections/ConnectWallet"
 import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
 import { isWallet, useAuth } from "auth"
-import { PasswordError } from "auth/scripts/keystore"
 import { toInput, CoinInput, calcTaxes } from "./utils"
 import styles from "./Tx.module.scss"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
@@ -41,6 +40,15 @@ import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { getShouldTax, useTaxCap, useTaxRate } from "data/queries/treasury"
 import { useNativeDenoms } from "data/token"
 import { useCarbonFees } from "data/queries/tx"
+import {
+  Banner,
+  Button,
+  Checkbox,
+  Input,
+  InputWrapper,
+  SubmitButton,
+} from "station-ui"
+import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
 
 const cx = classNames.bind(styles)
 
@@ -228,7 +236,17 @@ function Tx<TxValues>(props: Props<TxValues>) {
   /* submit */
   const passwordRequired = isWallet.single(wallet)
   const [password, setPassword] = useState("")
+  const [rememberPassword, setRememberPassword] = useState(
+    shouldStorePassword()
+  )
   const [incorrect, setIncorrect] = useState<string>()
+
+  // autofill stored password if exists
+  useEffect(() => {
+    getStoredPassword().then((password) => {
+      setPassword(password ?? "")
+    })
+  }, []) // eslint-disable-line
 
   const disabled = estimatedGasState.isLoading
     ? t("Estimating fee...")
@@ -287,7 +305,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
       onPost?.()
     } catch (error) {
-      if (error instanceof PasswordError) setIncorrect(error.message)
+      if (error instanceof Error) setIncorrect(error.message)
       else setError(error as Error)
     }
 
@@ -424,23 +442,24 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
   const submitButton = (
     <>
-      {walletError && <FormError>{walletError}</FormError>}
+      {walletError && <Banner variant="error" title={walletError} />}
 
       {!addresses ? (
         <ConnectWallet
           renderButton={(open) => (
-            <Submit type="button" onClick={open}>
-              {t("Connect wallet")}
-            </Submit>
+            <Button
+              variant="secondary"
+              onClick={open}
+              label={t("Connect wallet")}
+            />
           )}
         />
       ) : (
-        <Grid gap={4}>
-          {failed ? (
-            <FormError>{failed}</FormError>
-          ) : (
-            passwordRequired && (
-              <FormItem label={t("Password")} error={incorrect}>
+        <Grid gap={12}>
+          {failed && <Banner variant="error" title={failed} />}
+          {passwordRequired && (
+            <>
+              <InputWrapper label={t("Password")} error={incorrect}>
                 <Input
                   type="password"
                   value={password}
@@ -449,16 +468,24 @@ function Tx<TxValues>(props: Props<TxValues>) {
                     setPassword(e.target.value)
                   }}
                 />
-              </FormItem>
-            )
+              </InputWrapper>
+
+              <InputWrapper>
+                <Checkbox
+                  label={t("Don't ask for password again")}
+                  checked={rememberPassword}
+                  onChange={() => setRememberPassword((r) => !r)}
+                />
+              </InputWrapper>
+            </>
           )}
 
-          <Submit
+          <SubmitButton
+            variant="primary"
             disabled={!estimatedGas || !!disabled || !!walletError}
-            submitting={submitting}
-          >
-            {submitting ? submittingLabel : disabled}
-          </Submit>
+            loading={submitting}
+            label={(submitting ? submittingLabel : disabled) || t("Submit")}
+          />
         </Grid>
       )}
     </>
