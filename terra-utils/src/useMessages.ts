@@ -41,13 +41,15 @@ export const useMessages = (
       /* ---------------------------------- Send ---------------------------------- */
 
       case "/cosmos.bank.v1beta1.MsgSend":
-        getSendMessage(msg, userAddresses, returnMsgs)
+        const sendMessageData = getSendMessage(msg, userAddresses)
+        returnMsgs.push(sendMessageData)
         break
 
       /* ----------------------- Withdraw Delegation Reward ----------------------- */
 
       case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward":
-        getRewardMsgs(msgEvents, returnMsgs)
+        const rewardsMsgsData = getRewardMsgs(msgEvents)
+        returnMsgs.push(...rewardsMsgsData)
         break
 
       /* -------------------------------- Delegate -------------------------------- */
@@ -108,7 +110,8 @@ export const useMessages = (
         })
 
         // Get any related rewards messages associated with undelegation.
-        getRewardMsgs(msgEvents, returnMsgs)
+        const undelegateRewardsData = getRewardMsgs(msgEvents)
+        returnMsgs.push(...undelegateRewardsData)
         break
 
       /* ------------------------------- Redelegate ------------------------------- */
@@ -130,7 +133,8 @@ export const useMessages = (
         })
 
         // Get any related rewards messages associated with redelegation.
-        getRewardMsgs(msgEvents, returnMsgs)
+        const redelegateRewardsData = getRewardMsgs(msgEvents)
+        returnMsgs.push(...redelegateRewardsData)
         break
 
       /* ----------------------------- Proposal Voting ---------------------------- */
@@ -164,7 +168,8 @@ export const useMessages = (
         if (swapsInfo.length) {
           /* -------------------------------- Swap -------------------------------- */
 
-          getSwapMessage(swapsInfo, contractName, returnMsgs)
+          const swapMessageData = getSwapMessage(swapsInfo, contractName)
+          returnMsgs.push(swapMessageData)
         } else if ((msg as any)?.msg?.provide_liquidity) {
           /* -------------------------- Provide Liquidity ------------------------- */
 
@@ -438,15 +443,16 @@ const getEventInfo = (msgEvents: Event[], eventName: string) => {
  * it to the returned messages.
  *
  * @param {Event[]} msgEvents Array containing objects of event types and event attributes.
- * @param {ReturnMsg[]} returnMsgs Array of objects containing message type and text.
+ * @return {Object[]} Array of objects containing relevant data on withdrawn rewards.
  */
-const getRewardMsgs = (msgEvents: Event[], returnMsgs: ReturnMsg[]) => {
+const getRewardMsgs = (msgEvents: Event[]) => {
   const rewards = getEventInfo(msgEvents, "withdraw_rewards")
+  let rewardsMsgs = []
 
   for (const reward of rewards) {
     const { amount: rewardAssets, validator: validatorAddress } = reward
 
-    returnMsgs.push({
+    rewardsMsgs.push({
       msgType: "Reward Withdrawal",
       canonicalMsg: [
         `Withdrew ${rewardAssets} staking rewards from ${validatorAddress}`,
@@ -454,6 +460,8 @@ const getRewardMsgs = (msgEvents: Event[], returnMsgs: ReturnMsg[]) => {
       inAssets: rewardAssets.split(","),
     })
   }
+
+  return rewardsMsgs
 }
 
 /**
@@ -461,13 +469,9 @@ const getRewardMsgs = (msgEvents: Event[], returnMsgs: ReturnMsg[]) => {
  *
  * @param {any[]} swapsInfo Array of objects containing information on swaps.
  * @param {string} swapPlatform Name of or contract address belonging to the platform used to carry out swap.
- * @param {ReturnMsg[]} returnMsgs Array of objects containing message type and text.
+ * @return {Object} Object containing relevant swap message data.
  */
-const getSwapMessage = (
-  swapsInfo: any[],
-  swapPlatform: string,
-  returnMsgs: ReturnMsg[]
-) => {
+const getSwapMessage = (swapsInfo: any[], swapPlatform: string) => {
   // Extract original swap token and the requested return token.
   const { offerAsset: swapToken } = swapsInfo[0]
   const { receiveAsset: returnToken } = swapsInfo[swapsInfo.length - 1]
@@ -488,12 +492,12 @@ const getSwapMessage = (
   const outAsset = `${swapAmount}${swapToken}`
   const inAsset = `${returnAmount}${returnToken}`
 
-  returnMsgs.push({
+  return {
     msgType: "Swap",
     canonicalMsg: [`Swapped ${outAsset} for ${inAsset} on ${swapPlatform}`],
     inAssets: [inAsset],
     outAssets: [outAsset],
-  })
+  }
 }
 
 /**
@@ -534,14 +538,9 @@ const getContractName = (
  *
  * @param {object} msg Object which contains message information.
  * @param {string[]} userAddresses Array containing user addresses across all chains.
- * @param {ReturnMsg[]} returnMsgs Array of objects containing message type and text.
- * @return {string} Human-readable message representing the send transaction.
+ * @return {Object} Object containing relevant send message data.
  */
-const getSendMessage = (
-  msg: any,
-  userAddresses: string[],
-  returnMsgs: ReturnMsg[]
-) => {
+const getSendMessage = (msg: any, userAddresses: string[]) => {
   const {
     from_address: fromAddress,
     to_address: toAddress,
@@ -562,12 +561,12 @@ const getSendMessage = (
     sendMsg = `${fromAddress} sent ${sentAsset} to ${toAddress}`
   }
 
-  returnMsgs.push({
+  return {
     msgType: "Send",
     canonicalMsg: [sendMsg],
     inAssets: inAsset ? [inAsset] : undefined,
     outAssets: outAsset ? [outAsset] : undefined,
-  })
+  }
 }
 
 /**
