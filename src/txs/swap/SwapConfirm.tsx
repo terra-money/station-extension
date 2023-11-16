@@ -9,6 +9,10 @@ import { SwapState } from "data/queries/swap/types"
 import { toAmount } from "@terra-money/terra-utils"
 import Tx from "txs/Tx"
 import { useSwap } from "./SwapContext"
+import { AccAddress } from "@terra-money/feather.js"
+import { queryKey } from "data/query"
+import { useAllInterchainAddresses } from "auth/hooks/useAddress"
+import { Read } from "components/token"
 
 export const validateAssets = (
   assets: Partial<SwapState>
@@ -18,16 +22,16 @@ export const validateAssets = (
 }
 
 const Confirm = () => {
-  const { state: swapState } = useLocation()
+  const { state: swapMsgs } = useLocation()
   const { t } = useTranslation()
   const { form } = useSwap()
+  const addresses = useAllInterchainAddresses()
   const { watch, handleSubmit, getValues } = form
-  const { route, askAsset, offerAsset, msgs: formMsgs, offerInput } = watch()
-
+  const { route, askAsset, offerAsset, offerInput } = watch()
   const amount = toAmount(offerInput, { decimals: offerAsset.decimals })
 
   const createTx = ({ offerAsset }: SwapState) => {
-    const msg = JSON.parse(formMsgs[0][0]?.msg)
+    const msg = JSON.parse(swapMsgs[0]?.msg)
 
     const msgs = [
       new MsgTransfer(
@@ -45,8 +49,8 @@ const Confirm = () => {
     return { msgs, chainID: offerAsset.chainId }
   }
 
-  /* fee */
   const estimationTxValues = useMemo(() => getValues(), [getValues])
+
   const tx = {
     token: offerAsset.denom,
     decimals: offerAsset.decimals,
@@ -54,36 +58,44 @@ const Confirm = () => {
     balance: offerAsset.balance,
     estimationTxValues,
     createTx,
-    // queryKeys: [offerAsset, askAsset]
-    //   .filter((asset) => asset && AccAddress.validate(asset))
-    //   .map((token) => [
-    //     queryKey.wasm.contractQuery,
-    //     token,
-    //     { balance: address },
-    //   ]),
+    queryKeys: [offerAsset, askAsset]
+      .filter((asset) => asset && AccAddress.validate(asset.denom))
+      .map((token) => [
+        queryKey.wasm.contractQuery,
+        token.denom,
+        { balance: addresses?.[token.chainId] ?? "" },
+      ]),
     chain: offerAsset.chainId,
   }
-  console.log("tx", tx)
 
   return (
     <Tx {...tx}>
       {({ fee, submit }) => (
         <Form onSubmit={handleSubmit(submit.fn)}>
-          <SwapTimeline {...swapState} />
+          <SwapTimeline {...{ swapMsgs, ...getValues() }} />
           <SectionHeader title={t("Details")} withLine />
           <SummaryTable
             rows={[
               {
                 label: t("Min Received"),
-                value: toInput(route?.amountOut ?? 0, askAsset.decimals),
+                value: (
+                  <>
+                    <Read
+                      amount={route?.amountOut}
+                      fixed={4}
+                      decimals={askAsset.decimals}
+                    />{" "}
+                    {askAsset.symbol}
+                  </>
+                ),
               },
               {
                 label: t("Transaction Fee"),
-                value: fee.render(),
+                value: <Read {...fee} />,
               },
               {
                 label: t("Price Impact"),
-                value: "tbd",
+                value: "N/A",
               },
             ]}
           />

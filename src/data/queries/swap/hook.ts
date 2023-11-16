@@ -121,19 +121,13 @@ export const useGetMsgs = (sources?: SupportedSource[]) => {
           const amount = toAmount(swap.offerInput, {
             decimals: swap.offerAsset.decimals,
           })
-          const res = msgMap[source]?.(
-            { ...swap, offerInput: amount },
-            addresses
-          )
-          return res
+          return msgMap[source]?.({ ...swap, offerInput: amount }, addresses)
         } catch (error) {
-          console.log("getMsgs error", error)
           console.error(`Error getting msgs from ${source}:`, error)
-          return null // Return null in case of error to not break Promise.all
+          return null
         }
       })
-
-      return await Promise.all(routePromises)
+      return (await Promise.all(routePromises)).flat()
     },
     [msgSources, addresses]
   )

@@ -9,7 +9,7 @@ import {
   SwapOperation,
   SwapSource,
 } from "./types"
-import { ChainID, InterchainAddresses } from "types/network"
+import { InterchainAddresses } from "types/network"
 
 export const skipApi = {
   queryTokens: async () => {
@@ -94,6 +94,8 @@ export const skipApi = {
         }
       )
       if (!res?.data) throw new Error("No data returned from Skip API")
+
+      if (res.data.txs_required > 1) throw new Error("Swap not supported")
 
       const transformedRouteInfo: RouteInfo = {
         amountIn: res.data.amount_in,

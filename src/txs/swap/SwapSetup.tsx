@@ -27,44 +27,46 @@ enum SwapAssetType {
 const SwapForm = () => {
   // Hooks
   const { tokens, getTokensWithBal, getBestRoute, form, getMsgs } = useSwap()
-
   const { t } = useTranslation()
   const navigate = useNavigate()
   const currency = useCurrency()
-
-  // Form
-  // const form = useForm<SwapState>({
-  //   mode: "onChange",
-  //   defaultValues,
-  // })
+  const [msgs, setMsgs] = useState<any[]>()
 
   // State
   const { watch, getValues, setValue, setError, register } = form
   const [assetModal, setAssetModal] = useState<SwapAssetType | undefined>()
   const [displayTokens, setDisplayTokens] = useState<SwapAssetExtra[]>([])
-  const { offerAsset, askAsset, offerInput, route, msgs } = watch()
-  const [isLoading, setIsLoading] = useState(false)
+  const { offerAsset, askAsset, offerInput, route } = watch()
+
+  const askAssetAmount = useMemo(() => {
+    return route?.amountOut
+      ? toInput(route?.amountOut, askAsset.decimals).toString()
+      : "0"
+  }, [route, askAsset])
 
   useEffect(() => {
-    if (!offerAsset || !askAsset || !offerInput) return
-    const swapState = getValues()
-    const fetchRouteAndMsgs = async () => {
+    if (!offerInput) return
+    setValue("route", undefined) // for loading purposees
+    const fetchRoute = async () => {
       try {
-        setIsLoading(true)
-        const route = await getBestRoute(swapState)
-        const msgs = await getMsgs(swapState)
-        console.log("msgs", msgs)
-        setValue("msgs", msgs)
-        setValue("route", route)
-        setIsLoading(false)
+        setValue("route", await getBestRoute(getValues()))
       } catch (err: any) {
-        console.log("err", err)
         setError("offerInput", { message: err.message })
       }
     }
+    fetchRoute()
+  }, [offerAsset, askAsset, offerInput])
 
-    fetchRouteAndMsgs()
-  }, [offerAsset.denom, askAsset.denom, offerInput])
+  useEffect(() => {
+    const fetchMsgs = async () => {
+      try {
+        setMsgs(await getMsgs(getValues()))
+      } catch (err: any) {
+        setError("offerInput", { message: err.message })
+      }
+    }
+    fetchMsgs()
+  }, [route])
 
   // Handlers
   const handleOpenModal = (type: SwapAssetType) => {
@@ -79,13 +81,13 @@ const SwapForm = () => {
   }
 
   const swapAssetsOnClick = () => {
+    setValue("offerInput", askAssetAmount)
     setValue("askAsset", offerAsset)
     setValue("offerAsset", askAsset)
-    setValue("offerInput", route?.amountOut ?? "0")
   }
 
   const buttonOnClick = async () => {
-    navigate("confirm", { state: getValues() })
+    navigate("confirm", { state: msgs })
   }
 
   const currencyAmount = useMemo(() => {
@@ -96,7 +98,7 @@ const SwapForm = () => {
       Number(route?.amountOut) * askAsset.price,
       askAsset.decimals
     )}`
-    return { offer: offer ?? "", ask: ask ?? "" }
+    return { offer: offer ?? "—", ask: ask ?? "—" }
   }, [offerAsset, offerInput, askAsset, route, currency])
 
   return (
@@ -139,17 +141,13 @@ const SwapForm = () => {
         chainName={askAsset?.chain?.name}
         tokenIcon={askAsset?.icon ?? ""}
         onSymbolClick={() => handleOpenModal(SwapAssetType.ASK)}
-        amount={
-          route?.amountOut
-            ? toInput(route?.amountOut, askAsset.decimals).toString()
-            : "0"
-        }
+        amount={askAssetAmount}
         currencyAmount={currencyAmount.ask}
       />
       <Button
         variant="primary"
-        loading={isLoading}
-        disabled={!offerInput || isLoading || !route || !msgs.length}
+        loading={!!(offerInput && !route)}
+        disabled={!offerInput || !route}
         onClick={buttonOnClick}
         label={t("Continue")}
       />
