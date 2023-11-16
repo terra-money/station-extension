@@ -14,18 +14,6 @@
     align-items: center;
     gap: 16px;
 
-    .emoji {
-      @include X-Large;
-    }
-
-    .big__letter {
-      @include X-Large;
-      color: var(--token-light-100);
-
-      width: 32px;
-      height: 32px;
-    }
-
     .details {
       display: flex;
       flex-direction: column;

@@ -65,6 +65,23 @@
           position: relative;
           margin-top: 1px;
 
+          .show__icon__wrapper {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-left: 8px;
+            background-color: var(--token-dark-600);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            svg {
+              margin-left: 0;
+              width: 8px;
+              height: 8px;
+            }
+          }
+
           svg {
             height: 16px;
             width: 16px;
@@ -137,6 +154,10 @@
         svg {
           fill: var(--token-dark-900);
         }
+      }
+
+      &.show__more {
+        cursor: pointer;
       }
     }
   }

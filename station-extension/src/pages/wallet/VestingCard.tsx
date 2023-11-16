@@ -1,43 +1,46 @@
-import {
-  parseVestingSchedule,
-  isVestingAccount,
-  useAccount,
-} from "data/queries/vesting"
+import { parseVestingSchedule, useAccount } from "data/queries/vesting"
 import { useNativeDenoms } from "data/token"
 import styles from "./Vesting.module.scss"
-import { useChainID, useNetwork } from "data/wallet"
+import { useNetwork } from "data/wallet"
 import { Read } from "components/token"
 import { VestingCard as Vesting, TokenSingleChainListItem } from "station-ui"
 import { useExchangeRates } from "data/queries/coingecko"
 import { toInput } from "txs/utils"
+import { useCurrency } from "data/settings/Currency"
+import { useMemo } from "react"
 
-interface Props {
-  token: string
-  chain?: string
-}
-
-const VestingCard = (props: Props) => {
-  const { data } = useAccount()
+const VestingCard = () => {
+  const { data: account } = useAccount()
   const readNativeDenom = useNativeDenoms()
-  const { token, chain } = props
   const { data: prices } = useExchangeRates()
-  const chainID = useChainID()
   const network = useNetwork()
-  const { icon, decimals } = readNativeDenom(token, chain ?? chainID)
+  const {
+    icon: tokenImg,
+    decimals,
+    symbol,
+  } = readNativeDenom("uluna", "phoenix-1")
+  const currency = useCurrency()
 
-  if (!data) return null
-  if (!isVestingAccount(data)) return null
+  const schedule = useMemo(() => {
+    if (!account?.base_vesting_account) return
+    console.log("account", account)
+    return parseVestingSchedule(account)
+  }, [account])
 
-  const schedule = parseVestingSchedule(data)
+  console.log("schedule", schedule)
+
+  if (!schedule) return null
+
+  const { icon, name } = network["phoenix-1"]
 
   return (
     <Vesting
       vestedAmount={toInput(schedule.amount.vested, decimals).toString()}
     >
       <TokenSingleChainListItem
-        tokenImg={icon ?? ""}
-        symbol="LUNA"
-        chain={{ icon: icon ?? "", label: network[chain ?? chainID].name }}
+        tokenImg={tokenImg ?? ""}
+        symbol={symbol}
+        chain={{ icon, label: name }}
         amountNode={
           <Read
             className={styles.amount}
@@ -49,16 +52,19 @@ const VestingCard = (props: Props) => {
           />
         }
         priceNode={
-          <Read
-            className={styles.amount}
-            amount={
-              Number(schedule.amount.vested) * (prices?.[token]?.price ?? 0)
-            }
-            decimals={decimals}
-            fixed={2}
-            denom=""
-            token=""
-          />
+          <>
+            {currency.symbol + " "}
+            <Read
+              className={styles.amount}
+              amount={
+                Number(schedule.amount.vested) * (prices?.["uluna"]?.price ?? 0)
+              }
+              decimals={decimals}
+              fixed={2}
+              denom=""
+              token=""
+            />
+          </>
         }
       />
     </Vesting>

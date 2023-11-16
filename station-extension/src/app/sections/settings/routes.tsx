@@ -5,6 +5,7 @@ import CurrencySetting from "./CurrencySetting"
 import LCDSetting from "./LCDSetting"
 import ContactsIcon from "@mui/icons-material/Contacts"
 import { ReactComponent as ManageAssets } from "styles/images/icons/ManageAssets.svg"
+import { ReactComponent as WalletIcon } from "styles/images/icons/Wallet.svg"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import ChangePasswordForm from "auth/modules/manage/ChangePasswordForm"
 import ManageCustomTokens from "pages/custom/ManageCustomTokens"
@@ -14,73 +15,102 @@ import { Languages } from "config/lang"
 import { capitalize } from "@mui/material"
 import AddressBook from "txs/AddressBook/AddressBook"
 import { useTranslation } from "react-i18next"
-import { SettingsPage } from "./Preferences"
+import AddAddressBookForm from "txs/AddressBook/AddressBookForm"
+import PreferencesPage, { SettingsPage } from "./PreferencesPage"
+import { getStoredLegacyWallets, lockWallet } from "auth/scripts/keystore"
+import { openURL } from "extension/storage"
 
 export const useSettingsRoutes = () => {
   const { i18n, t } = useTranslation()
   const { id: currencyId } = useCurrency()
   const networkName = useNetworkName()
+  const existsLegacyWallets = getStoredLegacyWallets().length > 0
+
   const network = {
     network: {
-      key: "network",
-      tab: t("Network"),
+      route: "network",
+      title: t("Network"),
       value: capitalize(networkName),
-      component: <NetworkSetting />,
+      element: <NetworkSetting />,
     },
   }
 
   const functions = {
     addressBook: {
-      key: "addressBook",
-      tab: t("Address Book"),
-      component: <AddressBook />,
+      route: "address-book",
+      title: t("Address Book"),
+      element: <AddressBook />,
       icon: <ContactsIcon />,
     },
     manageTokens: {
-      key: "manageTokens",
-      tab: t("Manage Tokens"),
-      component: <ManageCustomTokens />,
+      route: "manage-tokens",
+      title: t("Manage Tokens"),
+      element: <ManageCustomTokens />,
       icon: <ManageAssets />,
+    },
+    lockWallet: {
+      onClick: () => {
+        lockWallet()
+        window.location.reload()
+      },
+      title: t("Lock Wallet"),
+      icon: <LockOutlinedIcon />,
+    },
+    migration: {
+      onClick: () => {
+        openURL("/auth/migration")
+      },
+      title: t("Migrate Wallets"),
+      icon: <WalletIcon />,
+      disabled: !existsLegacyWallets,
     },
   }
 
   const settings = {
     lang: {
-      key: "lang",
-      tab: t("Language"),
-      component: <LanguageSetting />,
+      route: "lang",
+      title: t("Language"),
+      element: <LanguageSetting />,
       value: Object.values(Languages ?? {}).find(
         ({ value }) => value === i18n.language
       )?.label,
     },
     currency: {
-      key: "currency",
-      tab: t("Currency"),
-      component: <CurrencySetting />,
+      route: "currency",
+      title: t("Currency"),
+      element: <CurrencySetting />,
       value: currencyId,
     },
     security: {
-      key: "security",
-      tab: t("Security"),
-      component: <SecuritySetting />,
+      route: "security",
+      title: t("Security"),
+      element: <SecuritySetting />,
       icon: <LockOutlinedIcon />,
     },
   }
 
   const subPages = {
     changePassword: {
-      key: "changePassword",
-      tab: t("Change Password"),
-      component: <ChangePasswordForm />,
+      route: "security/change-password",
+      title: t("Change Password"),
+      element: <ChangePasswordForm />,
       icon: <LockOutlinedIcon />,
-      parent: "security",
     },
     lcd: {
-      key: "lcd",
-      component: <LCDSetting />,
-      tab: t("Add LCD Endpoint"),
-      parent: "network",
+      route: "network/lcd",
+      element: <LCDSetting />,
+      title: t("Add LCD Endpoint"),
     },
+    addressBookNew: {
+      route: "address-book/new",
+      element: <AddAddressBookForm />,
+      title: t("New Address Entry"),
+    },
+  }
+  const home = {
+    route: "/",
+    title: t("Settings"),
+    element: <PreferencesPage />,
   }
 
   const routes: Record<string, SettingsPage> = {
@@ -88,6 +118,7 @@ export const useSettingsRoutes = () => {
     ...functions,
     ...settings,
     ...subPages,
+    home,
   }
 
   return { routes, functions, settings, subPages }

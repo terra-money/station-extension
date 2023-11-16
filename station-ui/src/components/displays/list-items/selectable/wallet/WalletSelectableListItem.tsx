@@ -1,5 +1,6 @@
 import classNames from "classnames/bind"
-import { ReactComponent as CogIcon } from "assets/icon/Cog.svg"
+import { SettingsIcon } from "components"
+import { WalletEmoji } from "components"
 import Copy from "components/general/copy/Copy"
 import styles from "../SelectableListItem.module.scss"
 
@@ -11,6 +12,8 @@ export interface WalletSelectableListItemProps {
   active?: boolean
   copyValue: string
   onClick?: () => void
+  walletName: string
+  emoji?: string
   settingsOnClick?: () => void
 }
 
@@ -19,6 +22,8 @@ const WalletSelectableListItem = ({
   subLabel,
   active,
   onClick,
+  emoji,
+  walletName,
   copyValue,
   settingsOnClick,
 }: WalletSelectableListItemProps) => {
@@ -28,14 +33,11 @@ const WalletSelectableListItem = ({
 
   return (
     <div className={cx(styles.selectable__li, { active })} onClick={onClick}>
+      <WalletEmoji id={emoji ?? walletName} />
       <div className={styles.selectable__details__container}>
         <div className={styles.selectable__details}>
-          <h2 className={styles.selectable__name}>
-            {label}
-          </h2>
-          <h5 className={styles.selectable__address}>
-            {subLabel}
-          </h5>
+          <h2 className={styles.selectable__name}>{label}</h2>
+          <h5 className={styles.selectable__address}>{subLabel}</h5>
         </div>
         <div className={styles.selectable__settings}>
           <Copy
@@ -45,7 +47,7 @@ const WalletSelectableListItem = ({
             iconOnly
           />
           {settingsOnClick && (
-            <CogIcon fill={iconFill} onClick={settingsOnClick} />
+            <SettingsIcon fill={iconFill} onClick={settingsOnClick} />
           )}
         </div>
       </div>

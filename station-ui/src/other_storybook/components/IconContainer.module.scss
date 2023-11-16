@@ -1,0 +1,28 @@
+@import "scss/font_mixins";
+
+.icon__container {
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex: 1 auto;
+  flex-direction: column;
+  gap: 18px;
+  padding: 12px 18px;
+  background-color: var(--token-dark-200);
+  border-radius: 8px;
+  min-width: 160px;
+  height: 86px;
+  border: 1px solid var(--token-dark-900);
+  transition: all .25s;
+
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 140px;
+
+    .text {
+      @include Medium;
+    }
+  }
+}

@@ -14,6 +14,7 @@ export const ActiveWallet: StoryObj<WalletSelectableListItemProps> = {
     return (
       <WalletSelectableListItem
         label={"lots-of-money-here"}
+        walletName='Money'
         subLabel={"terra1hod3...pazdy5"}
         copyValue={"terra1hod3...pazdy5"}
         active={true}
@@ -29,6 +30,8 @@ export const NonActiveWallet: StoryObj<WalletSelectableListItemProps> = {
   render: () => {
     return (
       <WalletSelectableListItem
+        walletName='Big Money'
+        emoji='💰'
         label={"lots-of-money-here"}
         copyValue={"terra1u28fgu0p99eh9xc4623k6cw6qmfdnl9un23yxs"}
         subLabel={"terra1hod3...pazdy5"}

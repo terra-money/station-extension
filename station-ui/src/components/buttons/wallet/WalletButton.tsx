@@ -1,5 +1,6 @@
 import { ReactComponent as RightArrow } from "assets/icon/RightArrow.svg"
 import styles from "./WalletButton.module.scss"
+import { WalletEmoji } from "components"
 
 export interface WalletButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   emoji?: string
@@ -20,17 +21,7 @@ const WalletButton = ({
   return (
     <button {...rest} type='button' className={styles.wallet__button} onClick={onClick}>
       <div className={styles.left__side}>
-        {emoji ? (
-          <div className={styles.emoji}>
-            <span role='img' aria-label='emoji'>
-              {emoji}
-            </span>
-          </div>
-        ) : (
-          <span className={styles.big__letter}>
-            {walletName.charAt(0).toUpperCase()}
-          </span>
-        )}
+        <WalletEmoji id={emoji ?? walletName} />
         <div className={styles.details}>
           <h3 className={styles.wallet__name}>{walletName}</h3>
           <div className={styles.wallet__address__container}>

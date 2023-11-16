@@ -20,6 +20,7 @@ import WithNodeInfo from "app/WithNodeInfo"
 import InitQueryClient from "app/InitQueryClient"
 import { initAnalytics } from "utils/analytics"
 import { createRoot } from "react-dom/client"
+import LoginProvider from "extension/modules/LoginProvider"
 
 const root = createRoot(document.getElementById("station")!)
 
@@ -37,7 +38,9 @@ root.render(
                 <InitWallet>
                   <InitTheme />
                   <ElectronVersion />
-                  <App />
+                  <LoginProvider>
+                    <App />
+                  </LoginProvider>
                 </InitWallet>
               </InitChains>
             </WithNodeInfo>

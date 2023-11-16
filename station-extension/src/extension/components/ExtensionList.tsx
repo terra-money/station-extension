@@ -18,11 +18,11 @@ interface DefaultItemProps {
   manage?: () => void
 }
 
-interface LinkItem extends DefaultItemProps {
+export interface LinkItem extends DefaultItemProps {
   to: string
 }
 
-interface ButtonItem extends DefaultItemProps {
+export interface ButtonItem extends DefaultItemProps {
   onClick: () => void
 }
 

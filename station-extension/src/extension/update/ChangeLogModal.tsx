@@ -1,6 +1,6 @@
 import { useQuery } from "react-query"
 import styles from "./ChangeLogModal.module.scss"
-import ReactModal from "react-modal"
+import { LoadingCircular, Modal } from "station-ui"
 import axios from "axios"
 import { RefetchOptions } from "data/query"
 import browser from "webextension-polyfill"
@@ -11,7 +11,7 @@ const LOCALSTORAGE_CHANGELOG_KEY = "LastChangelogShown"
 
 const useChangeLogInfo = (version?: string) => {
   return useQuery(
-    [version],
+    [version, 1],
     async () => {
       const FALLBACK_TEXT = "No information about the update available."
       try {
@@ -19,9 +19,9 @@ const useChangeLogInfo = (version?: string) => {
           `https://api.github.com/repos/terra-money/station-extension/releases/tags/${version}`
         )
 
-        return data.body ?? FALLBACK_TEXT
+        return { ...data, body: data.body ?? FALLBACK_TEXT }
       } catch (e) {
-        return FALLBACK_TEXT
+        return { body: FALLBACK_TEXT }
       }
     },
     { ...RefetchOptions.INFINITY, enabled: !!version }
@@ -32,31 +32,45 @@ export default function ChangeLogModal() {
   const currentVersion = browser.runtime?.getManifest?.()?.version
   const lastVersionShown = localStorage.getItem(LOCALSTORAGE_CHANGELOG_KEY)
   const [showChangelog, setShowChangelog] = useState<boolean>(
-    currentVersion !== lastVersionShown
+    !!currentVersion && currentVersion !== lastVersionShown
   )
 
-  const { data: changeLogText } = useChangeLogInfo(currentVersion)
+  const { data: changeLogs } = useChangeLogInfo(currentVersion)
 
   return (
-    <ReactModal
+    <Modal
       isOpen={showChangelog}
-      className={styles.modal}
-      overlayClassName={styles.overlay}
+      onRequestClose={() => {
+        setShowChangelog(false)
+        localStorage.setItem(LOCALSTORAGE_CHANGELOG_KEY, currentVersion)
+      }}
     >
-      <h1 className={styles.title}>Station has been updated!</h1>
-      <div>{changeLogText && markdownTextParser(changeLogText, true)}</div>
-      <button
-        className={styles.confirm}
-        onClick={() => {
-          setShowChangelog(false)
-          localStorage.setItem(
-            LOCALSTORAGE_CHANGELOG_KEY,
-            browser.runtime?.getManifest?.()?.version
-          )
-        }}
-      >
-        Continue
-      </button>
-    </ReactModal>
+      <article className={styles.changelog__container}>
+        <div className={styles.changelog__header}>
+          <span className={styles.icon}>🚀</span>
+          <h2 className={styles.title}>Release Notes</h2>
+          {changeLogs && (
+            <h3 className={styles.subtitle}>
+              v{currentVersion} (
+              {new Date(changeLogs.published_at).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+              )
+            </h3>
+          )}
+        </div>
+        {changeLogs ? (
+          <div className={styles.changelog__body}>
+            {markdownTextParser(changeLogs.body, true)}
+          </div>
+        ) : (
+          <div className={styles.changelog__loading}>
+            <LoadingCircular />
+          </div>
+        )}
+      </article>
+    </Modal>
   )
 }
