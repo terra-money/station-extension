@@ -41,12 +41,7 @@ export const useMessages = (
       /* ---------------------------------- Send ---------------------------------- */
 
       case "/cosmos.bank.v1beta1.MsgSend":
-        const sendMsg = getSendMessage(msg, userAddresses)
-
-        returnMsgs.push({
-          msgType: "Send",
-          canonicalMsg: [sendMsg],
-        })
+        getSendMessage(msg, userAddresses, returnMsgs)
         break
 
       /* ----------------------- Withdraw Delegation Reward ----------------------- */
@@ -64,12 +59,12 @@ export const useMessages = (
         } = msg as any
 
         const trueDelegatedDenom = getTrueDenom(delegatedDenom)
+        const delegatedAsset = `${delegatedAmount}${trueDelegatedDenom}`
 
         returnMsgs.push({
           msgType: "Delegate",
-          canonicalMsg: [
-            `Delegated ${delegatedAmount}${trueDelegatedDenom} to ${delegateValidator}`,
-          ],
+          canonicalMsg: [`Delegated ${delegatedAsset} to ${delegateValidator}`],
+          outAssets: [delegatedAsset],
         })
         break
 
@@ -82,12 +77,14 @@ export const useMessages = (
         } = msg as any
 
         const trueIBCDenom = getTrueDenom(ibcDenom)
+        const transferAsset = `${ibcAmount}${trueIBCDenom}`
 
         returnMsgs.push({
           msgType: "Send",
           canonicalMsg: [
-            `Initiated IBC transfer of ${ibcAmount}${trueIBCDenom} to ${receiver}`,
+            `Initiated IBC transfer of ${transferAsset} to ${receiver}`,
           ],
+          outAssets: [transferAsset],
         })
         break
 
@@ -100,12 +97,14 @@ export const useMessages = (
         } = msg as any
 
         const trueUndelegateDenom = getTrueDenom(undelegateDenom)
+        const undelegatedAsset = `${undelegateAmount}${trueUndelegateDenom}`
 
         returnMsgs.push({
           msgType: "Undelegate",
           canonicalMsg: [
-            `Undelegated ${undelegateAmount}${trueUndelegateDenom} from ${undelegateValidator}`,
+            `Undelegated ${undelegatedAsset} from ${undelegateValidator}`,
           ],
+          inAssets: [undelegatedAsset],
         })
 
         // Get any related rewards messages associated with undelegation.
@@ -181,6 +180,7 @@ export const useMessages = (
               canonicalMsg: [
                 `Provided ${providedAssetsText} of liquidity to ${contractAddress}`,
               ],
+              outAssets: providedAssetsText.split(/[,\s]+(?:and\s)?/),
             })
           }
         } else if (
@@ -217,12 +217,14 @@ export const useMessages = (
 
             const splitAsset = rewardAsset.split(":")
             const trueRewardAsset = splitAsset[splitAsset.length - 1]
+            const allianceRewardAsset = `${rewardAmount}${trueRewardAsset}`
 
             returnMsgs.push({
               msgType: "Reward Withdrawal",
               canonicalMsg: [
-                `Withdrew ${rewardAmount}${trueRewardAsset} staking rewards from ${withdrawFromAddress}`,
+                `Withdrew ${allianceRewardAsset} staking rewards from ${withdrawFromAddress}`,
               ],
+              inAssets: [allianceRewardAsset],
             })
           }
         } else if ((msg as any)?.msg?.send) {
@@ -265,6 +267,7 @@ export const useMessages = (
                 canonicalMsg: [
                   `Withdrew ${withdrawnAssetsText} of liquidity from ${contractName}`,
                 ],
+                outAssets: withdrawnAssetsText.split(/[,\s]+(?:and\s)?/),
               })
             }
           }
@@ -289,12 +292,12 @@ export const useMessages = (
         )
 
         const trueDenom = getTrueDenom(denom)
+        const receiveIBCAmount = `${amount}${trueDenom}`
 
         returnMsgs.push({
           msgType: "Send",
-          canonicalMsg: [
-            `Received ${amount}${trueDenom} from ${sender} via IBC`,
-          ],
+          canonicalMsg: [`Received ${receiveIBCAmount} from ${sender} via IBC`],
+          inAssets: [receiveIBCAmount],
         })
 
         break
@@ -441,13 +444,14 @@ const getRewardMsgs = (msgEvents: Event[], returnMsgs: ReturnMsg[]) => {
   const rewards = getEventInfo(msgEvents, "withdraw_rewards")
 
   for (const reward of rewards) {
-    const { amount: withdrawAmount, validator: validatorAddress } = reward
+    const { amount: rewardAssets, validator: validatorAddress } = reward
 
     returnMsgs.push({
       msgType: "Reward Withdrawal",
       canonicalMsg: [
-        `Withdrew ${withdrawAmount} staking rewards from ${validatorAddress}`,
+        `Withdrew ${rewardAssets} staking rewards from ${validatorAddress}`,
       ],
+      inAssets: rewardAssets.split(","),
     })
   }
 }
@@ -481,11 +485,14 @@ const getSwapMessage = (
     }
   }
 
+  const outAsset = `${swapAmount}${swapToken}`
+  const inAsset = `${returnAmount}${returnToken}`
+
   returnMsgs.push({
     msgType: "Swap",
-    canonicalMsg: [
-      `Swapped ${swapAmount}${swapToken} for ${returnAmount}${returnToken} on ${swapPlatform}`,
-    ],
+    canonicalMsg: [`Swapped ${outAsset} for ${inAsset} on ${swapPlatform}`],
+    inAssets: [inAsset],
+    outAssets: [outAsset],
   })
 }
 
@@ -527,9 +534,14 @@ const getContractName = (
  *
  * @param {object} msg Object which contains message information.
  * @param {string[]} userAddresses Array containing user addresses across all chains.
+ * @param {ReturnMsg[]} returnMsgs Array of objects containing message type and text.
  * @return {string} Human-readable message representing the send transaction.
  */
-const getSendMessage = (msg: any, userAddresses: string[]) => {
+const getSendMessage = (
+  msg: any,
+  userAddresses: string[],
+  returnMsgs: ReturnMsg[]
+) => {
   const {
     from_address: fromAddress,
     to_address: toAddress,
@@ -537,14 +549,25 @@ const getSendMessage = (msg: any, userAddresses: string[]) => {
   } = msg
 
   const trueSentDenom = getTrueDenom(sentDenom)
+  const sentAsset = `${sentAmount}${trueSentDenom}`
 
+  let sendMsg, inAsset, outAsset
   if (userAddresses.includes(fromAddress)) {
-    return `Sent ${sentAmount}${trueSentDenom} to ${toAddress}`
+    sendMsg = `Sent ${sentAsset} to ${toAddress}`
+    outAsset = sentAsset
   } else if (userAddresses.includes(toAddress)) {
-    return `Received ${sentAmount}${trueSentDenom} from ${fromAddress}`
+    sendMsg = `Received ${sentAsset} from ${fromAddress}`
+    inAsset = sentAsset
   } else {
-    return `${fromAddress} sent ${sentAmount}${trueSentDenom} to ${toAddress}`
+    sendMsg = `${fromAddress} sent ${sentAsset} to ${toAddress}`
   }
+
+  returnMsgs.push({
+    msgType: "Send",
+    canonicalMsg: [sendMsg],
+    inAssets: inAsset ? [inAsset] : undefined,
+    outAssets: outAsset ? [outAsset] : undefined,
+  })
 }
 
 /**
@@ -644,7 +667,7 @@ const getTrueDenom = (denom: string) => {
  * @return {string} Formatted assets string to use in returned message.
  */
 const formatAssetsText = (assets: string) => {
-  const splitAssets = assets.split(",")
+  const splitAssets = assets.split(/,\s?/)
   const assetsText =
     splitAssets.length > 2
       ? `${splitAssets.slice(0, splitAssets.length - 1).join(", ")}, and ${
@@ -662,4 +685,6 @@ const formatAssetsText = (assets: string) => {
 interface ReturnMsg {
   msgType: string
   canonicalMsg: string[]
+  inAssets?: (undefined | string)[]
+  outAssets?: (undefined | string)[]
 }
