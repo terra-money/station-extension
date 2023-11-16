@@ -1,4 +1,4 @@
-import { PropsWithChildren, useMemo, useEffect } from "react"
+import { PropsWithChildren, useEffect } from "react"
 import createContext from "utils/createContext"
 import { combineState } from "data/query"
 import { Fetching } from "components/feedback"
@@ -25,10 +25,6 @@ interface Swap {
   getBestRoute: (swap: SwapState) => Promise<RouteInfo>
   getMsgs: (swap: SwapState) => any
   form: UseFormReturn<SwapState>
-  // defaultValues: {
-  //   askAsset: SwapAssetExtra
-  //   offerAsset: SwapAssetExtra
-  // }
 }
 
 export const [useSwap, SwapProvider] = createContext<Swap>("useSwap")

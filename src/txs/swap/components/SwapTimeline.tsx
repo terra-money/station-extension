@@ -1,7 +1,10 @@
-import { SectionHeader, Timeline } from "station-ui"
+import { SectionHeader, Timeline, ActivityListItem } from "station-ui"
 import { useTranslation } from "react-i18next"
 import { toInput } from "txs/utils"
 import { SwapState } from "data/queries/swap/types"
+import { swapVenueToName } from "data/queries/swap/types"
+import React from "react"
+import { capitalize } from "@mui/material"
 
 const SwapTimeline = ({
   offerAsset,
@@ -12,50 +15,46 @@ const SwapTimeline = ({
   const { t } = useTranslation()
   if (!route) return null
 
-  const startItem = {
-    chain: {
-      label: offerAsset.chain.name,
-      icon: offerAsset.chain.icon,
-    },
-    coin: {
-      icon: offerAsset.icon ?? "",
-      label: offerAsset.symbol,
-    },
-    msg: offerInput + " " + offerAsset.symbol,
-  }
-  //   variant: "default" | "warning" | "success";
-  //     msg: ReactNode;
-  //     warningPillText?: string | undefined;
-  //     transactionButton?: {
-  //         label: string;
-  //         onClick: () => void;
-  //     } | undefined;
-  //     disabled?: boolean | undefined;
-  // }[]
-  // const getMiddleItems = () => {
-  //   const first = {
-  //     msg:
+  const startOverride = (
+    <ActivityListItem
+      variant={"success"}
+      chain={{
+        label: offerAsset.chain.name,
+        icon: offerAsset.chain.icon,
+      }}
+      msg={`Swap ${offerInput} ${offerAsset.symbol} for ${toInput(
+        route.amountOut,
+        askAsset.decimals
+      )} ${askAsset.symbol} on ${askAsset.chain.name} via ${
+        swapVenueToName[route.swapVenue]
+      }`}
+      type={"Execute Contract"}
+      msgCount={route.operations.length}
+      hasTimeline
+    />
+  )
 
-  //   }
-  const middleItems = route.operations.map((o, i) => {
-    const type = Object.keys(o)[0]
+  const middleItems = route.timelineMsgs.map((msg) => {
+    let msgText
+    if (msg.type === "transfer")
+      msgText = `${capitalize(msg.type)} ${msg.symbol} from ${msg.from} to ${
+        msg.to
+      }`
+    if (msg.type === "swap")
+      msgText = `${capitalize(msg.type)} ${msg.offerAssetSymbol} for ${
+        msg.askAssetSymbol
+      } on ${swapVenueToName[msg.venue]}`
+    return {
+      variant: "success",
+      msg: <span>{msgText}</span> ?? ((<></>) as React.ReactNode),
+    }
   })
-  const endItem = {
-    chain: {
-      label: askAsset.chain.name,
-      icon: askAsset.chain.icon,
-    },
-    coin: {
-      icon: askAsset.icon ?? "",
-      label: askAsset.symbol,
-    },
-    msg: toInput(route.amountOut, askAsset.decimals) + " " + askAsset.symbol,
-  }
 
   return (
     <>
       <SectionHeader title={t("Swap Path")} withLine />
-      <Timeline startItem={startItem} endItem={endItem} />
+      {/* @ts-ignore */}
+      <Timeline startOverride={startOverride} middleItems={middleItems} />
     </>
   )
 }

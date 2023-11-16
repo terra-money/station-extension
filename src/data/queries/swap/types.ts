@@ -27,7 +27,6 @@ export interface SwapState {
   askAsset: SwapAssetExtra
   fromAddress: string // get this from wallet
   route: RouteInfo | undefined
-  msgs: any[] // TODO: typing
 }
 
 export interface RouteParams {
@@ -54,7 +53,27 @@ export interface SwapAssetExtra extends SwapAssetBase {
 }
 
 export type SwapVenue = "osmosis-poolmanager"
-export type SwapOperation = any // TODO: typing
+export const swapVenueToName = {
+  "osmosis-poolmanager": "Osmosis",
+}
+export type SwapOperation = any[]
+
+export type OperationType = "transfer" | "swap"
+
+export type SwapTimelineMessage = {
+  type: "swap"
+  venue: SwapVenue
+  askAssetSymbol: string
+  offerAssetSymbol: string
+}
+export type TransferTimelineMessage = {
+  type: "transfer"
+  symbol: string
+  from: string
+  to: string
+}
+
+export type TimelineMessage = TransferTimelineMessage | SwapTimelineMessage
 
 export interface RouteInfo {
   amountIn: string
@@ -64,4 +83,5 @@ export interface RouteInfo {
   operations: SwapOperation[]
   source: SupportedSource
   chainIds: ChainID[]
+  timelineMsgs: TimelineMessage[]
 }
