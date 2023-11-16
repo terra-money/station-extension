@@ -35,6 +35,14 @@ export type MigratedWalletResult =
       words: Record<"330", string>
       pubkey: Record<"330", string>
     }
+  | {
+      name: string
+      words: Record<"330", string>
+      pubkey: Record<"330", string>
+      multisig: true
+      addresses: string[]
+      threshold: number
+    }
 interface Props {
   wallet: {
     name: string
