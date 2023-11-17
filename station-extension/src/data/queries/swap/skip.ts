@@ -10,9 +10,8 @@ import {
   SwapSource,
   TimelineMessage,
   OperationType,
-  SwapTimelineMessage,
 } from "./types"
-import { InterchainAddresses, InterchainNetworks } from "types/network"
+import { InterchainAddresses } from "types/network"
 import { IInterchainNetworks } from "data/wallet"
 
 export const skipApi = {
@@ -47,7 +46,8 @@ export const skipApi = {
   },
   queryMsgs: async (state: SwapState, addresses: InterchainAddresses) => {
     try {
-      const { askAsset, offerInput, offerAsset, route } = state
+      const { askAsset, offerInput, offerAsset, route, slippageTolerance } =
+        state
       if (!route || !addresses) return null
       const res = await axios.post(
         SKIP_SWAP_API.routes.msgs,
@@ -60,7 +60,7 @@ export const skipApi = {
           dest_asset_chain_id: askAsset.chainId,
           address_list: route.chainIds.map((chainId) => addresses[chainId]),
           operations: route.operations,
-          slippageTolerancePercent: "1",
+          slippage_tolerance_percent: slippageTolerance,
         },
         {
           baseURL: SKIP_SWAP_API.baseUrl,
@@ -130,6 +130,7 @@ const getTimelineMessages = (
   let swapOccured = false
 
   const timelineMsgs: TimelineMessage[] = route.operations.map(
+    // eslint-disable-next-line array-callback-return
     (op: any, i: number) => {
       const type = Object.keys(op)[0] as OperationType
 
@@ -141,10 +142,10 @@ const getTimelineMessages = (
         return {
           type,
           symbol: swapOccured ? swap.askAsset.symbol : swap.offerAsset.symbol, // TODO: make robust against multiple swaps
-          from: network[fromChainId].name ?? "Unknown network",
+          from: network[fromChainId].name ?? "Unknown Network",
           to:
             network[toChainId ?? swap.askAsset.chainId].name ??
-            "Unknown network", // get final chainId from askAsset or next one in ops
+            "Unknown Network", // get final chainId from askAsset or next one in ops
         }
       }
 

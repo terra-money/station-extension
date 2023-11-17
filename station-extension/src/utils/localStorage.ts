@@ -8,6 +8,7 @@ import { AccAddress } from "@terra-money/feather.js"
 export enum SettingKey {
   Theme = "Theme",
   Currency = "FiatCurrency",
+  SwapSlippage = "SwapSlippage",
   CustomNetworks = "CustomNetworks",
   CustomChains = "CustomChains",
   GasAdjustment = "GasAdjust", // Tx
@@ -63,6 +64,7 @@ export const DefaultSettings = {
   [SettingKey.CustomTokens]: DefaultCustomTokens as CustomTokens,
   [SettingKey.MinimumValue]: 0,
   [SettingKey.NetworkCacheTime]: 0,
+  [SettingKey.SwapSlippage]: "1",
   [SettingKey.OnlyShowWhitelist]: true,
   [SettingKey.HideLowBalTokens]: true,
   [SettingKey.WithdrawAs]: "",
@@ -132,6 +134,11 @@ export const devModeState = atom({
   default: !!getLocalSetting(SettingKey.DevMode),
 })
 
+export const swapSlippageState = atom({
+  key: "swapSlippageState",
+  default: getLocalSetting(SettingKey.SwapSlippage) as string,
+})
+
 export const replaceKeplrState = atom({
   key: "replaceKeplrState",
   default: !!getLocalSetting(SettingKey.ReplaceKeplr),
@@ -185,6 +192,23 @@ export const useCustomChains = () => {
       setLocalSetting(SettingKey.CustomChains, newChains)
       setCustomChains(newChains)
     },
+  }
+}
+
+export const useSwapSlippage = () => {
+  const [slippage, setSlippage] = useRecoilState(swapSlippageState)
+
+  const changeSlippage = useCallback(
+    (slippage: string) => {
+      setLocalSetting(SettingKey.SwapSlippage, slippage)
+      setSlippage(slippage)
+    },
+    [setSlippage]
+  )
+
+  return {
+    slippage,
+    changeSlippage,
   }
 }
 

@@ -2,8 +2,15 @@
   border: 1px solid var(--token-light-100);
   position: absolute;
   right: 40%;
-  margin-top: -25px;
+  margin-top: 97.5px;
 }
 .container {
   margin: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.text {
+  color: var(--text);
 }

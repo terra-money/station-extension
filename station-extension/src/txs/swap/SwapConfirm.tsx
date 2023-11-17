@@ -1,10 +1,9 @@
 import { useMemo } from "react"
 import { MsgTransfer, Coin } from "@terra-money/feather.js"
 import { Form, SectionHeader, SummaryTable } from "station-ui"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import SwapTimeline from "./components/SwapTimeline"
-import { toInput } from "txs/utils"
 import { SwapState } from "data/queries/swap/types"
 import { toAmount } from "@terra-money/terra-utils"
 import Tx from "txs/Tx"
@@ -25,6 +24,7 @@ const Confirm = () => {
   const { state: swapMsgs } = useLocation()
   const { t } = useTranslation()
   const { form } = useSwap()
+  const navigate = useNavigate()
   const addresses = useAllInterchainAddresses()
   const { watch, handleSubmit, getValues } = form
   const { route, askAsset, offerAsset, offerInput } = watch()
@@ -58,6 +58,7 @@ const Confirm = () => {
     balance: offerAsset.balance,
     estimationTxValues,
     createTx,
+    onSuccess: () => navigate("/"),
     queryKeys: [offerAsset, askAsset]
       .filter((asset) => asset && AccAddress.validate(asset.denom))
       .map((token) => [

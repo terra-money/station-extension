@@ -19,6 +19,7 @@ import { ReactComponent as SwapArrows } from "styles/images/icons/SwapArrows.svg
 import styles from "./Swap.module.scss"
 import { useCurrency } from "data/settings/Currency"
 import { has } from "utils/num"
+import AssetFormExtra from "./components/AssetFormExtra"
 
 enum SwapAssetType {
   ASK = "askAsset",
@@ -27,7 +28,8 @@ enum SwapAssetType {
 
 const SwapForm = () => {
   // Hooks
-  const { tokens, getTokensWithBal, getBestRoute, form, getMsgs } = useSwap()
+  const { tokens, getTokensWithBal, getBestRoute, form, getMsgs, slippage } =
+    useSwap()
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { state } = useLocation()
@@ -49,25 +51,20 @@ const SwapForm = () => {
   // Lifecycle
   useEffect(() => {
     if (!state?.denom) return
-    const token = tokens.find(
-      (t) => t.originDenom === state.denom && has(t.balance)
-    )
+    const token = tokens
+      .filter((t) => t.originDenom === state.denom && has(t.balance))
+      .sort((a, b) => Number(b.balance) - Number(a.balance))[0]
     if (!token) return
     setValue("offerAsset", token)
   }, [])
 
   useEffect(() => {
-    console.log("offerInput", has(offerInput))
     if (!has(offerInput)) return
-    console.log("offerInput 2", offerInput)
     setValue("route", undefined) // for loading purposees
     const fetchRoute = async () => {
       try {
-        console.log("before")
         setValue("route", await getBestRoute(getValues()))
-        console.log("route", route)
       } catch (err: any) {
-        console.log("err", err)
         setError("offerInput", { message: err.message })
       }
     }
@@ -119,6 +116,13 @@ const SwapForm = () => {
     return { offer: offer ?? "—", ask: ask ?? "—" }
   }, [offerAsset, offerInput, askAsset, route, currency])
 
+  const onOfferBalanceClick = () => {
+    setValue(
+      "offerInput",
+      toInput(offerAsset.balance, offerAsset.decimals).toString()
+    )
+  }
+
   return (
     <div className={styles.container}>
       <Modal
@@ -129,7 +133,9 @@ const SwapForm = () => {
         <SwapTokenSelector tokenOnClick={tokenOnClick} tokens={displayTokens} />
       </Modal>
       <AssetSelectorFrom
-        extra={toInput(offerAsset.balance, offerAsset.decimals)}
+        extra={
+          <AssetFormExtra asset={offerAsset} onClick={onOfferBalanceClick} />
+        }
         symbol={offerAsset.symbol}
         chainIcon={offerAsset.chain?.icon}
         chainName={offerAsset.chain?.name}
@@ -153,19 +159,24 @@ const SwapForm = () => {
         icon={<SwapArrows />}
       />
       <AssetSelectorTo
-        extra={toInput(askAsset.balance, askAsset.decimals)}
+        extra={<AssetFormExtra asset={askAsset} />}
         symbol={askAsset?.symbol}
         chainIcon={askAsset?.chain?.icon}
         chainName={askAsset?.chain?.name}
         tokenIcon={askAsset?.icon ?? ""}
         onSymbolClick={() => handleOpenModal(SwapAssetType.ASK)}
-        amount={askAssetAmount}
+        amount={Number(askAssetAmount).toFixed(2)}
         currencyAmount={currencyAmount.ask}
+      />
+      <Button
+        variant="secondary"
+        label={slippage}
+        onClick={() => navigate("slippage")}
       />
       <Button
         variant="primary"
         loading={!!(has(offerInput) && !route)}
-        disabled={!offerInput || !route}
+        disabled={!offerInput || !route || !msgs?.length}
         onClick={buttonOnClick}
         label={t("Continue")}
       />
