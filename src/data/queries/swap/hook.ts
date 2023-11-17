@@ -14,7 +14,7 @@ import { useBankBalance } from "../bank"
 import { useExchangeRates } from "../coingecko"
 import { useCallback, useMemo } from "react"
 import { useAllInterchainAddresses } from "auth/hooks/useAddress"
-import { InterchainAddresses, InterchainNetworks } from "types/network"
+import { InterchainAddresses } from "types/network"
 import { toAmount } from "@terra-money/terra-utils"
 
 // Tokens

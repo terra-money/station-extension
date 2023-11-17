@@ -27,10 +27,7 @@ export interface SwapState {
   askAsset: SwapAssetExtra
   fromAddress: string // get this from wallet
   route: RouteInfo | undefined
-}
-
-export interface RouteParams {
-  slippage?: number
+  slippageTolerance: string
 }
 
 export interface SwapAssetBase {

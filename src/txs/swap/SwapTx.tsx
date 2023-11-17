@@ -4,6 +4,7 @@ import Setup from "./SwapSetup"
 import Confirm from "./SwapConfirm"
 import SwapContext from "./SwapContext"
 import { Routes, Route, useLocation } from "react-router-dom"
+import Slippage from "./SlippagePage"
 
 // The sequence below is required before rendering the Swap form:
 // 1. `SwapContext` - Complete the network request related to swap.
@@ -20,6 +21,7 @@ const SwapTx = () => {
         <Routes>
           <Route path="/" element={<Setup />} />
           <Route path="/confirm" element={<Confirm />} />
+          <Route path="/slippage" element={<Slippage />} />
         </Routes>
       </SwapContext>
     </ExtensionPage>
