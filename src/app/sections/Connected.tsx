@@ -75,7 +75,9 @@ const Connected = () => {
                     <button
                       className={CopyStyles.button}
                       onClick={async () => {
-                        const lk = await getLedgerKey("330")
+                        const lk = await getLedgerKey(
+                          wallet.legacy ? "118" : "330"
+                        )
                         lk.showAddressAndPubKey("terra")
                       }}
                     >
