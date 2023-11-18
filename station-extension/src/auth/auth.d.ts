@@ -53,7 +53,7 @@ interface LedgerWallet {
 
 interface MultisigWallet extends SingleWallet {
   multisig: true
-  addresses: string[]
+  pubkeys: string[]
   threshold: number
 }
 
