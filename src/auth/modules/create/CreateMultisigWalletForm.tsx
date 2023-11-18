@@ -84,8 +84,8 @@ const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
 
     try {
       const values = addresses.map(({ value }) => value)
-      const publicKeys = await getPublicKeys(values)
-      const publicKey = new LegacyAminoMultisigPublicKey(threshold, publicKeys)
+      const pubkeys = await getPublicKeys(values)
+      const publicKey = new LegacyAminoMultisigPublicKey(threshold, pubkeys)
       onPubkey?.(publicKey)
       if (!onCreated) return
       const address = publicKey.address("terra")
@@ -94,9 +94,10 @@ const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
         name,
         words,
         multisig: true as const,
-        addresses: addresses.map(({ value }) => value),
+        pubkeys: pubkeys.map((k) => k.toAminoJSON()),
         threshold,
       }
+      console.log("STORING WALLET: ", wallet)
       addMultisigWallet(wallet)
       onCreated(wallet)
     } catch (error) {
