@@ -6,10 +6,6 @@ import SwapContext from "./SwapContext"
 import { Routes, Route, useLocation } from "react-router-dom"
 import Slippage from "./SlippagePage"
 
-// The sequence below is required before rendering the Swap form:
-// 1. `SwapContext` - Complete the network request related to swap.
-// 2. `SwapSingleContext` - Complete the network request not related to multiple swap
-
 const SwapTx = () => {
   const location = useLocation()
   const backPath = location.pathname.split("/").slice(0, -1).join("/")

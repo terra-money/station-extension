@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next"
 import { toInput } from "txs/utils"
 import { SwapState } from "data/queries/swap/types"
 import { swapVenueToName } from "data/queries/swap/types"
-import React from "react"
 import { capitalize } from "@mui/material"
+import style from "../Swap.module.scss"
 
 const SwapTimeline = ({
   offerAsset,
@@ -22,32 +22,55 @@ const SwapTimeline = ({
         label: offerAsset.chain.name,
         icon: offerAsset.chain.icon,
       }}
-      msg={`Swap ${offerInput} ${offerAsset.symbol} for ${toInput(
-        route.amountOut,
-        askAsset.decimals
-      )} ${askAsset.symbol} on ${askAsset.chain.name} via ${
-        swapVenueToName[route.swapVenue]
-      }`}
+      msg={
+        <>
+          Swap{" "}
+          <span className={style.text}>
+            {" "}
+            {offerInput} {offerAsset.symbol}
+          </span>{" "}
+          for{" "}
+          <span className={style.green}>
+            {" "}
+            {toInput(route.amountOut, askAsset.decimals)} {askAsset.symbol}
+          </span>{" "}
+          on <span className={style.text}> {askAsset.chain.name}</span> via{" "}
+          <span className={style.text}>
+            {" "}
+            {swapVenueToName[route.swapVenue]}
+          </span>
+        </>
+      }
       type={"Execute Contract"}
       msgCount={route.operations.length}
       hasTimeline
     />
   )
 
+  // eslint-disable-next-line array-callback-return
   const middleItems = route.timelineMsgs.map((msg) => {
-    let msgText
     if (msg.type === "transfer")
-      msgText = `${capitalize(msg.type)} ${msg.symbol} from ${msg.from} to ${
-        msg.to
-      }`
+      return {
+        msg: (
+          <>
+            {capitalize(msg.type)} <span>{msg.symbol}</span> from{" "}
+            <span>{msg.from}</span> to <span>{msg.to}</span>
+          </>
+        ),
+        variant: "success",
+      }
     if (msg.type === "swap")
-      msgText = `${capitalize(msg.type)} ${msg.offerAssetSymbol} for ${
-        msg.askAssetSymbol
-      } on ${swapVenueToName[msg.venue]}`
-    return {
-      variant: "success",
-      msg: <span>{msgText}</span> ?? ((<></>) as React.ReactNode),
-    }
+      return {
+        msg: (
+          <>
+            {capitalize(msg.type)}{" "}
+            <span className={style.text}> {msg.offerAssetSymbol}</span> for{" "}
+            <span className={style.text}> {msg.askAssetSymbol}</span> on{" "}
+            <span className={style.text}> {swapVenueToName[msg.venue]}</span>
+          </>
+        ),
+        variant: "success",
+      }
   })
 
   return (

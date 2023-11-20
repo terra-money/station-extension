@@ -39,12 +39,15 @@ export const useParseSwapTokens = (tokens: SwapAssetBase[]) => {
   const balances = useBankBalance()
   const { data: prices } = useExchangeRates()
 
-  return tokens
+  const parsedtoken = tokens
     .filter(({ chainId }) => Object.keys(network).includes(chainId))
     .map((token) => {
       const balance =
-        balances.find(({ denom }) => denom === token.denom)?.amount ?? 0
+        balances.find(
+          ({ denom, chain }) => denom === token.denom && token.chainId === chain
+        )?.amount ?? "0"
       const price = prices?.[token.denom]?.price ?? 0
+      const change = prices?.[token.denom]?.change ?? 0
       const value = Number(balance) * price * Math.pow(10, -token.decimals)
       const { icon, name } = network[token.chainId]
 
@@ -52,6 +55,7 @@ export const useParseSwapTokens = (tokens: SwapAssetBase[]) => {
         ...token,
         balance,
         price,
+        change,
         value,
         chain: {
           icon,
@@ -59,6 +63,7 @@ export const useParseSwapTokens = (tokens: SwapAssetBase[]) => {
         },
       } as SwapAssetExtra
     })
+  return parsedtoken
 }
 
 // Routing

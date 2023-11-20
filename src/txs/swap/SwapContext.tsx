@@ -38,6 +38,7 @@ const SwapContext = ({ children }: PropsWithChildren<{}>) => {
   const swap = useSwapTokens(SOURCES)
   const getBestRoute = useGetBestRoute(SOURCES)
   const getMsgs = useGetMsgs(SOURCES)
+
   const { slippage, changeSlippage } = useSwapSlippage()
   const tokens = swap.reduce(
     (acc, { data }) => (data ? [...acc, ...data] : acc),
@@ -49,10 +50,10 @@ const SwapContext = ({ children }: PropsWithChildren<{}>) => {
   const state = combineState(...swap)
 
   const form = useForm<SwapState>({ mode: "onChange" })
-  const { offerAsset } = form.watch()
+  const { askAsset } = form.watch()
 
   useEffect(() => {
-    if (!offerAsset) {
+    if (!askAsset) {
       form.reset({
         askAsset: defaultValues.askAsset,
         offerAsset: defaultValues.offerAsset,
@@ -67,7 +68,7 @@ const SwapContext = ({ children }: PropsWithChildren<{}>) => {
   }
 
   const render = () => {
-    if (!offerAsset) return null
+    if (!askAsset || !parsed) return null
     const value = {
       tokens: parsed,
       getTokensWithBal,
