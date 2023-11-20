@@ -60,7 +60,7 @@ export const skipApi = {
           dest_asset_chain_id: askAsset.chainId,
           address_list: route.chainIds.map((chainId) => addresses[chainId]),
           operations: route.operations,
-          slippage_tolerance_percent: slippageTolerance,
+          slippage_tolerance_percent: slippageTolerance.toString(),
         },
         {
           baseURL: SKIP_SWAP_API.baseUrl,
