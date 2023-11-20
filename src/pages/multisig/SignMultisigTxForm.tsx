@@ -1,4 +1,5 @@
 import {
+  Copy,
   Input,
   InputWrapper,
   ModalButton,
@@ -14,11 +15,9 @@ import { SAMPLE_ADDRESS } from "config/constants"
 import styles from "./MultisigTxForm.module.scss"
 import { useTranslation } from "react-i18next"
 import validate from "auth/scripts/validate"
-import { Modal } from "components/feedback"
 import { useForm } from "react-hook-form"
 import { isWallet, useAuth } from "auth"
 import { useChainID } from "data/wallet"
-import { Pre } from "components/general"
 import { useState } from "react"
 import ReadTx from "./ReadTx"
 
@@ -53,6 +52,7 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
   const [error, setError] = useState<Error>()
 
   const submit = async ({ address, tx }: TxValues) => {
+    setSignature(undefined)
     setSubmitting(true)
 
     try {
@@ -73,62 +73,71 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
     setSubmitting(false)
   }
 
-  const submittingLabel = isWallet.ledger(wallet) ? t("Confirm in ledger") : ""
-  console.log(SAMPLE_ENCODED_TX)
+  const submittingLabel = isWallet.ledger(wallet)
+    ? t("Confirm in ledger")
+    : "Generate Signature"
+
+  const submitButton = (
+    <SubmitButton loading={submitting} disabled={!isValid}>
+      {submittingLabel}
+    </SubmitButton>
+  )
 
   return (
-    <>
-      <Form onSubmit={handleSubmit(submit)} className={styles.form}>
-        <InputWrapper label={t("Multisig Address")}>
+    <Form onSubmit={handleSubmit(submit)} className={styles.form}>
+      <InputWrapper label={t("Multisig Address")}>
+        <Input
+          {...register("address", {
+            validate: validate.address,
+          })}
+          placeholder={SAMPLE_ADDRESS}
+          autoFocus
+        />
+      </InputWrapper>
+      <InputWrapper label={t("Hashed Transaction")}>
+        <TextArea
+          {...register("tx", { required: true })}
+          placeholder={SAMPLE_ENCODED_TX}
+          rows={4}
+        />
+      </InputWrapper>
+      <ReadTx tx={tx.trim()} />
+
+      <SectionHeader title="Confirm" withLine />
+
+      {passwordRequired && (
+        <InputWrapper label={t("Password")} error={incorrect}>
           <Input
-            {...register("address", {
-              validate: validate.address,
-            })}
-            placeholder={SAMPLE_ADDRESS}
-            autoFocus
+            type="password"
+            value={password}
+            onChange={(e) => {
+              setIncorrect(undefined)
+              setPassword(e.target.value)
+            }}
           />
         </InputWrapper>
-        <InputWrapper label={t("Hashed Transaction")}>
-          <TextArea
-            {...register("tx", { required: true })}
-            placeholder={SAMPLE_ENCODED_TX}
-            rows={4}
-          />
-        </InputWrapper>
-        <ReadTx tx={tx.trim()} />
+      )}
 
-        <SectionHeader title="Confirm" withLine />
+      {error && <FormError>{error.message}</FormError>}
 
-        {passwordRequired && (
-          <InputWrapper label={t("Password")} error={incorrect}>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setIncorrect(undefined)
-                setPassword(e.target.value)
-              }}
-            />
+      <ModalButton
+        isOpen={!!signature}
+        title={t("Signature")}
+        renderButton={(open) => submitButton}
+        footer={(close) => (
+          <SubmitButton onClick={close}>{"Done"}</SubmitButton>
+        )}
+      >
+        {signature && (
+          <InputWrapper
+            label={t("Signature")}
+            extra={<Copy copyText={toBytes(signature)} />}
+          >
+            <TextArea readOnly={true} value={toBytes(signature)} rows={10} />
           </InputWrapper>
         )}
-
-        {error && <FormError>{error.message}</FormError>}
-
-        <SubmitButton disabled={!isValid}>{"Sign Transaction"}</SubmitButton>
-      </Form>
-
-      {signature && (
-        <Modal
-          title={t("Signature")}
-          isOpen
-          onRequestClose={() => setSignature(undefined)}
-        >
-          <Pre normal break copy>
-            {toBytes(signature)}
-          </Pre>
-        </Modal>
-      )}
-    </>
+      </ModalButton>
+    </Form>
   )
 }
 
