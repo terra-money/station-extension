@@ -20,7 +20,6 @@ import styles from "./Swap.module.scss"
 import { useCurrency } from "data/settings/Currency"
 import { has } from "utils/num"
 import AssetFormExtra from "./components/AssetFormExtra"
-import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 import { toAmount } from "@terra-money/terra-utils"
 import { validateAssets } from "./SwapConfirm"
 
@@ -37,9 +36,10 @@ const SwapForm = () => {
   const navigate = useNavigate()
   const { state } = useLocation()
   const currency = useCurrency()
+  const [error, setError] = useState<string | undefined>()
 
   // State
-  const { watch, getValues, setValue, setError, register } = form
+  const { watch, getValues, setValue, register } = form
   const [assetModal, setAssetModal] = useState<SwapAssetType | undefined>()
   const [displayTokens, setDisplayTokens] = useState<SwapAssetExtra[]>([])
   const { offerAsset, askAsset, offerInput, route, msgs } = watch()
@@ -48,8 +48,10 @@ const SwapForm = () => {
     () => toAmount(offerInput, { decimals: offerAsset.decimals }),
     [offerInput, offerAsset]
   )
-  const insufficientFunds =
-    Number(offerAsset.balance) < Number(offerAssetAmount)
+  const insufficientFunds = useMemo(
+    () => Number(offerAsset.balance) < Number(offerAssetAmount),
+    [offerAssetAmount, offerAsset]
+  )
 
   const askAssetAmount = useMemo(() => {
     return route?.amountOut
@@ -68,14 +70,18 @@ const SwapForm = () => {
   }, [])
 
   useEffect(() => {
-    if (!has(offerInput) || insufficientFunds) return
+    setError(undefined)
+    if (insufficientFunds) {
+      setError("Insufficient funds")
+    }
+    if (!has(offerInput) || error) return
     setValue("route", undefined) // for loading purposees
     const fetchRoute = async () => {
       try {
         setValue("route", await getBestRoute(getValues()))
         setValue("msgs", await getMsgs(getValues()))
       } catch (err: any) {
-        setError("offerInput", { message: err.message })
+        setError(err.message)
       }
     }
     fetchRoute()
@@ -130,7 +136,7 @@ const SwapForm = () => {
     msgs?.filter(Boolean) &&
     !sameAssets
   )
-  const loading = !!(has(offerInput) && !insufficientFunds && !route)
+  const loading = !!(has(offerInput) && !error && !route)
 
   return (
     <div className={styles.container}>
@@ -174,9 +180,7 @@ const SwapForm = () => {
         label={slippage}
         onClick={() => navigate("slippage")}
       />
-      {insufficientFunds && (
-        <Banner title={t("Insufficient funds")} variant="error" />
-      )}
+      {error && <Banner title={t(error)} variant="error" />}
       {sameAssets && (
         <Banner
           title={t("Confirm your ask and offer assets are different")}
@@ -189,7 +193,6 @@ const SwapForm = () => {
         disabled={disabled}
         onClick={buttonOnClick}
         label={t("Continue")}
-        icon={<CheckCircleIcon />}
       />
     </div>
   )
