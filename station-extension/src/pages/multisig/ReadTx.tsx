@@ -18,7 +18,19 @@ const ReadTx = ({ tx: encoded }: { tx: string }) => {
 
   const render = () => {
     const tx = decodeTx(encoded)
-    if (!tx) return <Wrong>{t("Invalid tx")}</Wrong>
+    if (!tx)
+      return (
+        <>
+          <SectionHeader title={t("Details")} withLine />
+          <InputWrapper label={t("Message")}>
+            <TextArea
+              readOnly={true}
+              value={"The provided transaction is not valid."}
+              rows={2}
+            />
+          </InputWrapper>
+        </>
+      )
 
     const { body, auth_info } = tx
     const { memo, messages } = body
@@ -34,7 +46,12 @@ const ReadTx = ({ tx: encoded }: { tx: string }) => {
         <SectionHeader title={t("Details")} withLine />
         <InputWrapper label={t("Message")}>
           {messages.map((message, index) => (
-            <TextArea readOnly={true} value={message.toJSON()} key={index} />
+            <TextArea
+              readOnly={true}
+              value={message.toJSON()}
+              rows={9}
+              key={index}
+            />
           ))}
         </InputWrapper>
         <SummaryTable rows={txDetails.filter((detail) => !!detail.value)} />
