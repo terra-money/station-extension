@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { MsgTransfer, Coin } from "@terra-money/feather.js"
+import { MsgTransfer, Coin, MsgExecuteContract } from "@terra-money/feather.js"
 import { Form, SectionHeader, SummaryTable } from "station-ui"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
@@ -13,6 +13,7 @@ import { queryKey } from "data/query"
 import { useAllInterchainAddresses } from "auth/hooks/useAddress"
 import { Read } from "components/token"
 import Errors from "./components/ConfirmErrors"
+import { Coins } from "@terra-money/feather.js"
 
 export const validateAssets = (
   assets: Partial<SwapState>
@@ -36,9 +37,10 @@ const Confirm = () => {
 
   const createTx = ({ offerAsset }: SwapState) => {
     const msg = JSON.parse(swapMsgs[0].msg)
+    let msgs
 
-    const msgs = [
-      new MsgTransfer(
+    if (msg.source_channel) {
+      msgs = new MsgTransfer(
         "transfer",
         msg.source_channel,
         new Coin(msg.token?.denom ?? "", msg.token?.amount),
@@ -47,10 +49,17 @@ const Confirm = () => {
         undefined,
         (Date.now() + 120 * 1000) * 1e6,
         msg.memo
-      ),
-    ]
-
-    return { msgs, chainID: offerAsset.chainId }
+      )
+    } else {
+      // for native swaps (osmo to osmo)
+      msgs = new MsgExecuteContract(
+        msg.sender,
+        msg.contract,
+        msg.msg,
+        Coins.fromAmino(msg.funds)
+      )
+    }
+    return { msgs: [msgs] ?? [], chainID: offerAsset.chainId }
   }
 
   const estimationTxValues = useMemo(() => getValues(), [getValues])
