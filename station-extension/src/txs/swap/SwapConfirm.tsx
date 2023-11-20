@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import { MsgTransfer, Coin } from "@terra-money/feather.js"
 import { Form, SectionHeader, SummaryTable } from "station-ui"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import SwapTimeline from "./components/SwapTimeline"
 import { SwapState } from "data/queries/swap/types"
@@ -12,26 +12,30 @@ import { AccAddress } from "@terra-money/feather.js"
 import { queryKey } from "data/query"
 import { useAllInterchainAddresses } from "auth/hooks/useAddress"
 import { Read } from "components/token"
+import Errors from "./components/ConfirmErrors"
 
 export const validateAssets = (
   assets: Partial<SwapState>
 ): assets is Required<SwapState> => {
   const { offerAsset, askAsset } = assets
-  return !!offerAsset && !!askAsset && offerAsset !== askAsset
+  return (
+    !!offerAsset &&
+    !!askAsset &&
+    JSON.stringify(offerAsset) !== JSON.stringify(askAsset)
+  )
 }
 
 const Confirm = () => {
-  const { state: swapMsgs } = useLocation()
   const { t } = useTranslation()
   const { form } = useSwap()
   const navigate = useNavigate()
   const addresses = useAllInterchainAddresses()
   const { watch, handleSubmit, getValues } = form
-  const { route, askAsset, offerAsset, offerInput } = watch()
+  const { route, askAsset, offerAsset, offerInput, msgs: swapMsgs } = watch()
   const amount = toAmount(offerInput, { decimals: offerAsset.decimals })
 
   const createTx = ({ offerAsset }: SwapState) => {
-    const msg = JSON.parse(swapMsgs[0]?.msg)
+    const msg = JSON.parse(swapMsgs[0].msg)
 
     const msgs = [
       new MsgTransfer(
@@ -94,12 +98,13 @@ const Confirm = () => {
                 label: t("Transaction Fee"),
                 value: <Read {...fee} />,
               },
-              {
-                label: t("Price Impact"),
-                value: "N/A",
-              },
+              // {
+              //   label: t("Price Impact"),
+              //   value: "N/A",
+              // },
             ]}
           />
+          <Errors />
           {submit.button}
         </Form>
       )}

@@ -13,7 +13,6 @@ import { useCurrency } from "data/settings/Currency"
 import { useState } from "react"
 import { useNetwork } from "data/wallet"
 import { ChainID } from "types/network"
-import { has } from "utils/num"
 import { Read } from "components/token"
 
 interface Props {

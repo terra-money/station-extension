@@ -28,6 +28,7 @@ export interface SwapState {
   fromAddress: string // get this from wallet
   route: RouteInfo | undefined
   slippageTolerance: string
+  msgs: any[]
 }
 
 export interface SwapAssetBase {
@@ -49,9 +50,10 @@ export interface SwapAssetExtra extends SwapAssetBase {
   }
 }
 
-export type SwapVenue = "osmosis-poolmanager"
+export type SwapVenue = "osmosis-poolmanager" | "terra-astroport"
 export const swapVenueToName = {
   "osmosis-poolmanager": "Osmosis",
+  "terra-astroport": "Astroport",
 }
 export type SwapOperation = any[]
 

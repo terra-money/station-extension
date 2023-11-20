@@ -99,7 +99,10 @@ export const skipApi = {
       )
       if (!res?.data) throw new Error("No data returned from Skip API")
 
-      if (res.data.txs_required > 1) throw new Error("Swap not supported")
+      if (res.data.txs_required > 1)
+        throw new Error(
+          `Swap not supported, ${res.data.txs_required} txs required`
+        )
 
       const transformedRouteInfo: RouteInfo = {
         amountIn: res.data.amount_in,
@@ -142,10 +145,8 @@ const getTimelineMessages = (
         return {
           type,
           symbol: swapOccured ? swap.askAsset.symbol : swap.offerAsset.symbol, // TODO: make robust against multiple swaps
-          from: network[fromChainId].name ?? "Unknown Network",
-          to:
-            network[toChainId ?? swap.askAsset.chainId].name ??
-            "Unknown Network", // get final chainId from askAsset or next one in ops
+          from: network[fromChainId]?.name ?? "Unknown",
+          to: network[toChainId ?? swap.askAsset.chainId]?.name ?? "Unknown", // get final chainId from askAsset or next one in ops
         }
       }
 
