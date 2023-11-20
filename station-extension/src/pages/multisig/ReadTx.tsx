@@ -2,7 +2,6 @@ import { SectionHeader, InputWrapper, TextArea, SummaryTable } from "station-ui"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { ReadMultiple } from "components/token"
 import { useTranslation } from "react-i18next"
-import { Wrong } from "components/feedback"
 
 const ReadTx = ({ tx: encoded }: { tx: string }) => {
   const { t } = useTranslation()
