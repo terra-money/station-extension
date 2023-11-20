@@ -1,26 +1,26 @@
-import { useState } from "react"
-import { useTranslation } from "react-i18next"
-import { useForm } from "react-hook-form"
-import { AccAddress, SignatureV2 } from "@terra-money/feather.js"
-import { SAMPLE_ADDRESS } from "config/constants"
-import { useInterchainLCDClient } from "data/queries/lcdClient"
-import { Pre } from "components/general"
-import { Form, FormError, FormItem } from "components/form"
-import { Modal } from "components/feedback"
-import { isWallet, useAuth } from "auth"
-import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
-import ReadTx from "./ReadTx"
-import { useChainID } from "data/wallet"
-import validate from "auth/scripts/validate"
 import {
-  // Dropdown,
   Input,
-  TextArea,
-  // Form,
   InputWrapper,
-  // ButtonInlineWrapper,
+  ModalButton,
+  SectionHeader,
   SubmitButton,
+  TextArea,
 } from "station-ui"
+import { AccAddress, SignatureV2 } from "@terra-money/feather.js"
+import { useInterchainLCDClient } from "data/queries/lcdClient"
+import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
+import { Form, FormError } from "components/form"
+import { SAMPLE_ADDRESS } from "config/constants"
+import styles from "./MultisigTxForm.module.scss"
+import { useTranslation } from "react-i18next"
+import validate from "auth/scripts/validate"
+import { Modal } from "components/feedback"
+import { useForm } from "react-hook-form"
+import { isWallet, useAuth } from "auth"
+import { useChainID } from "data/wallet"
+import { Pre } from "components/general"
+import { useState } from "react"
+import ReadTx from "./ReadTx"
 
 interface TxValues {
   address: AccAddress
@@ -78,7 +78,7 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
 
   return (
     <>
-      <Form onSubmit={handleSubmit(submit)}>
+      <Form onSubmit={handleSubmit(submit)} className={styles.form}>
         <InputWrapper label={t("Multisig Address")}>
           <Input
             {...register("address", {
@@ -92,10 +92,13 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
           <TextArea
             {...register("tx", { required: true })}
             placeholder={SAMPLE_ENCODED_TX}
-            rows={6}
+            rows={4}
           />
         </InputWrapper>
         <ReadTx tx={tx.trim()} />
+
+        <SectionHeader title="Confirm" withLine />
+
         {passwordRequired && (
           <InputWrapper label={t("Password")} error={incorrect}>
             <Input
