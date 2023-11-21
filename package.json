@@ -26,7 +26,7 @@
     "@terra-money/log-finder-ruleset": "^3.0.3",
     "@terra-money/msg-reader": "^3.0.1",
     "@terra-money/station-connector": "^1.0.12",
-    "@terra-money/terra-utils": "^1.0.9",
+    "@terra-money/terra-utils": "^1.0.11-beta.0",
     "@terra-money/terra.js": "^3.1.9",
     "@terra-money/terra.proto": "^2.0.0",
     "@terra-money/wallet-kit": "^1.0.15",
