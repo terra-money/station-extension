@@ -42,7 +42,7 @@ const SwapForm = () => {
   const { watch, getValues, setValue, register } = form
   const [assetModal, setAssetModal] = useState<SwapAssetType | undefined>()
   const [displayTokens, setDisplayTokens] = useState<SwapAssetExtra[]>([])
-  const { offerAsset, askAsset, offerInput, route, msgs } = watch()
+  const { offerAsset, askAsset, offerInput, route } = watch()
 
   const offerAssetAmount = useMemo(
     () => toAmount(offerInput, { decimals: offerAsset.decimals }),
@@ -71,20 +71,22 @@ const SwapForm = () => {
 
   useEffect(() => {
     setError(undefined)
-    if (insufficientFunds) {
-      setError("Insufficient funds")
-    }
-    if (!has(offerInput) || error) return
     setValue("route", undefined) // for loading purposees
-    const fetchRoute = async () => {
+
+    if (insufficientFunds) setError("Insufficient funds")
+    if (sameAssets) setError("Swap assets must be different")
+    if (!has(offerInput) || error) return
+
+    const fetchRouteAndMsgs = async () => {
       try {
         setValue("route", await getBestRoute(getValues()))
         setValue("msgs", await getMsgs(getValues()))
       } catch (err: any) {
-        setError(err.message)
+        console.log("ERROR HERE", err)
+        setError(err?.message ?? "Unknown error")
       }
     }
-    fetchRoute()
+    fetchRouteAndMsgs()
   }, [offerAsset, askAsset, offerInput])
 
   // Handlers
@@ -105,8 +107,11 @@ const SwapForm = () => {
     setValue("offerAsset", askAsset)
   }
 
-  const buttonOnClick = async () => {
-    navigate("confirm", { state: msgs })
+  const onOfferBalanceClick = () => {
+    setValue(
+      "offerInput",
+      toInput(offerAsset.balance, offerAsset.decimals).toString()
+    )
   }
 
   // Values
@@ -122,20 +127,8 @@ const SwapForm = () => {
     return { offer: offer ?? "—", ask: ask ?? "—" }
   }, [offerAsset, offerInput, askAsset, route, currency])
 
-  const onOfferBalanceClick = () => {
-    setValue(
-      "offerInput",
-      toInput(offerAsset.balance, offerAsset.decimals).toString()
-    )
-  }
   const sameAssets = !validateAssets({ offerAsset, askAsset })
-  const disabled = !(
-    offerInput &&
-    !insufficientFunds &&
-    route &&
-    msgs?.filter(Boolean) &&
-    !sameAssets
-  )
+  const disabled = !(offerInput && !error && route)
   const loading = !!(has(offerInput) && !error && !route)
 
   return (
@@ -172,7 +165,7 @@ const SwapForm = () => {
         chainName={askAsset?.chain?.name}
         tokenIcon={askAsset?.icon ?? ""}
         onSymbolClick={() => handleOpenModal(SwapAssetType.ASK)}
-        amount={Number(askAssetAmount).toFixed(2)}
+        amount={Number(askAssetAmount).toFixed(4)}
         currencyAmount={currencyAmount.ask}
       />
       <Button
@@ -181,17 +174,11 @@ const SwapForm = () => {
         onClick={() => navigate("slippage")}
       />
       {error && <Banner title={t(error)} variant="error" />}
-      {sameAssets && (
-        <Banner
-          title={t("Confirm your ask and offer assets are different")}
-          variant="error"
-        />
-      )}
       <Button
         variant="primary"
         loading={loading}
         disabled={disabled}
-        onClick={buttonOnClick}
+        onClick={() => navigate("confirm")}
         label={t("Continue")}
       />
     </div>

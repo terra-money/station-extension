@@ -113,7 +113,7 @@ const Confirm = () => {
               // },
             ]}
           />
-          <Errors />
+          <Errors feeDenom={fee.denom} />
           {submit.button}
         </Form>
       )}
