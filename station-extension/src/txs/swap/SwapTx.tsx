@@ -24,12 +24,7 @@ const SwapTx = () => {
             key={r.path}
             path={r.path}
             element={
-              <ExtensionPage
-                fullHeight
-                backButtonPath={backPath}
-                title={t(r.title)}
-                modal
-              >
+              <ExtensionPage backButtonPath={backPath} title={t(r.title)} modal>
                 {r.element}
               </ExtensionPage>
             }

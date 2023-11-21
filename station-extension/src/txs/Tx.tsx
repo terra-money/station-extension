@@ -145,8 +145,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
     estimationTxValues,
     msgs: simulationTx?.msgs.map((msg) => msg.toData(isClassic)["@type"]),
   }
-  console.log("simulationTx", simulationTx)
-  console.log("key", key)
 
   const { data: estimatedGas, ...estimatedGasState } = useQuery(
     [queryKey.tx.create, key, isWalletEmpty],
@@ -165,8 +163,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
           ...simulationTx,
           feeDenoms: [gasDenom],
         })
-        console.log("unsignedTx", unsignedTx)
-
         return unsignedTx.auth_info.fee.gas_limit * key.gasAdjustment
       } catch (error) {
         console.error(error)
