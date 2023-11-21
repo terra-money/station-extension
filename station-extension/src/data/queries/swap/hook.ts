@@ -148,11 +148,11 @@ export const useGetMsgs = (sources?: SupportedSource[]) => {
 const DEFAULT_SWAP = {
   ask: {
     chainID: "phoenix-1",
-    symbol: "LUNA",
+    denom: "uluna",
   },
   offer: {
     chainID: "axelar-dojo-1",
-    symbol: "USDC",
+    denom: "uusdc",
   },
 }
 
@@ -161,12 +161,12 @@ export const useGetSwapDefaults = (assets: SwapAssetExtra[]) => {
   const defaults = useMemo(() => {
     const askAsset = assets.find(
       (t) =>
-        t.symbol === DEFAULT_SWAP.ask.symbol &&
+        t.originDenom === DEFAULT_SWAP.ask.denom &&
         t.chainId === DEFAULT_SWAP.ask.chainID
     )
     const offerAsset = assets.find(
       (t) =>
-        t.symbol === DEFAULT_SWAP.offer.symbol &&
+        t.originDenom === DEFAULT_SWAP.offer.denom &&
         t.chainId === DEFAULT_SWAP.offer.chainID
     )
 

@@ -4,23 +4,39 @@ import Setup from "./SwapSetup"
 import Confirm from "./SwapConfirm"
 import SwapContext from "./SwapContext"
 import { Routes, Route, useLocation } from "react-router-dom"
-import Slippage from "./SlippagePage"
+import SwapSettings from "./SwapSettingsPage"
 
 const SwapTx = () => {
   const location = useLocation()
-  const backPath = location.pathname.split("/").slice(0, -1).join("/")
-
   const { t } = useTranslation()
+  const backPath = location.pathname.split("/").slice(0, -1).join("/")
+  const routes = [
+    { path: "/", element: <Setup />, title: "Swap" },
+    { path: "/confirm", element: <Confirm />, title: "Confirm Swap" },
+    { path: "/slippage", element: <SwapSettings />, title: "Swap Settings" },
+  ]
+
   return (
-    <ExtensionPage fullHeight backButtonPath={backPath} title={t("Swap")} modal>
-      <SwapContext>
-        <Routes>
-          <Route path="/" element={<Setup />} />
-          <Route path="/confirm" element={<Confirm />} />
-          <Route path="/slippage" element={<Slippage />} />
-        </Routes>
-      </SwapContext>
-    </ExtensionPage>
+    <SwapContext>
+      <Routes>
+        {routes.map((r) => (
+          <Route
+            key={r.path}
+            path={r.path}
+            element={
+              <ExtensionPage
+                fullHeight
+                backButtonPath={backPath}
+                title={t(r.title)}
+                modal
+              >
+                {r.element}
+              </ExtensionPage>
+            }
+          />
+        ))}
+      </Routes>
+    </SwapContext>
   )
 }
 
