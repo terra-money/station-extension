@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 import { addressFromWords } from "utils/bech32"
-import { Button, FlexColumn, SummaryHeader } from "station-ui"
+import { Button, Grid, SummaryHeader } from "station-ui"
 
 interface Props extends SingleWallet {
   onConfirm?: () => void
@@ -24,7 +24,7 @@ const CreatedWallet = ({ name, words, onConfirm }: Props) => {
   }
 
   return (
-    <FlexColumn gap={40}>
+    <Grid gap={40}>
       <SummaryHeader
         statusLabel={t("Success!")}
         statusMessage={t("The wallet was created")}
@@ -35,7 +35,7 @@ const CreatedWallet = ({ name, words, onConfirm }: Props) => {
       <Button variant="primary" onClick={submit}>
         {t("Done")}
       </Button>
-    </FlexColumn>
+    </Grid>
   )
 }
 

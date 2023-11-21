@@ -9,7 +9,7 @@ import { SignatureV2, MultiSignature } from "@terra-money/feather.js"
 import { SAMPLE_ADDRESS } from "config/constants"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { latestTxState } from "data/queries/tx"
-import { Form, FormError, FormGroup, FormItem } from "components/form"
+import { Form, FormError, FormGroup } from "components/form"
 import {
   Copy,
   Input,
@@ -18,8 +18,7 @@ import {
   SubmitButton,
   SectionHeader,
 } from "station-ui"
-import { Submit } from "components/form"
-import { SAMPLE_ENCODED_TX, SAMPLE_SIGNATURE } from "./utils/placeholder"
+import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
 import ReadTx from "./ReadTx"
 import { useChainID } from "data/wallet"
 import validate from "auth/scripts/validate"

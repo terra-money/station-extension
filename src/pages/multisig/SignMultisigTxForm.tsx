@@ -1,26 +1,26 @@
-import { useState } from "react"
-import { useTranslation } from "react-i18next"
-import { useForm } from "react-hook-form"
-import { AccAddress, SignatureV2 } from "@terra-money/feather.js"
-import { SAMPLE_ADDRESS } from "config/constants"
-import { useInterchainLCDClient } from "data/queries/lcdClient"
-import { Pre } from "components/general"
-import { Form, FormError, FormItem } from "components/form"
-import { Modal } from "components/feedback"
-import { isWallet, useAuth } from "auth"
-import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
-import ReadTx from "./ReadTx"
-import { useChainID } from "data/wallet"
-import validate from "auth/scripts/validate"
 import {
-  // Dropdown,
+  Copy,
   Input,
-  TextArea,
-  // Form,
   InputWrapper,
-  // ButtonInlineWrapper,
+  ModalButton,
+  SectionHeader,
   SubmitButton,
+  SummaryHeader,
+  TextArea,
 } from "station-ui"
+import { AccAddress, SignatureV2 } from "@terra-money/feather.js"
+import { useInterchainLCDClient } from "data/queries/lcdClient"
+import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
+import { Form, FormError } from "components/form"
+import { SAMPLE_ADDRESS } from "config/constants"
+import styles from "./MultisigTxForm.module.scss"
+import { useTranslation } from "react-i18next"
+import validate from "auth/scripts/validate"
+import { useForm } from "react-hook-form"
+import { isWallet, useAuth } from "auth"
+import { useChainID } from "data/wallet"
+import { useState } from "react"
+import ReadTx from "./ReadTx"
 
 interface TxValues {
   address: AccAddress
@@ -53,6 +53,7 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
   const [error, setError] = useState<Error>()
 
   const submit = async ({ address, tx }: TxValues) => {
+    setSignature(undefined)
     setSubmitting(true)
 
     try {
@@ -73,59 +74,79 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
     setSubmitting(false)
   }
 
-  const submittingLabel = isWallet.ledger(wallet) ? t("Confirm in ledger") : ""
-  console.log(SAMPLE_ENCODED_TX)
+  const submittingLabel = isWallet.ledger(wallet)
+    ? t("Confirm in ledger")
+    : "Generate Signature"
+
+  const submitButton = (
+    <SubmitButton loading={submitting} disabled={!isValid}>
+      {submittingLabel}
+    </SubmitButton>
+  )
 
   return (
-    <>
-      <Form onSubmit={handleSubmit(submit)}>
-        <InputWrapper label={t("Multisig Address")}>
+    <Form onSubmit={handleSubmit(submit)} className={styles.form}>
+      <InputWrapper label={t("Multisig Address")}>
+        <Input
+          {...register("address", {
+            validate: validate.address,
+          })}
+          placeholder={SAMPLE_ADDRESS}
+          autoFocus
+        />
+      </InputWrapper>
+      <InputWrapper label={t("Hashed Transaction")}>
+        <TextArea
+          {...register("tx", { required: true })}
+          placeholder={SAMPLE_ENCODED_TX}
+          rows={4}
+        />
+      </InputWrapper>
+      <ReadTx tx={tx.trim()} />
+
+      <SectionHeader title="Confirm" withLine />
+
+      {passwordRequired && (
+        <InputWrapper label={t("Password")} error={incorrect}>
           <Input
-            {...register("address", {
-              validate: validate.address,
-            })}
-            placeholder={SAMPLE_ADDRESS}
-            autoFocus
+            type="password"
+            value={password}
+            onChange={(e) => {
+              setIncorrect(undefined)
+              setPassword(e.target.value)
+            }}
           />
         </InputWrapper>
-        <InputWrapper label={t("Hashed Transaction")}>
-          <TextArea
-            {...register("tx", { required: true })}
-            placeholder={SAMPLE_ENCODED_TX}
-            rows={6}
-          />
-        </InputWrapper>
-        <ReadTx tx={tx.trim()} />
-        {passwordRequired && (
-          <InputWrapper label={t("Password")} error={incorrect}>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setIncorrect(undefined)
-                setPassword(e.target.value)
-              }}
-            />
-          </InputWrapper>
-        )}
-
-        {error && <FormError>{error.message}</FormError>}
-
-        <SubmitButton disabled={!isValid}>{"Sign Transaction"}</SubmitButton>
-      </Form>
-
-      {signature && (
-        <Modal
-          title={t("Signature")}
-          isOpen
-          onRequestClose={() => setSignature(undefined)}
-        >
-          <Pre normal break copy>
-            {toBytes(signature)}
-          </Pre>
-        </Modal>
       )}
-    </>
+
+      {error && <FormError>{error.message}</FormError>}
+
+      <ModalButton
+        isOpen={!!signature}
+        renderButton={(open) => submitButton}
+        footer={(close) => (
+          <SubmitButton onClick={close}>{"Done"}</SubmitButton>
+        )}
+      >
+        <>
+          <SummaryHeader
+            statusLabel={"Success!"}
+            statusMessage={"Transaction signature generated"}
+            status={"success"}
+          />
+          <br />
+          <br />
+          {signature && (
+            <InputWrapper
+              label={t("Signature")}
+              extra={<Copy copyText={toBytes(signature)} />}
+            >
+              <TextArea readOnly={true} value={toBytes(signature)} rows={10} />
+            </InputWrapper>
+          )}
+        </>
+      </ModalButton>
+    </Form>
   )
 }
 

@@ -2,7 +2,6 @@ import { SectionHeader, InputWrapper, TextArea, SummaryTable } from "station-ui"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { ReadMultiple } from "components/token"
 import { useTranslation } from "react-i18next"
-import { Wrong } from "components/feedback"
 
 const ReadTx = ({ tx: encoded }: { tx: string }) => {
   const { t } = useTranslation()
@@ -26,7 +25,7 @@ const ReadTx = ({ tx: encoded }: { tx: string }) => {
             <TextArea
               readOnly={true}
               value={"The provided transaction is not valid."}
-              rows={1}
+              rows={2}
             />
           </InputWrapper>
         </>

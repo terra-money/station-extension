@@ -5,6 +5,7 @@ import CurrencySetting from "./CurrencySetting"
 import LCDSetting from "./LCDSetting"
 import ContactsIcon from "@mui/icons-material/Contacts"
 import { ReactComponent as ManageAssets } from "styles/images/icons/ManageAssets.svg"
+import { ReactComponent as WalletIcon } from "styles/images/icons/Wallet.svg"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import ChangePasswordForm from "auth/modules/manage/ChangePasswordForm"
 import ManageCustomTokens from "pages/custom/ManageCustomTokens"
@@ -16,12 +17,15 @@ import AddressBook from "txs/AddressBook/AddressBook"
 import { useTranslation } from "react-i18next"
 import AddAddressBookForm from "txs/AddressBook/AddressBookForm"
 import PreferencesPage, { SettingsPage } from "./PreferencesPage"
-import { lockWallet } from "auth/scripts/keystore"
+import { getStoredLegacyWallets, lockWallet } from "auth/scripts/keystore"
+import { openURL } from "extension/storage"
 
 export const useSettingsRoutes = () => {
   const { i18n, t } = useTranslation()
   const { id: currencyId } = useCurrency()
   const networkName = useNetworkName()
+  const existsLegacyWallets = getStoredLegacyWallets().length > 0
+
   const network = {
     network: {
       route: "network",
@@ -51,6 +55,14 @@ export const useSettingsRoutes = () => {
       },
       title: t("Lock Wallet"),
       icon: <LockOutlinedIcon />,
+    },
+    migration: {
+      onClick: () => {
+        openURL("/auth/migration")
+      },
+      title: t("Migrate Wallets"),
+      icon: <WalletIcon />,
+      disabled: !existsLegacyWallets,
     },
   }
 
