@@ -5,6 +5,7 @@ import {
   ModalButton,
   SectionHeader,
   SubmitButton,
+  SummaryHeader,
   TextArea,
 } from "station-ui"
 import { AccAddress, SignatureV2 } from "@terra-money/feather.js"
@@ -122,20 +123,28 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
 
       <ModalButton
         isOpen={!!signature}
-        title={t("Signature")}
         renderButton={(open) => submitButton}
         footer={(close) => (
           <SubmitButton onClick={close}>{"Done"}</SubmitButton>
         )}
       >
-        {signature && (
-          <InputWrapper
-            label={t("Signature")}
-            extra={<Copy copyText={toBytes(signature)} />}
-          >
-            <TextArea readOnly={true} value={toBytes(signature)} rows={10} />
-          </InputWrapper>
-        )}
+        <>
+          <SummaryHeader
+            statusLabel={"Success!"}
+            statusMessage={"Transaction signature generated"}
+            status={"success"}
+          />
+          <br />
+          <br />
+          {signature && (
+            <InputWrapper
+              label={t("Signature")}
+              extra={<Copy copyText={toBytes(signature)} />}
+            >
+              <TextArea readOnly={true} value={toBytes(signature)} rows={10} />
+            </InputWrapper>
+          )}
+        </>
       </ModalButton>
     </Form>
   )
