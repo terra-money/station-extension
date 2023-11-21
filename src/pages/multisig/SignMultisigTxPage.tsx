@@ -22,13 +22,12 @@ const SignMultisigTxPage = () => {
     return <SignMultisigTxForm defaultValues={defaultValues} />
   }
 
-  console.log("address", defaultValues)
-
   return (
     <ExtensionPage
       backButtonPath={`/manage-wallet/manage/${wallet.name}`}
       title={t("Sign Multisig Tx")}
       subtitle={defaultValues.address}
+      fullHeight
     >
       {render()}
     </ExtensionPage>
