@@ -1,14 +1,13 @@
 .swapper {
   border: 1px solid var(--token-light-100);
-  position: absolute;
-  right: 40%;
-  margin-top: 97.5px;
+  z-index: 2;
+  margin: -35px 0px -35px 200px;
 }
 .container {
   margin: 10px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
 }
 
 .text {

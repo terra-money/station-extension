@@ -49,6 +49,7 @@ import {
   SubmitButton,
 } from "station-ui"
 import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 
 const cx = classNames.bind(styles)
 
@@ -447,7 +448,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
     ? t("Coins required to post transactions")
     : ""
 
-  console.log(estimatedGas, disabled, walletError)
   const submitButton = (
     <>
       {walletError && <Banner variant="error" title={walletError} />}
@@ -490,6 +490,8 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
           <SubmitButton
             variant="primary"
+            className={styles.submit}
+            icon={<CheckCircleIcon />}
             disabled={!estimatedGas || !!disabled || !!walletError}
             loading={submitting}
             label={(submitting ? submittingLabel : disabled) || t("Submit")}
