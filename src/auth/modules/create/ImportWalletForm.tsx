@@ -45,7 +45,7 @@ const ImportWalletForm = () => {
 
       if (!pk) throw new Error(t("Incorrect password"))
 
-      const decryptedKey = new RawKey(Buffer.from(pk, "hex"))
+      const decryptedKey = new RawKey(Buffer.from(pk, "base64"))
 
       if (decryptedKey.accAddress("terra") !== address)
         throw new Error("Invalid private key")

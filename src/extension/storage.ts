@@ -1,6 +1,5 @@
 import { AccAddress } from "@terra-money/feather.js"
 import browser from "webextension-polyfill"
-import decrypt from "auth/scripts/decrypt"
 import { ChainID, InterchainNetwork, TerraNetwork } from "types/network"
 
 /* network */
@@ -41,21 +40,6 @@ export const storeWalletAddress = (wallet: {
 
 export const clearWalletAddress = () => {
   browser.storage?.local.remove("wallet")
-}
-
-/* password */
-export const getStoredPassword = (callback: (password: string) => void) => {
-  browser.storage?.local
-    .get(["encrypted", "timestamp"])
-    .then(({ encrypted, timestamp }) => {
-      if (!(encrypted && timestamp)) return ""
-      const decrypted = decrypt(encrypted, String(timestamp))
-      callback(decrypted)
-    })
-}
-
-export const clearStoredPassword = () => {
-  browser.storage?.local.set({ encrypted: null, timestamp: null })
 }
 
 /* open */

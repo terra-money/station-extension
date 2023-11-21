@@ -1,4 +1,3 @@
-import { FormError } from "components/form"
 import { useBankBalance, useIsWalletEmpty } from "data/queries/bank"
 import { useNativeDenoms } from "data/token"
 import { useMemo, useState } from "react"
@@ -18,6 +17,7 @@ import {
   Dropdown,
   TokenSingleChainListItem,
   Button,
+  Banner,
 } from "station-ui"
 import classNames from "classnames"
 import { useNetwork } from "data/wallet"
@@ -156,7 +156,10 @@ const AssetList = () => {
     return (
       <section>
         {isWalletEmpty && (
-          <FormError>{t("Coins required to post transactions")}</FormError>
+          <Banner
+            variant="error"
+            title={t("Coins required to post transactions")}
+          />
         )}
         {showFilter && <AssetListTokenFilter />}
         {assets.visible.map(renderAsset)}

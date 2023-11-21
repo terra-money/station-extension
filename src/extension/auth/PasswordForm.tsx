@@ -1,19 +1,3 @@
-import { useEffect, useState } from "react"
-import { useTranslation } from "react-i18next"
-import { useForm } from "react-hook-form"
-import { Form } from "components/form"
-import validate from "auth/scripts/validate"
-import { useCreateWallet } from "./CreateWalletWizard"
-import {
-  InputWrapper,
-  Input,
-  FlexColumn,
-  SubmitButton,
-  Flex,
-  Button,
-  Checkbox,
-} from "station-ui"
-import styles from "./CreateWalletForm.module.scss"
 import {
   getStoredPassword,
   isPasswordValid,
@@ -22,6 +6,20 @@ import {
   shouldStorePassword,
   storePassword,
 } from "auth/scripts/keystore"
+import validate from "auth/scripts/validate"
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { useTranslation } from "react-i18next"
+import {
+  Checkbox,
+  Flex,
+  FlexColumn,
+  Form,
+  Input,
+  InputWrapper,
+  LoadingCircular,
+  SubmitButton,
+} from "station-ui"
 
 interface Values {
   password: string
@@ -29,9 +27,12 @@ interface Values {
   rememberPassword: boolean
 }
 
-const PasswordForm = () => {
+interface Props {
+  onComplete: (password: string) => void
+}
+
+const PasswordForm = ({ onComplete }: Props) => {
   const { t } = useTranslation()
-  const { values, createWallet, setStep } = useCreateWallet()
   // loading while checking if there is a stored password
   const [isLoading, setLoading] = useState(true)
 
@@ -39,7 +40,7 @@ const PasswordForm = () => {
   useEffect(() => {
     getStoredPassword().then((password) => {
       if (password) {
-        createWallet(password)
+        onComplete(password)
       } else {
         setLoading(false)
       }
@@ -50,7 +51,6 @@ const PasswordForm = () => {
   const form = useForm<Values>({
     mode: "onChange",
     defaultValues: {
-      ...values,
       confirm: "",
       rememberPassword: shouldStorePassword(),
     },
@@ -81,14 +81,19 @@ const PasswordForm = () => {
       setShouldStorePassword(false)
     }
 
-    createWallet(password)
+    onComplete(password)
   }
 
   // don't show the form while checking for stored passwords
-  if (isLoading) return null
+  if (isLoading)
+    return (
+      <Flex align="center" justify="center">
+        <LoadingCircular />
+      </Flex>
+    )
 
   return (
-    <Form onSubmit={handleSubmit(submit)} className={styles.form}>
+    <Form onSubmit={handleSubmit(submit)}>
       <FlexColumn gap={18}>
         <InputWrapper label={t("Password")} error={errors.password?.message}>
           <Input
@@ -122,10 +127,7 @@ const PasswordForm = () => {
           />
         </InputWrapper>
         <Flex gap={12} style={{ marginTop: 22 }}>
-          <Button variant="secondary" onClick={() => setStep(2)} block>
-            {t("Back")}
-          </Button>
-          <SubmitButton disabled={!isValid}>{t("Confirm")}</SubmitButton>
+          <SubmitButton disabled={!isValid} label={t("Submit")} />
         </Flex>
       </FlexColumn>
     </Form>

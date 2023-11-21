@@ -3,6 +3,8 @@ import { useQuery } from "react-query"
 import browser from "webextension-polyfill"
 import styles from "./UpdateNotification.module.scss"
 import { useTranslation } from "react-i18next"
+import InfoIcon from "@mui/icons-material/Info"
+import { Flex } from "station-ui"
 
 const useIsUpdateAvailable = () => {
   return useQuery(
@@ -26,8 +28,11 @@ export default function UpdateNotification() {
   // update available
   return (
     <div className={styles.notification}>
-      {t("There is a new version available")}
-      <button onClick={() => browser.runtime.reload()}>{t("Reload")}</button>
+      <Flex gap={8} justify="flex-start">
+        <InfoIcon fontSize="inherit" style={{ fontSize: 14 }} />
+        {t("There is a new extension version available")}
+      </Flex>
+      <button onClick={() => browser.runtime.reload()}>{t("Update")}</button>
     </div>
   )
 }
