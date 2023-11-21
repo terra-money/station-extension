@@ -22,6 +22,7 @@ import { has } from "utils/num"
 import AssetFormExtra from "./components/AssetFormExtra"
 import { toAmount } from "@terra-money/terra-utils"
 import { validateAssets } from "./SwapConfirm"
+import Footer from "./components/Footer"
 
 enum SwapAssetType {
   ASK = "askAsset",
@@ -30,8 +31,7 @@ enum SwapAssetType {
 
 const SwapForm = () => {
   // Hooks
-  const { tokens, getTokensWithBal, getBestRoute, form, getMsgs, slippage } =
-    useSwap()
+  const { tokens, getTokensWithBal, getBestRoute, form, getMsgs } = useSwap()
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { state } = useLocation()
@@ -116,14 +116,14 @@ const SwapForm = () => {
 
   // Values
   const currencyAmount = useMemo(() => {
-    const offer = `${currency.symbol} ${(offerAsset.price * Number(offerInput))
-      .toFixed(2)
-      .toString()}`
+    const offer = `${currency.symbol} ${(
+      offerAsset.price * Number(offerInput)
+    ).toFixed(2)}`
 
     const ask = `${currency.symbol} ${toInput(
       Number(route?.amountOut) * askAsset.price,
       askAsset.decimals
-    )}`
+    ).toFixed(2)}`
     return { offer: offer ?? "—", ask: ask ?? "—" }
   }, [offerAsset, offerInput, askAsset, route, currency])
 
@@ -165,14 +165,10 @@ const SwapForm = () => {
         chainName={askAsset?.chain?.name}
         tokenIcon={askAsset?.icon ?? ""}
         onSymbolClick={() => handleOpenModal(SwapAssetType.ASK)}
-        amount={Number(askAssetAmount).toFixed(4)}
+        amount={Number(askAssetAmount).toFixed(2)}
         currencyAmount={currencyAmount.ask}
       />
-      <Button
-        variant="secondary"
-        label={slippage}
-        onClick={() => navigate("slippage")}
-      />
+      <Footer />
       {error && <Banner title={t(error)} variant="error" />}
       <Button
         variant="primary"

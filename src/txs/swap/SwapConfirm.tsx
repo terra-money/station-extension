@@ -8,9 +8,7 @@ import { SwapState } from "data/queries/swap/types"
 import { toAmount } from "@terra-money/terra-utils"
 import Tx from "txs/Tx"
 import { useSwap } from "./SwapContext"
-import { AccAddress } from "@terra-money/feather.js"
 import { queryKey } from "data/query"
-import { useAllInterchainAddresses } from "auth/hooks/useAddress"
 import { Read } from "components/token"
 import Errors from "./components/ConfirmErrors"
 import { Coins } from "@terra-money/feather.js"
@@ -30,13 +28,12 @@ const Confirm = () => {
   const { t } = useTranslation()
   const { form } = useSwap()
   const navigate = useNavigate()
-  const addresses = useAllInterchainAddresses()
   const { watch, handleSubmit, getValues } = form
   const { route, askAsset, offerAsset, offerInput, msgs: swapMsgs } = watch()
   const amount = toAmount(offerInput, { decimals: offerAsset.decimals })
 
   const createTx = ({ offerAsset }: SwapState) => {
-    const msg = JSON.parse(swapMsgs[0].msg)
+    const msg = JSON.parse(swapMsgs?.[0].msg)
     let msgs
 
     if (msg.source_channel) {
@@ -72,13 +69,7 @@ const Confirm = () => {
     estimationTxValues,
     createTx,
     onSuccess: () => navigate("/"),
-    queryKeys: [offerAsset, askAsset]
-      .filter((asset) => asset && AccAddress.validate(asset.denom))
-      .map((token) => [
-        queryKey.wasm.contractQuery,
-        token.denom,
-        { balance: addresses?.[token.chainId] ?? "" },
-      ]),
+    queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     chain: offerAsset.chainId,
   }
 

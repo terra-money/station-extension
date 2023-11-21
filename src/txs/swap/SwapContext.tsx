@@ -2,7 +2,6 @@ import { PropsWithChildren, useEffect } from "react"
 import createContext from "utils/createContext"
 import { combineState } from "data/query"
 import { Fetching } from "components/feedback"
-
 import {
   useSwapTokens,
   useParseSwapTokens,
@@ -81,7 +80,11 @@ const SwapContext = ({ children }: PropsWithChildren<{}>) => {
     return <SwapProvider value={value}>{children}</SwapProvider>
   }
 
-  return !state.isSuccess ? null : <Fetching {...state}>{render()}</Fetching>
+  return !state.isSuccess ? (
+    <span>loader</span>
+  ) : (
+    <Fetching {...state}>{render()}</Fetching>
+  )
 }
 
 export default SwapContext
