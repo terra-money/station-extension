@@ -13,6 +13,7 @@ export interface SettingsPage {
   element?: ReactElement
   value?: string
   icon?: ReactElement
+  disabled?: boolean
 }
 
 const PreferencesPage = () => {
@@ -27,14 +28,16 @@ const PreferencesPage = () => {
     settings: Record<string, SettingsPage>
   }) => (
     <FlexColumn gap={6}>
-      {Object.values(settings).map(({ title, route, onClick, ...rest }) => (
-        <NavButton
-          label={title}
-          key={route}
-          {...rest}
-          onClick={route ? () => navigate(`/preferences/${route}`) : onClick}
-        />
-      ))}
+      {Object.values(settings)
+        .filter(({ disabled }) => !disabled)
+        .map(({ title, route, onClick, ...rest }) => (
+          <NavButton
+            label={title}
+            key={route}
+            {...rest}
+            onClick={route ? () => navigate(`/preferences/${route}`) : onClick}
+          />
+        ))}
     </FlexColumn>
   )
 
