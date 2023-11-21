@@ -7,30 +7,33 @@ import { ReactComponent as CloseIcon } from "styles/images/icons/Close.svg"
 import Container from "../layouts/Container"
 import { Card } from "components/layout"
 import classNames from "classnames"
-import { openURL } from "extension/storage"
 import ExtensionFooter from "./ExtensionFooter"
 import { useNavigate } from "react-router-dom"
 
 interface Props extends QueryState {
   header?: ReactNode
   title?: string
+  label?: string
   subtitle?: string
   backButtonPath?: string
   backgroundColor?: "main"
   fullHeight?: boolean
   modal?: boolean
+  img?: string | ReactNode
 }
 
 const ExtensionPage = (props: PropsWithChildren<Props>) => {
   const {
     header,
     title,
+    label,
     subtitle,
     backButtonPath,
     children,
     backgroundColor,
     fullHeight,
     modal,
+    img,
   } = props
   const cx = classNames.bind(styles)
   const navigate = useNavigate()
@@ -70,11 +73,24 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                         className={styles.back__icon}
                         width={20}
                         height={20}
-                        onClick={() => openURL(backButtonPath)}
+                        onClick={() => navigate(backButtonPath)}
                         fill="currentColor"
                       />
                     )}
                     <div className={styles.title__container}>
+                      {img && (
+                        <div
+                          className={cx(styles.img__container, {
+                            img__with__label: !!label,
+                          })}
+                        >
+                          {typeof img === "string" ? (
+                            <img src={img} alt={title} />
+                          ) : (
+                            img
+                          )}
+                        </div>
+                      )}
                       <h1
                         className={cx(
                           styles.title,
@@ -85,6 +101,7 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                       >
                         {title}
                       </h1>
+                      {label && <h5 className={styles.label}>{label}</h5>}
                       {subtitle && (
                         <h3
                           className={cx(

@@ -11,7 +11,7 @@ import VestingDetailsPage from "./VestingDetailsPage"
 interface IRoute {
   path: string
   element: React.ReactNode
-  title: string
+  title?: string
   backPath?: string
 }
 
@@ -21,7 +21,6 @@ export const useWalletRoutes = (): IRoute[] => {
     {
       path: "/",
       element: <WalletMain />,
-      title: "",
     },
     {
       path: "/receive",
@@ -30,7 +29,7 @@ export const useWalletRoutes = (): IRoute[] => {
     },
     {
       path: "/receive/:address",
-      backPath: "receive",
+      backPath: "/receive",
       element: <AddressChain />,
       title: t("Copy Address"),
     },
@@ -48,7 +47,7 @@ export const useWalletRoutes = (): IRoute[] => {
     {
       path: "/asset/uluna/vesting",
       element: <VestingDetailsPage />,
-      backPath: "asset/uluna",
+      backPath: "/asset/uluna",
       title: t("Vesting Details"),
     },
   ]
@@ -63,14 +62,18 @@ export default function WalletRouter() {
           key={i}
           path={route.path}
           element={
-            <ExtensionPage
-              fullHeight
-              title={route.title}
-              backButtonPath={route.backPath}
-              modal
-            >
-              {route.element}
-            </ExtensionPage>
+            route.title ? (
+              <ExtensionPage
+                fullHeight
+                title={route.title}
+                backButtonPath={route.backPath}
+                modal
+              >
+                {route.element}
+              </ExtensionPage>
+            ) : (
+              route.element
+            )
           }
         />
       ))}

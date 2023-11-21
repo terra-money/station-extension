@@ -39,19 +39,21 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
         </div>
       )}
 
-      <div className={styles.other__wallets}>
-        {activeWallet && <SectionHeader title="Other Wallets" indented />}
-        {otherWallets.map((wallet) => (
-          <WalletSelectableListItem
-            label={wallet.name}
-            walletName="Money"
-            copyValue={wallet.address}
-            subLabel={wallet.address}
-            onClick={wallet.onClick}
-            settingsOnClick={wallet.settingsOnClick}
-          />
-        ))}
-      </div>
+      {!!otherWallets.length && (
+        <div className={styles.other__wallets}>
+          {activeWallet && <SectionHeader title="Other Wallets" indented />}
+          {otherWallets.map((wallet) => (
+            <WalletSelectableListItem
+              label={wallet.name}
+              walletName="Money"
+              copyValue={wallet.address}
+              subLabel={wallet.address}
+              onClick={wallet.onClick}
+              settingsOnClick={wallet.settingsOnClick}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

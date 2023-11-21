@@ -14,10 +14,14 @@ import ExportWalletPage from "./ExportWalletPage"
 import ChangePasswordPage from "./ChangePasswordPage"
 import DeleteWalletPage from "./DeleteWalletPage"
 import Disconnect from "./Disconnect"
+import MigrationWizard from "./MigrationWizard"
 
 const Auth = () => {
   return (
     <Routes>
+      {/* migration */}
+      <Route path="migration" element={<MigrationWizard />} />
+
       {/* connect */}
       <Route path="ledger" element={<AccessWithLedgerPage />} />
 

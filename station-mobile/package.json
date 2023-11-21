@@ -23,7 +23,7 @@
         "@terra-money/wallet-provider": "^4.0.0",
         "bech32": "^2.0.0",
         "bignumber.js": "^9.1.1",
-        "crypto-js": "^4.1.1",
+        "crypto-js": "^4.2.0",
         "immutability-helper": "^3.1.1",
         "js-base64": "^3.7.5",
         "node-libs-react-native": "^1.2.1",
