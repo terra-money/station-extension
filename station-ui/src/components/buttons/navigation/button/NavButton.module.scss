@@ -36,3 +36,12 @@
     }
   }
 }
+
+.disabled {
+  background-color: var(--token-dark-500);
+  .left__side {
+    .label {
+      color: var(--token-light-100);
+    }
+  }
+}

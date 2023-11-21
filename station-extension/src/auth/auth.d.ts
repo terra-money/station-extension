@@ -5,15 +5,18 @@ type LocalWallet = SingleWallet | MultisigWallet // | LegacySingleWallet// walle
 type Wallet = LedgerWallet | SingleWallet //| LegacyWallet
 type StoredWallet =
   | InterchainStoredWallet
-  //| LegacySingleWallet
+  | LegacyStoredWallet
   | StoredWalletLegacy
   | MultisigWallet
   | LedgerWallet
   | SeedStoredWallet
 
 type ResultStoredWallet =
-  //| LegacyStoredWallet
-  MultisigWallet | StoredWallet | SeedStoredWallet
+  | MultisigWallet
+  | StoredWallet
+  | SeedStoredWallet
+  | LegacyStoredWallet
+  | LedgerWallet
 
 // interchain types
 interface SingleWallet {
@@ -50,6 +53,8 @@ interface LedgerWallet {
 
 interface MultisigWallet extends SingleWallet {
   multisig: true
+  pubkeys: string[]
+  threshold: number
 }
 
 interface InterchainStoredWallet extends SingleWallet {
@@ -76,7 +81,7 @@ interface LegacyMultisigWallet extends LegacySingleWallet {
   multisig: true
 }
 
-interface LegacyStoredWallet extends LegacySingleWallet {
+interface LegacyStoredWallet extends SingleWallet {
   encrypted: string
 }
 

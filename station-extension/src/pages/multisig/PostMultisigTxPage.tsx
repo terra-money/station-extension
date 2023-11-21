@@ -1,17 +1,16 @@
-import { useState } from "react"
 import { useTranslation } from "react-i18next"
-import { LegacyAminoMultisigPublicKey } from "@terra-money/feather.js"
+import {
+  LegacyAminoMultisigPublicKey,
+  SimplePublicKey,
+} from "@terra-money/feather.js"
 import { useChainID } from "data/wallet"
 import { useAccountInfo } from "data/queries/auth"
-import { Card, Grid, Page } from "components/layout"
+import { Card, Page } from "components/layout"
 import { Wrong } from "components/feedback"
 import { isWallet, useAuth } from "auth"
-import CreateMultisigWalletForm from "auth/modules/create/CreateMultisigWalletForm"
-import ConfirmModal from "auth/modules/manage/ConfirmModal"
 import useDefaultValues from "./utils/useDefaultValues"
 import PostMultisigTxForm from "./PostMultisigTxForm"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { Banner } from "station-ui"
 
 const PostMultisigTxPage = () => {
   const { t } = useTranslation()
@@ -21,17 +20,6 @@ const PostMultisigTxPage = () => {
 
   /* account info */
   const { data: account, ...state } = useAccountInfo()
-
-  /* public key from network */
-  const [publicKeyFromNetwork, setPublicKeyFromNetwork] =
-    useState<LegacyAminoMultisigPublicKey>()
-  const [errorMessage, setErrorMessage] = useState<string>()
-
-  const onCreated = (publicKey: LegacyAminoMultisigPublicKey) => {
-    if (publicKey.address("terra") !== addresses?.[chainID])
-      setErrorMessage(t("Data does not match the connected wallet"))
-    else setPublicKeyFromNetwork(publicKey)
-  }
 
   /* render */
   const defaultValues = useDefaultValues()
@@ -45,29 +33,14 @@ const PostMultisigTxPage = () => {
         </Card>
       )
 
-    const publicKey = account.getPublicKey() ?? publicKeyFromNetwork
-    const sequence = account.getSequenceNumber()
-
-    if (!(publicKey instanceof LegacyAminoMultisigPublicKey))
-      return (
-        <Card>
-          <Grid gap={4}>
-            <Banner
-              variant="info"
-              title={t(
-                "This multisig wallet has no transaction history. The addresses and the threshold must be submitted again until a transaction history exist for this wallet."
-              )}
-            />
-            <CreateMultisigWalletForm onPubkey={onCreated} />
-          </Grid>
-
-          {errorMessage && (
-            <ConfirmModal onRequestClose={() => setErrorMessage(undefined)}>
-              {errorMessage}
-            </ConfirmModal>
-          )}
-        </Card>
+    const publicKey = new LegacyAminoMultisigPublicKey(
+      wallet.threshold,
+      wallet.pubkeys.map((pubkey) =>
+        SimplePublicKey.fromAmino(JSON.parse(pubkey))
       )
+    )
+
+    const sequence = account.getSequenceNumber()
 
     const signatures = publicKey.pubkeys.map((pubKey) => {
       const address = pubKey.address("terra")
@@ -88,9 +61,8 @@ const PostMultisigTxPage = () => {
     )
   }
 
-  const publicKey = account?.getPublicKey() ?? publicKeyFromNetwork
   return (
-    <Page {...state} title={t("Post a multisig tx")} small={!publicKey}>
+    <Page {...state} title={t("Post a multisig tx")}>
       {render()}
     </Page>
   )

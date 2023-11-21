@@ -9,6 +9,7 @@ enum LocalStorage {
   LEGACY_WALLETS = "keys",
   PASSWORD_CHALLENGE = "passwordChallenge",
   SHOULD_STORE_PASS = "storePassword",
+  IS_MIGRATION_DONE = "isMigrationDone",
 }
 
 const CHALLENGE_TEXT = "STATION_PASSWORD_CHALLENGE"
@@ -179,7 +180,18 @@ export const getStoredWallets = () => {
 export const getStoredLegacyWallets = () => {
   const wallets = localStorage.getItem(LocalStorage.LEGACY_WALLETS)
   if (!wallets) return []
-  return JSON.parse(wallets) as ResultStoredWallet[]
+  return JSON.parse(wallets).filter(
+    (w: any) => !w.ledger || w.pubkey
+  ) as ResultStoredWallet[]
+}
+
+export const isMigrationCompleted = () => {
+  const isMigrationDone = localStorage.getItem(LocalStorage.IS_MIGRATION_DONE)
+  return isMigrationDone === "true"
+}
+
+export const setMigrationCompleted = () => {
+  localStorage.setItem(LocalStorage.IS_MIGRATION_DONE, "true")
 }
 
 export const storeWallets = (wallets: StoredWallet[]) => {

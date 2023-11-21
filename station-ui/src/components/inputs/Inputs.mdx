@@ -1,7 +1,6 @@
 import {
   Meta,
   Story,
-  Canvas,
   Controls
 } from "@storybook/blocks";
 import { RightArrow, DocsLink, RequiredText, InLineDocsLink } from "../../DocsHelpers.tsx";
@@ -236,7 +235,7 @@ import { TextArea } from "station-ui";
   <div className="story__wrapper" style={{ width: "100%" }}>
     <DocsLink linkToRoute="Components/Inputs/TextArea" linkToID="default">
       <h6 className="h6">Default</h6>
-      <Story of={TextAreaStories.Default} />
+      <Story of={TextAreaStories.DefaultWithReactHookForm} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
@@ -251,6 +250,13 @@ import { TextArea } from "station-ui";
     <DocsLink linkToRoute="Components/Inputs/TextArea" linkToID="with-inputwrapper-example">
       <h6 className="h6">With Input Wrapper Example</h6>
       <Story of={TextAreaStories.WithInputWrapperExample} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/TextArea" linkToID="object-example">
+      <h6 className="h6">Object Example</h6>
+      <Story of={TextAreaStories.ObjectExample} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
