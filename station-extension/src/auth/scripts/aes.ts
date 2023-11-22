@@ -1,16 +1,16 @@
 import CryptoJS from "crypto-js"
 
 const keySize = 256
-const iterations = 20_000
+const DEFAULT_ITERATIONS = 20_000
 const msgSalt = "STATION:"
 
-export const encrypt = (msg: string, pass: string) => {
+export const encrypt = (msg: string, pass: string, iterations?: number) => {
   try {
     const salt = CryptoJS.lib.WordArray.random(128 / 8)
 
     const key = CryptoJS.PBKDF2(pass, salt, {
       keySize: keySize / 32,
-      iterations: iterations,
+      iterations: iterations ?? DEFAULT_ITERATIONS,
     })
 
     const iv = CryptoJS.lib.WordArray.random(128 / 8)
@@ -29,14 +29,18 @@ export const encrypt = (msg: string, pass: string) => {
   }
 }
 
-export const decrypt = (transitmessage: string, pass: string) => {
+export const decrypt = (
+  transitmessage: string,
+  pass: string,
+  iterations?: number
+) => {
   const salt = CryptoJS.enc.Hex.parse(transitmessage.substring(0, 32))
   const iv = CryptoJS.enc.Hex.parse(transitmessage.substring(32, 64))
   const encrypted = transitmessage.substring(64)
 
   const key = CryptoJS.PBKDF2(pass, salt, {
     keySize: keySize / 32,
-    iterations: iterations,
+    iterations: iterations ?? DEFAULT_ITERATIONS,
   })
 
   const decrypted = CryptoJS.AES.decrypt(encrypted, key, {

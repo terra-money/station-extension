@@ -14,14 +14,21 @@ import "scss/storybookoverrides.scss";
 ##### Displays a single activity item.
 
 ## Props
-- **`variant`** - <RequiredText /> - Changes the icon on the chain.
+- **`variant`** - Changes the icon on the chain.
   - Options are `success`, `failed`, `loading`.
+  - ***You can pass in nothing and there will not be an icon on the chain logo***
 - **`chain`** - <RequiredText /> - `**object below**` - Chain for image.
   - `{ icon: string, label: string }`
 - **`msg`** - <RequiredText /> - `ReactNode` - The message containing the details of the transactions.
 - **`type`** - <RequiredText /> - `string` - String that is displayed inside of the Pill.
-- **`time`** - <RequiredText /> - `string` - The time when the transaction was made.
-- **`timelineMessages`** - `ReactNode[]` - Array of messages that are displayed connecting to the main message.
+- **`secondaryPill`** - `ReactNode` - A secondary pill in line with the "type" pill. `(Pass in <Pill />)`
+- **`time`** - `string` - The time when the transaction was made.
+- **`msgCount`** - `string` - Will override `time` and display a message count instead.
+- **`hasTimeline`** - `boolean` - Just to display the dotted line.
+- **`onClick`** - `() => void` - Function that is called when the activity item is clicked.
+-
+- **`progressTracker`** - `boolean` - Display a `<ProgressTracker />` in the activity item.
+
 
 ## Import
 ```jsx
@@ -44,7 +51,7 @@ Activity with a green check icon on the chain icon.
     </div>
   }
   type={"Execute Contract"}
-  time={"2 minutes ago"}
+  msgCount={1}
 />
   `} />
 </div>
@@ -87,6 +94,70 @@ Activity with a loading icon on the chain icon.
   `} />
 </div>
 
+## No Status Icon
+Activity with no icon on the chain icon.
+<div className="story_with_source_below">
+  <Canvas of={ActivityListItemStories.NoStatusIcon} />
+  <Source code={`
+    <ActivityListItem
+  chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+  msg={
+    <div>
+      Sent <span>420.00 LUNA</span> to <span>terra1...20k38v</span>
+    </div>
+  }
+  type={"Execute Contract"}
+  msgCount={3}
+/>
+  `} />
+</div>
+
+## Secondary Pill
+Displays a secondary pill in line with the "type" pill.
+<div className="story_with_source_below">
+  <Canvas of={ActivityListItemStories.SecondaryPill} />
+  <Source code={`
+    <ActivityListItem
+  variant={"loading"}
+  chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+  msg={
+    <div>
+      Sent <span>420.00 LUNA</span> to <span>terra1...20k38v</span>
+    </div>
+  }
+  type={"Execute Contract"}
+  msgCount={1}
+  secondaryPill={<Pill variant={"warning"} text={"Pending"} />}
+/>
+  `} />
+</div>
+
+## With ProgressTracker
+Displays a `<ProgressTracker />` in the activity item.
+<div className="story_with_source_below">
+  <Canvas of={ActivityListItemStories.WithProgressTracker} />
+  <Source code={`
+    <ActivityListItem
+  variant={"loading"}
+  chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+  msg={
+    <div>
+      Sent <span>420.00 LUNA</span> to <span>terra1...20k38v</span>
+    </div>
+  }
+  type={"Execute Contract"}
+  msgCount={1}
+  secondaryPill={<Pill variant={"warning"} text={"Pending"} />}
+  progressTracker={
+    <ProgressTracker
+      steps={["completed", "incomplete", "incomplete"]}
+      stepLabels={["Terra", "Osmosis", "Something"]}
+    />
+  }
+/>
+  `} />
+</div>
+
 ## Timeline
 Activity with a timeline connecting to the main message.
 <div className="story_with_source_below">
@@ -97,22 +168,12 @@ Activity with a timeline connecting to the main message.
   chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
   msg={
     <div>
-      Delegated <span>420.00 LUNA</span> to <span>Orbital Command</span>
+      Swapped <span>1,500 axlUSDC</span> for <span style={{color: "var(--token-success-500)"}}>3,422.65 LUNA</span> on <span>TFM</span>
     </div>
   }
   type={"Delegate"}
-  time={"1 day ago"}
-  timelineMessages={[
-    <div>
-      Delegated <span>420.00 LUNA</span> to <span>Orbital Command</span>
-    </div>,
-    <div>
-      Delegated <span>420.00 LUNA</span> to <span>Orbital Command</span>
-    </div>,
-    <div>
-      Delegated <span>420.00 LUNA</span> to <span>Orbital Command</span>
-    </div>,
-  ]}
+  msgCount={8}
+  hasTimeline={true}
 />
   `} />
 </div>

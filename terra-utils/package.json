@@ -22,6 +22,7 @@
     "prepare": "tsdx build"
   },
   "dependencies": {
+    "@terra-money/feather.js": "^2.0.0-beta.7",
     "@types/numeral": "^2.0.2",
     "@types/ramda": "^0.27.57",
     "bignumber.js": "^9.0.1",
