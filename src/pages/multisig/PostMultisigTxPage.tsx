@@ -1,17 +1,18 @@
-import { useTranslation } from "react-i18next"
 import {
   LegacyAminoMultisigPublicKey,
   SimplePublicKey,
 } from "@terra-money/feather.js"
-import { useChainID } from "data/wallet"
-import { useAccountInfo } from "data/queries/auth"
-import { Card } from "components/layout"
-import { Wrong } from "components/feedback"
-import { isWallet, useAuth } from "auth"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
 import useDefaultValues from "./utils/useDefaultValues"
 import PostMultisigTxForm from "./PostMultisigTxForm"
-import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { truncate } from "@terra-money/terra-utils"
+import { useAccountInfo } from "data/queries/auth"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
+import { Wrong } from "components/feedback"
+import { isWallet, useAuth } from "auth"
+import { useChainID } from "data/wallet"
+import { Card } from "components/layout"
 import { Modal } from "station-ui"
 
 const PostMultisigTxPage = () => {
@@ -20,8 +21,6 @@ const PostMultisigTxPage = () => {
   const chainID = useChainID()
   const { wallet } = useAuth()
   const navigate = useNavigate()
-
-  console.log("wallet", wallet, wallet.threshold)
 
   /* account info */
   const { data: account, ...state } = useAccountInfo()
@@ -77,7 +76,7 @@ const PostMultisigTxPage = () => {
         navigate(`/manage-wallet/manage/${wallet.name}`)
       }}
       title={t("Post a multisig tx")}
-      subtitle={wallet.address}
+      subtitle={truncate(addresses?.[chainID], [13, 6])}
     >
       {render()}
     </Modal>

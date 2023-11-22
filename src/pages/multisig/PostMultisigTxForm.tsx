@@ -1,15 +1,3 @@
-import { useState } from "react"
-import { useTranslation } from "react-i18next"
-import { useFieldArray, useForm } from "react-hook-form"
-import { useSetRecoilState } from "recoil"
-import { AccAddress, isTxError } from "@terra-money/feather.js"
-import { LegacyAminoMultisigPublicKey } from "@terra-money/feather.js"
-import { SimplePublicKey } from "@terra-money/feather.js"
-import { SignatureV2, MultiSignature } from "@terra-money/feather.js"
-import { SAMPLE_ADDRESS } from "config/constants"
-import { useInterchainLCDClient } from "data/queries/lcdClient"
-import { latestTxState } from "data/queries/tx"
-import { Form, FormError, FormGroup } from "components/form"
 import {
   Copy,
   Input,
@@ -18,12 +6,27 @@ import {
   SubmitButton,
   SectionHeader,
 } from "station-ui"
+import {
+  LegacyAminoMultisigPublicKey,
+  MultiSignature,
+  SignatureV2,
+  SimplePublicKey,
+} from "@terra-money/feather.js"
+import { useInterchainLCDClient } from "data/queries/lcdClient"
+import { AccAddress, isTxError } from "@terra-money/feather.js"
+import { Form, FormError, FormGroup } from "components/form"
+import { useFieldArray, useForm } from "react-hook-form"
 import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
-import ReadTx from "./ReadTx"
-import { useChainID } from "data/wallet"
-import validate from "auth/scripts/validate"
 import { truncate } from "@terra-money/terra-utils"
+import { SAMPLE_ADDRESS } from "config/constants"
 import styles from "./MultisigTxForm.module.scss"
+import { latestTxState } from "data/queries/tx"
+import { useTranslation } from "react-i18next"
+import validate from "auth/scripts/validate"
+import { useSetRecoilState } from "recoil"
+import { useChainID } from "data/wallet"
+import { useState } from "react"
+import ReadTx from "./ReadTx"
 
 interface Values {
   address: AccAddress
@@ -139,9 +142,9 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
         </FormGroup>
       ))}
 
-      {error && <FormError>{error.message}</FormError>}
-
       <ReadTx tx={tx.trim()} />
+
+      {error && <FormError>{error.message}</FormError>}
 
       <SectionHeader title={t("Confirm")} withLine />
 
