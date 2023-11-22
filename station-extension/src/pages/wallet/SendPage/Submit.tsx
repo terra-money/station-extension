@@ -75,7 +75,10 @@ const Submit = () => {
       </InputWrapper>
       <Button
         className={style.button}
-        disabled={input !== undefined && !formState.isValid}
+        disabled={
+          input !== undefined &&
+          (Object.keys(formState.errors).length !== 0 || !formState.isValid)
+        }
         variant="primary"
         onClick={() => goToStep(5)}
         label={t("Continue")}
