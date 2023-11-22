@@ -11,7 +11,7 @@ import SendTx from "./SendPage/SendTx"
 interface IRoute {
   path: string
   element: React.ReactNode
-  title: string
+  title?: string
   backPath?: string
 }
 
@@ -36,7 +36,6 @@ export const useWalletRoutes = (): IRoute[] => {
     },
     {
       path: "/send/*",
-      title: t("Send"),
       element: <SendTx />,
     },
     {
@@ -63,17 +62,16 @@ export default function WalletRouter() {
           key={i}
           path={route.path}
           element={
-            route.path.includes("send") ? (
-              <SendTx /> // has custom routing & backpaths
-            ) : (
+            route.title ? (
               <ExtensionPage
-                fullHeight
                 title={route.title}
                 backButtonPath={route.backPath}
                 modal
               >
                 {route.element}
               </ExtensionPage>
+            ) : (
+              route.element
             )
           }
         />
