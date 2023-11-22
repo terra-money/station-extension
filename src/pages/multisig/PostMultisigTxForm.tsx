@@ -1,10 +1,10 @@
 import {
   Copy,
   Input,
-  TextArea,
   InputWrapper,
-  SubmitButton,
   SectionHeader,
+  SubmitButton,
+  TextArea,
 } from "station-ui"
 import {
   LegacyAminoMultisigPublicKey,
@@ -103,8 +103,6 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
 
     setSubmitting(false)
   }
-
-  console.log(SAMPLE_ENCODED_TX)
 
   return (
     <Form onSubmit={handleSubmit(submit)} className={styles.form}>
