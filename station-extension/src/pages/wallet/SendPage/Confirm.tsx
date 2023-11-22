@@ -181,6 +181,7 @@ const Confirm = () => {
       />
       <SectionHeader withLine title={t("Send Path")} />
       <Timeline {...timelineProps} />
+      <SectionHeader withLine title={t("Details")} />
       <InputInLine
         disabled
         label={"To"}
@@ -203,8 +204,7 @@ const Confirm = () => {
     createTx,
     onChangeMax,
     onSuccess: () => {
-      if (!recipient) return
-      addRecipient({ recipient, name: getWalletName(recipient) })
+      addRecipient({ recipient, name: getWalletName(recipient ?? "") })
       navigate("/")
     },
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
