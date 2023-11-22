@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 import AssetPage from "./AssetPage"
 import ReceivePage from "./ReceivePage"
 import AddressChain from "pages/wallet/AddressChain"
