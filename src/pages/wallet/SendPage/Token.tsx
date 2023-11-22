@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next"
 import { useCurrency } from "data/settings/Currency"
 import WithSearchInput from "pages/custom/WithSearchInput"
 import { Empty } from "components/feedback"
+import { has } from "utils/num"
 
 const Token = () => {
   const {
@@ -29,13 +30,13 @@ const Token = () => {
     networks,
   } = useSend()
   const { setValue, watch } = form
-  const { recipient } = watch()
   const networkName = useNetworkName()
   const addresses = useInterchainAddresses()
   const { ibcDenoms } = useWhitelist()
   const currency = useCurrency()
   const { t } = useTranslation()
-  const { destination } = form.watch()
+  const { destination, recipient } = watch()
+
   const tokens = useMemo(() => {
     return assetList.reduce((acc, a) => {
       if (!destination) return acc
@@ -45,7 +46,9 @@ const Token = () => {
           balances.find((b) => b.chain === tokenChain && b.denom === a.denom)
             ?.amount ?? "0"
         )
-        if (balance === 0) return acc
+        // if (a.denom !== asset) return acc // asset previously selected from asset specific send button
+
+        if (!has(balance)) return acc
 
         const isNative = tokenChain === destination
         const channel = getIBCChannel({

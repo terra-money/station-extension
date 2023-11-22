@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useSend } from "./SendContext"
 import { AccAddress } from "@terra-money/feather.js"
 import { getChainIDFromAddress } from "utils/bech32"
@@ -13,14 +13,21 @@ import { WalletButtonList } from "./Components/OtherWallets"
 import OtherWallets from "./Components/OtherWallets"
 import validate, { validateRecipient } from "txs/validate"
 import { useRecentRecipients } from "utils/localStorage"
+import { useLocation } from "react-router-dom"
 
 const Address = () => {
   const { form, goToStep, getWalletName, networks } = useSend()
+  const { state } = useLocation()
   const { recipients } = useRecentRecipients()
-  const { formState } = form
+  const { register, setValue, formState, trigger } = form
   const { errors } = formState
 
-  const { register, setValue, trigger } = form
+  useEffect(() => {
+    if (state?.denom) {
+      setValue("asset", state.denom)
+    }
+  })
+
   const [tab, setTab] = useState("wallets")
   const tabs = [
     {
