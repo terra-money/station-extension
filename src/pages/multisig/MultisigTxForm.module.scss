@@ -1,3 +1,14 @@
-.form > * {
-  margin: 4px 0px;
+.form {
+  & > * {
+    margin: 4px 0px;
+  }
+}
+
+.donebutton {
+  position: relative;
+  bottom: -20px;
+}
+
+.signaturemodal {
+  padding-top: 20px;
 }
