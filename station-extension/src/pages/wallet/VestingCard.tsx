@@ -23,11 +23,8 @@ const VestingCard = () => {
 
   const schedule = useMemo(() => {
     if (!account?.base_vesting_account) return
-    console.log("account", account)
     return parseVestingSchedule(account)
   }, [account])
-
-  console.log("schedule", schedule)
 
   if (!schedule) return null
 
