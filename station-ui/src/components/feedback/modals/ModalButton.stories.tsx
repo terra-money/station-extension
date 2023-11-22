@@ -153,3 +153,19 @@ export const Default: StoryObj = {
     </ModalButton>
   ),
 }
+
+export const NoCloseIcon: StoryObj = {
+  render: () => (
+    <ModalButton
+      renderButton={(open) => (
+        <button onClick={open} type="button">
+          Open Modal
+        </button>
+      )}
+      hideCloseButton
+    >
+      <p>Modal Content</p>
+    </ModalButton>
+  ),
+}
+

@@ -237,6 +237,23 @@ export const Confirm: StoryObj = {
   },
 }
 
+export const NoCloseButton: StoryObj = {
+  render: () => (
+    <Modal title="Modal Title" isOpen={true} onRequestClose={() => {}} hideCloseButton>
+      <InputWrapper label={"This is a label"}>
+        <Input inputMode="text" placeholder={"am placeholder"} />
+      </InputWrapper>
+      <SubmitButton variant="primary" onClick={() => {}} label="Submit" />
+    </Modal>
+  ),
+  argTypes: {
+    title: { control: "none" },
+    confirm: { control: "none" },
+    minimal: { control: "none" },
+    maxHeight: { control: "none" },
+  },
+}
+
 export const Minimal: StoryObj = {
   render: () => (
     <Modal title="Modal Title" isOpen={true} onRequestClose={() => {}} minimal>
