@@ -9,9 +9,9 @@ const PreferencesRouter = () => {
   const backPath = pathname.split("/").slice(0, -1).join("/")
   const { t } = useTranslation()
 
-  const currentRoute = Object.values(routes).find((r) =>
-    pathname.includes(r.route)
-  )
+  const currentRoute = Object.values(routes)
+    .filter(({ route }) => !!route)
+    .find((r) => pathname.includes(r.route ?? ""))
   const title = currentRoute ? currentRoute.title : t("Settings")
 
   return (
