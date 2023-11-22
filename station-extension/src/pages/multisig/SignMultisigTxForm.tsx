@@ -123,9 +123,12 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
 
       <ModalButton
         isOpen={!!signature}
+        closeIcon={undefined}
         renderButton={(open) => submitButton}
         footer={(close) => (
-          <SubmitButton onClick={close}>{"Done"}</SubmitButton>
+          <SubmitButton className={styles.donebutton} onClick={close}>
+            {"Done"}
+          </SubmitButton>
         )}
       >
         <>

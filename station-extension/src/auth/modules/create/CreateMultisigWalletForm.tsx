@@ -97,7 +97,6 @@ const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
         pubkeys: pubkeys.map((k) => k.toAminoJSON()),
         threshold,
       }
-      console.log("STORING WALLET: ", wallet)
       addMultisigWallet(wallet)
       onCreated(wallet)
     } catch (error) {
