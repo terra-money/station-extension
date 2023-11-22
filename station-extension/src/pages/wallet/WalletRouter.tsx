@@ -2,11 +2,11 @@ import { Route, Routes, useLocation } from "react-router-dom"
 import AssetPage from "./AssetPage"
 import ReceivePage from "./ReceivePage"
 import AddressChain from "pages/wallet/AddressChain"
-import SendPage from "./SendPage"
 import WalletMain from "./WalletMain"
 import { useTranslation } from "react-i18next"
 import ExtensionPage from "extension/components/ExtensionPage"
 import VestingDetailsPage from "./VestingDetailsPage"
+import SendTx from "./SendPage/SendTx"
 
 interface IRoute {
   path: string
@@ -37,7 +37,7 @@ export const useWalletRoutes = (): IRoute[] => {
     {
       path: "/send/*",
       title: t("Send"),
-      element: <SendPage />,
+      element: <SendTx />,
     },
     {
       path: "/asset/:denom",
@@ -54,20 +54,8 @@ export const useWalletRoutes = (): IRoute[] => {
   ]
 }
 
-const getBackPath = (pathname: string) => {
-  if (pathname.includes("/send/")) {
-    const stepMatch = pathname.match(/\/send\/(\d+)/)
-    if (stepMatch?.[1]) {
-      const step = Number(stepMatch[1])
-      return step > 1 ? `/send/${step - 1}` : "/"
-    }
-  }
-}
-
 export default function WalletRouter() {
   const routes = useWalletRoutes()
-  const { pathname } = useLocation()
-
   return (
     <Routes>
       {routes.map((route, i) => (
@@ -75,14 +63,18 @@ export default function WalletRouter() {
           key={i}
           path={route.path}
           element={
-            <ExtensionPage
-              fullHeight
-              title={route.title}
-              backButtonPath={getBackPath(pathname) ?? route.backPath}
-              modal
-            >
-              {route.element}
-            </ExtensionPage>
+            route.path.includes("send") ? (
+              <SendTx /> // has custom routing & backpaths
+            ) : (
+              <ExtensionPage
+                fullHeight
+                title={route.title}
+                backButtonPath={route.backPath}
+                modal
+              >
+                {route.element}
+              </ExtensionPage>
+            )
           }
         />
       ))}
