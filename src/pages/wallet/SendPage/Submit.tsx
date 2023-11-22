@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next"
 
 const Submit = () => {
   const { form, getWalletName, goToStep } = useSend()
-  const { register, formState, watch } = form
+  const { register, formState, watch, setValue } = form
   const { errors } = formState
   const { assetInfo, recipient, input } = watch()
   const currency = useCurrency()
@@ -29,7 +29,7 @@ const Submit = () => {
         extra={truncate(recipient)}
         value={getWalletName(recipient)}
       />
-      <SendAmount
+      {/* <SendAmount
         displayType="token"
         tokenIcon={assetInfo.tokenImg}
         symbol={assetInfo.symbol}
@@ -47,6 +47,38 @@ const Submit = () => {
             ),
           }),
         }}
+      /> */}
+      <SendAmount
+        setValue={setValue}
+        tokenInputAttr={{
+          ...register("input", {
+            required: true,
+            valueAsNumber: true,
+            validate: validate.input(
+              toInput(assetInfo.balance, assetInfo.decimals),
+              assetInfo.decimals
+            ),
+            // validate: validate.input(
+            //   toInput(100000000, 6),
+            //   8,
+            //   "Token amount",
+            // ),
+          }),
+        }}
+        tokenAmount={watch("input") || 0}
+        currencyInputAttrs={{
+          ...register("currencyAmount", {
+            valueAsNumber: true,
+            required: true,
+            deps: ["input"],
+          }),
+        }}
+        currencyAmount={watch("currencyAmount") || 0}
+        tokenIcon={assetInfo.tokenImg}
+        symbol={assetInfo.symbol}
+        currencySymbol={currency.symbol}
+        price={assetInfo.price ?? 0}
+        formState={formState}
       />
       <TokenSingleChainListItem {...assetInfo} />
       <InputWrapper

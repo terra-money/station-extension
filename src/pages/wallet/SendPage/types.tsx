@@ -23,4 +23,5 @@ export interface TxValues {
   memo?: string
   decimals?: number
   assetInfo?: AssetType
+  currencyAmount?: number
 }
