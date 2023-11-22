@@ -38,7 +38,6 @@ const SendTx = () => {
             element={
               <ExtensionPage
                 backButtonPath={getBackPath(pathname)}
-                fullHeight
                 title={t(r.title)}
                 modal
               >
