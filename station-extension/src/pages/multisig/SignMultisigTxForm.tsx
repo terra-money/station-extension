@@ -123,18 +123,20 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
 
       <ModalButton
         isOpen={!!signature}
+        closeIcon={undefined}
         renderButton={(open) => submitButton}
         footer={(close) => (
-          <SubmitButton onClick={close}>{"Done"}</SubmitButton>
+          <SubmitButton className={styles.donebutton} onClick={close}>
+            {"Done"}
+          </SubmitButton>
         )}
       >
-        <>
+        <div className={styles.signaturemodal}>
           <SummaryHeader
             statusLabel={"Success!"}
-            statusMessage={"Transaction signature generated"}
+            statusMessage={"Signature generated"}
             status={"success"}
           />
-          <br />
           <br />
           {signature && (
             <InputWrapper
@@ -144,7 +146,7 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
               <TextArea readOnly={true} value={toBytes(signature)} rows={10} />
             </InputWrapper>
           )}
-        </>
+        </div>
       </ModalButton>
     </Form>
   )
