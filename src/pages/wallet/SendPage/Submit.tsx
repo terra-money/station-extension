@@ -12,6 +12,7 @@ import validate from "txs/validate"
 import { useCurrency } from "data/settings/Currency"
 import { toInput } from "txs/utils"
 import { useTranslation } from "react-i18next"
+import style from "./Send.module.scss"
 
 const Submit = () => {
   const { form, getWalletName, goToStep } = useSend()
@@ -20,7 +21,7 @@ const Submit = () => {
   const { assetInfo, recipient, input } = watch()
   const currency = useCurrency()
   const { t } = useTranslation()
-  if (!assetInfo || !recipient) return null
+  if (!(assetInfo && recipient)) return null
   return (
     <>
       <InputInLine
@@ -29,25 +30,6 @@ const Submit = () => {
         extra={truncate(recipient)}
         value={getWalletName(recipient)}
       />
-      {/* <SendAmount
-        displayType="token"
-        tokenIcon={assetInfo.tokenImg}
-        symbol={assetInfo.symbol}
-        amount={input ?? 0}
-        secondaryAmount={input ?? 0}
-        price={assetInfo.price ?? 0}
-        currencySymbol={currency.symbol}
-        amountInputAttrs={{
-          ...register("input", {
-            required: true,
-            valueAsNumber: true,
-            validate: validate.input(
-              toInput(assetInfo.balance, assetInfo.decimals),
-              assetInfo.decimals
-            ),
-          }),
-        }}
-      /> */}
       <SendAmount
         setValue={setValue}
         tokenInputAttr={{
@@ -58,14 +40,9 @@ const Submit = () => {
               toInput(assetInfo.balance, assetInfo.decimals),
               assetInfo.decimals
             ),
-            // validate: validate.input(
-            //   toInput(100000000, 6),
-            //   8,
-            //   "Token amount",
-            // ),
           }),
         }}
-        tokenAmount={watch("input") || 0}
+        tokenAmount={watch("input") ?? 0}
         currencyInputAttrs={{
           ...register("currencyAmount", {
             valueAsNumber: true,
@@ -73,7 +50,7 @@ const Submit = () => {
             deps: ["input"],
           }),
         }}
-        currencyAmount={watch("currencyAmount") || 0}
+        currencyAmount={watch("currencyAmount") ?? 0}
         tokenIcon={assetInfo.tokenImg}
         symbol={assetInfo.symbol}
         currencySymbol={currency.symbol}
@@ -97,6 +74,7 @@ const Submit = () => {
         />
       </InputWrapper>
       <Button
+        className={style.button}
         disabled={input !== undefined && !formState.isValid}
         variant="primary"
         onClick={() => goToStep(5)}

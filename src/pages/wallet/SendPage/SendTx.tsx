@@ -7,27 +7,25 @@ import Submit from "./Submit"
 import Confirm from "./Confirm"
 import SendContext from "./SendContext"
 import { Routes, Route, useLocation } from "react-router-dom"
+import styles from "./Send.module.scss"
 
 const SendTx = () => {
   const { pathname } = useLocation()
   const { t } = useTranslation()
 
   const getBackPath = (pathname: string) => {
-    if (pathname.includes("/send/")) {
-      const stepMatch = pathname.match(/\/send\/(\d+)/)
-      if (stepMatch?.[1]) {
-        const step = Number(stepMatch[1])
-        return step > 1 ? `/send/${step - 1}` : "/"
-      }
+    const step = pathname.split("/").pop()
+    if (step !== "1") {
+      return `/send/${Number(step) - 1}`
     }
   }
 
   const routes = [
     { path: "/1", element: <Address />, title: "Address" },
-    { path: "/2", element: <Chain />, title: "Chain" },
-    { path: "/3", element: <Token />, title: "Token" },
-    { path: "/4", element: <Submit />, title: "Submit" },
-    { path: "/5", element: <Confirm />, title: "Confirm" },
+    { path: "/2", element: <Chain />, title: "Select Chain" },
+    { path: "/3", element: <Token />, title: "Send" },
+    { path: "/4", element: <Submit />, title: "Send" },
+    { path: "/5", element: <Confirm />, title: "Confirm Send" },
   ]
 
   return (
@@ -44,7 +42,7 @@ const SendTx = () => {
                 title={t(r.title)}
                 modal
               >
-                <div style={{ display: "grid", gap: 20 }}>{r.element}</div>
+                <div className={styles.container}>{r.element}</div>
               </ExtensionPage>
             }
           />
