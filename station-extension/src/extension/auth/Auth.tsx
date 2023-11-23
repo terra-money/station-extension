@@ -6,7 +6,6 @@ import AccessWithLedgerPage from "./AccessWithLedgerPage"
 /* create */
 import NewWalletPage from "./NewWalletPage"
 import RecoverWalletPage from "./RecoverWalletPage"
-import ImportWalletPage from "./ImportWalletPage"
 import NewMultisigWalletPage from "./NewMultisigWalletPage"
 
 /* manage */
@@ -28,7 +27,6 @@ const Auth = () => {
       {/* create */}
       <Route path="new" element={<NewWalletPage />} />
       <Route path="recover" element={<RecoverWalletPage />} />
-      <Route path="import" element={<ImportWalletPage />} />
       <Route path="multisig/new" element={<NewMultisigWalletPage />} />
 
       {/* manage */}
