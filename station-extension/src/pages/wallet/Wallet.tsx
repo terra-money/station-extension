@@ -105,7 +105,7 @@ const Wallet = () => {
         return (
           <>
             <BackButton />
-            <VestingDetailsPage token={route.denom} />
+            <VestingDetailsPage />
           </>
         )
     }
