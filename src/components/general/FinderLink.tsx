@@ -12,6 +12,7 @@ const cx = classNames.bind(styles)
 interface Props extends HTMLAttributes<HTMLAnchorElement> {
   value?: string
   /* path (default: address) */
+  link?: string
   block?: boolean
   tx?: boolean
   chainID?: string
@@ -25,7 +26,7 @@ const FinderLink = forwardRef(
     { children, short, ...rest }: PropsWithChildren<Props>,
     ref: ForwardedRef<HTMLAnchorElement>
   ) => {
-    const { block, tx, validator, chainID, ...attrs } = rest
+    const { link, block, tx, validator, chainID, ...attrs } = rest
     const networks = useNetwork()
     const value =
       rest.value || (typeof children === "string" ? (children as string) : "")
@@ -36,7 +37,9 @@ const FinderLink = forwardRef(
         ?.explorer
 
     let href
-    if (block) {
+    if (link) {
+      href = link
+    } else if (block) {
       href = explorer?.block?.replace("{}", value)
     } else if (tx) {
       href = explorer?.tx?.replace("{}", value)
@@ -46,10 +49,15 @@ const FinderLink = forwardRef(
       href = explorer?.address?.replace("{}", value)
     }
 
-    return (
-      <ExternalLink {...attrs} href={href} className={className} ref={ref} icon>
-        {short && typeof children === "string" ? truncate(children) : children}
+    const linkText =
+      short && typeof children === "string" ? truncate(children) : children
+
+    return href ? (
+      <ExternalLink {...attrs} href={href} className={className} ref={ref}>
+        {linkText}
       </ExternalLink>
+    ) : (
+      <span ref={ref}>{linkText}</span>
     )
   }
 )

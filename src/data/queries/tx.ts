@@ -1,10 +1,10 @@
 import { QueryKey, useQuery, useQueryClient } from "react-query"
-import { atom, useSetRecoilState } from "recoil"
-import { queryKey } from "../query"
 import { useInterchainLCDClient } from "./lcdClient"
-import axios from "axios"
-import { RefetchOptions } from "../query"
+import { atom, useSetRecoilState } from "recoil"
 import { CARBON_API } from "config/constants"
+import { RefetchOptions } from "../query"
+import { queryKey } from "../query"
+import axios from "axios"
 
 interface LatestTx {
   txhash: string
