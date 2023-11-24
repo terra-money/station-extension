@@ -1,0 +1,18 @@
+@import "mixins";
+
+.activityitems > * {
+  padding: 8px;
+  margin: 10px 0px;
+}
+
+.activityitem {
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 300ms;
+  overflow-wrap: anywhere;
+  width: 100%;
+
+  &:hover {
+    background-color: var(--card-bg);
+  }
+}
