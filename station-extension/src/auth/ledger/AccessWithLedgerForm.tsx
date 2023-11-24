@@ -27,6 +27,7 @@ import { isPasswordValid, passwordExists } from "auth/scripts/keystore"
 
 interface Values {
   index: number
+  legacy: boolean
   bluetooth: boolean
   name: string
   password: string
@@ -69,7 +70,7 @@ const AccessWithLedgerForm = () => {
 
   const { register, watch, formState, setError: setFormError } = form
   const { errors, isValid } = formState
-  const { index, bluetooth, name, password } = watch()
+  const { index, bluetooth, name, password, legacy } = watch()
 
   const connectTerra = async () => {
     setError(undefined)
@@ -104,16 +105,26 @@ const AccessWithLedgerForm = () => {
         coinType: 118,
         onConnect: () => setPage(Pages.openCosmos),
       })
-      setWords((w) => ({
-        ...w,
-        "118": wordsFromAddress(key118.accAddress("terra")),
-      }))
-      // @ts-expect-error
-      setPubkey((p) => ({ ...p, "118": key118.publicKey.key }))
+
+      if (legacy) {
+        setWords({
+          "330": wordsFromAddress(key118.accAddress("terra")),
+          "118": wordsFromAddress(key118.accAddress("terra")),
+        })
+        // @ts-expect-error
+        setPubkey({ "330": key118.publicKey.key, "118": key118.publicKey.key })
+      } else {
+        setWords((w) => ({
+          ...w,
+          "118": wordsFromAddress(key118.accAddress("terra")),
+        }))
+        // @ts-expect-error
+        setPubkey((p) => ({ ...p, "118": key118.publicKey.key }))
+      }
       setPage(Pages.choosePasswordForm)
     } catch (error) {
       setError(error as Error)
-      setPage(Pages.askCosmos)
+      setPage(legacy ? Pages.form : Pages.askCosmos)
     }
   }
 
@@ -182,6 +193,21 @@ const AccessWithLedgerForm = () => {
                   {index !== 0 && (
                     <Banner variant="warning" title={t("Default index is 0")} />
                   )}
+
+                  <Checkbox
+                    {...register("legacy")}
+                    checked={legacy}
+                    label={t("Use cointype 118 (Cosmos App) on all chains")}
+                  />
+
+                  {legacy && (
+                    <Banner
+                      variant="warning"
+                      title={t(
+                        "You should select this option only if you used your Ledger to interact with Terra before columbus-3."
+                      )}
+                    />
+                  )}
                 </>
               )}
             </FlexColumn>
@@ -191,7 +217,7 @@ const AccessWithLedgerForm = () => {
 
               <Button
                 variant="primary"
-                onClick={connectTerra}
+                onClick={legacy ? connectCosmos : connectTerra}
                 disabled={!isValid}
               >
                 Connect
@@ -318,7 +344,15 @@ const AccessWithLedgerForm = () => {
               name={name}
               words={words}
               onConfirm={() =>
-                connectLedger(password, words, pubkey, index, bluetooth, name)
+                connectLedger(
+                  password,
+                  words,
+                  pubkey,
+                  index,
+                  bluetooth,
+                  name,
+                  legacy
+                )
               }
             />
           </Flex>
