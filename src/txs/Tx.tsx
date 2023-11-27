@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from "react"
+import { ReactNode } from "react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { QueryKey, useQuery } from "react-query"
@@ -26,9 +26,7 @@ import { useIsWalletEmpty } from "data/queries/bank"
 
 import { Pre } from "components/general"
 import { Grid, Flex } from "components/layout"
-import { Select } from "components/form"
 import { Modal } from "components/feedback"
-import { Details } from "components/display"
 import { Read } from "components/token"
 import ConnectWallet from "app/sections/ConnectWallet"
 import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
@@ -38,7 +36,6 @@ import styles from "./Tx.module.scss"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { getShouldTax, useTaxCap, useTaxRate } from "data/queries/treasury"
-import { useNativeDenoms } from "data/token"
 import { useCarbonFees } from "data/queries/tx"
 import {
   Banner,
@@ -49,6 +46,7 @@ import {
   SubmitButton,
 } from "station-ui"
 import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
+import DisplayFees from "./feeAbstraction/DisplayFees"
 
 const cx = classNames.bind(styles)
 
@@ -108,7 +106,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const isWalletEmpty = useIsWalletEmpty()
   const setLatestTx = useSetRecoilState(latestTxState)
   const isBroadcasting = useRecoilValue(isBroadcastingState)
-  const readNativeDenom = useNativeDenoms()
   const { data: carbonFees } = useCarbonFees()
 
   /* taxes */
@@ -158,7 +155,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
           feeDenoms: [gasDenom],
         })
 
-        return unsignedTx.auth_info.fee.gas_limit * key.gasAdjustment
+        return Math.ceil(unsignedTx.auth_info.fee.gas_limit * key.gasAdjustment)
       } catch (error) {
         console.error(error)
         return 200_000
@@ -314,20 +311,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
   const submittingLabel = isWallet.ledger(wallet) ? t("Confirm in ledger") : ""
 
-  /* render */
-  const balanceAfterTx =
-    balance &&
-    amount &&
-    new BigNumber(balance)
-      .minus(amount)
-      .minus(taxAmount ? (gasFee.denom === token ? taxAmount : 0) : 0)
-      .minus((gasFee.denom === token && gasFee.amount) || 0)
-      .toString()
-
-  const insufficient = balanceAfterTx
-    ? new BigNumber(balanceAfterTx).lt(0)
-    : false
-
   const availableGasDenoms = useMemo(() => {
     return Object.keys(networks[chain]?.gasPrices ?? {})
   }, [chain, networks])
@@ -360,77 +343,13 @@ function Tx<TxValues>(props: Props<TxValues>) {
   }
 
   const renderFee = (descriptions?: Contents) => {
-    if (!estimatedGas) return null
-
     return (
-      <Details>
-        <dl>
-          {descriptions?.map(({ title, content }, index) => (
-            <Fragment key={index}>
-              <dt>{title}</dt>
-              <dd>{content}</dd>
-            </Fragment>
-          ))}
-
-          <dt className={styles.gas}>
-            {t("Fee")}
-            {availableGasDenoms.length > 1 && (
-              <Select
-                value={gasDenom}
-                onChange={(e) => setGasDenom(e.target.value)}
-                className={styles.select}
-                small
-              >
-                {availableGasDenoms.map((denom) => (
-                  <option value={denom} key={denom}>
-                    {
-                      readNativeDenom(
-                        denom === token ? baseDenom ?? denom : denom
-                      ).symbol
-                    }
-                  </option>
-                ))}
-              </Select>
-            )}
-          </dt>
-          <dd>
-            {gasFee.amount && (
-              <Read
-                decimals={decimals}
-                {...gasFee}
-                denom={
-                  gasFee.denom === token
-                    ? baseDenom ?? gasFee.denom
-                    : gasFee.denom
-                }
-              />
-            )}
-          </dd>
-
-          {balanceAfterTx && (
-            <>
-              <dt>{t("Balance")}</dt>
-              <dd>
-                <Read
-                  amount={balance}
-                  token={baseDenom ?? token}
-                  decimals={decimals}
-                />
-              </dd>
-
-              <dt>{t("Balance after tx")}</dt>
-              <dd>
-                <Read
-                  amount={balanceAfterTx}
-                  token={baseDenom ?? token}
-                  decimals={decimals}
-                  className={cx(insufficient && "danger")}
-                />
-              </dd>
-            </>
-          )}
-        </dl>
-      </Details>
+      <DisplayFees
+        chainID={chain}
+        gas={estimatedGas}
+        gasDenom={gasDenom}
+        setGasDenom={setGasDenom}
+      />
     )
   }
 
