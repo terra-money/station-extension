@@ -61,7 +61,7 @@ const AddressBook = ({ onClick }: Props) => {
             copyValue={item.recipient}
             walletName={item.name}
             emoji={item.icon}
-            key={item.name}
+            key={item.recipient + item.name}
             settingsOnClick={
               item.index !== undefined
                 ? () => handleOpen(item.index)
