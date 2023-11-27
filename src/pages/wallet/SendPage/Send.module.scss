@@ -8,3 +8,7 @@
 .button {
   grid-row-start: -1; /* Start at the last row */
 }
+
+.green {
+  color: var(--token-success-500) !important;
+}

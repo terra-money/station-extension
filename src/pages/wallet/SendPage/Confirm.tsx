@@ -2,17 +2,15 @@ import {
   InputInLine,
   SendHeader,
   Timeline,
-  TimelineProps,
+  Form,
   SummaryTable,
   SectionHeader,
-  Form,
+  ActivityListItem,
 } from "station-ui"
 import { useSend } from "./SendContext"
 import { truncate } from "@terra-money/terra-utils"
 import { useCurrency } from "data/settings/Currency"
 import { toInput } from "txs/utils"
-import { capitalize } from "@mui/material"
-import { getChainNamefromID } from "data/queries/chains"
 import { useTranslation } from "react-i18next"
 import { toAmount } from "@terra-money/terra-utils"
 import { TxValues } from "./types"
@@ -31,6 +29,13 @@ import { queryKey } from "data/query"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { CoinInput } from "txs/utils"
 import { useNavigate } from "react-router-dom"
+import style from "./Send.module.scss"
+
+enum TxType {
+  SEND = "Send",
+  EXECUTE = "Execute Contract",
+  TRANSFER = "Transfer",
+}
 
 const Confirm = () => {
   const { form, networks, getWalletName, getICSContract } = useSend()
@@ -63,6 +68,15 @@ const Confirm = () => {
     return toAmount(input, { decimals: assetInfo?.decimals })
   }, [input, assetInfo])
 
+  const txType = useMemo(() => {
+    if (!assetInfo?.denom) return null
+    return AccAddress.validate(assetInfo.denom)
+      ? TxType.EXECUTE
+      : destination === chain
+      ? TxType.SEND
+      : TxType.TRANSFER
+  }, [assetInfo, destination, chain])
+
   const createTx = useCallback(
     ({ address, memo }: TxValues) => {
       const amount = toAmount(input, { decimals: assetInfo?.decimals })
@@ -72,23 +86,22 @@ const Confirm = () => {
       if (!(recipient && AccAddress.validate(recipient))) return
 
       const execute_msg = { transfer: { recipient: address, amount } }
-
       const destination = getChainIDFromAddress(recipient, networks)
+
+      let msgs
 
       if (!chain || !destination || !denom || !amount) return
 
       if (destination === chain) {
-        const msgs = AccAddress.validate(denom)
-          ? [new MsgExecuteContract(senderAddress, denom, execute_msg)]
-          : [new MsgSend(senderAddress, recipient, amount + denom)]
-
-        return { msgs, memo, chainID: chain }
+        msgs =
+          txType === TxType.EXECUTE
+            ? new MsgExecuteContract(senderAddress, denom, execute_msg)
+            : new MsgSend(senderAddress, recipient, amount + denom)
       } else {
         if (!channel) throw new Error("No IBC channel found")
-
-        const msgs = AccAddress.validate(denom)
-          ? [
-              new MsgExecuteContract(senderAddress, denom, {
+        msgs =
+          txType === TxType.EXECUTE
+            ? new MsgExecuteContract(senderAddress, denom, {
                 send: {
                   contract: getICSContract({
                     from: chain,
@@ -102,10 +115,8 @@ const Confirm = () => {
                     })
                   ).toString("base64"),
                 },
-              }),
-            ]
-          : [
-              new MsgTransfer(
+              })
+            : new MsgTransfer(
                 "transfer",
                 channel,
                 new Coin(denom ?? "", amount),
@@ -114,63 +125,26 @@ const Confirm = () => {
                 undefined,
                 (Date.now() + 120 * 1000) * 1e6,
                 undefined
-              ),
-            ]
-        return { msgs, memo, chainID: chain }
+              )
       }
+      return { msgs: [msgs], memo, chainID: chain }
     },
-    [assetInfo, recipient, networks, chain, getICSContract, input]
+    [assetInfo, recipient, networks, chain, getICSContract, input, txType]
   )
 
-  if (!input || !assetInfo?.price || !destination || !recipient) return null
+  if (!input || !assetInfo?.price || !destination || !chain || !recipient)
+    return null
+  const msg = `${input} ${assetInfo?.symbol}`
   const value = input * assetInfo?.price
+
   const rows = [
     { label: t("Total Value"), value: value.toFixed(2) },
     {
       label: t("Token Sent"),
-      value: `${input} ${assetInfo?.symbol}`,
+      value: msg,
     },
     { label: t("From"), value: truncate(assetInfo?.senderAddress) },
   ]
-  const msg = `${input} ${assetInfo?.symbol}`
-  const coin = {
-    icon: assetInfo?.tokenImg,
-    label: assetInfo?.symbol,
-  }
-  const endItem = {
-    chain: {
-      label: capitalize(
-        getChainNamefromID(destination, networks) ?? destination
-      ),
-      icon: networks[destination]?.icon,
-    },
-    coin,
-    msg,
-  }
-  const startItem = {
-    chain: assetInfo?.chain,
-    coin,
-    msg,
-  }
-
-  const middleItems = [
-    {
-      variant: "success",
-      msg: (
-        <div>
-          Transfer <span>{assetInfo.symbol}</span> from{" "}
-          <span>{assetInfo.chain.label}</span> to{" "}
-          <span>{endItem.chain.label}</span>
-        </div>
-      ),
-    },
-  ]
-
-  const timelineProps = {
-    startItem,
-    ...(destination !== assetInfo?.tokenChain ? { middleItems } : {}),
-    endItem,
-  } as TimelineProps
 
   const Info = () => (
     <>
@@ -180,7 +154,25 @@ const Confirm = () => {
         subLabel={currency.symbol + " " + value.toFixed(2) ?? "—"}
       />
       <SectionHeader withLine title={t("Send Path")} />
-      <Timeline {...timelineProps} />
+      <Timeline
+        startOverride={
+          <ActivityListItem
+            variant={"success"}
+            chain={{
+              icon: networks[chain].icon,
+              label: networks[chain].name,
+            }}
+            msg={
+              <>
+                Send <span>{msg}</span> to{" "}
+                <span className={style.green}>{getWalletName(recipient)}</span>
+              </>
+            }
+            type={txType as string}
+            msgCount={1}
+          />
+        }
+      />
       <SectionHeader withLine title={t("Details")} />
       <InputInLine
         disabled
@@ -213,7 +205,7 @@ const Confirm = () => {
 
   return (
     <Tx {...tx}>
-      {({ max, fee, submit }) => (
+      {({ submit }) => (
         <Form onSubmit={handleSubmit(submit.fn)}>
           <Info />
           {submit.button}
