@@ -14,9 +14,9 @@ const SendTx = () => {
   const { t } = useTranslation()
 
   const getBackPath = (pathname: string) => {
-    const step = pathname.split("/").pop()
-    if (step !== "1") {
-      return `/send/${Number(step) - 1}`
+    const step = Number(pathname.split("/").pop())
+    if (step !== 1) {
+      return `/send/${step === 3 ? 1 : step - 1}` // skip chain step on back to avoid confusion
     }
   }
 

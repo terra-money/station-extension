@@ -148,7 +148,7 @@ const Confirm = () => {
         label={`${input} ${assetInfo?.symbol}`}
         subLabel={currency.symbol + " " + value.toFixed(2) ?? "—"}
       />
-      <SectionHeader withLine title={t("Send Path")} />
+      <SectionHeader withLine title={t("Send")} />
       <Timeline
         startOverride={
           <ActivityListItem
@@ -164,7 +164,6 @@ const Confirm = () => {
               </>
             }
             type={txType as string}
-            msgCount={1}
           />
         }
       />

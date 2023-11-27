@@ -212,12 +212,14 @@ export const useRecentRecipients = () => {
   const [recipients, setRecipients] = useRecoilState(recentRecipients)
   const addRecipient = useCallback(
     (recipient: AddressBook) => {
+      if (recipients.includes(recipient)) return
       const newRecipients = [recipient, ...recipients].splice(0, 2)
       setLocalSetting(SettingKey.RecentRecipients, newRecipients)
       setRecipients(newRecipients)
     },
     [recipients, setRecipients]
   )
+
   return { recipients, addRecipient }
 }
 
