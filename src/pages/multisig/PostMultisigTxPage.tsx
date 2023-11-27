@@ -3,24 +3,22 @@ import {
   SimplePublicKey,
 } from "@terra-money/feather.js"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
+import ExtensionPage from "extension/components/ExtensionPage"
 import useDefaultValues from "./utils/useDefaultValues"
 import PostMultisigTxForm from "./PostMultisigTxForm"
 import { truncate } from "@terra-money/terra-utils"
 import { useAccountInfo } from "data/queries/auth"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
 import { Wrong } from "components/feedback"
 import { isWallet, useAuth } from "auth"
 import { useChainID } from "data/wallet"
 import { Card } from "components/layout"
-import { Modal } from "station-ui"
 
 const PostMultisigTxPage = () => {
   const { t } = useTranslation()
   const addresses = useInterchainAddresses()
   const chainID = useChainID()
   const { wallet } = useAuth()
-  const navigate = useNavigate()
 
   /* account info */
   const { data: account, ...state } = useAccountInfo()
@@ -66,20 +64,16 @@ const PostMultisigTxPage = () => {
   }
 
   return (
-    <Modal
+    <ExtensionPage
       {...state}
-      isOpen
-      onRequestClose={() => {
-        navigate("/", { replace: true })
-      }}
-      backAction={() => {
-        navigate(`/manage-wallet/manage/${wallet.name}`)
-      }}
-      title={t("Post a multisig tx")}
+      backButtonPath={`/manage-wallet/manage/${wallet.name}`}
+      title={t("Post Multisig Tx")}
       subtitle={truncate(addresses?.[chainID], [13, 6])}
+      fullHeight
+      modal
     >
       {render()}
-    </Modal>
+    </ExtensionPage>
   )
 }
 

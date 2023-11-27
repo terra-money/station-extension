@@ -2,8 +2,10 @@ import { SectionHeader, InputWrapper, TextArea, SummaryTable } from "station-ui"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { ReadMultiple } from "components/token"
 import { useTranslation } from "react-i18next"
+import { PropsWithChildren } from "react"
 
-const ReadTx = ({ tx: encoded }: { tx: string }) => {
+const ReadTx = (props: PropsWithChildren<{ tx: string }>) => {
+  const { tx: encoded, children } = props
   const { t } = useTranslation()
   const lcd = useInterchainLCDClient()
 
@@ -24,7 +26,7 @@ const ReadTx = ({ tx: encoded }: { tx: string }) => {
           <InputWrapper label={t("Message")}>
             <TextArea
               readOnly={true}
-              value={"The provided transaction is not valid."}
+              value={"The provided transaction hash is not valid"}
               rows={2}
             />
           </InputWrapper>
@@ -54,11 +56,12 @@ const ReadTx = ({ tx: encoded }: { tx: string }) => {
           ))}
         </InputWrapper>
         <SummaryTable rows={txDetails.filter((detail) => !!detail.value)} />
+        {children}
       </>
     )
   }
 
-  return <>{encoded ? render() : null}</>
+  return encoded ? render() : null
 }
 
 export default ReadTx

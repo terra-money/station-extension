@@ -2,6 +2,7 @@ import {
   Copy,
   Input,
   InputWrapper,
+  ProgressBar,
   SectionHeader,
   SubmitButton,
   TextArea,
@@ -57,6 +58,13 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
   const { register, control, watch, handleSubmit, formState } = form
   const { isValid } = formState
   const { tx } = watch()
+  const { signatures } = watch()
+  const signaturesWithTextCount = signatures.filter(
+    (sig) => sig.signature.trim() !== ""
+  ).length
+
+  const isSignatureThreshold = signaturesWithTextCount >= publicKey.threshold
+  const isFormValid = isValid && isSignatureThreshold
 
   const fieldArray = useFieldArray({ control, name: "signatures" })
   const { fields } = fieldArray
@@ -75,7 +83,6 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
 
   const submit = async ({ signatures, tx: encoded }: Values) => {
     setSubmitting(true)
-    setError(undefined)
 
     try {
       const tx = lcd.tx.decode(encoded.trim())
@@ -117,7 +124,7 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
       </InputWrapper>
       <InputWrapper
         label={t("Hashed Transaction")}
-        extra={<Copy copyText={tx} />}
+        extra={tx ? <Copy copyText={tx} /> : null}
       >
         <TextArea
           {...register("tx", { required: true })}
@@ -126,27 +133,42 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
         />
       </InputWrapper>
 
-      <SectionHeader title={t("Signatures")} withLine />
+      <ReadTx tx={tx.trim()}>
+        <SectionHeader title={t("Signatures")} withLine />
 
-      {fields.map(({ address, id }, index) => (
-        <FormGroup key={id}>
-          <InputWrapper label={truncate(address, [13, 6])}>
-            <TextArea
-              {...register(`signatures.${index}.signature`)}
-              rows={2}
-              autoFocus={!index}
-            />
-          </InputWrapper>
-        </FormGroup>
-      ))}
+        {fields.map(({ address, id }, index) => (
+          <FormGroup key={id}>
+            <InputWrapper label={truncate(address, [13, 6])}>
+              <TextArea
+                {...register(`signatures.${index}.signature`)}
+                rows={2}
+                autoFocus={!index}
+              />
+            </InputWrapper>
+          </FormGroup>
+        ))}
 
-      <ReadTx tx={tx.trim()} />
+        <ProgressBar
+          labelOverride="Threshold"
+          data={[
+            {
+              type: "yes",
+              percent: `${100 * (signaturesWithTextCount / fields.length)}%`,
+            },
+          ]}
+          threshold={100 * (publicKey.threshold / fields.length)}
+        />
 
-      {error && <FormError>{error.message}</FormError>}
+        {error && <FormError>{error.message}</FormError>}
+      </ReadTx>
 
       <SectionHeader title={t("Confirm")} withLine />
 
-      <SubmitButton label={"Submit"} loading={submitting} disabled={!isValid} />
+      <SubmitButton
+        label={"Submit"}
+        loading={submitting}
+        disabled={!isFormValid}
+      />
     </Form>
   )
 }
