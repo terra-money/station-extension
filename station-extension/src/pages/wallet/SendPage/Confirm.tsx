@@ -23,7 +23,6 @@ import { AccAddress } from "@terra-money/feather.js"
 import { useRecentRecipients } from "utils/localStorage"
 import Tx from "txs/Tx"
 import { useCallback, useMemo } from "react"
-import { getChainIDFromAddress } from "utils/bech32"
 import { Coin } from "@terra-money/feather.js"
 import { queryKey } from "data/query"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
@@ -81,16 +80,12 @@ const Confirm = () => {
     ({ address, memo }: TxValues) => {
       const amount = toAmount(input, { decimals: assetInfo?.decimals })
       const { senderAddress, denom, channel } = assetInfo ?? {}
-      if (!senderAddress) return
-
       if (!(recipient && AccAddress.validate(recipient))) return
 
       const execute_msg = { transfer: { recipient: address, amount } }
-      const destination = getChainIDFromAddress(recipient, networks)
 
+      if (!chain || !destination || !denom || !amount || !senderAddress) return
       let msgs
-
-      if (!chain || !destination || !denom || !amount) return
 
       if (destination === chain) {
         msgs =
@@ -129,7 +124,7 @@ const Confirm = () => {
       }
       return { msgs: [msgs], memo, chainID: chain }
     },
-    [assetInfo, recipient, networks, chain, getICSContract, input, txType]
+    [assetInfo, recipient, chain, getICSContract, destination, input, txType]
   )
 
   if (!input || !assetInfo?.price || !destination || !chain || !recipient)
