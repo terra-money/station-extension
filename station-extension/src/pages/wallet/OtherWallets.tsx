@@ -21,7 +21,7 @@ export const WalletList = ({
   onClick?: (address: string) => void
 }) => {
   return (
-    <Grid gap={10} style={{ border: "3px solid red" }}>
+    <Grid gap={10}>
       {title && <SectionHeader withLine title={title} />}
       {!items.length && <Empty />}
       {items.map((w) => (
