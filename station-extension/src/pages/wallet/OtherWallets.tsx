@@ -1,13 +1,7 @@
 import { useAddressBook } from "data/settings/AddressBook"
 import { truncate } from "@terra-money/terra-utils"
 import { getWallet } from "auth/scripts/keystore"
-import { useState } from "react"
-import {
-  Grid,
-  SectionHeader,
-  Tabs,
-  AddressSelectableListItem,
-} from "station-ui"
+import { Grid, SectionHeader, AddressSelectableListItem } from "station-ui"
 import { useAuth } from "auth"
 import { Empty } from "components/feedback"
 import { addressFromWords } from "utils/bech32"
@@ -27,11 +21,10 @@ export const WalletList = ({
   onClick?: (address: string) => void
 }) => {
   return (
-    <Grid gap={10}>
+    <Grid gap={10} style={{ border: "3px solid red" }}>
       {title && <SectionHeader withLine title={title} />}
       {!items.length && <Empty />}
       {items.map((w) => (
-        // {w.icon}
         <AddressSelectableListItem
           key={w.name}
           onClick={() => onClick?.(w.recipient)}
