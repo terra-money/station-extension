@@ -193,9 +193,57 @@ export function useIsBalanceEnough() {
 
 export function useSubmitTx() {
   const auth = useAuth()
+  const lcd = useInterchainLCDClient()
 
   return async (txOptions: CreateTxOptions, password: string) => {
+    // broadcast the tx
     const result = await auth.post(txOptions, password)
-    return { result, success: true }
+
+    // wait for the tx to be confirmed on-chain
+    while (true) {
+      try {
+        await lcd.tx.txInfo(result.txhash, txOptions.chainID)
+        break
+      } catch (error) {
+        await new Promise((r) => setTimeout(r, 5000))
+      }
+    }
+
+    // start tracking the tx with skip api
+    await axios.post("https://api.skip.money/v1/tx/track", {
+      tx_hash: result.txhash,
+      chain_id: txOptions.chainID,
+    })
+
+    return result.txhash
+  }
+}
+
+export enum SkipTxStatus {
+  COMPLETED = "STATE_COMPLETED",
+  FAILED = "STATE_FAILED",
+  SUCCESS = "STATE_SUCCESS",
+  PENDING = "STATE_PENDING",
+  RECEIVED = "STATE_RECEIVED",
+  UNKNOWN = "STATE_UNKNOWN",
+}
+
+export async function checkSkipTxStatus(txhash: string, chainID: string) {
+  const { data } = await axios.get(
+    `https://api.skip.money/v1/tx/status?tx_hash=${txhash}&chain_id=${chainID}`
+  )
+
+  const state = data.status as SkipTxStatus
+
+  return {
+    state:
+      state === SkipTxStatus.COMPLETED
+        ? data.error
+          ? SkipTxStatus.FAILED
+          : SkipTxStatus.SUCCESS
+        : state,
+    error: (data.transfer_sequence || []).find(
+      ({ state }: any) => state === "TRANSFER_FAILURE"
+    )?.packet_txs?.error?.message,
   }
 }

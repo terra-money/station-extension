@@ -12,6 +12,8 @@ import {
   useIsBalanceLoading,
 } from "./utils"
 import GasHelper from "./GasHelper"
+import { useQueryClient } from "react-query"
+import { queryKey } from "data/query"
 
 export default function DisplayFees({
   chainID,
@@ -32,6 +34,7 @@ export default function DisplayFees({
   const gasPrices = network[chainID]?.gasPrices ?? {}
   const feeAmount = Math.ceil(gasPrices[gasDenom] * (gas ?? 0))
   const isBalanceLoading = useIsBalanceLoading(chainID)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (availableGasDenoms.length && !availableGasDenoms.includes(gasDenom)) {
@@ -59,7 +62,16 @@ export default function DisplayFees({
   if (!chainsWithGas.includes(chainID) || !availableGasDenoms.length)
     return (
       <GasHelper
-        {...{ gas, gasDenom, chainID, gasPrice: gasPrices[gasDenom] }}
+        {...{
+          gas,
+          gasDenom,
+          chainID,
+          gasPrice: gasPrices[gasDenom],
+          onSuccess: () => {
+            // refetch balances
+            queryClient.invalidateQueries(queryKey.bank.balances)
+          },
+        }}
       />
     )
 

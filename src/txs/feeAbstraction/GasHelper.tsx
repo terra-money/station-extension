@@ -4,11 +4,16 @@ import { useNativeDenoms } from "data/token"
 import {
   Banner,
   Dropdown,
+  FlexColumn,
+  Grid,
+  Input,
   InputWrapper,
   LoadingCircular,
   SubmitButton,
 } from "station-ui"
 import {
+  SkipTxStatus,
+  checkSkipTxStatus,
   useIsBalanceEnough,
   useSubmitTx,
   useSwapRoute,
@@ -20,6 +25,7 @@ import { Read } from "components/token"
 import { isWallet, useAuth } from "auth"
 import { Fee } from "@terra-money/feather.js"
 import { getStoredPassword } from "auth/scripts/keystore"
+import { useThemeAnimation } from "data/settings/Theme"
 
 const SEPARATOR = "°"
 
@@ -28,16 +34,19 @@ export default function GasHelper({
   gas,
   gasPrice,
   gasDenom,
+  onSuccess,
 }: {
   chainID: string
   gas: number
   gasPrice: number
   gasDenom: string
+  onSuccess: () => void
 }) {
   const { t } = useTranslation()
   const networks = useNetwork()
   const readNativeDenom = useNativeDenoms()
   const swappableDenoms = useSwappableDenoms()
+  const loadingAnimation = useThemeAnimation()
   const { wallet } = useAuth()
   const [swapDenom, setSwapDenom] = useState<string>("")
   const {
@@ -52,7 +61,7 @@ export default function GasHelper({
     finalAmount: Math.ceil(gasPrice * gas * 1.2),
   })
   const { isBalanceEnough } = useIsBalanceEnough()
-  const submuitTx = useSubmitTx()
+  const submitTx = useSubmitTx()
   const [passwordState, setPasswordState] = useState<{
     password: string
     loading: boolean
@@ -62,6 +71,9 @@ export default function GasHelper({
     loading: true,
     stored: false,
   })
+  const [error, setError] = useState<string | null>(null)
+  const [txhash, setTxhash] = useState<string | null>(null)
+  const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     getStoredPassword().then((password) => {
@@ -71,11 +83,50 @@ export default function GasHelper({
     })
   }, []) // eslint-disable-line
 
+  useEffect(() => {
+    if (txhash) {
+      const int = setInterval(() => {
+        checkSkipTxStatus(txhash, swapDenom.split(SEPARATOR)[1]).then(
+          ({ state, error }) => {
+            if (state === SkipTxStatus.SUCCESS) {
+              onSuccess()
+              setTxhash(null)
+              clearInterval(int)
+            } else if (state === SkipTxStatus.FAILED) {
+              // TODO: show actual error code
+              setError(error || t("Transaction failed"))
+              setTxhash(null)
+              clearInterval(int)
+            }
+          }
+        )
+      }, 5 * 1000)
+
+      return () => clearInterval(int)
+    }
+  }, [txhash]) // eslint-disable-line
+
   const insufficientBalance = !isBalanceEnough(
     swapDenom.split(SEPARATOR)[0],
     swapDenom.split(SEPARATOR)[1],
     Number(swapData?.amount) + Number(swapData?.gasAmount)
   )
+
+  if (submitting || txhash) {
+    return (
+      <section className={styles.card}>
+        <FlexColumn gap={20}>
+          <img
+            width={80}
+            height={80}
+            src={loadingAnimation}
+            alt={t("Loading...")}
+          />
+          <p>{t("Loading...")}</p>
+        </FlexColumn>
+      </section>
+    )
+  }
 
   // gas helper not supported for multisig wallets
   if (isWallet.multisig(wallet)) {
@@ -156,24 +207,48 @@ export default function GasHelper({
         )}
       </section>
       {swapData && !isError && !insufficientBalance && (
-        <SubmitButton
-          onClick={() => {
-            submuitTx(
-              {
-                chainID: swapDenom.split(SEPARATOR)[1],
-                msgs: [swapData.msg],
-                fee: new Fee(swapData.gasAmount, {
-                  amount: swapData.feeAmount,
-                  denom: swapDenom.split(SEPARATOR)[0],
-                }),
-              },
-              ""
-            )
-          }}
-          label={t("Get me some gas!")}
-          loading={isLoading}
-          disabled={isLoading}
-        />
+        <Grid gap={14}>
+          {error && <Banner variant="error" title={error} />}
+          {!passwordState.stored && !passwordState.loading && (
+            <InputWrapper label={t("Password")}>
+              <Input
+                type="password"
+                value={passwordState.password}
+                onChange={(e) => {
+                  setPasswordState((d) => ({ ...d, password: e.target.value }))
+                }}
+              />
+            </InputWrapper>
+          )}
+          <SubmitButton
+            onClick={() => {
+              setSubmitting(true)
+              submitTx(
+                {
+                  chainID: swapDenom.split(SEPARATOR)[1],
+                  msgs: [swapData.msg],
+                  fee: new Fee(swapData.gasAmount, {
+                    [swapDenom.split(SEPARATOR)[0]]: swapData.feeAmount,
+                  }),
+                },
+                passwordState.password
+              )
+                .then((txhash) => {
+                  setTxhash(txhash)
+                  setSubmitting(false)
+                })
+                .catch((e) => {
+                  setError(e.message || e.toString() || "Unknown error")
+                  setSubmitting(false)
+                })
+            }}
+            label={t("Get me some gas!")}
+            loading={isLoading || passwordState.loading}
+            disabled={
+              isLoading || !passwordState.password || passwordState.loading
+            }
+          />
+        </Grid>
       )}
     </div>
   )
