@@ -65,7 +65,8 @@ const useAuth = () => {
     pubkey: { "330": string; "118"?: string },
     index = 0,
     bluetooth = false,
-    name = "Ledger"
+    name = "Ledger",
+    legacy: boolean
   ) => {
     const wallet = {
       words,
@@ -75,6 +76,7 @@ const useAuth = () => {
       bluetooth,
       lock: false as const,
       name,
+      legacy,
     }
     addWallet(wallet, password)
     connectWallet(name)
@@ -110,10 +112,12 @@ const useAuth = () => {
 
   const getLedgerKey = async (coinType: string) => {
     if (!is.ledger(wallet)) throw new Error("Ledger device is not connected")
-    const { index, bluetooth } = wallet
+    const { index, bluetooth, legacy } = wallet
     const transport = bluetooth ? createBleTransport : undefined
 
-    return LedgerKey.create({ transport, index, coinType: Number(coinType) })
+    const ct = legacy && coinType === "330" ? "118" : coinType
+
+    return LedgerKey.create({ transport, index, coinType: Number(ct) })
   }
 
   /* manage: export */

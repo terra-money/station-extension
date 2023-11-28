@@ -4,6 +4,7 @@ import { FormatConfig } from "@terra-money/terra-utils"
 import { formatPercent, readAmount, truncate } from "@terra-money/terra-utils"
 import { WithTokenItem } from "data/token"
 import styles from "./Read.module.scss"
+import { AccAddress } from "@terra-money/feather.js"
 
 const cx = classNames.bind(styles)
 
@@ -62,7 +63,12 @@ const Read = forwardRef(
         <span className={styles.small}>
           {" "}
           <WithTokenItem token={token}>
-            {({ symbol }) => symbol ?? truncate(token)}
+            {({ symbol }) => {
+              if (AccAddress.validate(symbol)) {
+                return truncate(symbol)
+              }
+              return symbol ?? truncate(token)
+            }}
           </WithTokenItem>
         </span>
       )

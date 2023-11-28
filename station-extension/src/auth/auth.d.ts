@@ -47,6 +47,7 @@ interface LedgerWallet {
   ledger: true
   index: number
   bluetooth: boolean
+  legacy: boolean
   icon?: string
   lock?: boolean
 }
