@@ -29,7 +29,7 @@ export const useWalletRoutes = (): IRoute[] => {
     },
     {
       path: "/receive/:address",
-      backPath: "receive",
+      backPath: "/receive",
       element: <AddressChain />,
       title: t("Copy Address"),
     },
@@ -47,7 +47,7 @@ export const useWalletRoutes = (): IRoute[] => {
     {
       path: "/asset/uluna/vesting",
       element: <VestingDetailsPage />,
-      backPath: "asset/uluna",
+      backPath: "/asset/uluna",
       title: t("Vesting Details"),
     },
   ]
