@@ -23,6 +23,7 @@ export interface ModalProps extends ReactModal.Props {
   icon?: ReactNode
   rootID?: string
   backAction?: () => void
+  hideCloseButton?: boolean
 }
 
 const Modal = (props: PropsWithChildren<ModalProps>) => {
@@ -35,6 +36,7 @@ const Modal = (props: PropsWithChildren<ModalProps>) => {
     maxHeight,
     minimal,
     backAction,
+    hideCloseButton,
   } = props
 
   const [forceExtension, setForceExtension] = useState(false)
@@ -51,7 +53,7 @@ const Modal = (props: PropsWithChildren<ModalProps>) => {
       overlayClassName={styles.overlay}
       appElement={document.getElementById(rootID)!}
     >
-      {onRequestClose && !minimal && (
+      {onRequestClose && !minimal && !hideCloseButton && (
         <button type="button" className={styles.close} onClick={onRequestClose}>
           {closeIcon ?? <CloseIcon fontSize="inherit" />}
         </button>
