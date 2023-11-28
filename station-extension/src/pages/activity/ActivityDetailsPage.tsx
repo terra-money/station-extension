@@ -4,10 +4,13 @@ import {
   SummaryColumn,
   SummaryTable,
   Timeline,
+  ExternalLinkIcon,
 } from "station-ui"
 import styles from "./ActivityDetailsPage.module.scss"
+import { ExternalLink } from "components/general"
 import { ReadMultiple } from "components/token"
 import { useTranslation } from "react-i18next"
+import { useNetwork } from "data/wallet"
 import { toNow } from "utils/date"
 import moment from "moment"
 import React from "react"
@@ -16,6 +19,10 @@ const ActivityDetailsPage = ({ ...props }) => {
   const { t } = useTranslation()
   const { variant, chain, msg, type, time, timelineMessages, txHash, fee } =
     props
+
+  const networks = useNetwork()
+  const explorer = networks[chain.chainID ?? ""]?.explorer
+  const externalLink = explorer?.tx?.replace("{}", txHash)
 
   const timelineDisplayMessages = timelineMessages.map((message: string[]) => {
     return { variant: variant, msg: message }
@@ -56,7 +63,11 @@ const ActivityDetailsPage = ({ ...props }) => {
       <SummaryColumn
         title={t("Transaction Hash")}
         description={txHash.toLowerCase()}
-        extra="X"
+        extra={
+          <ExternalLink href={externalLink}>
+            <ExternalLinkIcon fill="#686b77" />
+          </ExternalLink>
+        }
       />
       <SummaryTable rows={detailRows} />
     </div>
