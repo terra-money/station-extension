@@ -165,6 +165,27 @@ export const ExtensionWithSubTitleAndBack: StoryObj = {
   ),
 }
 
+export const ExtensionNoCloseButton: StoryObj = {
+  render: () => (
+    <div id={'force__extension'}>
+      <Modal
+        title="Modal Title"
+        isOpen={true}
+        onRequestClose={() => {}}
+        hideCloseButton
+      >
+        <Form>
+          <InputWrapper label={"This is a label"}>
+            <Input inputMode="text" placeholder={"am placeholder"} />
+          </InputWrapper>
+
+          <SubmitButton variant="primary" onClick={() => {}} label={"Submit"} />
+        </Form>
+      </Modal>
+    </div>
+  ),
+}
+
 export const Playground: StoryObj = {
   render: (props) => (
     <Modal {...props} isOpen={true} onRequestClose={() => {}}>
