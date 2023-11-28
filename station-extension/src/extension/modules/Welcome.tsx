@@ -33,7 +33,11 @@ const Welcome = () => {
           <WalletList
             otherWallets={wallets.map((wallet) => ({
               name: wallet.name,
-              address: truncate(
+              address:
+                "address" in wallet
+                  ? wallet.address
+                  : addressFromWords(wallet.words["330"], "terra"),
+              subLabel: truncate(
                 "address" in wallet
                   ? wallet.address
                   : addressFromWords(wallet.words["330"], "terra"),
