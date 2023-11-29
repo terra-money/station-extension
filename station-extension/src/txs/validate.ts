@@ -64,9 +64,7 @@ const ibc = (
   return {
     ibc: (recipient = "") => {
       const destinationChain = getChainIDFromAddress(recipient, networks)
-      console.log("destinationChain", destinationChain, recipient)
       if (!destinationChain) return "Invalid recipient"
-      console.log("sourceChain", sourceChain)
 
       if (sourceChain === destinationChain) return true
 
