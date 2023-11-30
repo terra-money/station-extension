@@ -8,6 +8,7 @@ import { AccAddress } from "@terra-money/feather.js"
 export enum SettingKey {
   Theme = "Theme",
   Currency = "FiatCurrency",
+  SwapSlippage = "SwapSlippage",
   CustomNetworks = "CustomNetworks",
   CustomChains = "CustomChains",
   GasAdjustment = "GasAdjust", // Tx
@@ -63,6 +64,7 @@ export const DefaultSettings = {
   [SettingKey.CustomTokens]: DefaultCustomTokens as CustomTokens,
   [SettingKey.MinimumValue]: 0,
   [SettingKey.NetworkCacheTime]: 0,
+  [SettingKey.SwapSlippage]: "1",
   [SettingKey.OnlyShowWhitelist]: true,
   [SettingKey.HideLowBalTokens]: true,
   [SettingKey.WithdrawAs]: "",
@@ -107,10 +109,7 @@ export const savedNetworkState = atom({
 
 export const recentRecipients = atom({
   key: "recentRecipients",
-  default: getLocalSetting(SettingKey.RecentRecipients) as (
-    | string
-    | undefined
-  )[],
+  default: getLocalSetting(SettingKey.RecentRecipients) as AddressBook[],
 })
 
 export const customLCDState = atom({
@@ -130,6 +129,11 @@ export const customChainsState = atom({
 export const devModeState = atom({
   key: "devModeState",
   default: !!getLocalSetting(SettingKey.DevMode),
+})
+
+export const swapSlippageState = atom({
+  key: "swapSlippageState",
+  default: getLocalSetting(SettingKey.SwapSlippage) as string,
 })
 
 export const replaceKeplrState = atom({
@@ -188,6 +192,23 @@ export const useCustomChains = () => {
   }
 }
 
+export const useSwapSlippage = () => {
+  const [slippage, setSlippage] = useRecoilState(swapSlippageState)
+
+  const changeSlippage = useCallback(
+    (slippage: string) => {
+      setLocalSetting(SettingKey.SwapSlippage, slippage)
+      setSlippage(slippage)
+    },
+    [setSlippage]
+  )
+
+  return {
+    slippage,
+    changeSlippage,
+  }
+}
+
 export const useTokenFilters = () => {
   const [onlyShowWhitelist, setOnlyShowWhitelist] = useRecoilState(
     onlyShowWhitelistState
@@ -214,13 +235,15 @@ export const useTokenFilters = () => {
 export const useRecentRecipients = () => {
   const [recipients, setRecipients] = useRecoilState(recentRecipients)
   const addRecipient = useCallback(
-    (recipient: string) => {
-      const newRecipients = [recipient, ...recipients].splice(0, 5)
+    (recipient: AddressBook) => {
+      if (recipients.includes(recipient)) return
+      const newRecipients = [recipient, ...recipients].splice(0, 2)
       setLocalSetting(SettingKey.RecentRecipients, newRecipients)
       setRecipients(newRecipients)
     },
     [recipients, setRecipients]
   )
+
   return { recipients, addRecipient }
 }
 
