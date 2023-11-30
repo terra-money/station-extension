@@ -138,7 +138,6 @@ function ManageWalletsModal({ route, setRoute }: Props) {
             activeWallet={{
               name: connectedWallet?.name ?? "",
               address: activeWalletAddress,
-              subLabel: truncate(activeWalletAddress, [11, 6]),
               settingsOnClick: () =>
                 setRoute({
                   path: Path.manage,
@@ -153,13 +152,6 @@ function ManageWalletsModal({ route, setRoute }: Props) {
                   "address" in wallet
                     ? wallet.address
                     : addressFromWords(wallet.words["330"], "terra"),
-
-                subLabel: truncate(
-                  "address" in wallet
-                    ? wallet.address
-                    : addressFromWords(wallet.words["330"], "terra"),
-                  [11, 6]
-                ),
                 onClick: () => {
                   connect(wallet.name)
                   closeModal()

@@ -27,7 +27,6 @@ export default function SelectWalletsPage() {
           activeWallet={{
             name: connectedWallet?.name ?? "",
             address: activeWalletAddress,
-            subLabel: truncate(activeWalletAddress, [11, 6]),
             settingsOnClick: () =>
               navigate(`/manage-wallet/manage/${connectedWallet?.name ?? ""}`),
           }}
