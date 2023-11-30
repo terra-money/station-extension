@@ -19,7 +19,8 @@ const AssetPage = () => {
   const readNativeDenom = useNativeDenoms()
   const { t } = useTranslation()
   const params = useParams()
-  const routeDenom = params.denom ?? "uluna"
+  const routeDenom =
+    params.denom?.replace(/-/g, "/").replace(/_/g, "-") ?? "uluna"
   const [chain, denom] = routeDenom.includes("*")
     ? routeDenom.split("*")
     : [params.chain, routeDenom]

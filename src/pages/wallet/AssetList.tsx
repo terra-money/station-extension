@@ -101,6 +101,8 @@ const AssetList = () => {
   ])
 
   const renderAsset = ({ denom, decimals, id, ...item }: any) => {
+    const modifiedDenomPath = denom.replace(/-/g, "_").replace(/\//g, "-")
+    const chainID = id.split("*")?.[0]
     return (
       <Asset
         {...item}
@@ -108,7 +110,7 @@ const AssetList = () => {
         decimals={decimals}
         key={item.id}
         coins={coins}
-        onClick={() => navigate(`asset/${id.split("*")?.[0]}/${denom}`)}
+        onClick={() => navigate(`asset/${chainID}/${modifiedDenomPath}`)}
       />
     )
   }
