@@ -273,15 +273,16 @@ It has a dynamic width input... so it will grow and shrink based on the amount o
 It is incredible. It was dificult to make. I am proud of it.
 
 ## Props
-- **`displayType`** - <RequiredText /> - Determines if token or currency are the large input.
-  - Options are `token`, `currency`.
-- **`amount`** - <RequiredText /> - `number` - The number a user put in the input.
+- **`setValue`** - <RequiredText /> - `any` - The function from react-hook-form to set the value of the input.
+- **`tokenInputAttr`** - <RequiredText /> - `InputHTMLAttributes<HTMLInputElement>` - Attributes from react-hook-form for the **token** input.
+- **`tokenAmount`** - <RequiredText /> - `number` - The input token amount. **Should be watch("*registered input from react-hook-form*")**
+- **`currencyInputAttrs`** - <RequiredText /> - `InputHTMLAttributes<HTMLInputElement>` - Attributes from react-hook-form for the **currency** input.
+- **`currencyAmount`** - <RequiredText /> - `number` - The input amount for the currency. **Should be watch("*registered input from react-hook-form*")**
 - **`symbol`** - <RequiredText /> - `string` - The symbol of the token.
 - **`tokenIcon`** - <RequiredText /> - `string` - The icon of the token.
-- **`secondaryAmount`** - <RequiredText /> - `number` - The smaller amount on the bottom.
-- **`amountInputAttrs`** - <RequiredText /> - `InputHTMLAttributes<HTMLInputElement>` - Attributes from react-hook-form or others.
 - **`currencySymbol`** - <RequiredText /> - `string` - The symbol for the users currency.
 - **`price`** - <RequiredText /> - `number` - The price of the token.
+- **`formState`** - <RequiredText /> - `any` - The formState from react-hook-form.
 
 ## Import
 ```jsx
@@ -291,16 +292,9 @@ import { SendAmount } from "station-ui";
 ## Variants
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "100%" }}>
-    <DocsLink linkToRoute="Components/Inputs/Send Amount" linkToID="token-large">
-      <h6 className="h6">Token Large</h6>
-      <Story of={SendAmountStories.TokenLarge} />
-      <p className="p">See More<RightArrow /></p>
-    </DocsLink>
-  </div>
-  <div className="story__wrapper" style={{ width: "100%" }}>
-    <DocsLink linkToRoute="Components/Inputs/Send Amount" linkToID="value-large">
-      <h6 className="h6">Value Large</h6>
-      <Story of={SendAmountStories.ValueLarge} />
+    <DocsLink linkToRoute="Components/Inputs/Send Amount" linkToID="example">
+      <h6 className="h6">Example</h6>
+      <Story of={SendAmountStories.Example} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
