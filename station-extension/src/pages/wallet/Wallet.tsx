@@ -10,7 +10,7 @@ import ReceivePage from "./ReceivePage"
 import { PageTabs } from "station-ui"
 import AssetList from "./AssetList"
 import AssetPage from "./AssetPage"
-import SendPage from "./SendPage"
+// import SendPage from "./SendPage"
 import NetWorth from "./NetWorth"
 
 enum Path {
@@ -98,7 +98,6 @@ const Wallet = () => {
         return (
           <>
             <BackButton />
-            <SendPage />
           </>
         )
       case Path.vesting:
