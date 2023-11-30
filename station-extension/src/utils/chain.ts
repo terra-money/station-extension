@@ -29,6 +29,7 @@ export const sortTokens = (list: any[]) => {
       return a.symbol?.localeCompare(b.symbol)
     }
   })
+}
 
 export const convertAddress = (address: AccAddress, newPrefix: string) => {
   let decodedAddress
