@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import Timeline, { TimelineProps } from './Timeline';
 import { ActivityListItem } from '..';
+import { Button } from 'components';
 
 const meta: Meta<TimelineProps> = {
   title: 'Components/List Items/Timeline/Stories',
@@ -54,10 +55,7 @@ export const StartItemOverriddenWithShowMore: StoryObj<TimelineProps> = {
               <div>Swapping <span>axlUSDC</span> for <span>LUNA</span> on <span>Terra</span></div>
             ),
             warningPillText: 'Transaction Required',
-            transactionButton: {
-              label: 'Confirm Transaction',
-              onClick: () => console.log('clicked')
-            },
+            transactionButton:<Button variant='primary' label='Confirm Transaction' onClick={() => console.log('clicked')} />,
           },
           {
             variant: 'success',
@@ -144,10 +142,8 @@ export const TransactionsRequiredExample: StoryObj<TimelineProps> = {
               <div>Swapping <span>axlUSDC</span> for <span>LUNA</span> on <span>Terra</span></div>
             ),
             warningPillText: 'Transaction Required',
-            transactionButton: {
-              label: 'Confirm Transaction',
-              onClick: () => console.log('clicked')
-            },
+            transactionButton:<Button variant='primary' label='Confirm Transaction' onClick={() => console.log('clicked')} />,
+
           },
           {
             variant: 'warning',
@@ -155,10 +151,7 @@ export const TransactionsRequiredExample: StoryObj<TimelineProps> = {
               <div>Swapping <span>axlUSDC</span> for <span>LUNA</span> on <span>Terra</span></div>
             ),
             warningPillText: 'Transaction Required',
-            transactionButton: {
-              label: 'Confirm Transaction',
-              onClick: () => console.log('clicked')
-            },
+            transactionButton:<Button variant='primary' label='Confirm Transaction' onClick={() => console.log('clicked')} />,
             disabled: true
           },
         ]}
@@ -340,10 +333,8 @@ export const MiddleItemWithButton: StoryObj<TimelineProps> = {
               </div>
             ),
             warningPillText: 'Transaction Required',
-            transactionButton: {
-              label: 'Confirm Transaction',
-              onClick: () => console.log('clicked')
-            }
+            transactionButton:<Button variant='primary' label='Confirm Transaction' onClick={() => console.log('clicked')} />,
+
           },
         ]}
       />
@@ -364,10 +355,7 @@ export const MiddleItemWithButtonDisabled: StoryObj<TimelineProps> = {
               </div>
             ),
             warningPillText: 'Transaction Required',
-            transactionButton: {
-              label: 'Confirm Transaction',
-              onClick: () => console.log('clicked')
-            },
+            transactionButton:<Button variant='primary' label='Confirm Transaction' onClick={() => console.log('clicked')} />,
             disabled: true
           },
         ]}

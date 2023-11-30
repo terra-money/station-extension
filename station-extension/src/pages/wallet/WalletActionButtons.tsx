@@ -51,16 +51,16 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
   const buttons: WalletActionButton[] = [
     {
       icon: <SendIcon />,
-      label: t("send"),
       primary: true,
-      onClick: () => navigate(`/send`),
+      label: t("send"),
+      onClick: () => navigate(`/send/1`, { state: { denom } }),
       disabled: sendButtonDisabled,
     },
     {
       icon: <Swap />,
       label: t("swap"),
-      onClick: () => navigate(`swap`),
-      hide: pathname.includes("/swap/"),
+      onClick: () => navigate(`/swap`, { state: { denom } }),
+      hide: networkName !== "mainnet",
     },
     {
       icon: <ReceiveIcon />,
@@ -70,7 +70,7 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
     {
       icon: <AddIcon />,
       label: t("buy"),
-      onClick: openModal,
+      onClick: () => openModal(),
       disabled: networkName !== "mainnet",
       hide: pathname.includes("/asset/"),
     },
