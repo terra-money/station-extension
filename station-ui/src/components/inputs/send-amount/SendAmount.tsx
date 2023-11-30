@@ -57,7 +57,7 @@ const SendAmount: React.FC<SendAmountProps> = ({
     }
 
     const updateValues = (tokenValue: number, currencyValue: number) => {
-      const tokenFormatted = formatValue(tokenValue, 8)
+      const tokenFormatted = formatValue(tokenValue, 6)
       const currencyFormatted = formatValue(currencyValue, 2)
 
       setTokenFixedValue(tokenFormatted)
@@ -90,7 +90,7 @@ const SendAmount: React.FC<SendAmountProps> = ({
     }
 
     const updateValue = (value: string, isToken: boolean) => {
-      const decimalLimit = isToken ? 8 : 2
+      const decimalLimit = isToken ? 6 : 2
       const formattedValue = formatValue(value, decimalLimit)
       const numericValue = parseFloat(formattedValue) || 0
 
@@ -105,7 +105,7 @@ const SendAmount: React.FC<SendAmountProps> = ({
         setCurrencyFixedValue(formattedValue)
         setValue(currencyInputAttrs.name || "currencyAmount", formattedValue)
 
-        const tokenValue = formatValue((numericValue / price).toString(), 8)
+        const tokenValue = formatValue((numericValue / price).toString(), 6)
         setTokenFixedValue(tokenValue)
         setValue(tokenInputAttr.name || "tokenAmount", tokenValue)
       }
