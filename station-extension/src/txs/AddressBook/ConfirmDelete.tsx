@@ -17,11 +17,11 @@ const ConfirmDelete = () => {
   const { state } = useLocation()
   const { t } = useTranslation()
 
-  const close = () => navigate(`/preferences/address-book/new`, { state })
+  const goBack = () => navigate(`/preferences/address-book/new`, { state })
 
   const handleDelete = () => {
     remove(state.index)
-    close()
+    navigate(`/preferences/address-book`)
   }
 
   return (
@@ -34,10 +34,13 @@ const ConfirmDelete = () => {
             "Are you sure you want to remove this address from your address book?"
           )}
         />
-        <AddressBookWalletList items={[list[state.index]]} onClick={close} />
+        <AddressBookWalletList
+          items={[list[state.index]]}
+          onClick={handleDelete}
+        />
       </Grid>
       <ButtonInlineWrapper>
-        <Button label={t("Cancel")} onClick={close} variant="secondary" />
+        <Button label={t("Cancel")} onClick={goBack} variant="secondary" />
         <SubmitButton label={t("Submit")} onClick={handleDelete} />
       </ButtonInlineWrapper>
     </div>
