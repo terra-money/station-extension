@@ -3,6 +3,7 @@ import AssetList from "./AssetList"
 import { useState } from "react"
 import { PageTabs } from "station-ui"
 import { useTranslation } from "react-i18next"
+import ActivityList from "../activity/ActivityList"
 import styles from "./WalletMain.module.scss"
 import ExtensionFooter from "extension/components/ExtensionFooter"
 import UpdateNotification from "extension/update/UpdateNotification"
@@ -23,7 +24,7 @@ const WalletMain = () => {
           />
         </div>
         <div className={styles.list__container}>
-          {tab === 0 ? <AssetList /> : <p>Activty component</p>}
+          {tab === 0 ? <AssetList /> : <ActivityList />}
         </div>
       </section>
       <ExtensionFooter />

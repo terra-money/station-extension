@@ -94,6 +94,8 @@ export enum TokenType {
   STRIDE = "stride",
 }
 
+// React Hooks cannot be called inside of a callback like the one used by map.
+// This custom React Hook function allows for calling this Hook in a callback.
 export const useNativeDenoms = () => {
   const { whitelist, ibcDenoms } = useWhitelist()
   const { list: cw20 } = useCustomTokensCW20()
@@ -343,6 +345,7 @@ export const useParsedAssetList = () => {
               ...acc,
               [key]: {
                 denom: data.token,
+                decimals: data.decimals,
                 balance: amount,
                 icon: "https://assets.terra.dev/icon/svg/LUNC.svg",
                 symbol: "LUNC",
@@ -358,6 +361,7 @@ export const useParsedAssetList = () => {
               ...acc,
               [key]: {
                 denom: data.token,
+                decimals: data.decimals,
                 balance: amount,
                 icon: data.icon,
                 symbol: data.symbol,

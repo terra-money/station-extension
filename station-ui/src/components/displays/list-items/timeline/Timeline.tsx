@@ -20,7 +20,7 @@ export interface TimelineProps {
     warningPillText?: string
     transactionButton?: ReactNode
     disabled?: boolean
-  }[]
+  }[] | undefined
   endItem?: {
     chain: { icon: string, label: string }
     coin: { icon: string, label: string }

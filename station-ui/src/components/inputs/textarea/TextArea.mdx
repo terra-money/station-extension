@@ -23,15 +23,18 @@ import { TextArea } from "station-ui";
 
 ## Stories
 
-## Default
+## Default W/ react-hook-form
 <div className="story_with_source_below">
-  <Canvas of={TextAreaStories.Default} />
+  <Canvas of={TextAreaStories.DefaultWithReactHookForm} />
   <Source code={`
-    <TextArea
-  rows={10}
-  readOnly={false}
-  placeholder="We're proposing to spend 100,000 LUNA from the Community Pool to fund the creation of public goods for the Terra ecosystem"
-/>
+    <form onSubmit={onSubmit}>
+  <TextArea
+    {...register("tx", { required: true })}
+    placeholder={SAMPLE_ENCODED_TX}
+    rows={6}
+  />
+  <Button variant="primary" type="submit">Submit</Button>
+</form>
   `} />
 </div>
 
@@ -61,6 +64,23 @@ import { TextArea } from "station-ui";
   <TextArea
     readOnly={true}
     value={value}
+  />
+</InputWrapper>
+  `} />
+</div>
+
+## Object Example
+<div className="story_with_source_below">
+  <Canvas of={TextAreaStories.ObjectExample} />
+  <Source code={`
+    <InputWrapper
+  label="Textbox label"
+>
+  <TextArea
+    readOnly={true}
+    value={
+      '{"@type":"/cosmos.bank.v1beta1.MsgSend","amount":[{"amount":"1000000","denom":"uluna"}],"from_address":"terra195lqjqrjdq7mfdzyyfl6ctn8vtkwt43gvyutla","to_address":"terra195lqjqrjdq7mfdzyyfl6ctn8vtkwt43gvyutla"}'
+    }
   />
 </InputWrapper>
   `} />
