@@ -11,6 +11,7 @@ export interface AssetType extends TokenSingleChainListItemProps {
   price?: number
   channel?: string
   senderAddress: AccAddress
+  id: string
 }
 
 export interface TxValues {

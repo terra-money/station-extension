@@ -31,7 +31,7 @@ export const WalletButtonList = ({
       {title && <SectionHeader icon={icon} title={title} />}
       {items.map((i) => (
         <WalletButton
-          key={i.name}
+          key={i.name + i.recipient}
           emoji={i.icon}
           walletName={i.name}
           walletAddress={truncate(i.recipient)}
