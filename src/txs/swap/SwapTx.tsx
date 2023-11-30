@@ -1,50 +1,37 @@
 import { useTranslation } from "react-i18next"
-import { useNetworkName } from "data/wallet"
-import { Card, ChainFilter, Page } from "components/layout"
-import { Wrong } from "components/feedback"
-import TFMSwapContext from "./TFMSwapContext"
-import TFMSwapForm from "./TFMSwapForm"
-import TFMPoweredBy from "./TFMPoweredBy"
-import { ExternalLink } from "components/general"
-
-// The sequence below is required before rendering the Swap form:
-// 1. `SwapContext` - Complete the network request related to swap.
-// 2. `SwapSingleContext` - Complete the network request not related to multiple swap
+import ExtensionPage from "extension/components/ExtensionPage"
+import Setup from "./SwapSetup"
+import Confirm from "./SwapConfirm"
+import SwapContext from "./SwapContext"
+import { Routes, Route, useLocation } from "react-router-dom"
+import SwapSettings from "./SwapSettingsPage"
 
 const SwapTx = () => {
+  const location = useLocation()
   const { t } = useTranslation()
-  const networkName = useNetworkName()
-
-  if (networkName !== "mainnet") {
-    return (
-      <Page title={t("Swap")} small>
-        <Card>
-          <Wrong>
-            {networkName === "classic" ? (
-              <p>
-                Swaps are not supported for classic, please use the{" "}
-                <ExternalLink href="https://tfm.com/terraclassic/trade/swap">
-                  TFM webapp
-                </ExternalLink>{" "}
-                instead.
-              </p>
-            ) : (
-              t("Not supported")
-            )}
-          </Wrong>
-        </Card>
-      </Page>
-    )
-  }
+  const backPath = location.pathname.split("/").slice(0, -1).join("/")
+  const routes = [
+    { path: "/", element: <Setup />, title: "Swap" },
+    { path: "/confirm", element: <Confirm />, title: "Confirm Swap" },
+    { path: "/slippage", element: <SwapSettings />, title: "Swap Settings" },
+  ]
 
   return (
-    <Page title={t("Swap")} small extra={<TFMPoweredBy />}>
-      <TFMSwapContext>
-        <ChainFilter outside title={"Select a chain to perform swaps on"} swap>
-          {(chainID) => <TFMSwapForm chainID={chainID ?? ""} />}
-        </ChainFilter>
-      </TFMSwapContext>
-    </Page>
+    <SwapContext>
+      <Routes>
+        {routes.map((r) => (
+          <Route
+            key={r.path}
+            path={r.path}
+            element={
+              <ExtensionPage backButtonPath={backPath} title={t(r.title)} modal>
+                {r.element}
+              </ExtensionPage>
+            }
+          />
+        ))}
+      </Routes>
+    </SwapContext>
   )
 }
 
