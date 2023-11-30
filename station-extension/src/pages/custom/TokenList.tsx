@@ -5,6 +5,8 @@ import styles from "./TokenList.module.scss"
 import TokenFilters from "./TokenFilters"
 import { Grid, TokenCheckboxListItem } from "station-ui"
 import { useNetwork } from "data/wallet"
+import { useMemo } from "react"
+import { sortTokens } from "utils/chain"
 
 interface Props<T> extends QueryState {
   results: T[]
@@ -21,6 +23,7 @@ const TokenList = <T extends { symbol: string }>(props: Props<T>) => {
   const { results, renderTokenItem, ...state } = rest
   const empty = !state.isLoading && !results.length
   const network = useNetwork()
+  const sortedResults = useMemo(() => sortTokens(results), [results])
 
   return state.error || empty ? (
     <Flex className={styles.results}>
@@ -30,13 +33,13 @@ const TokenList = <T extends { symbol: string }>(props: Props<T>) => {
     <Fetching {...state} height={2}>
       <TokenFilters />
       <Grid gap={10}>
-        {results
+        {sortedResults
           .sort((a, b) => Number(getIsAdded(b)) - Number(getIsAdded(a)))
           .map((i) => {
             const token = renderTokenItem(i)
             const isAdded = getIsAdded(i)
             return (
-              <Grid gap={14} key={token.key}>
+              <Grid gap={14} key={token.key + token.chainID}>
                 <TokenCheckboxListItem
                   symbol={i.symbol}
                   tokenImg={token.icon ?? ""}
