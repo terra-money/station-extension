@@ -15,26 +15,22 @@ export const Default: StoryObj = {
       activeWallet={{
         name: 'my-wallet',
         address: 'terra1u28fgu0p99eh9xc4623k6cw6qmfdnl9un23yxs',
-        subLabel: 'terra5dnwe3fc...pazdy5',
         settingsOnClick: () => {},
       }}
       otherWallets={
         [{
           name: 'other-wallet-1',
-          subLabel: 'terra5dnwe3fc...pazdy5',
           address: 'terra1u28fgu0p99eh9xc4623k6cw6qmfdnl9un23yxs',
           onClick: () => {},
           settingsOnClick: () => {},
         },
         {
           name: 'other-wallet-2',
-          subLabel: 'terra5dnwe3fc...pazdy5',
           address: 'terra1u28fgu0p99eh9xc4623k6cw6qmfdnl9un23yxs',
           onClick: () => {},
           settingsOnClick: () => {},
         },{
           name: 'other-wallet-3',
-          subLabel: 'terra5dnwe3fc...pazdy5',
           address: 'terra1u28fgu0p99eh9xc4623k6cw6qmfdnl9un23yxs',
           onClick: () => {},
           settingsOnClick: () => {},
@@ -50,18 +46,15 @@ export const OthersOnly: StoryObj = {
       otherWallets={
         [{
           name: 'other-wallet-1',
-          subLabel: 'terra5dnwe3fc...pazdy5',
           address: 'terra1u28fgu0p99eh9xc4623k6cw6qmfdnl9un23yxs',
           onClick: () => {},
         },
         {
           name: 'other-wallet-2',
-          subLabel: 'terra5dnwe3fc...pazdy5',
           address: 'terra1u28fgu0p99eh9xc4623k6cw6qmfdnl9un23yxs',
           onClick: () => {},
         },{
           name: 'other-wallet-3',
-          subLabel: 'terra5dnwe3fc...pazdy5',
           address: 'terra1u28fgu0p99eh9xc4623k6cw6qmfdnl9un23yxs',
           onClick: () => {},
         }]

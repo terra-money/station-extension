@@ -5,7 +5,6 @@ import ExtensionPage from "extension/components/ExtensionPage"
 import { Button, WalletList } from "station-ui"
 import { useAuth } from "auth"
 import { openURL } from "extension/storage"
-import { truncate } from "@terra-money/terra-utils"
 import { addressFromWords } from "utils/bech32"
 import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
 import { ReactComponent as UsbIcon } from "styles/images/icons/Usb.svg"
@@ -33,10 +32,8 @@ const Welcome = () => {
           <WalletList
             otherWallets={wallets.map((w) => ({
               name: w.name,
-              address: truncate(
+              address:
                 "address" in w ? w.address : addressFromWords(w.words["330"]),
-                [11, 6]
-              ),
               onClick: () => {
                 connect(w.name)
               },
