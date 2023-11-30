@@ -11,8 +11,7 @@ import {
 } from "station-ui"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "auth"
-import { getWallet } from "auth/scripts/keystore"
-import { addressFromWords } from "utils/bech32"
+import MyWallets from "pages/wallet/SendPage/Components/MyWallets"
 
 interface Props {
   onClick?: (item: AddressBook) => void
@@ -23,16 +22,6 @@ const AddressBook = ({ onClick }: Props) => {
   const { list: addressList } = useAddressBook()
   const [tabKey, setTabKey] = useState("address")
   const navigate = useNavigate()
-  const { wallets } = useAuth()
-
-  const myWallets = wallets.map((w) => {
-    const { words } = getWallet(w.name)
-
-    return {
-      name: w.name,
-      recipient: addressFromWords(words["330"]),
-    }
-  })
 
   const handleOpen = (walletIndex?: number) => {
     navigate(`new`, walletIndex !== undefined ? { state: { walletIndex } } : {})
@@ -100,7 +89,7 @@ const AddressBook = ({ onClick }: Props) => {
           <WalletList title="All" items={others} />
         </>
       ) : (
-        <WalletList title="" items={myWallets} />
+        <MyWallets tab={tabKey} />
       )}
     </Grid>
   )

@@ -9,8 +9,8 @@ import {
   Tabs,
   Button,
 } from "station-ui"
-import { WalletButtonList } from "./Components/OtherWallets"
-import OtherWallets from "./Components/OtherWallets"
+import { WalletButtonList } from "./Components/MyWallets"
+import MyWallets from "./Components/MyWallets"
 import validate from "txs/validate"
 import { useRecentRecipients } from "utils/localStorage"
 import { useLocation } from "react-router-dom"
@@ -92,7 +92,7 @@ const Address = () => {
       )}
       <SectionHeader title="Other Wallets" withLine />
       <Tabs activeTabKey={tab} tabs={tabs} />
-      <OtherWallets tab={tab} onClick={handleKnownWallet} />
+      <MyWallets tab={tab} onClick={handleKnownWallet} />
     </>
   )
 }
