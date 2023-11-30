@@ -7,6 +7,8 @@ type InterchainNetworks = Record<
   Record<ChainID, InterchainNetwork>
 >
 
+type InterchainAddresses = Record<ChainID, AccAddress>
+
 type IBCChannel = string
 
 interface InterchainNetwork {
