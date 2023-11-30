@@ -6,7 +6,6 @@ import AccessWithLedgerPage from "./AccessWithLedgerPage"
 /* create */
 import NewWalletPage from "./NewWalletPage"
 import RecoverWalletPage from "./RecoverWalletPage"
-import ImportWalletPage from "./ImportWalletPage"
 import NewMultisigWalletPage from "./NewMultisigWalletPage"
 
 /* manage */
@@ -14,17 +13,20 @@ import ExportWalletPage from "./ExportWalletPage"
 import ChangePasswordPage from "./ChangePasswordPage"
 import DeleteWalletPage from "./DeleteWalletPage"
 import Disconnect from "./Disconnect"
+import MigrationWizard from "./MigrationWizard"
 
 const Auth = () => {
   return (
     <Routes>
+      {/* migration */}
+      <Route path="migration" element={<MigrationWizard />} />
+
       {/* connect */}
       <Route path="ledger" element={<AccessWithLedgerPage />} />
 
       {/* create */}
       <Route path="new" element={<NewWalletPage />} />
       <Route path="recover" element={<RecoverWalletPage />} />
-      <Route path="import" element={<ImportWalletPage />} />
       <Route path="multisig/new" element={<NewMultisigWalletPage />} />
 
       {/* manage */}

@@ -49,6 +49,7 @@
 .modal {
   height: 100vh;
   padding-top: 10px;
+  margin-bottom: 10px;
 
   @media screen and (max-width: 600px) {
     padding-bottom: 0;
@@ -56,7 +57,7 @@
 }
 
 .full__height {
-  height: 100vh;
+  height: 90vh; // room for header
 
   @media screen and (max-width: 600px) {
     padding-bottom: 0;
@@ -74,6 +75,23 @@
 
   .title__container {
     width: 100%;
+
+    .img__container {
+      margin-top: 15px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: -13px;
+
+      img {
+        width: 57px;
+      }
+    }
+
+    .img__with__label {
+      margin-bottom: -21px;
+    }
   }
 }
 
@@ -123,6 +141,15 @@
     line-height: 32px;
     margin-top: 40px;
   }
+}
+
+.label {
+  width: 100%;
+  text-align: center;
+  color: var(--token-light-100);
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 4px;
 }
 
 .subtitle {

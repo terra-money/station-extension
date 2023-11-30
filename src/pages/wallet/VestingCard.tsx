@@ -1,18 +1,17 @@
 import { parseVestingSchedule, useAccount } from "data/queries/vesting"
 import { useNativeDenoms } from "data/token"
-import styles from "./Vesting.module.scss"
 import { useNetwork } from "data/wallet"
 import { Read } from "components/token"
-import { VestingCard as Vesting, TokenSingleChainListItem } from "station-ui"
+import { VestingCard, TokenSingleChainListItem } from "station-ui"
 import { useExchangeRates } from "data/queries/coingecko"
 import { toInput } from "txs/utils"
 import { useCurrency } from "data/settings/Currency"
 import { useMemo } from "react"
 
-const VestingCard = () => {
+const Vesting = () => {
   const { data: account } = useAccount()
-  const readNativeDenom = useNativeDenoms()
   const { data: prices } = useExchangeRates()
+  const readNativeDenom = useNativeDenoms()
   const network = useNetwork()
   const {
     icon: tokenImg,
@@ -31,7 +30,7 @@ const VestingCard = () => {
   const { icon, name } = network["phoenix-1"]
 
   return (
-    <Vesting
+    <VestingCard
       vestedAmount={toInput(schedule.amount.vested, decimals).toString()}
     >
       <TokenSingleChainListItem
@@ -40,7 +39,6 @@ const VestingCard = () => {
         chain={{ icon, label: name }}
         amountNode={
           <Read
-            className={styles.amount}
             amount={schedule.amount.vested}
             fixed={2}
             decimals={decimals}
@@ -52,7 +50,6 @@ const VestingCard = () => {
           <>
             {currency.symbol + " "}
             <Read
-              className={styles.amount}
               amount={
                 Number(schedule.amount.vested) * (prices?.["uluna"]?.price ?? 0)
               }
@@ -64,8 +61,8 @@ const VestingCard = () => {
           </>
         }
       />
-    </Vesting>
+    </VestingCard>
   )
 }
 
-export default VestingCard
+export default Vesting
