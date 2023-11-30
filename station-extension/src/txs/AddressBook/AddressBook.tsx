@@ -28,8 +28,8 @@ const AddressBook = ({ onClick }: Props) => {
     }
   })
 
-  const handleOpen = (walletIndex?: number) => {
-    navigate(`new`, walletIndex !== undefined ? { state: { walletIndex } } : {})
+  const handleOpen = (index?: number) => {
+    navigate(`new`, index !== undefined ? { state: { index } } : {})
   }
 
   const indexedList = addressList.map((item, index) => ({
