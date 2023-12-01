@@ -14,7 +14,6 @@ import {
   TokenSingleChainListItem,
 } from "station-ui"
 import { useTranslation } from "react-i18next"
-import { useCurrency } from "data/settings/Currency"
 import WithSearchInput from "pages/custom/WithSearchInput"
 import { Empty } from "components/feedback"
 import { has } from "utils/num"
@@ -33,7 +32,6 @@ const Token = () => {
   const networkName = useNetworkName()
   const addresses = useInterchainAddresses()
   const { ibcDenoms } = useWhitelist()
-  const currency = useCurrency()
   const { t } = useTranslation()
   const { destination, recipient } = watch()
 
@@ -76,8 +74,12 @@ const Token = () => {
             ),
             priceNode: balVal ? (
               <>
-                <Read amount={balVal} fixed={2} decimals={a.decimals} />{" "}
-                {currency.symbol}
+                <Read
+                  amount={balVal}
+                  currency
+                  fixed={2}
+                  decimals={a.decimals}
+                />
               </>
             ) : (
               <span>—</span>
@@ -99,7 +101,6 @@ const Token = () => {
     addresses,
     balances,
     assetList,
-    currency,
     destination,
     ibcDenoms,
     networks,
