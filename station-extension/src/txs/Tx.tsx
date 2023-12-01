@@ -49,6 +49,7 @@ import {
   SubmitButton,
 } from "station-ui"
 import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
+import { openURL } from "extension/storage"
 
 const cx = classNames.bind(styles)
 
@@ -290,7 +291,9 @@ function Tx<TxValues>(props: Props<TxValues>) {
       if (isWallet.multisig(wallet)) {
         // TODO: broadcast only to terra if wallet is multisig
         const unsignedTx = await auth.create({ ...tx, fee })
-        navigate(toPostMultisigTx(unsignedTx))
+        const { pathname, search } = toPostMultisigTx(unsignedTx)
+        openURL([pathname, search].join("?"))
+        return
       } else if (wallet) {
         const result = await auth.post({ ...tx, fee }, password)
         !hideLoader &&
