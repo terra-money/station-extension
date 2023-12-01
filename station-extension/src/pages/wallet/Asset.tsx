@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next"
 import { Read } from "components/token"
 import { combineState } from "data/query"
-import { useCurrency } from "data/settings/Currency"
 import { WithFetching } from "components/feedback"
 import { useMemo } from "react"
 
@@ -44,7 +43,6 @@ const Asset = (props: Props) => {
     ...state
   } = props
   const { t } = useTranslation()
-  const currency = useCurrency()
   const readNativeDenom = useNativeDenoms()
   const network = useNetwork()
 
@@ -111,7 +109,6 @@ const Asset = (props: Props) => {
   const PriceNode = () => {
     return (
       <>
-        {currency.symbol}
         {price ? (
           <Read
             {...props}
@@ -120,6 +117,7 @@ const Asset = (props: Props) => {
             fixed={2}
             denom=""
             token=""
+            currency
           />
         ) : (
           <span>—</span>
