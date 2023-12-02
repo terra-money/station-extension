@@ -12,7 +12,8 @@
     "test": "react-scripts test",
     "prepare": "husky install",
     "pre-commit": "lint-staged",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "fix-extension-polyfills": "sed -i '' 's/!globalThis\\.chrome\\?\\.runtime\\?\\.id/false/g' \"node_modules/webextension-polyfill/dist/browser-polyfill.js\""
   },
   "dependencies": {
     "@amplitude/analytics-browser": "^2.1.2",
@@ -26,7 +27,7 @@
     "@terra-money/log-finder-ruleset": "^3.0.3",
     "@terra-money/msg-reader": "^3.0.1",
     "@terra-money/station-connector": "^1.0.12",
-    "@terra-money/terra-utils": "^1.0.9",
+    "@terra-money/terra-utils": "^1.1.1",
     "@terra-money/terra.js": "^3.1.9",
     "@terra-money/terra.proto": "^2.0.0",
     "@terra-money/wallet-kit": "^1.0.15",
