@@ -1,11 +1,11 @@
-import { parseVestingSchedule, useAccount } from "data/queries/vesting"
-import { useNativeDenoms } from "data/token"
-import { useNetwork } from "data/wallet"
-import { Read } from "components/token"
 import { VestingCard, TokenSingleChainListItem } from "@terra-money/station-ui"
+import { parseVestingSchedule, useAccount } from "data/queries/vesting"
 import { useExchangeRates } from "data/queries/coingecko"
-import { toInput } from "txs/utils"
+import { useNetwork, useNetworkName } from "data/wallet"
 import { useCurrency } from "data/settings/Currency"
+import { useNativeDenoms } from "data/token"
+import { Read } from "components/token"
+import { toInput } from "txs/utils"
 import { useMemo } from "react"
 
 const Vesting = () => {
@@ -13,11 +13,26 @@ const Vesting = () => {
   const { data: prices } = useExchangeRates()
   const readNativeDenom = useNativeDenoms()
   const network = useNetwork()
+  const networkName = useNetworkName()
+
+  let networkID
+  switch (networkName) {
+    case "testnet":
+      networkID = "pisco-1"
+      break
+    case "classic":
+      networkID = "columbus-5"
+      break
+    default:
+      networkID = "phoenix-1"
+      break
+  }
+
   const {
     icon: tokenImg,
     decimals,
     symbol,
-  } = readNativeDenom("uluna", "phoenix-1")
+  } = readNativeDenom("uluna", networkID)
   const currency = useCurrency()
 
   const schedule = useMemo(() => {
@@ -27,7 +42,7 @@ const Vesting = () => {
 
   if (!schedule) return null
 
-  const { icon, name } = network["phoenix-1"]
+  const { icon, name } = network[networkID]
 
   return (
     <VestingCard
