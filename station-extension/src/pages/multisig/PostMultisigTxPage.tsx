@@ -11,7 +11,7 @@ import ConfirmModal from "auth/modules/manage/ConfirmModal"
 import useDefaultValues from "./utils/useDefaultValues"
 import PostMultisigTxForm from "./PostMultisigTxForm"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { Banner } from "station-ui"
+import { Banner } from "@terra-money/station-ui"
 
 const PostMultisigTxPage = () => {
   const { t } = useTranslation()

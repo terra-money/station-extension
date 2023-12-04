@@ -1,4 +1,4 @@
-import { Banner } from "station-ui"
+import { Banner } from "@terra-money/station-ui"
 import { useSwap } from "../SwapContext"
 import { useBalances } from "data/queries/bank"
 import { toAmount } from "@terra-money/terra-utils"
