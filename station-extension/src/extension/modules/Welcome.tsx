@@ -37,6 +37,8 @@ const Welcome = () => {
                 "address" in w ? w.address : addressFromWords(w.words["330"]),
                 [11, 6]
               ),
+              copyValue:
+                "address" in w ? w.address : addressFromWords(w.words["330"]),
               onClick: () => {
                 connect(w.name)
               },

@@ -39,7 +39,7 @@ export const useWalletRoutes = (): IRoute[] => {
       element: <SendTx />,
     },
     {
-      path: "/asset/:denom",
+      path: "/asset/:chain/:denom",
       element: <AssetPage />,
       backPath: "/",
       title: t("Asset"),
