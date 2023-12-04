@@ -1,4 +1,10 @@
-import { ModalButton, Input, InputWrapper, Button, useModal } from "station-ui"
+import {
+  ModalButton,
+  Input,
+  InputWrapper,
+  Button,
+  useModal,
+} from "@terra-money/station-ui"
 import { useState } from "react"
 import { ReactComponent as EmptyEmoji } from "styles/images/icons/EmptyEmoji.svg"
 import styles from "./EmojiButton.module.scss"

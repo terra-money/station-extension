@@ -1,4 +1,8 @@
-import { SectionHeader, Timeline, ActivityListItem } from "station-ui"
+import {
+  SectionHeader,
+  Timeline,
+  ActivityListItem,
+} from "@terra-money/station-ui"
 import { useTranslation } from "react-i18next"
 import { toInput } from "txs/utils"
 import { SwapState } from "data/queries/swap/types"
