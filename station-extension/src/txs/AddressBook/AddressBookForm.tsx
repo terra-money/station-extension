@@ -11,7 +11,7 @@ import {
   SubmitButton,
   ModalButton,
   ButtonInlineWrapper,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import ConfirmDelete from "./ConfirmDelete"
 import DeleteButton from "components/form/DeleteButton"
 import { EmojiButton } from "components/form"

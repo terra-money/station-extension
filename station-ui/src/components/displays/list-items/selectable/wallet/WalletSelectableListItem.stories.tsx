@@ -17,7 +17,7 @@ export const ActiveWallet: StoryObj<WalletSelectableListItemProps> = {
         walletName='Money'
         emoji='https://station-assets.terra.dev/img/chains/Stride.png'
         subLabel={"terra1hod3...pazdy5"}
-        copyValue={"terra1hod3...pazdy5"}
+        copyValue={"terra1u28fgu0p99eh9xc4623k6cw6qmfdnl9un23yxs"}
         active={true}
         onClick={() => console.log("clicked!")}
         settingsOnClick={() => console.log('settings clicked!')}

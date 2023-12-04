@@ -1,7 +1,7 @@
 import { useAddressBook } from "data/settings/AddressBook"
 import { getChainIdFromAddress } from "data/queries/chains"
 import { ReactNode } from "react"
-import { Grid, SectionHeader, WalletButton, WalletList } from "station-ui"
+import { Grid, SectionHeader, WalletButton } from "@terra-money/station-ui"
 import { useNetwork } from "data/wallet"
 import { truncate } from "@terra-money/terra-utils"
 import { useAuth } from "auth"

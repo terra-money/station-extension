@@ -8,7 +8,7 @@ import {
   InputInLine,
   Tabs,
   Button,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { WalletButtonList } from "./Components/MyWallets"
 import MyWallets from "./Components/MyWallets"
 import validate from "txs/validate"
