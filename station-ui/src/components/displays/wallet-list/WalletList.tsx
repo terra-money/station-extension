@@ -6,11 +6,13 @@ export interface WalletListProps {
   activeWallet?: {
     name: string
     address: string
+    copyValue?: string
     settingsOnClick?: () => void
   }
   otherWallets: {
     name: string
     address: string
+    copyValue?: string
     onClick: () => void
     settingsOnClick?: () => void
   }[]
@@ -30,7 +32,7 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
           <WalletSelectableListItem
             label={activeWallet.name}
             walletName="Big Money"
-            copyValue={activeWallet.address}
+            copyValue={activeWallet.copyValue ?? activeWallet.address}
             subLabel={activeWallet.address}
             active
             onClick={() => {}}
@@ -46,7 +48,7 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
             <WalletSelectableListItem
               label={wallet.name}
               walletName="Money"
-              copyValue={wallet.address}
+              copyValue={wallet.copyValue ?? wallet.address}
               subLabel={wallet.address}
               onClick={wallet.onClick}
               settingsOnClick={wallet.settingsOnClick}
