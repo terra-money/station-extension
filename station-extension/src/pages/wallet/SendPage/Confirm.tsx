@@ -6,7 +6,7 @@ import {
   SummaryTable,
   SectionHeader,
   ActivityListItem,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { useSend } from "./SendContext"
 import { truncate } from "@terra-money/terra-utils"
 import { useCurrency } from "data/settings/Currency"
