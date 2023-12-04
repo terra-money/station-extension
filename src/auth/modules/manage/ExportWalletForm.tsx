@@ -13,7 +13,7 @@ import {
   Copy,
   Banner,
   Button,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { isPasswordValid } from "auth/scripts/keystore"
 import styles from "./ExportWalletForm.module.scss"
 import { useNavigate } from "react-router-dom"

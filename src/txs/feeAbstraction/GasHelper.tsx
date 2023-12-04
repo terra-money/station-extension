@@ -10,7 +10,7 @@ import {
   InputWrapper,
   LoadingCircular,
   SubmitButton,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import {
   SkipTxStatus,
   checkSkipTxStatus,

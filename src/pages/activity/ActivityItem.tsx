@@ -1,7 +1,7 @@
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { ActivityListItem, ModalButton } from "station-ui"
+import { ActivityListItem, ModalButton } from "@terra-money/station-ui"
 import ActivityDetailsPage from "./ActivityDetailsPage"
-import { useMessages } from "@terra-money/terra-utils"
+import { getCanonicalMsg } from "@terra-money/terra-utils"
 import ActivityMessage from "./ActivityMessage"
 import styles from "./ActivityItem.module.scss"
 import { useTranslation } from "react-i18next"
@@ -30,7 +30,7 @@ const ActivityItem = ({
   const network = useNetwork()
   const addresses = useInterchainAddresses() || {}
 
-  const canonicalMessages = useMessages(
+  const canonicalMessages = getCanonicalMsg(
     {
       txhash,
       timestamp,

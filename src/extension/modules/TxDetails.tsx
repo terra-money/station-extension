@@ -6,7 +6,7 @@ import { Read } from "components/token"
 import { getIsNativeMsgFromExternal, TxRequest } from "../utils"
 import Message from "./Message"
 import { useNativeDenoms, DEFAULT_NATIVE_DECIMALS } from "data/token"
-import { SummaryTable } from "station-ui"
+import { SummaryTable } from "@terra-money/station-ui"
 
 const TxDetails = ({ origin, timestamp, tx }: TxRequest) => {
   const { msgs, memo, fee, chainID } = tx

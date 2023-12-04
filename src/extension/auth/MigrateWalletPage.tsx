@@ -15,7 +15,7 @@ import {
   TextArea,
   Form,
   Banner,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { addressFromWords, wordsFromAddress } from "utils/bech32"
 import { ReactComponent as WalletIcon } from "styles/images/icons/Wallet.svg"
 import { truncate } from "@terra-money/terra-utils"
