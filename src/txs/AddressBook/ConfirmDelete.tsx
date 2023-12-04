@@ -10,7 +10,7 @@ import {
   SummaryHeader,
   Grid,
 } from "station-ui"
-import AddressBookWalletList from "./AddressBookWalletList"
+import AddressWalletList from "./AddressWalletList"
 
 const ConfirmDelete = ({ index }: { index: number }) => {
   const { list, remove } = useAddressBook()
@@ -34,7 +34,7 @@ const ConfirmDelete = ({ index }: { index: number }) => {
             "Are you sure you want to remove this address from your address book?"
           )}
         />
-        <AddressBookWalletList items={[list[index]]} onClick={closeModal} />
+        <AddressWalletList items={[list[index]]} onClick={closeModal} />
         <ButtonInlineWrapper>
           <Button
             label={t("Cancel")}

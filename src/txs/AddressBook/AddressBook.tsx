@@ -10,7 +10,6 @@ import {
   Tabs,
 } from "station-ui"
 import { useNavigate } from "react-router-dom"
-import { useAuth } from "auth"
 import MyWallets from "pages/wallet/SendPage/Components/MyWallets"
 
 interface Props {
@@ -89,7 +88,10 @@ const AddressBook = ({ onClick }: Props) => {
           <WalletList title="All" items={others} />
         </>
       ) : (
-        <MyWallets tab={tabKey} />
+        <MyWallets
+          tab={tabKey}
+          onClick={(address) => navigate("my-addresses", { state: address })}
+        />
       )}
     </Grid>
   )

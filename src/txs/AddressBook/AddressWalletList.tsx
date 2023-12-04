@@ -22,7 +22,7 @@ const AddressWalletList = ({
           key={item.name}
           settingsOnClick={onClick ? () => onClick?.(item) : undefined}
           label={item.name}
-          subLabel={truncate(item.recipient)}
+          subLabel={truncate(item.recipient, [11, 6])}
         />
       ))}
     </Grid>
