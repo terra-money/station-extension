@@ -8,7 +8,7 @@ import {
   Grid,
   SectionHeader,
   Tabs,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { useNavigate } from "react-router-dom"
 import MyWallets from "pages/wallet/SendPage/Components/MyWallets"
 
