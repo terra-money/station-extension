@@ -1,4 +1,4 @@
-import { NavButton } from "station-ui"
+import { NavButton } from "@terra-money/station-ui"
 import { FlexColumn } from "components/layout"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
 import { useNavigate } from "react-router-dom"

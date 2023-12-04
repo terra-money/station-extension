@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next"
 import { useThemeFavicon } from "data/settings/Theme"
 import styles from "./Welcome.module.scss"
 import ExtensionPage from "extension/components/ExtensionPage"
-import { Button, WalletList } from "station-ui"
+import { Button, WalletList } from "@terra-money/station-ui"
 import { useAuth } from "auth"
 import { openURL } from "extension/storage"
 import { truncate } from "@terra-money/terra-utils"
@@ -37,6 +37,8 @@ const Welcome = () => {
                 "address" in w ? w.address : addressFromWords(w.words["330"]),
                 [11, 6]
               ),
+              copyValue:
+                "address" in w ? w.address : addressFromWords(w.words["330"]),
               onClick: () => {
                 connect(w.name)
               },

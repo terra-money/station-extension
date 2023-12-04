@@ -1,7 +1,7 @@
 import NetWorth from "./NetWorth"
 import AssetList from "./AssetList"
 import { useState } from "react"
-import { PageTabs } from "station-ui"
+import { PageTabs } from "@terra-money/station-ui"
 import { useTranslation } from "react-i18next"
 import ActivityList from "../activity/ActivityList"
 import styles from "./WalletMain.module.scss"
