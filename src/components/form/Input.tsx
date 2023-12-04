@@ -3,7 +3,7 @@ import classNames from "classnames/bind"
 import { WithTokenItem } from "data/token"
 import { Flex } from "../layout"
 import styles from "./Input.module.scss"
-import { InputWrapper } from "station-ui"
+import { InputWrapper } from "@terra-money/station-ui"
 
 const cx = classNames.bind(styles)
 

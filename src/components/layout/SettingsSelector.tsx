@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNetworks } from "app/InitNetworks"
-import { RadioList, RadioListItem } from "station-ui"
+import { RadioList, RadioListItem } from "@terra-money/station-ui"
 
 interface Props {
   value: string

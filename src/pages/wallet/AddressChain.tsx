@@ -1,6 +1,6 @@
 import { Grid } from "components/layout"
 import QRCode from "auth/components/QRCode"
-import { InputWrapper, Copy, TextArea } from "station-ui"
+import { InputWrapper, Copy, TextArea } from "@terra-money/station-ui"
 import styles from "./AddressChain.module.scss"
 import { useParams } from "react-router-dom"
 

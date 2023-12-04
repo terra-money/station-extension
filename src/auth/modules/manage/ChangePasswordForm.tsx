@@ -19,7 +19,7 @@ import {
   SummaryHeader,
   Grid,
   Button,
-} from "station-ui"
+} from "@terra-money/station-ui"
 
 interface Values {
   current: string

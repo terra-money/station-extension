@@ -4,7 +4,11 @@ import { useRequest } from "../RequestContainer"
 import styles from "./ConfirmConnect.module.scss"
 import ExtensionPage from "extension/components/ExtensionPage"
 import OriginCard from "extension/components/OriginCard"
-import { Button, ButtonInlineWrapper, SummaryColumn } from "station-ui"
+import {
+  Button,
+  ButtonInlineWrapper,
+  SummaryColumn,
+} from "@terra-money/station-ui"
 
 const ConfirmConnect = ({ origin }: ConnectRequest) => {
   const { t } = useTranslation()
