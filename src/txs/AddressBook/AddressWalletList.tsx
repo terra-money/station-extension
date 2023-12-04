@@ -1,4 +1,4 @@
-import { Grid, WalletSelectableListItem, SectionHeader } from "station-ui"
+import { Grid, WalletSelectableListItem, SectionHeader } from "@terra-money/station-ui"
 import { truncate } from "@terra-money/terra-utils"
 
 const AddressWalletList = ({
@@ -18,6 +18,7 @@ const AddressWalletList = ({
         <WalletSelectableListItem
           copyValue={item.recipient}
           walletName={item.name}
+          active
           emoji={item.icon}
           key={item.name}
           settingsOnClick={onClick ? () => onClick?.(item) : undefined}

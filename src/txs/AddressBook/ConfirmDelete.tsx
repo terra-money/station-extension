@@ -9,7 +9,7 @@ import {
   useModal,
   SummaryHeader,
   Grid,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import AddressWalletList from "./AddressWalletList"
 
 const ConfirmDelete = ({ index }: { index: number }) => {
