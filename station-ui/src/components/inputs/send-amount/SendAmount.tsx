@@ -15,7 +15,7 @@ export interface SendAmountProps {
   symbol: string;
   tokenIcon: string;
   currencySymbol: string;
-  price: number;
+  price: number | undefined;
   formState: any;
 }
 
@@ -98,14 +98,14 @@ const SendAmount: React.FC<SendAmountProps> = ({
         setTokenFixedValue(formattedValue)
         setValue(tokenInputAttr.name || "tokenAmount", formattedValue)
 
-        const currencyValue = formatValue((numericValue * price).toString(), 2)
+        const currencyValue = price ? formatValue((numericValue * price).toString(), 2) : '—'
         setCurrencyFixedValue(currencyValue)
         setValue(currencyInputAttrs.name || "currencyAmount", currencyValue)
       } else {
         setCurrencyFixedValue(formattedValue)
         setValue(currencyInputAttrs.name || "currencyAmount", formattedValue)
 
-        const tokenValue = formatValue((numericValue / price).toString(), 8)
+        const tokenValue = price ? formatValue((numericValue / price).toString(), 8) : '—'
         setTokenFixedValue(tokenValue)
         setValue(tokenInputAttr.name || "tokenAmount", tokenValue)
       }
