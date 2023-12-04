@@ -90,6 +90,7 @@ interface CW20TokenItem extends CW20TokenInfoResponse {
 }
 
 interface NativeTokenItem {
+  chainID?: string
   chains: string[]
   decimals: number
   icon: string

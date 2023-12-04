@@ -59,8 +59,8 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
     {
       icon: <Swap />,
       label: t("swap"),
-      onClick: () => navigate(`swap`),
-      hide: pathname.includes("/swap/"),
+      onClick: () => navigate(`/swap`, { state: { denom } }),
+      hide: networkName !== "mainnet",
     },
     {
       icon: <ReceiveIcon />,

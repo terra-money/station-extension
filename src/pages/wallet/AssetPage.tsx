@@ -1,17 +1,17 @@
 import { useNativeDenoms, useUnknownIBCDenoms } from "data/token"
-import styles from "./AssetPage.module.scss"
-import { Read, TokenIcon } from "components/token"
-import { useCurrency } from "data/settings/Currency"
-import { useExchangeRates } from "data/queries/coingecko"
 import { CoinBalance, useBankBalance } from "data/queries/bank"
-import AssetChain from "./AssetChain"
-import { useTranslation } from "react-i18next"
-import { useNetworkName } from "data/wallet"
-import { SectionHeader } from "station-ui"
-import { useMemo } from "react"
-import WalletActionButtons from "./WalletActionButtons"
 import { useNavigate, useParams } from "react-router-dom"
+import { useExchangeRates } from "data/queries/coingecko"
+import WalletActionButtons from "./WalletActionButtons"
+import { useCurrency } from "data/settings/Currency"
+import { Read, TokenIcon } from "components/token"
+import { useTranslation } from "react-i18next"
+import styles from "./AssetPage.module.scss"
+import { SectionHeader } from "station-ui"
 import VestingCard from "./VestingCard"
+import AssetChain from "./AssetChain"
+import { decode } from "js-base64"
+import { useMemo } from "react"
 
 const AssetPage = () => {
   const currency = useCurrency()
@@ -19,23 +19,22 @@ const AssetPage = () => {
   const balances = useBankBalance()
   const readNativeDenom = useNativeDenoms()
   const { t } = useTranslation()
-  const networkName = useNetworkName()
   const params = useParams()
-  const routeDenom = params.denom ?? "uluna"
+  const routeDenom = params.denom ? decode(params.denom) : "uluna"
   const [chain, denom] = routeDenom.includes("*")
     ? routeDenom.split("*")
-    : [undefined, routeDenom]
+    : [params.chain, routeDenom]
   const { token, symbol, decimals, icon } = readNativeDenom(denom, chain)
   const unknownIBCDenoms = useUnknownIBCDenoms()
   const navigate = useNavigate()
 
   const price = useMemo(() => {
-    if (symbol === "LUNC" && networkName !== "classic") {
+    if (params.denom === "uluna" && params.chain === "columbus-5") {
       return prices?.["uluna:classic"]?.price ?? 0
     } else if (!symbol.endsWith("...")) {
       return prices?.[token]?.price ?? 0
     } else return 0
-  }, [prices, symbol, token, networkName])
+  }, [prices, symbol, token, params])
 
   const supportedAssets = useMemo(() => {
     return balances.filter((b) => {
@@ -49,7 +48,8 @@ const AssetPage = () => {
       if (chain) {
         return (
           unknownIBCDenoms[[b.denom, b.chain].join("*")]?.baseDenom === token &&
-          unknownIBCDenoms[[b.denom, b.chain].join("*")]?.chains?.[0] === chain
+          unknownIBCDenoms[[b.denom, b.chain].join("*")]?.chainIDs?.[0] ===
+            chain
         )
       }
       return unknownIBCDenoms[[b.denom, b.chain].join("*")]?.baseDenom === token

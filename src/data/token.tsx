@@ -345,6 +345,7 @@ export const useParsedAssetList = () => {
               ...acc,
               [key]: {
                 denom: data.token,
+                decimals: data.decimals,
                 balance: amount,
                 icon: "https://assets.terra.dev/icon/svg/LUNC.svg",
                 symbol: "LUNC",
@@ -360,6 +361,7 @@ export const useParsedAssetList = () => {
               ...acc,
               [key]: {
                 denom: data.token,
+                decimals: data.decimals,
                 balance: amount,
                 icon: data.icon,
                 symbol: data.symbol,
