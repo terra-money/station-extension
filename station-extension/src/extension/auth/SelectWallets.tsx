@@ -137,6 +137,10 @@ function ManageWalletsModal({ route, setRoute }: Props) {
                 addressFromWords(connectedWallet?.words["330"] ?? "", "terra"),
                 [11, 6]
               ),
+              copyValue: addressFromWords(
+                connectedWallet?.words["330"] ?? "",
+                "terra"
+              ),
               settingsOnClick: () =>
                 setRoute({
                   path: Path.manage,
@@ -153,6 +157,10 @@ function ManageWalletsModal({ route, setRoute }: Props) {
                     : addressFromWords(wallet.words["330"], "terra"),
                   [11, 6]
                 ),
+                copyValue:
+                  "address" in wallet
+                    ? wallet.address
+                    : addressFromWords(wallet.words["330"], "terra"),
                 onClick: () => {
                   connect(wallet.name)
                   closeModal()
