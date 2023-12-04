@@ -162,7 +162,9 @@ const AssetList = () => {
           <>
             <button className={styles.low__bal} onClick={toggleHideLowBal}>
               <SectionHeader
-                title={t(`Show Low Balance Assets (${assets.lowBal.length})`)}
+                title={t(`Show Low Balance Assets ({{count}})`, {
+                  count: assets.lowBal.length,
+                })}
                 withLine
               />
             </button>
