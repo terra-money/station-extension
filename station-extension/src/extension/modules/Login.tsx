@@ -2,7 +2,12 @@ import { useTranslation } from "react-i18next"
 import { useThemeFavicon } from "data/settings/Theme"
 import styles from "./Login.module.scss"
 import ExtensionPage from "extension/components/ExtensionPage"
-import { Checkbox, Input, InputWrapper, SubmitButton } from "station-ui"
+import {
+  Checkbox,
+  Input,
+  InputWrapper,
+  SubmitButton,
+} from "@terra-money/station-ui"
 import { atom, useRecoilState } from "recoil"
 import { useEffect, useRef, useState } from "react"
 import {
