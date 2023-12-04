@@ -8,7 +8,7 @@ import {
   NavButton,
   WalletList,
   useModal,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import AddWallet from "./AddWallet"

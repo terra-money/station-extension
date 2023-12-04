@@ -4,7 +4,7 @@ import {
   TokenSingleChainListItem,
   Button,
   Banner,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import {
   useCustomTokensCW20,
   useCustomTokensNative,
