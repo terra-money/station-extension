@@ -31,16 +31,14 @@ const Welcome = () => {
       <main className={styles.welcome__container}>
         {existsWallets ? (
           <WalletList
-            otherWallets={wallets.map((wallet) => ({
-              name: wallet.name,
+            otherWallets={wallets.map((w) => ({
+              name: w.name,
               address: truncate(
-                "address" in wallet
-                  ? wallet.address
-                  : addressFromWords(wallet.words["330"], "terra"),
+                "address" in w ? w.address : addressFromWords(w.words["330"]),
                 [11, 6]
               ),
               onClick: () => {
-                connect(wallet.name)
+                connect(w.name)
               },
             }))}
           />
