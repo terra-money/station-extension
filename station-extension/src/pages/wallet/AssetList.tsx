@@ -1,17 +1,3 @@
-import { useBankBalance, useIsWalletEmpty } from "data/queries/bank"
-import { useNativeDenoms } from "data/token"
-import { useMemo, useState } from "react"
-import { useTranslation } from "react-i18next"
-import Asset from "./Asset"
-import styles from "./AssetList.module.scss"
-import { useTokenFilters } from "utils/localStorage"
-import { toInput } from "txs/utils"
-import {
-  useCustomTokensCW20,
-  useCustomTokensNative,
-} from "data/settings/CustomTokens"
-import FilterListIcon from "@mui/icons-material/FilterList"
-import { useUnknownIBCDenoms, useParsedAssetList } from "data/token"
 import {
   SectionHeader,
   Dropdown,
@@ -19,10 +5,23 @@ import {
   Button,
   Banner,
 } from "station-ui"
-import classNames from "classnames"
+import {
+  useCustomTokensCW20,
+  useCustomTokensNative,
+} from "data/settings/CustomTokens"
+import { useBankBalance, useIsWalletEmpty } from "data/queries/bank"
+import { useNativeDenoms, useParsedAssetList } from "data/token"
+import FilterListIcon from "@mui/icons-material/FilterList"
+import { useTokenFilters } from "utils/localStorage"
+import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
+import styles from "./AssetList.module.scss"
+import { useMemo, useState } from "react"
 import { useNetwork } from "data/wallet"
 import { Read } from "components/token"
-import { useNavigate } from "react-router-dom"
+import { toInput } from "txs/utils"
+import classNames from "classnames"
+import Asset from "./Asset"
 
 const cx = classNames.bind(styles)
 
@@ -30,7 +29,6 @@ const AssetList = () => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
   const { onlyShowWhitelist, hideLowBal, toggleHideLowBal } = useTokenFilters()
-  const unknownIBCDenoms = useUnknownIBCDenoms()
   const coins = useBankBalance()
   const readNativeDenom = useNativeDenoms()
   const native = useCustomTokensNative()
@@ -102,18 +100,15 @@ const AssetList = () => {
     alwaysVisibleDenoms,
   ])
 
-  const renderAsset = ({ denom, chainID, ...item }: any) => {
+  const renderAsset = ({ denom, decimals, id, ...item }: any) => {
     return (
       <Asset
-        {...readNativeDenom(
-          unknownIBCDenoms[[denom, chainID].join("*")]?.baseDenom ?? denom,
-          unknownIBCDenoms[[denom, chainID].join("*")]?.chainID ?? chainID
-        )}
         {...item}
         denom={denom}
+        decimals={decimals}
         key={item.id}
         coins={coins}
-        onClick={() => navigate(`asset/${denom}`)}
+        onClick={() => navigate(`asset/${id.split("*")?.[0]}/${denom}`)}
       />
     )
   }
@@ -165,11 +160,12 @@ const AssetList = () => {
         {assets.visible.map(renderAsset)}
         {assets.lowBal.length > 0 && (
           <>
-            <SectionHeader
-              title={t(`Show Low Balance Assets (${assets.lowBal.length})`)}
-              withLine
-              onClick={toggleHideLowBal}
-            />
+            <button className={styles.low__bal} onClick={toggleHideLowBal}>
+              <SectionHeader
+                title={t(`Show Low Balance Assets (${assets.lowBal.length})`)}
+                withLine
+              />
+            </button>
             {!hideLowBal && assets.lowBal.map(renderAsset)}
           </>
         )}

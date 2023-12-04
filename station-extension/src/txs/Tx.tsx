@@ -47,6 +47,7 @@ import {
 } from "station-ui"
 import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
 import DisplayFees from "./feeAbstraction/DisplayFees"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 
 const cx = classNames.bind(styles)
 
@@ -83,7 +84,12 @@ interface Props<TxValues> {
 type RenderMax = (onClick?: (max: Amount) => void) => ReactNode
 interface RenderProps<TxValues> {
   max: { amount: Amount; render: RenderMax; reset: () => void }
-  fee: { render: (descriptions?: Contents) => ReactNode }
+  fee: {
+    render: (descriptions?: Contents) => ReactNode
+    amount: string
+    denom: string
+    decimals: number | undefined
+  }
   submit: { fn: (values: TxValues) => Promise<void>; button: ReactNode }
 }
 
@@ -154,7 +160,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
           ...simulationTx,
           feeDenoms: [gasDenom],
         })
-
         return Math.ceil(unsignedTx.auth_info.fee.gas_limit * key.gasAdjustment)
       } catch (error) {
         console.error(error)
@@ -187,7 +192,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   )
 
   const gasAmount = getGasAmount(gasDenom)
-  const gasFee = { amount: gasAmount, denom: gasDenom }
+  const gasFee = { amount: gasAmount, denom: gasDenom, decimals }
 
   /* tax */
   const taxAmount =
@@ -401,6 +406,8 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
           <SubmitButton
             variant="primary"
+            className={styles.submit}
+            icon={<CheckCircleIcon />}
             disabled={!estimatedGas || !!disabled || !!walletError}
             loading={submitting}
             label={(submitting ? submittingLabel : disabled) || t("Submit")}
@@ -427,7 +434,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
     <>
       {children({
         max: { amount: max ?? "0", render: renderMax, reset: resetMax },
-        fee: { render: renderFee },
+        fee: { render: renderFee, ...gasFee },
         submit: { fn: submit, button: submitButton },
       })}
 
