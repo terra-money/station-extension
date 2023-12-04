@@ -17,7 +17,7 @@ const WalletEmoji = ({ id }: WalletEmojiProps) => {
   if (emoji) return (
     <div className={styles.emoji}>
         <span role='img' aria-label='emoji'>
-          { url?.href ? <img src={url.href} /> : id}
+          {id}
         </span>
       </div>
   )
