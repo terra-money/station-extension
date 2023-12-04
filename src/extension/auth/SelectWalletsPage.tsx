@@ -26,6 +26,10 @@ export default function SelectWalletsPage() {
               addressFromWords(connectedWallet?.words["330"] ?? "", "terra"),
               [11, 6]
             ),
+            copyValue: addressFromWords(
+              connectedWallet?.words["330"] ?? "",
+              "terra"
+            ),
             settingsOnClick: () =>
               navigate(`/manage-wallet/manage/${connectedWallet?.name ?? ""}`),
           }}
@@ -39,6 +43,10 @@ export default function SelectWalletsPage() {
                   : addressFromWords(wallet.words["330"], "terra"),
                 [11, 6]
               ),
+              copyValue:
+                "address" in wallet
+                  ? wallet.address
+                  : addressFromWords(wallet.words["330"], "terra"),
               onClick: () => {
                 connect(wallet.name)
                 navigate("/")
