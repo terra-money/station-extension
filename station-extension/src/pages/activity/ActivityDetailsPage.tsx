@@ -5,7 +5,7 @@ import {
   SummaryTable,
   Timeline,
   ExternalLinkIcon,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import styles from "./ActivityDetailsPage.module.scss"
 import { ExternalLink } from "components/general"
 import { ReadMultiple } from "components/token"

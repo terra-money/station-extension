@@ -4,7 +4,7 @@ import {
   TokenSingleChainListItem,
   Button,
   Banner,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import {
   useCustomTokensCW20,
   useCustomTokensNative,
@@ -21,6 +21,7 @@ import { useNetwork } from "data/wallet"
 import { Read } from "components/token"
 import { toInput } from "txs/utils"
 import classNames from "classnames"
+import { encode } from "js-base64"
 import Asset from "./Asset"
 
 const cx = classNames.bind(styles)
@@ -101,6 +102,8 @@ const AssetList = () => {
   ])
 
   const renderAsset = ({ denom, decimals, id, ...item }: any) => {
+    const encodedDenomPath = encode(denom)
+    const chainID = id.split("*")?.[0]
     return (
       <Asset
         {...item}
@@ -108,7 +111,7 @@ const AssetList = () => {
         decimals={decimals}
         key={item.id}
         coins={coins}
-        onClick={() => navigate(`asset/${id.split("*")?.[0]}/${denom}`)}
+        onClick={() => navigate(`asset/${chainID}/${encodedDenomPath}`)}
       />
     )
   }
@@ -162,7 +165,9 @@ const AssetList = () => {
           <>
             <button className={styles.low__bal} onClick={toggleHideLowBal}>
               <SectionHeader
-                title={t(`Show Low Balance Assets (${assets.lowBal.length})`)}
+                title={t(`Show Low Balance Assets ({{count}})`, {
+                  count: assets.lowBal.length,
+                })}
                 withLine
               />
             </button>

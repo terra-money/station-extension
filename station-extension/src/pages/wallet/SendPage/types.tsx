@@ -1,4 +1,4 @@
-import { TokenSingleChainListItemProps } from "station-ui"
+import { TokenSingleChainListItemProps } from "@terra-money/station-ui"
 import { AccAddress } from "@terra-money/feather.js"
 
 export interface AssetType extends TokenSingleChainListItemProps {

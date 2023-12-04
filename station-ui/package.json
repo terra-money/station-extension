@@ -1,5 +1,5 @@
 {
-  "name": "station-ui",
+  "name": "@terra-money/station-ui",
   "files": [
     "dist"
   ],
@@ -32,7 +32,7 @@
     "@mui/material": "^5.14.2",
     "@storybook/addon-links": "^7.2.3",
     "@storybook/react-native": "^6.5.6",
-    "@terra-money/terra-utils": "^1.0.11-beta.0",
+    "@terra-money/terra-utils": "^1.2.0-beta.0",
     "@tippyjs/react": "^4.2.6",
     "@types/styled-components": "^5.1.26",
     "bignumber.js": "^9.1.2",

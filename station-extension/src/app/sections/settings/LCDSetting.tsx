@@ -17,7 +17,7 @@ import {
   InputWrapper,
   ButtonInlineWrapper,
   SubmitButton,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import classNames from "classnames"
 import DeleteButton from "components/form/DeleteButton"
 import { useLocation, useNavigate } from "react-router-dom"

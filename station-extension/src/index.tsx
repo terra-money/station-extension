@@ -3,7 +3,7 @@ import { HashRouter } from "react-router-dom"
 import { ReactQueryDevtools } from "react-query/devtools"
 import { RecoilRoot } from "recoil"
 import "tippy.js/dist/tippy.css"
-import "station-ui/dist/style.css"
+import "@terra-money/station-ui/dist/style.css"
 
 import "config/lang"
 import { debug } from "utils/env"
