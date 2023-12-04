@@ -10,6 +10,7 @@ import styles from "./AssetPage.module.scss"
 import { SectionHeader } from "station-ui"
 import VestingCard from "./VestingCard"
 import AssetChain from "./AssetChain"
+import { decode } from "js-base64"
 import { useMemo } from "react"
 
 const AssetPage = () => {
@@ -19,8 +20,7 @@ const AssetPage = () => {
   const readNativeDenom = useNativeDenoms()
   const { t } = useTranslation()
   const params = useParams()
-  const routeDenom =
-    params.denom?.replace(/-/g, "/").replace(/_/g, "-") ?? "uluna"
+  const routeDenom = params.denom ? decode(params.denom) : "uluna"
   const [chain, denom] = routeDenom.includes("*")
     ? routeDenom.split("*")
     : [params.chain, routeDenom]

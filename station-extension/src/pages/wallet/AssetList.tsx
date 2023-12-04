@@ -21,6 +21,7 @@ import { useNetwork } from "data/wallet"
 import { Read } from "components/token"
 import { toInput } from "txs/utils"
 import classNames from "classnames"
+import { encode } from "js-base64"
 import Asset from "./Asset"
 
 const cx = classNames.bind(styles)
@@ -101,7 +102,7 @@ const AssetList = () => {
   ])
 
   const renderAsset = ({ denom, decimals, id, ...item }: any) => {
-    const modifiedDenomPath = denom.replace(/-/g, "_").replace(/\//g, "-")
+    const encodedDenomPath = encode(denom)
     const chainID = id.split("*")?.[0]
     return (
       <Asset
@@ -110,7 +111,7 @@ const AssetList = () => {
         decimals={decimals}
         key={item.id}
         coins={coins}
-        onClick={() => navigate(`asset/${chainID}/${modifiedDenomPath}`)}
+        onClick={() => navigate(`asset/${chainID}/${encodedDenomPath}`)}
       />
     )
   }
