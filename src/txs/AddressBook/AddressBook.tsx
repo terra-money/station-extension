@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
 import { useAddressBook } from "data/settings/AddressBook"
 import { useState } from "react"
-import { Button, Grid, Tabs } from "station-ui"
+import { Button, Grid, Tabs } from "@terra-money/station-ui"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "auth"
 import { getWallet } from "auth/scripts/keystore"
