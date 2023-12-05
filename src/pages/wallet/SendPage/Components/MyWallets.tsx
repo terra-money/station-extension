@@ -27,8 +27,8 @@ export const WalletButtonList = ({
   const network = useNetwork()
   if (!items.length) return null
   return (
-    <Grid gap={10}>
-      {title && <SectionHeader icon={icon} title={title} />}
+    <Grid gap={8}>
+      {title && <SectionHeader icon={icon} indented title={title} />}
       {items.map((i) => (
         <WalletButton
           key={i.name + i.recipient}
