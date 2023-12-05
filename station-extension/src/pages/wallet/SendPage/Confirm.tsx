@@ -37,7 +37,7 @@ enum TxType {
 }
 
 const Confirm = () => {
-  const { form, networks, getWalletName, getICSContract } = useSend()
+  const { form, networks, getWalletName, getICSContract, goToStep } = useSend()
   const { t } = useTranslation()
   const currency = useCurrency()
   const { handleSubmit, setValue, trigger } = form
@@ -127,9 +127,13 @@ const Confirm = () => {
     [assetInfo, recipient, chain, getICSContract, destination, input, txType]
   )
 
-  if (!(input && destination && chain && recipient)) return null
+  if (!(input && destination && chain && recipient)) {
+    goToStep(1)
+    return null
+  }
+
   const msg = `${input} ${assetInfo?.symbol}`
-  const value = assetInfo?.price ? (input * assetInfo?.price).toFixed(2) : '—'
+  const value = assetInfo?.price ? (input * assetInfo?.price).toFixed(2) : "—"
 
   const rows = [
     { label: t("Total Value"), value },
