@@ -11,6 +11,10 @@ export default function SelectWalletsPage() {
   const { wallets, connectedWallet, connect } = useAuth()
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const activeWalletAddress = addressFromWords(
+    connectedWallet?.words["330"] ?? "",
+    "terra"
+  )
 
   return (
     <ExtensionPage title={t("Select wallet")} fullHeight modal>
@@ -22,38 +26,30 @@ export default function SelectWalletsPage() {
         <WalletList
           activeWallet={{
             name: connectedWallet?.name ?? "",
-            address: truncate(
-              addressFromWords(connectedWallet?.words["330"] ?? "", "terra"),
-              [11, 6]
-            ),
-            copyValue: addressFromWords(
-              connectedWallet?.words["330"] ?? "",
-              "terra"
-            ),
+            address: activeWalletAddress,
             settingsOnClick: () =>
               navigate(`/manage-wallet/manage/${connectedWallet?.name ?? ""}`),
           }}
           otherWallets={wallets
             .filter(({ name }) => name !== connectedWallet?.name)
-            .map((wallet) => ({
-              name: wallet.name,
-              address: truncate(
+            .map((wallet) => {
+              const address =
                 "address" in wallet
                   ? wallet.address
-                  : addressFromWords(wallet.words["330"], "terra"),
-                [11, 6]
-              ),
-              copyValue:
-                "address" in wallet
-                  ? wallet.address
-                  : addressFromWords(wallet.words["330"], "terra"),
-              onClick: () => {
-                connect(wallet.name)
-                navigate("/")
-              },
-              settingsOnClick: () =>
-                navigate(`/manage-wallet/manage/${wallet?.name ?? ""}`),
-            }))}
+                  : addressFromWords(wallet.words["330"], "terra")
+
+              return {
+                name: wallet.name,
+                address,
+                subLabel: truncate(address, [11, 6]),
+                onClick: () => {
+                  connect(wallet.name)
+                  navigate("/")
+                },
+                settingsOnClick: () =>
+                  navigate(`/manage-wallet/manage/${wallet?.name ?? ""}`),
+              }
+            })}
         />
       </FlexColumn>
     </ExtensionPage>
