@@ -6,7 +6,7 @@
   "repository": "github:terra-money/station",
   "license": "MIT",
   "scripts": {
-    "start": "react-scripts start",
+    "start": "npm run fix-extension-polyfills && react-scripts start",
     "build-scripts": "webpack --config scripts/webpack.config.js",
     "build": "cross-env react-app-rewired build && npm run build-scripts",
     "test": "react-scripts test",
