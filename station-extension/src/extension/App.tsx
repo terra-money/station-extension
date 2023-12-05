@@ -39,6 +39,7 @@ import ManageWalletsButton from "./auth/ManageWalletsButton"
 import ManageWalletRouter from "./auth/ManageWalletRouter"
 import PreferencesButton from "app/sections/settings/PreferencesButton"
 import InitActivity from "pages/activity/InitActivity"
+import DashboardButton from "app/sections/DashboardButton"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -108,15 +109,16 @@ const App = () => {
       <>
         {!hideHeader && (
           <Header>
-            <Flex gap={0}>
+            <Flex>
               <ManageWalletsButton />
               <NetworkHeader />
             </Flex>
-            <Flex gap={5}>
+            <Flex>
               <LatestTx />
               <EnableCoinType />
               <NetworkStatus />
               <PreferencesButton />
+              <DashboardButton />
             </Flex>
           </Header>
         )}
