@@ -1,4 +1,4 @@
-import { Grid, WalletSelectableListItem, SectionHeader } from "station-ui"
+import { Grid, WalletSelectableListItem, SectionHeader } from "@terra-money/station-ui"
 import { truncate } from "@terra-money/terra-utils"
 
 const AddressWalletList = ({
