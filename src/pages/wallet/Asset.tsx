@@ -6,8 +6,8 @@ import { WithFetching } from "components/feedback"
 import { useMemo } from "react"
 
 import styles from "./Asset.module.scss"
-import { TokenListItem } from "@terra-money/station-ui"
-import { CoinBalance } from "data/queries/bank"
+import { TokenListItem } from "station-ui"
+import { CoinBalance, useBankBalance } from "data/queries/bank"
 import { useNativeDenoms } from "data/token"
 import { useNetwork } from "data/wallet"
 
@@ -19,7 +19,6 @@ export interface Props extends TokenItem, QueryState {
   hideActions?: boolean
   chains: string[]
   id: string
-  coins: CoinBalance[]
   onClick?: () => void
 }
 
@@ -38,13 +37,13 @@ const Asset = (props: Props) => {
     id,
     balance,
     onClick,
-    coins,
     price,
     change,
     ...state
   } = props
   const { t } = useTranslation()
   const currency = useCurrency()
+  const coins = useBankBalance()
   const readNativeDenom = useNativeDenoms()
   const network = useNetwork()
 
@@ -55,7 +54,7 @@ const Asset = (props: Props) => {
       const coin = coins.find((b) => {
         const { token, symbol } = readNativeDenom(b.denom, b.chain)
         return (
-          token === props.token && props.symbol === symbol && b.chain === chain
+          token === props.denom && props.symbol === symbol && b.chain === chain
         )
       })
 
@@ -77,7 +76,7 @@ const Asset = (props: Props) => {
     }, [] as AssetInfo[])
   }, [
     props.chains,
-    props.token,
+    props.denom,
     props.symbol,
     readNativeDenom,
     coins,
