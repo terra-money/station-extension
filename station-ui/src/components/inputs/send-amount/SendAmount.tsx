@@ -7,16 +7,16 @@ import { SwapArrowsIcon } from "assets"
 const cx = classNames.bind(styles)
 
 export interface SendAmountProps {
-  setValue: any;
-  tokenInputAttr: InputHTMLAttributes<HTMLInputElement>;
-  tokenAmount: number;
-  currencyInputAttrs: InputHTMLAttributes<HTMLInputElement>;
-  currencyAmount: number;
-  symbol: string;
-  tokenIcon: string;
-  currencySymbol: string;
-  price: number | undefined;
-  formState: any;
+  setValue: any
+  tokenInputAttr: InputHTMLAttributes<HTMLInputElement>
+  tokenAmount: number
+  currencyInputAttrs: InputHTMLAttributes<HTMLInputElement>
+  currencyAmount: number
+  symbol: string
+  tokenIcon: string
+  currencySymbol: string
+  price: number | undefined
+  formState: any
 }
 
 const SendAmount: React.FC<SendAmountProps> = ({
@@ -68,7 +68,14 @@ const SendAmount: React.FC<SendAmountProps> = ({
     }
 
     updateValues(tokenAmount, currencyAmount)
-  }, [displayMode, setValue, tokenAmount, currencyAmount, tokenInputAttr.name, currencyInputAttrs.name])
+  }, [
+    displayMode,
+    setValue,
+    tokenAmount,
+    currencyAmount,
+    tokenInputAttr.name,
+    currencyInputAttrs.name,
+  ])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     tokenInputAttr.onChange && tokenInputAttr.onChange(e)
@@ -76,10 +83,11 @@ const SendAmount: React.FC<SendAmountProps> = ({
     const cursorPosition = e.target.selectionStart
     const isTokenMode = displayMode === "token"
 
-    const cleanedValue = inputValue
-      .replace(/[^0-9.]/g, "")
-      .replace(/(\..*)\./g, "$1")
-      .replace(/^0+(?!$|\.)/, "") || "0"
+    const cleanedValue =
+      inputValue
+        .replace(/[^0-9.]/g, "")
+        .replace(/(\..*)\./g, "$1")
+        .replace(/^0+(?!$|\.)/, "") || "0"
 
     const formatValue = (value: string, decimalLimit: number) => {
       const parts = value.split(".")
@@ -98,14 +106,18 @@ const SendAmount: React.FC<SendAmountProps> = ({
         setTokenFixedValue(formattedValue)
         setValue(tokenInputAttr.name || "tokenAmount", formattedValue)
 
-        const currencyValue = price ? formatValue((numericValue * price).toString(), 2) : '—'
+        const currencyValue = price
+          ? formatValue((numericValue * price).toString(), 2)
+          : "—"
         setCurrencyFixedValue(currencyValue)
         setValue(currencyInputAttrs.name || "currencyAmount", currencyValue)
       } else {
         setCurrencyFixedValue(formattedValue)
         setValue(currencyInputAttrs.name || "currencyAmount", formattedValue)
 
-        const tokenValue = price ? formatValue((numericValue / price).toString(), 8) : '—'
+        const tokenValue = price
+          ? formatValue((numericValue / price).toString(), 8)
+          : "—"
         setTokenFixedValue(tokenValue)
         setValue(tokenInputAttr.name || "tokenAmount", tokenValue)
       }
@@ -120,7 +132,7 @@ const SendAmount: React.FC<SendAmountProps> = ({
           inputRef.current.selectionStart = cursorPosition
           inputRef.current.selectionEnd = cursorPosition
         }
-      }, 0);
+      }, 0)
     }
   }
 
@@ -135,7 +147,7 @@ const SendAmount: React.FC<SendAmountProps> = ({
   return (
     <div className={styles.send__amount__container}>
       <div className={styles.input__group}>
-        {displayMode === "token" ? (
+        {displayMode === "token" || !price ? (
           <>
             <input
               ref={inputRef}
@@ -148,13 +160,19 @@ const SendAmount: React.FC<SendAmountProps> = ({
               onChange={handleInputChange}
             />
             <span className={styles.large__label}>{symbol}</span>
-            <span ref={mirrorSpanRef} className={styles.mirror__span} aria-hidden="true">
+            <span
+              ref={mirrorSpanRef}
+              className={styles.mirror__span}
+              aria-hidden="true"
+            >
               {tokenFixedValue}
             </span>
           </>
         ) : (
           <>
-            <span className={styles.large__label} style={{ marginLeft: "0px" }}>{currencySymbol}</span>
+            <span className={styles.large__label} style={{ marginLeft: "0px" }}>
+              {currencySymbol}
+            </span>
             <input
               ref={inputRef}
               type="text"
@@ -165,37 +183,64 @@ const SendAmount: React.FC<SendAmountProps> = ({
               {...currencyInputAttrs}
               onChange={handleInputChange}
             />
-            <span ref={mirrorSpanRef} className={cx(styles.mirror__span, styles.mirror__span__currency)} aria-hidden="true">
+            <span
+              ref={mirrorSpanRef}
+              className={cx(styles.mirror__span, styles.mirror__span__currency)}
+              aria-hidden="true"
+            >
               {currencyFixedValue}
             </span>
           </>
         )}
       </div>
-      <div className={styles.secondary}>
-        {displayMode === "token" ? (
-          <div className={styles.secondary__mode__token}>
-            <span>{currencySymbol}
-            {parseFloat(currencyFixedValue) < 0.01 && parseFloat(tokenFixedValue) > 0 ? (
-              <span>{"<"}0.01</span>
-            ) : (
-              <span>{currencyFixedValue}</span>
-            )}</span>
-            <SwapArrowsIcon onClick={forceSwitch} fill="var(--token-dark-900)" height={16} width={16} />
-          </div>
-        ) : (
-          <div className={styles.secondary__mode__currency}>
-            <img src={tokenIcon} width={16} height={16} />
-            {tokenFixedValue}
-            <span>{symbol}</span>
-            <SwapArrowsIcon onClick={forceSwitch} fill="var(--token-dark-900)" height={16} width={16} />
-          </div>
-        )}
-      </div>
-      {formState.errors[tokenInputAttr.name || "tokenAmount"] || formState.errors[currencyInputAttrs.name || "currencyAmount"] ? (
+      {!!price && (
+        <div className={styles.secondary}>
+          {displayMode === "token" ? (
+            <div className={styles.secondary__mode__token}>
+              <span>
+                {currencySymbol}
+                {parseFloat(currencyFixedValue) < 0.01 &&
+                parseFloat(tokenFixedValue) > 0 ? (
+                  <span>{"<"}0.01</span>
+                ) : (
+                  <span>{currencyFixedValue}</span>
+                )}
+              </span>
+              <SwapArrowsIcon
+                onClick={forceSwitch}
+                fill="var(--token-dark-900)"
+                height={16}
+                width={16}
+              />
+            </div>
+          ) : (
+            <div className={styles.secondary__mode__currency}>
+              <img src={tokenIcon} width={16} height={16} />
+              {tokenFixedValue}
+              <span>{symbol}</span>
+              <SwapArrowsIcon
+                onClick={forceSwitch}
+                fill="var(--token-dark-900)"
+                height={16}
+                width={16}
+              />
+            </div>
+          )}
+        </div>
+      )}
+      {formState.errors[tokenInputAttr.name || "tokenAmount"] ||
+      formState.errors[currencyInputAttrs.name || "currencyAmount"] ? (
         formState.errors[tokenInputAttr.name || "tokenAmount"] ? (
-          <div className={styles.error__message}>{formState.errors[tokenInputAttr.name || "tokenAmount"].message}</div>
+          <div className={styles.error__message}>
+            {formState.errors[tokenInputAttr.name || "tokenAmount"].message}
+          </div>
         ) : (
-          <div className={styles.error__message}>{formState.errors[currencyInputAttrs.name || "currencyAmount"].message}</div>
+          <div className={styles.error__message}>
+            {
+              formState.errors[currencyInputAttrs.name || "currencyAmount"]
+                .message
+            }
+          </div>
         )
       ) : null}
     </div>
