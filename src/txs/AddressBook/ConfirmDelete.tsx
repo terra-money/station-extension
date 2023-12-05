@@ -8,7 +8,7 @@ import {
   SummaryHeader,
   Grid,
 } from "@terra-money/station-ui"
-import AddressBookWalletList from "./AddressBookWalletList"
+import AddressWalletList from "./AddressWalletList"
 import style from "./AddressBook.module.scss"
 
 const ConfirmDelete = () => {
@@ -34,10 +34,7 @@ const ConfirmDelete = () => {
             "Are you sure you want to remove this address from your address book?"
           )}
         />
-        <AddressBookWalletList
-          items={[list[state.index]]}
-          onClick={handleDelete}
-        />
+        <AddressWalletList items={[list[state.index]]} onClick={handleDelete} />
       </Grid>
       <ButtonInlineWrapper>
         <Button label={t("Cancel")} onClick={goBack} variant="secondary" />

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"
 import { useAuth } from "auth"
 import { getWallet } from "auth/scripts/keystore"
 import { addressFromWords } from "utils/bech32"
-import AddressWalletList from "./AddressBookWalletList"
+import AddressWalletList from "./AddressWalletList"
 
 interface Props {
   onClick?: (item: AddressBook) => void
