@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useSend } from "./SendContext"
 import { AccAddress } from "@terra-money/feather.js"
 import { getChainIDFromAddress } from "utils/bech32"
@@ -13,7 +13,6 @@ import { WalletButtonList } from "./Components/OtherWallets"
 import OtherWallets from "./Components/OtherWallets"
 import validate from "txs/validate"
 import { useRecentRecipients } from "utils/localStorage"
-import { useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 
 const Address = () => {
