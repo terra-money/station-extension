@@ -13,7 +13,7 @@ interface Props {
 const AddressBook = ({ onClick }: Props) => {
   const { t } = useTranslation()
   const { list: addressList } = useAddressBook()
-  const [tabKey, setTabKey] = useState("address")
+  const [tabKey, setTabKey] = useState("wallets")
   const navigate = useNavigate()
 
   const handleOpen = (index?: number) => {
@@ -30,14 +30,14 @@ const AddressBook = ({ onClick }: Props) => {
 
   const tabs = [
     {
-      key: "address",
-      label: t("Address Book"),
-      onClick: () => setTabKey("address"),
-    },
-    {
       key: "wallets",
       label: t("My Wallets"),
       onClick: () => setTabKey("wallets"),
+    },
+    {
+      key: "address",
+      label: t("Address Book"),
+      onClick: () => setTabKey("address"),
     },
   ]
 
@@ -48,7 +48,7 @@ const AddressBook = ({ onClick }: Props) => {
   }
 
   return (
-    <Grid gap={12}>
+    <Grid gap={24}>
       <Button variant="dashed" onClick={() => handleOpen()}>
         {t("Add New Address")}
       </Button>
