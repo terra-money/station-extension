@@ -18,15 +18,11 @@ const NetworkSetting = () => {
   const networks = useNetwork()
   const navigate = useNavigate()
 
-  const list = Object.keys(customLCDs ?? {}).map((chainID) => {
-    const { name, icon } = networks[chainID]
-    return {
-      name,
-      chainID,
-      chain: { icon, label: name },
-      lcd: customLCDs[chainID],
-    }
+  const list = Object.entries(customLCDs ?? {}).map(([chainID, lcd]) => {
+    const { name = "", icon = "" } = networks?.[chainID] ?? {}
+    return { name, chainID, chain: { icon, label: name }, lcd }
   })
+
   if (!networkOptions) return null
 
   return (
