@@ -99,7 +99,11 @@ const Token = () => {
     goToStep(4)
   }
 
-  if (!recipient) return null
+  if (!recipient) {
+    goToStep(1)
+    return null
+  }
+
   return (
     <>
       <InputInLine
