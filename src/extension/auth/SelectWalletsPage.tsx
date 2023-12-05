@@ -1,6 +1,6 @@
 import ExtensionPage from "extension/components/ExtensionPage"
 import { useTranslation } from "react-i18next"
-import { FlexColumn, NavButton, WalletList } from "station-ui"
+import { FlexColumn, NavButton, WalletList } from "@terra-money/station-ui"
 import styles from "./SelectWallets.module.scss"
 import { useAuth } from "auth"
 import { truncate } from "@terra-money/terra-utils"
@@ -26,6 +26,10 @@ export default function SelectWalletsPage() {
               addressFromWords(connectedWallet?.words["330"] ?? "", "terra"),
               [11, 6]
             ),
+            copyValue: addressFromWords(
+              connectedWallet?.words["330"] ?? "",
+              "terra"
+            ),
             settingsOnClick: () =>
               navigate(`/manage-wallet/manage/${connectedWallet?.name ?? ""}`),
           }}
@@ -39,6 +43,10 @@ export default function SelectWalletsPage() {
                   : addressFromWords(wallet.words["330"], "terra"),
                 [11, 6]
               ),
+              copyValue:
+                "address" in wallet
+                  ? wallet.address
+                  : addressFromWords(wallet.words["330"], "terra"),
               onClick: () => {
                 connect(wallet.name)
                 navigate("/")

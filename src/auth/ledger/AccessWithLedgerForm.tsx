@@ -21,7 +21,7 @@ import {
   SectionHeader,
   FlexColumn,
   Flex,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import CreatedWallet from "auth/modules/create/CreatedWallet"
 import { isPasswordValid, passwordExists } from "auth/scripts/keystore"
 

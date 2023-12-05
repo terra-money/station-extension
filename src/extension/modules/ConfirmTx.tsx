@@ -30,7 +30,7 @@ import {
   Input,
   InputWrapper,
   SubmitButton,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import styles from "./ConfirmTx.module.scss"
 import {
   getStoredPassword,

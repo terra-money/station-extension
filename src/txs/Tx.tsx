@@ -47,7 +47,7 @@ import {
   Input,
   InputWrapper,
   SubmitButton,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 

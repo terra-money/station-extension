@@ -5,7 +5,7 @@ import {
   Button,
   InputWrapper,
   Input,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { useSend } from "./SendContext"
 import { truncate } from "@terra-money/terra-utils"
 import validate from "txs/validate"
@@ -54,7 +54,7 @@ const Submit = () => {
         tokenIcon={assetInfo.tokenImg}
         symbol={assetInfo.symbol}
         currencySymbol={currency.symbol}
-        price={assetInfo.price ?? 0}
+        price={assetInfo?.price}
         formState={formState}
       />
       <TokenSingleChainListItem {...assetInfo} />

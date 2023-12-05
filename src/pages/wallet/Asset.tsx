@@ -19,7 +19,6 @@ export interface Props extends TokenItem, QueryState {
   hideActions?: boolean
   chains: string[]
   id: string
-  coins: CoinBalance[]
   onClick?: () => void
 }
 
