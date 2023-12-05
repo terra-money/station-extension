@@ -1,4 +1,8 @@
-import { Grid, WalletSelectableListItem, SectionHeader } from "@terra-money/station-ui"
+import {
+  Grid,
+  WalletSelectableListItem,
+  SectionHeader,
+} from "@terra-money/station-ui"
 import { truncate } from "@terra-money/terra-utils"
 
 const AddressWalletList = ({
@@ -24,6 +28,7 @@ const AddressWalletList = ({
           settingsOnClick={onClick ? () => onClick?.(item) : undefined}
           label={item.name}
           subLabel={truncate(item.recipient, [11, 6])}
+
         />
       ))}
     </Grid>

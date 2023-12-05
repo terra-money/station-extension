@@ -3,7 +3,6 @@ import { Read } from "components/token"
 import { combineState } from "data/query"
 import { WithFetching } from "components/feedback"
 import { useMemo } from "react"
-
 import styles from "./Asset.module.scss"
 import { TokenListItem } from "@terra-money/station-ui"
 import { useBankBalance } from "data/queries/bank"
