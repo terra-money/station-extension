@@ -43,7 +43,7 @@ export const WalletButtonList = ({
   )
 }
 
-const OtherWallets = ({ tab, onClick }: Props) => {
+const MyWallets = ({ tab, onClick }: Props) => {
   const { list: addressList } = useAddressBook()
   const { wallets, connectedWallet } = useAuth()
 
@@ -114,4 +114,4 @@ const OtherWallets = ({ tab, onClick }: Props) => {
   )
 }
 
-export default OtherWallets
+export default MyWallets
