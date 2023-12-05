@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Button, Grid, Tabs } from "@terra-money/station-ui"
 import { useNavigate } from "react-router-dom"
 import MyWallets from "pages/wallet/SendPage/Components/MyWallets"
-import AddressWalletList from "./AddressBookWalletList"
+import AddressWalletList from "./AddressWalletList"
 
 interface Props {
   onClick?: (item: AddressBook) => void
