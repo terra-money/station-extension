@@ -6,7 +6,7 @@ import {
   Button,
   RoundedButton,
   Banner,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { useMemo, useState } from "react"
 import { SwapAssetExtra, SwapState } from "data/queries/swap/types"
 import { useSwap } from "./SwapContext"
@@ -82,7 +82,6 @@ const SwapForm = () => {
         setValue("route", await getBestRoute(getValues()))
         setValue("msgs", await getMsgs(getValues()))
       } catch (err: any) {
-        console.log("ERROR HERE", err)
         setError(err?.message ?? "Unknown error")
       }
     }

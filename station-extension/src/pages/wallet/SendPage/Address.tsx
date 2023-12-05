@@ -8,7 +8,7 @@ import {
   InputInLine,
   Tabs,
   Button,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { WalletButtonList } from "./Components/OtherWallets"
 import OtherWallets from "./Components/OtherWallets"
 import validate from "txs/validate"
@@ -18,17 +18,17 @@ import { useTranslation } from "react-i18next"
 
 const Address = () => {
   const { form, goToStep, getWalletName, networks } = useSend()
-  const { state } = useLocation()
+  // const { state } = useLocation()
   const { recipients } = useRecentRecipients()
   const { register, setValue, formState, watch, trigger } = form
   const { errors } = formState
   const { recipient } = watch()
   const { t } = useTranslation()
 
-  useEffect(() => {
-    // Handle routing from asset-specific page
-    setValue("asset", state?.denom)
-  })
+  // useEffect(() => {
+  //   // Handle routing from asset-specific page
+  //   setValue("asset", state?.denom)
+  // })
 
   const [tab, setTab] = useState("wallets")
 

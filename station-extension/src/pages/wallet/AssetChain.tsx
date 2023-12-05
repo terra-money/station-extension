@@ -2,7 +2,7 @@ import { Read } from "components/token"
 import { useNetwork, useNetworkName } from "data/wallet"
 import styles from "./AssetChain.module.scss"
 import { useNetworks } from "app/InitNetworks"
-import { TokenSingleChainListItem } from "station-ui"
+import { TokenSingleChainListItem } from "@terra-money/station-ui"
 import { useNativeDenoms } from "data/token"
 
 export interface Props {
