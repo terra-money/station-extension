@@ -57,7 +57,7 @@
 }
 
 .full__height {
-  height: 90vh; // room for header
+  height: 100vh; // room for header
 
   @media screen and (max-width: 600px) {
     padding-bottom: 0;
