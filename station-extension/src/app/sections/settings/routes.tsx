@@ -110,7 +110,7 @@ export const useSettingsRoutes = () => {
     myWallet: {
       route: "address-book/my-addresses",
       element: <WalletAddresses />,
-      title: t("New Address Entry"),
+      title: t("My Addresses"),
     },
   }
   const home = {

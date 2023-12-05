@@ -8,7 +8,7 @@ import {
   SummaryHeader,
   Grid,
 } from "@terra-money/station-ui"
-import AddressBookWalletList from "./AddressBookWalletList"
+import AddressBookWalletList from "./AddressWalletList"
 import style from "./AddressBook.module.scss"
 
 const ConfirmDelete = () => {
