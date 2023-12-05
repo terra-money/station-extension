@@ -7,9 +7,10 @@ import { useCurrency } from "data/settings/Currency"
 import { Read, TokenIcon } from "components/token"
 import { useTranslation } from "react-i18next"
 import styles from "./AssetPage.module.scss"
-import { SectionHeader } from "station-ui"
+import { SectionHeader } from "@terra-money/station-ui"
 import VestingCard from "./VestingCard"
 import AssetChain from "./AssetChain"
+import { decode } from "js-base64"
 import { useMemo } from "react"
 
 const AssetPage = () => {
@@ -19,7 +20,7 @@ const AssetPage = () => {
   const readNativeDenom = useNativeDenoms()
   const { t } = useTranslation()
   const params = useParams()
-  const routeDenom = params.denom ?? "uluna"
+  const routeDenom = params.denom ? decode(params.denom) : "uluna"
   const [chain, denom] = routeDenom.includes("*")
     ? routeDenom.split("*")
     : [params.chain, routeDenom]

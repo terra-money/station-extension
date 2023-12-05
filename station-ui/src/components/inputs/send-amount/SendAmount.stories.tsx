@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form"
 import type { Meta, StoryObj } from "@storybook/react"
 import SendAmount, { SendAmountProps } from "./SendAmount"
 import { tokensBySymbol, tokenPrices } from "../asset-selector/fakedata"
-import { input, toInput } from "./validate"
+// import { input, toInput } from "./validate"
 
 const meta: Meta<SendAmountProps> = {
   title: "Components/Inputs/Send Amount/Stories",
@@ -31,11 +31,11 @@ export const Example: StoryObj<SendAmountProps> = {
             {...register("tokenAmount", {
               required: true,
               valueAsNumber: true,
-              validate: input(
-                toInput(100000000, 6),
-                8,
-                "Token amount",
-              ),
+              // validate: input(
+              //   toInput(100000000, 6),
+              //   8,
+              //   "Token amount",
+              // ),
             })}
           }
           tokenAmount={watch("tokenAmount") || 0}

@@ -12,7 +12,7 @@ import {
   SectionHeader,
   InputInLine,
   TokenSingleChainListItem,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { useTranslation } from "react-i18next"
 import { useCurrency } from "data/settings/Currency"
 import WithSearchInput from "pages/custom/WithSearchInput"
@@ -20,15 +20,8 @@ import { Empty } from "components/feedback"
 import { has } from "utils/num"
 
 const Token = () => {
-  const {
-    form,
-    goToStep,
-    getWalletName,
-    balances,
-    assetList,
-    getIBCChannel,
-    networks,
-  } = useSend()
+  const { form, goToStep, getWalletName, assetList, getIBCChannel, networks } =
+    useSend()
   const { setValue, watch } = form
   const networkName = useNetworkName()
   const addresses = useInterchainAddresses()
@@ -39,17 +32,9 @@ const Token = () => {
 
   const tokens = useMemo(() => {
     return assetList.reduce((acc, a) => {
-      if (!destination) return acc
-
       a.chains.forEach((tokenChain: string) => {
-        const balance = parseInt(
-          balances.find((b) => b.chain === tokenChain && b.denom === a.denom)
-            ?.amount ?? "0"
-        )
-        // if (a.denom !== asset) return acc // asset previously selected from asset specific send button
-
-        if (!has(balance)) return acc
-
+        if (acc.some((asset: AssetType) => asset.id === a.id)) return acc
+        if (!has(a.balance)) return acc
         const isNative = tokenChain === destination
         const channel = getIBCChannel({
           from: tokenChain,
@@ -60,7 +45,7 @@ const Token = () => {
         })
 
         if (isNative || channel) {
-          const balVal = balance * a.price
+          const balVal = a.balance * a.price
           const senderAddress = addresses?.[tokenChain]
           const item = {
             ...a,
@@ -68,11 +53,11 @@ const Token = () => {
             tokenImg: a.icon,
             balVal,
             senderAddress,
-            balance,
+            balance: a.balance,
             channel,
             tokenChain,
             amountNode: (
-              <Read amount={balance} fixed={2} decimals={a.decimals} />
+              <Read amount={a.balance} fixed={2} decimals={a.decimals} />
             ),
             priceNode: balVal ? (
               <>
@@ -97,7 +82,6 @@ const Token = () => {
     }, [] as AssetType[])
   }, [
     addresses,
-    balances,
     assetList,
     currency,
     destination,
@@ -143,13 +127,13 @@ const Token = () => {
             <>
               {filtered.length === 0 && <Empty />}
               {filtered.map((asset: AssetType) => (
-                <TokenSingleChainListItem
-                  key={`${asset.denom}*${asset.tokenChain}`}
-                  {...asset}
-                  onClick={() => {
-                    onClick(asset)
-                  }}
-                />
+                <>
+                  <TokenSingleChainListItem
+                    key={asset.id}
+                    {...asset}
+                    onClick={() => onClick(asset)}
+                  />
+                </>
               ))}
             </>
           )
