@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 import { addressFromWords } from "utils/bech32"
-import { Button, FlexColumn, SummaryHeader } from "station-ui"
+import { Button, FlexColumn, SummaryHeader } from "@terra-money/station-ui"
 
 interface Props extends SingleWallet {
   onConfirm?: () => void
