@@ -54,24 +54,6 @@ const AssetList = () => {
   )
 
   const assets = useMemo(() => {
-    const filtered = list
-      .filter((a) => (onlyShowWhitelist ? a.whitelisted : true))
-      .filter((a) =>
-        filterChain !== "all" ? a.chains.includes(filterChain) : true
-      )
-
-    const reduced = filtered.reduce((acc, obj) => {
-      if (!acc.some((token: any) => token.symbol === obj.symbol)) {
-        acc.push(obj)
-      } else {
-        const relatedToken = (token: any) => token.symbol === obj.symbol
-        const index = acc.findIndex(relatedToken)
-        acc[index].balance = Number(acc[index].balance) + Number(obj.balance)
-        acc[index].chains.push(...obj.chains)
-      }
-      return acc
-    }, [])
-
     const baseAssets = Object.keys(network).reduce((acc, chain) => {
       const { symbol, decimals } = readNativeDenom(
         network[chain].baseAsset,
@@ -90,6 +72,28 @@ const AssetList = () => {
       acc.push(token)
       return acc
     }, [] as any[])
+
+    const filtered = list
+      .filter((a) => (onlyShowWhitelist ? a.whitelisted : true))
+      .filter((a) =>
+        filterChain !== "all" ? a.chains.includes(filterChain) : true
+      )
+
+    const reduced = filtered.reduce((acc, obj) => {
+      const relatedToken = (token: any) => token.symbol === obj.symbol
+      if (!acc.some((token: any) => token.symbol === obj.symbol)) {
+        const baseIndex = baseAssets.findIndex(relatedToken)
+        acc.push({
+          ...obj,
+          nativeChain: baseAssets[baseIndex]?.chain || obj.id.split("*")?.[0],
+        })
+      } else {
+        const index = acc.findIndex(relatedToken)
+        acc[index].balance = Number(acc[index].balance) + Number(obj.balance)
+        acc[index].chains.push(...obj.chains)
+      }
+      return acc
+    }, [])
 
     const visible = reduced
       .filter(
@@ -111,16 +115,15 @@ const AssetList = () => {
     alwaysVisibleDenoms,
   ])
 
-  const renderAsset = ({ denom, decimals, id, ...item }: any) => {
+  const renderAsset = ({ denom, decimals, id, nativeChain, ...item }: any) => {
     const encodedDenomPath = encode(denom)
-    const chainID = id.split("*")?.[0]
     return (
       <Asset
         {...item}
         denom={denom}
         decimals={decimals}
-        key={item.id}
-        onClick={() => navigate(`asset/${chainID}/${encodedDenomPath}`)}
+        key={id}
+        onClick={() => navigate(`asset/${nativeChain}/${encodedDenomPath}`)}
       />
     )
   }
