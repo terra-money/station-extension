@@ -9,9 +9,9 @@ import {
   useCustomTokensCW20,
   useCustomTokensNative,
 } from "data/settings/CustomTokens"
-import { useIsWalletEmpty } from "data/queries/bank"
 import { useNativeDenoms, useParsedAssetList } from "data/token"
 import FilterListIcon from "@mui/icons-material/FilterList"
+import { useIsWalletEmpty } from "data/queries/bank"
 import { useTokenFilters } from "utils/localStorage"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
@@ -60,8 +60,19 @@ const AssetList = () => {
         filterChain !== "all" ? a.chains.includes(filterChain) : true
       )
 
+    const reduced = filtered.reduce((acc, obj) => {
+      if (!acc.some((token: any) => token.symbol === obj.symbol)) {
+        acc.push(obj)
+      } else {
+        const relatedToken = (token: any) => token.symbol === obj.symbol
+        const index = acc.findIndex(relatedToken)
+        acc[index].balance = Number(acc[index].balance) + Number(obj.balance)
+        acc[index].chains.push(...obj.chains)
+      }
+      return acc
+    }, [])
+
     const baseAssets = Object.keys(network).reduce((acc, chain) => {
-      if (acc.includes(chain)) return acc
       const { symbol, decimals } = readNativeDenom(
         network[chain].baseAsset,
         chain
@@ -80,7 +91,7 @@ const AssetList = () => {
       return acc
     }, [] as any[])
 
-    const visible = filtered
+    const visible = reduced
       .filter(
         (a) =>
           a.price * toInput(a.balance) >= 1 || alwaysVisibleDenoms.has(a.denom)
@@ -89,7 +100,7 @@ const AssetList = () => {
         (a, b) => b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
       )
 
-    const lowBal = filtered.filter((a) => !visible.includes(a))
+    const lowBal = reduced.filter((a) => !visible.includes(a))
     return { visible, lowBal, baseAssets }
   }, [
     list,
