@@ -6,7 +6,7 @@ import { useMemo } from "react"
 
 import styles from "./Asset.module.scss"
 import { TokenListItem } from "@terra-money/station-ui"
-import { CoinBalance, useBankBalance } from "data/queries/bank"
+import { useBankBalance } from "data/queries/bank"
 import { useNativeDenoms } from "data/token"
 import { useNetwork } from "data/wallet"
 
@@ -41,7 +41,6 @@ const Asset = (props: Props) => {
     ...state
   } = props
   const { t } = useTranslation()
-  const currency = useCurrency()
   const coins = useBankBalance()
   const readNativeDenom = useNativeDenoms()
   const network = useNetwork()
