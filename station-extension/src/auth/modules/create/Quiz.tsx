@@ -7,7 +7,13 @@ import shuffle from "utils/shuffle"
 import { Form, FormItem } from "components/form"
 import { useCreateWallet } from "./CreateWalletWizard"
 import styles from "./Quiz.module.scss"
-import { Banner, Button, CheckedButton, Flex, SubmitButton } from "station-ui"
+import {
+  Banner,
+  Button,
+  CheckedButton,
+  Flex,
+  SubmitButton,
+} from "@terra-money/station-ui"
 import { FlexColumn } from "components/layout"
 
 export interface QuizItem {

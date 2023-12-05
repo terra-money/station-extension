@@ -8,12 +8,12 @@ import { sortCoins } from "utils/coin"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { useCurrency } from "data/settings/Currency"
 import { useThemeAnimation } from "data/settings/Theme"
-import { Flex } from "station-ui"
+import { Flex } from "@terra-money/station-ui"
 import { Form, Submit } from "components/form"
 import { useCreateWallet } from "./CreateWalletWizard"
 import styles from "./SelectAddress.module.scss"
 import { useNativeDenoms } from "data/token"
-import { Banner, CheckedButton, FlexColumn } from "station-ui"
+import { Banner, CheckedButton, FlexColumn } from "@terra-money/station-ui"
 
 const SelectAddress = () => {
   const { t } = useTranslation()

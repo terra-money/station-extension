@@ -6,7 +6,7 @@ import {
   SummaryTable,
   SectionHeader,
   ActivityListItem,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { useSend } from "./SendContext"
 import { truncate } from "@terra-money/terra-utils"
 import { useCurrency } from "data/settings/Currency"
@@ -127,13 +127,12 @@ const Confirm = () => {
     [assetInfo, recipient, chain, getICSContract, destination, input, txType]
   )
 
-  if (!input || !assetInfo?.price || !destination || !chain || !recipient)
-    return null
+  if (!(input && destination && chain && recipient)) return null
   const msg = `${input} ${assetInfo?.symbol}`
-  const value = input * assetInfo?.price
+  const value = assetInfo?.price ? (input * assetInfo?.price).toFixed(2) : '—'
 
   const rows = [
-    { label: t("Total Value"), value: value.toFixed(2) },
+    { label: t("Total Value"), value },
     {
       label: t("Token Sent"),
       value: msg,
@@ -146,7 +145,7 @@ const Confirm = () => {
       <SendHeader
         heading={t("Sending")}
         label={`${input} ${assetInfo?.symbol}`}
-        subLabel={currency.symbol + " " + value.toFixed(2) ?? "—"}
+        subLabel={currency.symbol + " " + value}
       />
       <SectionHeader withLine title={t("Send")} />
       <Timeline

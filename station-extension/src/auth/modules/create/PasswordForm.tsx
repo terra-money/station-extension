@@ -12,7 +12,7 @@ import {
   Flex,
   Button,
   Checkbox,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import styles from "./CreateWalletForm.module.scss"
 import {
   getStoredPassword,
