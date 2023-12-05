@@ -1,6 +1,10 @@
 import { useNetworkOptions, useNetworkState } from "data/wallet"
 import SettingsSelector from "components/layout/SettingsSelector"
-import { NavButton, SectionHeader, AddressSelectableListItem } from "station-ui"
+import {
+  NavButton,
+  SectionHeader,
+  AddressSelectableListItem,
+} from "@terra-money/station-ui"
 import { FlexColumn } from "components/layout"
 import AddIcon from "@mui/icons-material/Add"
 import { useCustomLCDs } from "utils/localStorage"
