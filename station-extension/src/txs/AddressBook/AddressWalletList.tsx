@@ -22,11 +22,13 @@ const AddressWalletList = ({
         <WalletSelectableListItem
           copyValue={item.recipient}
           walletName={item.name}
+          active
           emoji={item.icon}
           key={item.name}
           settingsOnClick={onClick ? () => onClick?.(item) : undefined}
           label={item.name}
-          subLabel={truncate(item.recipient)}
+          subLabel={truncate(item.recipient, [11, 6])}
+
         />
       ))}
     </Grid>
