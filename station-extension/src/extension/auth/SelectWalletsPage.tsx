@@ -1,6 +1,6 @@
 import ExtensionPage from "extension/components/ExtensionPage"
 import { useTranslation } from "react-i18next"
-import { FlexColumn, NavButton, WalletList } from "station-ui"
+import { FlexColumn, NavButton, WalletList } from "@terra-money/station-ui"
 import styles from "./SelectWallets.module.scss"
 import { useAuth } from "auth"
 import { truncate } from "@terra-money/terra-utils"
