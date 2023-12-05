@@ -54,7 +54,7 @@ const Submit = () => {
         tokenIcon={assetInfo.tokenImg}
         symbol={assetInfo.symbol}
         currencySymbol={currency.symbol}
-        price={assetInfo.price ?? 0}
+        price={assetInfo?.price}
         formState={formState}
       />
       <TokenSingleChainListItem {...assetInfo} />
