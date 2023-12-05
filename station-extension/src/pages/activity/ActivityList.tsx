@@ -1,4 +1,8 @@
-import { LoadingCircular, SectionHeader, SubmitButton } from "station-ui"
+import {
+  LoadingCircular,
+  SectionHeader,
+  SubmitButton,
+} from "@terra-money/station-ui"
 import { useInitialAccountInfo } from "data/queries/accountInfo"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import styles from "./ActivityList.module.scss"

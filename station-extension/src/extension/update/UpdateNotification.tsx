@@ -4,7 +4,7 @@ import browser from "webextension-polyfill"
 import styles from "./UpdateNotification.module.scss"
 import { useTranslation } from "react-i18next"
 import InfoIcon from "@mui/icons-material/Info"
-import { Flex } from "station-ui"
+import { Flex } from "@terra-money/station-ui"
 
 const useIsUpdateAvailable = () => {
   return useQuery(

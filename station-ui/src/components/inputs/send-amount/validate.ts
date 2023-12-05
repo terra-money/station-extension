@@ -1,9 +1,9 @@
 import BigNumber from "bignumber.js"
-import { readAmount } from "@terra-money/terra-utils"
+// import { readAmount } from "@terra-money/terra-utils"
 import { always } from "ramda"
 
-export const toInput = (amount: BigNumber.Value, decimals = 6) =>
-  new BigNumber(readAmount(amount, { decimals })).toNumber()
+// export const toInput = (amount: BigNumber.Value, decimals = 6) =>
+//   new BigNumber(readAmount(amount, { decimals })).toNumber()
 
 export const lessThan = (max: number, label = "Amount", optional = false) => {
   return (value = 0) => {

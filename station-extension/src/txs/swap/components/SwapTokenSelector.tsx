@@ -4,7 +4,7 @@ import {
   Dropdown,
   FlexColumn,
   TokenSingleChainListItem,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import WithSearchInput from "pages/custom/WithSearchInput"
 import { SwapAssetExtra } from "data/queries/swap/types"
 import { useTranslation } from "react-i18next"

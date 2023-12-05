@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes } from "react"
 import { useTranslation } from "react-i18next"
-import { Button } from "station-ui"
-import { LoadingCircular } from "station-ui"
+import { Button } from "@terra-money/station-ui"
+import { LoadingCircular } from "@terra-money/station-ui"
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   submitting?: boolean
