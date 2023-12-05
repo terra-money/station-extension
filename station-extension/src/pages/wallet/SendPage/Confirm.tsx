@@ -3,7 +3,6 @@ import {
   SendHeader,
   Timeline,
   Form,
-  SummaryTable,
   SectionHeader,
   ActivityListItem,
 } from "@terra-money/station-ui"
@@ -173,7 +172,6 @@ const Confirm = () => {
         extra={truncate(recipient)}
         value={getWalletName(recipient)}
       />
-      <SummaryTable rows={rows} />
     </>
   )
 
@@ -198,9 +196,10 @@ const Confirm = () => {
 
   return (
     <Tx {...tx}>
-      {({ submit }) => (
+      {({ submit, fee }) => (
         <Form onSubmit={handleSubmit(submit.fn)}>
           <Info />
+          {fee.render(rows)}
           {submit.button}
         </Form>
       )}

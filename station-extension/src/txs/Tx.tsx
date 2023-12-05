@@ -14,7 +14,6 @@ import { isDenom } from "@terra-money/terra-utils"
 import { Coin, Coins, CreateTxOptions } from "@terra-money/feather.js"
 import { Fee } from "@terra-money/feather.js"
 
-import { Contents } from "types/components"
 import { has } from "utils/num"
 import { getErrorMessage } from "utils/error"
 import { getLocalSetting, SettingKey } from "utils/localStorage"
@@ -85,7 +84,9 @@ type RenderMax = (onClick?: (max: Amount) => void) => ReactNode
 interface RenderProps<TxValues> {
   max: { amount: Amount; render: RenderMax; reset: () => void }
   fee: {
-    render: (descriptions?: Contents) => ReactNode
+    render: (
+      descriptions?: { label: ReactNode; value: ReactNode }[]
+    ) => ReactNode
     amount: string
     denom: string
     decimals: number | undefined
@@ -242,6 +243,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
     shouldStorePassword()
   )
   const [incorrect, setIncorrect] = useState<string>()
+  const [feesReady, setFeesReady] = useState(false)
 
   // autofill stored password if exists
   useEffect(() => {
@@ -274,6 +276,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
       if (disabled) throw new Error(disabled)
       if (
         !estimatedGas ||
+        !setFeesReady ||
         (!has(gasAmount) && networks[chain]?.gasPrices[gasDenom])
       )
         throw new Error("Fee is not estimated")
@@ -307,8 +310,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
       onPost?.()
     } catch (error) {
-      if (error instanceof Error) setIncorrect(error.message)
-      else setError(error as Error)
+      setError(error as Error)
     }
 
     setSubmitting(false)
@@ -347,13 +349,17 @@ function Tx<TxValues>(props: Props<TxValues>) {
     )
   }
 
-  const renderFee = (descriptions?: Contents) => {
+  const renderFee = (
+    descriptions?: { label: ReactNode; value: ReactNode }[]
+  ) => {
     return (
       <DisplayFees
         chainID={chain}
         gas={estimatedGas}
         gasDenom={gasDenom}
         setGasDenom={setGasDenom}
+        descriptions={descriptions}
+        onReady={() => setFeesReady(true)}
       />
     )
   }
@@ -408,7 +414,9 @@ function Tx<TxValues>(props: Props<TxValues>) {
             variant="primary"
             className={styles.submit}
             icon={<CheckCircleIcon />}
-            disabled={!estimatedGas || !!disabled || !!walletError}
+            disabled={
+              !estimatedGas || !!disabled || !!walletError || !feesReady
+            }
             loading={submitting}
             label={(submitting ? submittingLabel : disabled) || t("Submit")}
           />
