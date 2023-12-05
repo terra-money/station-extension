@@ -7,7 +7,7 @@ import {
   Button,
   SummaryHeader,
   Grid,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import AddressBookWalletList from "./AddressBookWalletList"
 import style from "./AddressBook.module.scss"
 

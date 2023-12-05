@@ -1,4 +1,4 @@
-import { Button } from "station-ui"
+import { Button } from "@terra-money/station-ui"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { useTranslation } from "react-i18next"
 

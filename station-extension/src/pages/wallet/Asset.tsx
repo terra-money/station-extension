@@ -6,7 +6,7 @@ import { WithFetching } from "components/feedback"
 import { useMemo } from "react"
 
 import styles from "./Asset.module.scss"
-import { TokenListItem } from "station-ui"
+import { TokenListItem } from "@terra-money/station-ui"
 import { CoinBalance, useBankBalance } from "data/queries/bank"
 import { useNativeDenoms } from "data/token"
 import { useNetwork } from "data/wallet"
