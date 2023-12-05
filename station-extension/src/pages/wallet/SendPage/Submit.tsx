@@ -21,7 +21,12 @@ const Submit = () => {
   const { assetInfo, recipient, input } = watch()
   const currency = useCurrency()
   const { t } = useTranslation()
-  if (!(assetInfo && recipient)) return null
+
+  if (!(assetInfo && recipient)) {
+    goToStep(1)
+    return null
+  }
+
   return (
     <>
       <InputInLine
