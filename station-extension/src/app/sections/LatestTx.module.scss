@@ -29,6 +29,25 @@
   }
 }
 
+.result__container {
+  padding-top: 2rem;
+}
+
+.loading__container {
+  padding-top: 2rem;
+
+  img {
+    margin: 0 auto;
+  }
+
+  h3 {
+    color: var(--token-light-white);
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+  }
+}
+
 /* modal */
 .details {
   background-color: var(--bg-muted);
