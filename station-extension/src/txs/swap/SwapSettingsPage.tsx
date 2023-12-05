@@ -7,7 +7,7 @@ import {
   ButtonInlineWrapper,
   Form,
   SubmitButton,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { useSwap } from "./SwapContext"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"

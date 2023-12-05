@@ -11,7 +11,7 @@ import { AccAddress, TxInfo, Event } from "@terra-money/feather.js"
  * @param {Record} addresses Object containing user wallet addresses by chain ID.
  * @return {ReturnMsg[]} Array of objects containing msg type and corresponding human-readable text.
  */
-export const useMessages = (
+export const getCanonicalMsg = (
   txInfo: TxInfo,
   addresses: Record<string, string>
 ) => {

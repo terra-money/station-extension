@@ -12,7 +12,7 @@ import {
   SectionHeader,
   InputInLine,
   TokenSingleChainListItem,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { useTranslation } from "react-i18next"
 import { useCurrency } from "data/settings/Currency"
 import WithSearchInput from "pages/custom/WithSearchInput"

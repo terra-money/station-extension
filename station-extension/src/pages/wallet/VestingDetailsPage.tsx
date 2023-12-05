@@ -1,4 +1,4 @@
-import { Grid, SectionHeader, SummaryTable } from "station-ui"
+import { Grid, SectionHeader, SummaryTable } from "@terra-money/station-ui"
 import VestingCard from "./VestingCard"
 import { parseVestingSchedule, useAccount } from "data/queries/vesting"
 import styles from "./VestingDetailsPage.module.scss"
