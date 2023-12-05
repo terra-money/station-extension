@@ -30,7 +30,7 @@ export const useWalletRoutes = (): IRoute[] => {
     },
     {
       path: "/receive/:address",
-      backPath: "receive",
+      backPath: "/receive",
       element: <AddressChain />,
       title: t("Copy Address"),
     },
