@@ -37,7 +37,7 @@ enum TxType {
 }
 
 const Confirm = () => {
-  const { form, networks, getWalletName, getICSContract } = useSend()
+  const { form, networks, getWalletName, getICSContract, goToStep } = useSend()
   const { t } = useTranslation()
   const currency = useCurrency()
   const { handleSubmit, setValue, trigger } = form
@@ -127,13 +127,16 @@ const Confirm = () => {
     [assetInfo, recipient, chain, getICSContract, destination, input, txType]
   )
 
-  if (!input || !assetInfo?.price || !destination || !chain || !recipient)
+  if (!(input && destination && chain && recipient)) {
+    goToStep(1)
     return null
+  }
+
   const msg = `${input} ${assetInfo?.symbol}`
-  const value = input * assetInfo?.price
+  const value = assetInfo?.price ? (input * assetInfo?.price).toFixed(2) : "—"
 
   const rows = [
-    { label: t("Total Value"), value: value.toFixed(2) },
+    { label: t("Total Value"), value },
     {
       label: t("Token Sent"),
       value: msg,
@@ -146,7 +149,7 @@ const Confirm = () => {
       <SendHeader
         heading={t("Sending")}
         label={`${input} ${assetInfo?.symbol}`}
-        subLabel={currency.symbol + " " + value.toFixed(2) ?? "—"}
+        subLabel={currency.symbol + " " + value}
       />
       <SectionHeader withLine title={t("Send")} />
       <Timeline

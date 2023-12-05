@@ -9,10 +9,8 @@ import {
   InputWrapper,
   Input,
   SubmitButton,
-  ModalButton,
   ButtonInlineWrapper,
 } from "@terra-money/station-ui"
-import ConfirmDelete from "./ConfirmDelete"
 import DeleteButton from "components/form/DeleteButton"
 import { EmojiButton } from "components/form"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -20,14 +18,14 @@ import { useLocation, useNavigate } from "react-router-dom"
 interface Props {
   item?: AddressBook
   icon?: string
-  index?: number // exsisting item index for edit/remove
+  index?: number
 }
 
 const AddressBookForm = (props: Props) => {
   const { t } = useTranslation()
   const { edit, add, list } = useAddressBook()
   const { state } = useLocation()
-  const index = state?.walletIndex ?? props.index
+  const index = state?.index ?? props.index
   const navigate = useNavigate()
 
   /* form */
@@ -93,12 +91,11 @@ const AddressBookForm = (props: Props) => {
       </InputWrapper>
       <ButtonInlineWrapper>
         {index !== undefined && (
-          <ModalButton
-            minimal
-            renderButton={(open) => <DeleteButton onClick={open} />}
-          >
-            <ConfirmDelete index={index} />
-          </ModalButton>
+          <DeleteButton
+            onClick={() =>
+              navigate("/preferences/address-book/delete", { state: { index } })
+            }
+          />
         )}
         <SubmitButton label={t("Save")} />
       </ButtonInlineWrapper>

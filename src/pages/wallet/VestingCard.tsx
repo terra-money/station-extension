@@ -5,7 +5,6 @@ import { Read } from "components/token"
 import { VestingCard, TokenSingleChainListItem } from "@terra-money/station-ui"
 import { useExchangeRates } from "data/queries/coingecko"
 import { toInput } from "txs/utils"
-import { useCurrency } from "data/settings/Currency"
 import { useMemo } from "react"
 
 const Vesting = () => {
@@ -18,7 +17,6 @@ const Vesting = () => {
     decimals,
     symbol,
   } = readNativeDenom("uluna", "phoenix-1")
-  const currency = useCurrency()
 
   const schedule = useMemo(() => {
     if (!account?.base_vesting_account) return
@@ -48,8 +46,8 @@ const Vesting = () => {
         }
         priceNode={
           <>
-            {currency.symbol + " "}
             <Read
+              currency
               amount={
                 Number(schedule.amount.vested) * (prices?.["uluna"]?.price ?? 0)
               }

@@ -66,10 +66,12 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
 
   /* store password */
   const [rememberPassword, setStorePassword] = useState(shouldStorePassword())
+  const [showPasswordInput, setShowPasswordInput] = useState(false)
 
   useEffect(() => {
     getStoredPassword().then((password) => {
       setValue("password", password ?? "")
+      setShowPasswordInput(!password)
     })
   }, [setValue])
 
@@ -269,7 +271,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
           {error && <Banner variant="error" title={error} />}
 
           <Form onSubmit={handleSubmit(submit)}>
-            {passwordRequired && (
+            {passwordRequired && showPasswordInput && !incorrect && (
               <>
                 <InputWrapper label={t("Password")} error={incorrect}>
                   <Input type="password" {...register("password")} autoFocus />

@@ -9,7 +9,7 @@ import {
   useCustomTokensCW20,
   useCustomTokensNative,
 } from "data/settings/CustomTokens"
-import { useBankBalance, useIsWalletEmpty } from "data/queries/bank"
+import { useIsWalletEmpty } from "data/queries/bank"
 import { useNativeDenoms, useParsedAssetList } from "data/token"
 import FilterListIcon from "@mui/icons-material/FilterList"
 import { useTokenFilters } from "utils/localStorage"
@@ -30,7 +30,6 @@ const AssetList = () => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
   const { onlyShowWhitelist, hideLowBal, toggleHideLowBal } = useTokenFilters()
-  const coins = useBankBalance()
   const readNativeDenom = useNativeDenoms()
   const native = useCustomTokensNative()
   const cw20 = useCustomTokensCW20()
@@ -110,7 +109,6 @@ const AssetList = () => {
         denom={denom}
         decimals={decimals}
         key={item.id}
-        coins={coins}
         onClick={() => navigate(`asset/${chainID}/${encodedDenomPath}`)}
       />
     )

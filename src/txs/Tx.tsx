@@ -244,12 +244,14 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const [rememberPassword, setRememberPassword] = useState(
     shouldStorePassword()
   )
+  const [showPasswordInput, setShowPasswordInput] = useState(false)
   const [incorrect, setIncorrect] = useState<string>()
 
   // autofill stored password if exists
   useEffect(() => {
     getStoredPassword().then((password) => {
       setPassword(password ?? "")
+      setShowPasswordInput(!password)
     })
   }, []) // eslint-disable-line
 
@@ -461,7 +463,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
       ) : (
         <Grid gap={12}>
           {failed && <Banner variant="error" title={failed} />}
-          {passwordRequired && (
+          {passwordRequired && showPasswordInput && !incorrect && (
             <>
               <InputWrapper label={t("Password")} error={incorrect}>
                 <Input
@@ -476,7 +478,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
               <InputWrapper>
                 <Checkbox
-                  label={t("Don't ask for password again")}
+                  label={t("Save password")}
                   checked={rememberPassword}
                   onChange={() => setRememberPassword((r) => !r)}
                 />
