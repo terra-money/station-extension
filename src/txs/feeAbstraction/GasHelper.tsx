@@ -164,7 +164,10 @@ export default function GasHelper({
                 image: readNativeDenom(denom, chainID).icon,
               })),
             ]}
-            onChange={(value) => setSwapDenom(value)}
+            onChange={(value) => {
+              setSwapDenom(value)
+              setError(null)
+            }}
             value={swapDenom}
           />
         </InputWrapper>

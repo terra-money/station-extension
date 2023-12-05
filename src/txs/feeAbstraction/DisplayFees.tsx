@@ -1,6 +1,6 @@
 import { useNetwork } from "auth/hooks/useNetwork"
 import { Select } from "components/form"
-import { useEffect } from "react"
+import { ReactNode, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { LoadingCircular, SummaryTable } from "@terra-money/station-ui"
 import styles from "./DisplayFees.module.scss"
@@ -20,11 +20,15 @@ export default function DisplayFees({
   gas,
   gasDenom,
   setGasDenom,
+  descriptions,
+  onReady,
 }: {
   chainID: string
   gas: number | undefined
   gasDenom: string
   setGasDenom: (gasDenom: string) => void
+  descriptions?: { label: ReactNode; value: ReactNode }[]
+  onReady: () => void
 }) {
   const chainsWithGas = useChainsWithGas()
   const availableGasDenoms = useAvailableGasDenoms(chainID, gas ?? 0)
@@ -41,6 +45,17 @@ export default function DisplayFees({
       setGasDenom(availableGasDenoms[0])
     }
   }, [availableGasDenoms]) // eslint-disable-line
+
+  /*useEffect(() => {
+    if (
+      gas &&
+      !isBalanceLoading &&
+      availableGasDenoms.length &&
+      chainsWithGas.includes(chainID)
+    ) {
+      onReady()
+    }
+  }, [gas, isBalanceLoading, availableGasDenoms, chainsWithGas, chainID])*/
 
   // gas is loading
   if (!gas)
@@ -69,15 +84,19 @@ export default function DisplayFees({
           gasPrice: gasPrices[gasDenom],
           onSuccess: () => {
             // refetch balances
-            queryClient.invalidateQueries(queryKey.bank.balances)
+            queryClient.invalidateQueries(queryKey.bank.balance)
           },
         }}
       />
     )
 
+  // if we are at this point fees are ready
+  onReady()
+
   return (
     <SummaryTable
       rows={[
+        ...(descriptions ?? []),
         {
           label: t("Gas"),
           value: gas,
