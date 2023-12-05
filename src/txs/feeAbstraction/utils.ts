@@ -1,4 +1,11 @@
-import { CreateTxOptions, Msg } from "@terra-money/feather.js"
+import {
+  Coin,
+  Coins,
+  CreateTxOptions,
+  Msg,
+  MsgExecuteContract,
+  MsgTransfer,
+} from "@terra-money/feather.js"
 import { useAuth } from "auth"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useNetwork } from "auth/hooks/useNetwork"
@@ -144,11 +151,26 @@ export function useSwapRoute({
         // TODO: multiple msgs swaps
         if (data.msgs.length > 1) throw new Error()
 
-        const chainID = data.msgs[0].chain_id
-        const msg = Msg.fromData({
-          "@type": data.msgs[0].msg_type_url,
-          ...JSON.parse(data.msgs[0].msg),
-        })
+        const chainID = data?.msgs?.[0].chain_id
+        const jsonMsg = JSON.parse(data?.msgs?.[0].msg)
+
+        const msg: Msg = jsonMsg.source_channel
+          ? new MsgTransfer(
+              "transfer",
+              jsonMsg.source_channel,
+              new Coin(jsonMsg.token?.denom ?? "", jsonMsg.token?.amount),
+              jsonMsg.sender,
+              jsonMsg.receiver,
+              undefined,
+              (Date.now() + 120 * 1000) * 1e6,
+              jsonMsg.memo
+            )
+          : new MsgExecuteContract(
+              jsonMsg.sender,
+              jsonMsg.contract,
+              jsonMsg.msg,
+              Coins.fromAmino(jsonMsg.funds)
+            )
 
         const gasAmount = await estimateGas(chainID, msg)
 
