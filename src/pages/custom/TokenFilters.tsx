@@ -1,4 +1,4 @@
-import { Checkbox } from "station-ui"
+import { Checkbox } from "@terra-money/station-ui"
 import { useTokenFilters } from "utils/localStorage"
 import { useTranslation } from "react-i18next"
 

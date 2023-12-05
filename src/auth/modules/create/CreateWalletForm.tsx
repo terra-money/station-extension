@@ -17,7 +17,7 @@ import {
   Tabs,
   FlexColumn,
   SubmitButton,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import styles from "./CreateWalletForm.module.scss"
 import { decrypt } from "auth/scripts/aes"
 

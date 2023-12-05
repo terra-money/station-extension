@@ -10,7 +10,7 @@ import {
   Input,
   SubmitButton,
   ButtonInlineWrapper,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import DeleteButton from "components/form/DeleteButton"
 import { EmojiButton } from "components/form"
 import { useLocation, useNavigate } from "react-router-dom"
