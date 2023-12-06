@@ -79,19 +79,7 @@ const AssetList = () => {
         filterChain !== "all" ? a.chains.includes(filterChain) : true
       )
 
-    const reduced = filtered.reduce((acc, obj) => {
-      const relatedToken = (token: any) => token.symbol === obj.symbol
-      if (!acc.some((token: any) => token.symbol === obj.symbol)) {
-        acc.push(obj)
-      } else {
-        const index = acc.findIndex(relatedToken)
-        acc[index].balance = Number(acc[index].balance) + Number(obj.balance)
-        acc[index].chains.push(...obj.chains)
-      }
-      return acc
-    }, [])
-
-    const visible = reduced
+    const visible = filtered
       .filter(
         (a: any) =>
           a.price * toInput(a.balance) >= 1 || alwaysVisibleDenoms.has(a.denom)
@@ -101,7 +89,7 @@ const AssetList = () => {
           b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
       )
 
-    const lowBal = reduced.filter((a: any) => !visible.includes(a))
+    const lowBal = filtered.filter((a: any) => !visible.includes(a))
     return { visible, lowBal, baseAssets }
   }, [
     list,
