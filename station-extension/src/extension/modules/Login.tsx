@@ -123,7 +123,7 @@ const Login = () => {
           </InputWrapper>
           <SubmitButton
             variant="secondary"
-            label={t("Sumbit")}
+            label={t("Submit")}
             loading={isSubmitting}
           />
         </form>
