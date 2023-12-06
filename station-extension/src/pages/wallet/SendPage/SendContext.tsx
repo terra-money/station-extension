@@ -27,7 +27,11 @@ const SendContext = ({ children }: PropsWithChildren<{}>) => {
   const goToStep = (step: number) => navigate(`/send/${step}`)
   const getWalletName = useGetWalletName()
   const balances = useBankBalance()
-  const assetList = useParsedAssetList()
+  const assetList = useParsedAssetList().map((item) => ({
+    ...item,
+    chains: [item.chains[0]],
+  })) // TODO: fixed parsed asset list
+
   const networks = useNetwork()
   const { getIBCChannel, getICSContract } = useIBCChannels()
 

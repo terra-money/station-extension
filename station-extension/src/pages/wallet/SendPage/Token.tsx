@@ -31,7 +31,6 @@ const Token = () => {
   const tokens = useMemo(() => {
     return assetList.reduce((acc, a) => {
       a.chains.forEach((tokenChain: string) => {
-        if (acc.some((asset: AssetType) => asset.id === a.id)) return acc
         if (!has(a.balance)) return acc
         const isNative = tokenChain === destination
         const channel = getIBCChannel({
