@@ -325,7 +325,6 @@ export const useParsedAssetList = () => {
           unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom ?? denom,
           unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs[0] ?? chain
         )
-
         const key = [
           unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs[0] ??
             chain ??
