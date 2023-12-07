@@ -30,50 +30,49 @@ const Token = () => {
 
   const tokens = useMemo(() => {
     return assetList.reduce((acc, a) => {
-      a.chains.forEach((tokenChain: string) => {
-        if (acc.some((asset: AssetType) => asset.id === a.id)) return acc
-        if (!has(a.balance)) return acc
-        const isNative = tokenChain === destination
+      a.tokenChainInfo.forEach((tokenChainData: any) => {
+        const { balance, denom, chain, name, id, icon, price, decimals } =
+          tokenChainData
+
+        if (acc.some((asset: AssetType) => asset.id === id)) {
+          return acc
+        }
+        if (!has(a.balance)) {
+          return acc
+        }
+        const isNative = chain === destination
         const channel = getIBCChannel({
-          from: tokenChain,
+          from: chain,
           to: destination,
-          tokenAddress: a.denom,
+          tokenAddress: denom,
           icsChannel:
-            ibcDenoms[networkName][`${destination}:${a.denom}`]?.icsChannel,
+            ibcDenoms[networkName][`${destination}:${denom}`]?.icsChannel,
         })
 
         if (isNative || channel) {
-          const balVal = a.balance * a.price
-          const senderAddress = addresses?.[tokenChain]
+          const balVal = balance * price
+          const senderAddress = addresses?.[chain]
           const item = {
             ...a,
-            denom: a.denom,
-            tokenImg: a.icon,
+            id,
+            denom: denom,
+            tokenImg: icon,
             balVal,
             senderAddress,
-            balance: a.balance,
+            balance: balance,
             channel,
-            tokenChain,
-            amountNode: (
-              <Read amount={a.balance} fixed={2} decimals={a.decimals} />
-            ),
+            tokenChain: chain,
+            amountNode: <Read amount={balance} fixed={2} decimals={decimals} />,
             priceNode: balVal ? (
               <>
-                <Read
-                  amount={balVal}
-                  currency
-                  fixed={2}
-                  decimals={a.decimals}
-                />
+                <Read amount={balVal} currency fixed={2} decimals={decimals} />
               </>
             ) : (
               <span>—</span>
             ),
             chain: {
-              label: capitalize(
-                getChainNamefromID(tokenChain, networks) ?? tokenChain
-              ),
-              icon: networks[tokenChain]?.icon,
+              label: name ?? chain,
+              icon: networks[chain]?.icon,
             },
           } as AssetType
 
@@ -91,6 +90,8 @@ const Token = () => {
     networkName,
     getIBCChannel,
   ])
+
+  // console.log("tokens", tokens)
 
   const onClick = (asset: AssetType) => {
     setValue("asset", asset.denom)
