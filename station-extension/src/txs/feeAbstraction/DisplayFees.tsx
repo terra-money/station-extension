@@ -97,10 +97,10 @@ export default function DisplayFees({
     <SummaryTable
       rows={[
         ...(descriptions ?? []),
-        {
+        /*{
           label: t("Gas"),
           value: gas,
-        },
+        },*/
         {
           label: (
             <>
