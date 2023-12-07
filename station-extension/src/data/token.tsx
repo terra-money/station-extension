@@ -315,7 +315,6 @@ export const useParsedAssetList = () => {
   const { data: prices } = useExchangeRates()
   const readNativeDenom = useNativeDenoms()
   const networks = useNetwork()
-  const networkName = useNetworkName()
   const unknownIBCDenoms = useUnknownIBCDenoms()
 
   const list = useMemo(() => {
@@ -325,20 +324,22 @@ export const useParsedAssetList = () => {
           unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom ?? denom,
           unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs[0] ?? chain
         )
-        const key = [
+
+        const nativeChain =
+          data?.chainID ??
           unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs[0] ??
-            chain ??
-            data?.chainID,
-          data.token,
-        ].join("*")
-        if (acc[key]) {
-          acc[key].balance = `${parseInt(acc[key].balance) + parseInt(amount)}`
-          acc[key].chains.push(chain)
+          chain
+
+        if (acc[data?.symbol]) {
+          acc[data?.symbol].balance = `${
+            parseInt(acc[data?.symbol].balance) + parseInt(amount)
+          }`
+          acc[data?.symbol].chains.push(chain)
           return acc
-        } else if (key === "columbus-5*uluna" && networkName !== "classic") {
+        } else if (data?.symbol === "LUNC") {
           return {
             ...acc,
-            [key]: {
+            [data?.symbol]: {
               denom: data.token,
               decimals: data.decimals,
               balance: amount,
@@ -347,14 +348,15 @@ export const useParsedAssetList = () => {
               price: prices?.["uluna:classic"]?.price ?? 0,
               change: prices?.["uluna:classic"]?.change ?? 0,
               chains: [chain],
-              id: key,
+              nativeChain: nativeChain,
+              id: data?.symbol,
               whitelisted: true,
             },
           }
         } else {
           return {
             ...acc,
-            [key]: {
+            [data?.symbol]: {
               denom: data.token,
               decimals: data.decimals,
               balance: amount,
@@ -363,7 +365,8 @@ export const useParsedAssetList = () => {
               price: prices?.[data.token]?.price ?? 0,
               change: prices?.[data.token]?.change ?? 0,
               chains: [chain],
-              id: key,
+              nativeChain: nativeChain,
+              id: data?.symbol,
               whitelisted: !(
                 data.isNonWhitelisted ||
                 unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs.find(
@@ -375,6 +378,6 @@ export const useParsedAssetList = () => {
         }
       }, {} as Record<string, any>) ?? {}
     )
-  }, [coins, readNativeDenom, unknownIBCDenoms, networkName, prices, networks])
+  }, [coins, readNativeDenom, unknownIBCDenoms, prices, networks])
   return Object.values(list)
 }

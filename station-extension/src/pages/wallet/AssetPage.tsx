@@ -27,12 +27,12 @@ const AssetPage = () => {
   const navigate = useNavigate()
 
   const price = useMemo(() => {
-    if (params.denom === "uluna" && params.chain === "columbus-5") {
+    if (routeDenom === "uluna" && params.chain === "columbus-5") {
       return prices?.["uluna:classic"]?.price ?? 0
     } else if (!symbol.endsWith("...")) {
       return prices?.[token]?.price ?? 0
     } else return 0
-  }, [prices, symbol, token, params])
+  }, [prices, symbol, token, params, routeDenom])
 
   const supportedAssets = useMemo(() => {
     return balances.filter((b) => {

@@ -27,8 +27,8 @@ export const WalletButtonList = ({
   const network = useNetwork()
   if (!items.length) return null
   return (
-    <Grid gap={10}>
-      {title && <SectionHeader icon={icon} title={title} />}
+    <Grid gap={8}>
+      {title && <SectionHeader icon={icon} indented title={title} />}
       {items.map((i) => (
         <WalletButton
           key={i.name + i.recipient}
@@ -43,7 +43,7 @@ export const WalletButtonList = ({
   )
 }
 
-const OtherWallets = ({ tab, onClick }: Props) => {
+const MyWallets = ({ tab, onClick }: Props) => {
   const { list: addressList } = useAddressBook()
   const { wallets, connectedWallet } = useAuth()
 
@@ -114,4 +114,4 @@ const OtherWallets = ({ tab, onClick }: Props) => {
   )
 }
 
-export default OtherWallets
+export default MyWallets

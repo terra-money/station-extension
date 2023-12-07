@@ -3,10 +3,8 @@ import { useAddressBook } from "data/settings/AddressBook"
 import { useState } from "react"
 import { Button, Grid, Tabs } from "@terra-money/station-ui"
 import { useNavigate } from "react-router-dom"
-import { useAuth } from "auth"
-import { getWallet } from "auth/scripts/keystore"
-import { addressFromWords } from "utils/bech32"
-import AddressWalletList from "./AddressBookWalletList"
+import MyWallets from "pages/wallet/SendPage/Components/MyWallets"
+import AddressWalletList from "./AddressWalletList"
 
 interface Props {
   onClick?: (item: AddressBook) => void
@@ -15,18 +13,8 @@ interface Props {
 const AddressBook = ({ onClick }: Props) => {
   const { t } = useTranslation()
   const { list: addressList } = useAddressBook()
-  const [tabKey, setTabKey] = useState("address")
+  const [tabKey, setTabKey] = useState("wallets")
   const navigate = useNavigate()
-  const { wallets } = useAuth()
-
-  const myWallets = wallets.map((wallet) => {
-    const { words } = getWallet(wallet.name)
-
-    return {
-      name: wallet.name,
-      recipient: addressFromWords(words["330"]),
-    }
-  })
 
   const handleOpen = (index?: number) => {
     navigate(`new`, index !== undefined ? { state: { index } } : {})
@@ -42,14 +30,14 @@ const AddressBook = ({ onClick }: Props) => {
 
   const tabs = [
     {
-      key: "address",
-      label: t("Address Book"),
-      onClick: () => setTabKey("address"),
-    },
-    {
       key: "wallets",
       label: t("My Wallets"),
       onClick: () => setTabKey("wallets"),
+    },
+    {
+      key: "address",
+      label: t("Address Book"),
+      onClick: () => setTabKey("address"),
     },
   ]
 
@@ -60,7 +48,7 @@ const AddressBook = ({ onClick }: Props) => {
   }
 
   return (
-    <Grid gap={12}>
+    <Grid gap={24}>
       <Button variant="dashed" onClick={() => handleOpen()}>
         {t("Add New Address")}
       </Button>
@@ -79,7 +67,10 @@ const AddressBook = ({ onClick }: Props) => {
           />
         </>
       ) : (
-        <AddressWalletList title="" items={myWallets} />
+        <MyWallets
+          tab={tabKey}
+          onClick={(address) => navigate("my-addresses", { state: address })}
+        />
       )}
     </Grid>
   )
