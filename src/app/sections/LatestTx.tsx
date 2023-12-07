@@ -14,8 +14,14 @@ import { isBroadcastingState, latestTxState } from "data/queries/tx"
 import { useTxInfo } from "data/queries/tx"
 import { useThemeAnimation } from "data/settings/Theme"
 import { useNetworkName } from "data/wallet"
-import { Button, FinderLink, LinkButton } from "components/general"
-import { Modal, LoadingCircular } from "components/feedback"
+import { FinderLink, LinkButton } from "components/general"
+import {
+  Modal,
+  LoadingCircular,
+  SummaryHeader,
+  Grid,
+  Button,
+} from "@terra-money/station-ui"
 import { Flex } from "components/layout"
 import TxMessage from "../containers/TxMessage"
 import styles from "./LatestTx.module.scss"
@@ -26,9 +32,9 @@ const { createActionRuleSet, getTxCanonicalMsgs, createLogMatcherForActions } =
   ruleset
 
 enum Status {
-  LOADING = "LOADING",
-  SUCCESS = "SUCCESS",
-  FAILURE = "FAILURE",
+  LOADING = "loading",
+  SUCCESS = "success",
+  FAILURE = "alert",
 }
 
 const TxIndicator = ({ txhash }: { txhash: string }) => {
@@ -138,19 +144,19 @@ const TxIndicator = ({ txhash }: { txhash: string }) => {
     </div>
   ) : status === Status.LOADING ? (
     <Modal
-      icon={<img src={animation} width={100} height={100} alt="" />}
       closeIcon={<CloseFullscreenIcon fontSize="inherit" />}
-      title={t("Broadcasting transaction")}
       isOpen={!minimized}
       onRequestClose={() => setMinimized(true)}
     >
-      {hashDetails}
+      <Grid className={styles.loading__container} gap={16}>
+        <img src={animation} width={100} height={100} alt="" />
+        <h3>{t("Broadcasting transaction")}</h3>
+        {hashDetails}
+      </Grid>
     </Modal>
   ) : (
     <Modal
-      icon={icon}
       closeIcon={false}
-      title={title}
       footer={() =>
         redirectAfterTx ? (
           <LinkButton
@@ -162,7 +168,7 @@ const TxIndicator = ({ txhash }: { txhash: string }) => {
             {redirectAfterTx.label}
           </LinkButton>
         ) : (
-          <Button onClick={initLatestTx} color="primary" block>
+          <Button onClick={initLatestTx} variant="primary" block>
             {t("Confirm")}
           </Button>
         )
@@ -174,26 +180,29 @@ const TxIndicator = ({ txhash }: { txhash: string }) => {
       }}
       maxHeight
     >
-      {data && (
-        <ul className={styles.messages}>
-          {
-            // TODO: update getCanonicalMsgs() to support station.js types
-            getCanonicalMsgs(data).map((msg, index) => {
-              if (!msg) return null
-              const { canonicalMsg } = msg
-              return (
-                <li key={index}>
-                  {canonicalMsg.map((msg, index) => (
-                    <TxMessage key={index}>{msg}</TxMessage>
-                  ))}
-                </li>
-              )
-            })
-          }
-        </ul>
-      )}
+      <Grid className={styles.result__container} gap={16}>
+        <SummaryHeader statusLabel={title} status={status} statusMessage="" />
+        {data && (
+          <ul className={styles.messages}>
+            {
+              // TODO: update getCanonicalMsgs() to support station.js types
+              getCanonicalMsgs(data).map((msg, index) => {
+                if (!msg) return null
+                const { canonicalMsg } = msg
+                return (
+                  <li key={index}>
+                    {canonicalMsg.map((msg, index) => (
+                      <TxMessage key={index}>{msg}</TxMessage>
+                    ))}
+                  </li>
+                )
+              })
+            }
+          </ul>
+        )}
 
-      {hashDetails}
+        {hashDetails}
+      </Grid>
     </Modal>
   )
 }
