@@ -346,23 +346,29 @@ export const useParsedAssetList = () => {
           )
         }
 
+        const tokenID = `${denom}*${chain}`
         const chainTokenItem = {
           balance: parseInt(amount),
+          denom: denom,
           chain,
           name: networks[chain]?.name,
           icon: tokenIcon,
+          price: tokenPrice,
+          decimals: data.decimals,
+          id: tokenID,
         }
 
-        if (acc[data?.symbol]) {
-          acc[data?.symbol].totalBalance = `${
-            parseInt(acc[data?.symbol].totalBalance) + parseInt(amount)
+        if (acc[data.symbol]) {
+          acc[data.symbol].totalBalance = `${
+            parseInt(acc[data.symbol].totalBalance) + parseInt(amount)
           }`
-          acc[data?.symbol].tokenChainInfo.push(chainTokenItem)
+          acc[data.symbol].tokenChainInfo.push(chainTokenItem)
           return acc
         } else {
           return {
             ...acc,
-            [data?.symbol]: {
+            [data.symbol]: {
+              balance: amount,
               denom: data.token,
               decimals: data.decimals,
               totalBalance: amount,
@@ -372,7 +378,7 @@ export const useParsedAssetList = () => {
               change: tokenChange,
               tokenChainInfo: [chainTokenItem],
               nativeChain: nativeChain,
-              id: data?.symbol,
+              id: tokenID,
               whitelisted: tokenWhitelisted,
             },
           }
