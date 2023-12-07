@@ -9,9 +9,9 @@ import {
   useCustomTokensCW20,
   useCustomTokensNative,
 } from "data/settings/CustomTokens"
-import { useIsWalletEmpty } from "data/queries/bank"
 import { useNativeDenoms, useParsedAssetList } from "data/token"
 import FilterListIcon from "@mui/icons-material/FilterList"
+import { useIsWalletEmpty } from "data/queries/bank"
 import { useTokenFilters } from "utils/localStorage"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
@@ -54,14 +54,7 @@ const AssetList = () => {
   )
 
   const assets = useMemo(() => {
-    const filtered = list
-      .filter((a) => (onlyShowWhitelist ? a.whitelisted : true))
-      .filter((a) =>
-        filterChain !== "all" ? a.chains.includes(filterChain) : true
-      )
-
     const baseAssets = Object.keys(network).reduce((acc, chain) => {
-      if (acc.includes(chain)) return acc
       const { symbol, decimals } = readNativeDenom(
         network[chain].baseAsset,
         chain
@@ -80,16 +73,23 @@ const AssetList = () => {
       return acc
     }, [] as any[])
 
+    const filtered = list
+      .filter((a) => (onlyShowWhitelist ? a.whitelisted : true))
+      .filter((a) =>
+        filterChain !== "all" ? a.chains.includes(filterChain) : true
+      )
+
     const visible = filtered
       .filter(
-        (a) =>
+        (a: any) =>
           a.price * toInput(a.balance) >= 1 || alwaysVisibleDenoms.has(a.denom)
       )
       .sort(
-        (a, b) => b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
+        (a: any, b: any) =>
+          b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
       )
 
-    const lowBal = filtered.filter((a) => !visible.includes(a))
+    const lowBal = filtered.filter((a: any) => !visible.includes(a))
     return { visible, lowBal, baseAssets }
   }, [
     list,
@@ -100,16 +100,15 @@ const AssetList = () => {
     alwaysVisibleDenoms,
   ])
 
-  const renderAsset = ({ denom, decimals, id, ...item }: any) => {
+  const renderAsset = ({ denom, decimals, id, nativeChain, ...item }: any) => {
     const encodedDenomPath = encode(denom)
-    const chainID = id.split("*")?.[0]
     return (
       <Asset
         {...item}
         denom={denom}
         decimals={decimals}
-        key={item.id}
-        onClick={() => navigate(`asset/${chainID}/${encodedDenomPath}`)}
+        key={id}
+        onClick={() => navigate(`asset/${nativeChain}/${encodedDenomPath}`)}
       />
     )
   }

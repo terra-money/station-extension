@@ -75,7 +75,7 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
   const { errors, isValid } = formState
   const { mode, secret, index } = watch()
 
-  function sumbit({ mode, secret, index }: Values) {
+  function submit({ mode, secret, index }: Values) {
     // PASSWORD VALIDATION (if needed)
     if (mode === "password") {
       try {
@@ -205,7 +205,7 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
       )}
       fullHeight
     >
-      <Form onSubmit={handleSubmit(sumbit)}>
+      <Form onSubmit={handleSubmit(submit)}>
         <Grid gap={18}>
           <Tabs
             activeTabKey={mode}
