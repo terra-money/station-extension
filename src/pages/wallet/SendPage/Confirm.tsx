@@ -137,6 +137,14 @@ const Confirm = () => {
       value: msg,
     },
     { label: t("From"), value: truncate(assetInfo?.senderAddress) },
+    ...(memo
+      ? [
+          {
+            label: t("Memo"),
+            value: memo,
+          },
+        ]
+      : []),
   ]
 
   const Info = () => (
