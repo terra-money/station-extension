@@ -15,11 +15,6 @@ import { useTranslation } from "react-i18next"
 import style from "./Send.module.scss"
 import { useEffect } from "react"
 
-// 100_000 msg_send
-// more for msg_transfer
-// check if token is fee token multiple fixed gas amount by gas price from useNetwork
-// edge case: chains with multiple gas tokens./
-
 const Submit = () => {
   const { form, getWalletName, goToStep } = useSend()
   const { register, formState, watch, setValue, trigger } = form
@@ -41,8 +36,9 @@ const Submit = () => {
 
   const handleMax = () => {
     setValue("input", toInput(balance, decimals))
-    if (price)
+    if (price) {
       setValue("currencyAmount", toInput(Number(balance) * price, decimals))
+    }
     trigger("input")
   }
 
