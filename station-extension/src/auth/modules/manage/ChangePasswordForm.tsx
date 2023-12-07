@@ -110,7 +110,7 @@ const ChangePasswordForm = () => {
       </InputWrapper>
       <InputWrapper>
         <Checkbox
-          label={t("Don't ask for password again")}
+          label={t("Save password")}
           checked={rememberPassword}
           {...register("rememberPassword")}
         />
