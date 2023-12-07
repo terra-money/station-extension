@@ -9,7 +9,7 @@ import {
   SubmitButton,
 } from "@terra-money/station-ui"
 import { atom, useRecoilState } from "recoil"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import {
   isLoginNeeded,
   lockWallet,
@@ -62,6 +62,31 @@ export const useLogin = () => {
   }
 }
 
+function getMomentOfTheDay() {
+  const hour = new Date().getHours()
+
+  if (hour >= 5 && hour < 12) {
+    return "morning"
+  } else if (hour >= 12 && hour < 18) {
+    return "afternoon"
+  } else if (hour >= 18 && hour < 23) {
+    return "evening"
+  } else {
+    return "night"
+  }
+}
+
+function getRandomGreetings() {
+  const greetings = [
+    "Welcome back!",
+    "Hey there!",
+    "Nice to see you again!",
+    `Good ${getMomentOfTheDay()}!`,
+  ]
+
+  return greetings[Math.floor(Math.random() * greetings.length)]
+}
+
 const Login = () => {
   const { t } = useTranslation()
   const icon = useThemeFavicon()
@@ -69,10 +94,12 @@ const Login = () => {
   const { login } = useLogin()
   const password = useRef<HTMLInputElement>(null)
   const [error, setError] = useState<string | undefined>(undefined)
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const [isValid, setIsValid] = useState<boolean>(false)
   const [rememberPassword, setRememberPassword] = useState<boolean>(
     shouldStorePassword()
   )
+
+  const greeting = useMemo(() => getRandomGreetings(), [])
 
   async function submit() {
     try {
@@ -87,8 +114,7 @@ const Login = () => {
       }
     } catch (e) {
       setError("Invalid password")
-    } finally {
-      setIsSubmitting(false)
+      setIsValid(false)
     }
   }
 
@@ -97,7 +123,7 @@ const Login = () => {
       <main className={styles.login__container}>
         <section className={styles.login}>
           <img src={icon} alt="Station" width={60} />
-          <h1 className={styles.title}>{t("Login")}</h1>
+          <h1 className={styles.title}>{t(greeting)}</h1>
           <p className={styles.content}>
             {t(
               "You have been logged out, please enter your password to unlock Station."
@@ -106,13 +132,20 @@ const Login = () => {
         </section>
         <form
           className={styles.password__container}
-          onSubmit={() => {
-            setIsSubmitting(true)
+          onSubmit={(e) => {
+            e.preventDefault()
             submit()
           }}
         >
           <InputWrapper label={t("Password")} error={error}>
-            <Input type="password" ref={password} />
+            <Input
+              type="password"
+              ref={password}
+              onChange={(e) => {
+                setIsValid(!!e.target.value)
+                setError(undefined)
+              }}
+            />
           </InputWrapper>
           <InputWrapper>
             <Checkbox
@@ -122,9 +155,9 @@ const Login = () => {
             />
           </InputWrapper>
           <SubmitButton
-            variant="secondary"
-            label={t("Sumbit")}
-            loading={isSubmitting}
+            variant="primary"
+            label={t("Login")}
+            disabled={!isValid}
           />
         </form>
       </main>
