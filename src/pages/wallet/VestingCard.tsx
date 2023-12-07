@@ -1,7 +1,7 @@
 import { VestingCard, TokenSingleChainListItem } from "@terra-money/station-ui"
 import { parseVestingSchedule, useAccount } from "data/queries/vesting"
 import { useExchangeRates } from "data/queries/coingecko"
-import { useNetwork, useNetworkName } from "data/wallet"
+import { useChainID, useNetwork } from "data/wallet"
 import { useNativeDenoms } from "data/token"
 import { Read } from "components/token"
 import { toInput } from "txs/utils"
@@ -12,20 +12,7 @@ const Vesting = () => {
   const { data: prices } = useExchangeRates()
   const readNativeDenom = useNativeDenoms()
   const network = useNetwork()
-  const networkName = useNetworkName()
-
-  let networkID
-  switch (networkName) {
-    case "testnet":
-      networkID = "pisco-1"
-      break
-    case "classic":
-      networkID = "columbus-5"
-      break
-    default:
-      networkID = "phoenix-1"
-      break
-  }
+  const networkID = useChainID()
 
   const {
     icon: tokenImg,
