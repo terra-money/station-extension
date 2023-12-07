@@ -23,15 +23,14 @@ import {
   Flex,
 } from "@terra-money/station-ui"
 import CreatedWallet from "auth/modules/create/CreatedWallet"
-import { isPasswordValid, passwordExists } from "auth/scripts/keystore"
+import PasswordForm from "extension/auth/PasswordForm"
+import { createNewPassword, passwordExists } from "auth/scripts/keystore"
 
 interface Values {
   index: number
   legacy: boolean
   bluetooth: boolean
   name: string
-  password: string
-  confirm: string
 }
 
 enum Pages {
@@ -68,9 +67,9 @@ const AccessWithLedgerForm = () => {
     defaultValues: { index: 0, bluetooth: false },
   })
 
-  const { register, watch, formState, setError: setFormError } = form
+  const { register, watch, formState } = form
   const { errors, isValid } = formState
-  const { index, bluetooth, name, password, legacy } = watch()
+  const { index, bluetooth, name, legacy } = watch()
 
   const connectTerra = async () => {
     setError(undefined)
@@ -286,54 +285,13 @@ const AccessWithLedgerForm = () => {
       case Pages.choosePasswordForm:
         return (
           <section className={styles.form__container}>
-            <FlexColumn gap={18} className={styles.form__details}>
-              <InputWrapper
-                label={t("Password")}
-                error={errors.password?.message}
-              >
-                <Input
-                  {...register("password", {
-                    validate: passwordExists() ? undefined : validate.password,
-                  })}
-                  type="password"
-                />
-              </InputWrapper>
-
-              {!passwordExists() && (
-                <InputWrapper
-                  label={t("Confirm password")}
-                  error={errors.confirm?.message}
-                >
-                  <Input
-                    {...register("confirm", {
-                      validate: (confirm) =>
-                        validate.confirm(password, confirm),
-                    })}
-                    onFocus={() => form.trigger("confirm")}
-                    type="password"
-                  />
-                </InputWrapper>
-              )}
-
-              <Button
-                disabled={!isValid || !password}
-                onClick={() => {
-                  if (passwordExists() && !isPasswordValid(password)) {
-                    setFormError(
-                      "password",
-                      { message: t("Invalid password") },
-                      { shouldFocus: true }
-                    )
-                    return
-                  }
-                  setPage(Pages.complete)
-                }}
-                variant="primary"
-                style={{ marginTop: 22 }}
-              >
-                {t("Confirm")}
-              </Button>
-            </FlexColumn>
+            <PasswordForm
+              onCompleteLedger={() => setPage(Pages.complete)}
+              onComplete={(password) => {
+                !passwordExists() && createNewPassword(password)
+                setPage(Pages.complete)
+              }}
+            />
           </section>
         )
 
@@ -344,15 +302,7 @@ const AccessWithLedgerForm = () => {
               name={name}
               words={words}
               onConfirm={() =>
-                connectLedger(
-                  password,
-                  words,
-                  pubkey,
-                  index,
-                  bluetooth,
-                  name,
-                  legacy
-                )
+                connectLedger(words, pubkey, index, bluetooth, name, legacy)
               }
             />
           </Flex>
