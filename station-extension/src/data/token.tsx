@@ -309,7 +309,6 @@ export const useUnknownIBCDenoms = () => {
   )
   return unknownIBCDenoms
 }
-
 export const useParsedAssetList = () => {
   const coins = useBankBalance()
   const { data: prices } = useExchangeRates()
@@ -320,28 +319,25 @@ export const useParsedAssetList = () => {
   const list = useMemo(() => {
     return (
       coins.reduce((acc, { denom, amount, chain }) => {
-        const data = readNativeDenom(
-          unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom ?? denom,
-          unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs[0] ?? chain
+        const { chainID, symbol, decimals, token, icon } = readNativeDenom(
+          denom,
+          chain
         )
 
-        const nativeChain =
-          data?.chainID ??
-          unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs[0] ??
-          chain
+        const nativeChain = chainID ?? chain
 
-        if (acc[data?.symbol]) {
-          acc[data?.symbol].balance = `${
-            parseInt(acc[data?.symbol].balance) + parseInt(amount)
+        if (acc[symbol]) {
+          acc[symbol].balance = `${
+            parseInt(acc[symbol].balance) + parseInt(amount)
           }`
-          acc[data?.symbol].chains.push(chain)
+          acc[symbol].chains.push(chain)
           return acc
-        } else if (data?.symbol === "LUNC") {
+        } else if (symbol === "LUNC") {
           return {
             ...acc,
-            [data?.symbol]: {
-              denom: data.token,
-              decimals: data.decimals,
+            [symbol]: {
+              denom: token,
+              decimals,
               balance: amount,
               icon: "https://assets.terra.dev/icon/svg/LUNC.svg",
               symbol: "LUNC",
@@ -349,30 +345,27 @@ export const useParsedAssetList = () => {
               change: prices?.["uluna:classic"]?.change ?? 0,
               chains: [chain],
               nativeChain: nativeChain,
-              id: data?.symbol,
+              id: symbol,
               whitelisted: true,
             },
           }
         } else {
           return {
             ...acc,
-            [data?.symbol]: {
-              denom: data.token,
-              decimals: data.decimals,
+            [symbol]: {
+              denom: token,
+              decimals: decimals,
               balance: amount,
-              icon: data.icon,
-              symbol: data.symbol,
-              price: prices?.[data.token]?.price ?? 0,
-              change: prices?.[data.token]?.change ?? 0,
+              icon,
+              symbol: symbol,
+              price: prices?.[token]?.price ?? 0,
+              change: prices?.[token]?.change ?? 0,
               chains: [chain],
               nativeChain: nativeChain,
-              id: data?.symbol,
-              whitelisted: !(
-                data.isNonWhitelisted ||
-                unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs.find(
-                  (c: any) => !networks[c]
-                )
-              ),
+              id: symbol,
+              whitelisted: !unknownIBCDenoms[
+                [denom, chain].join("*")
+              ]?.chainIDs.find((c: any) => !networks[c]),
             },
           }
         }
