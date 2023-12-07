@@ -4,6 +4,7 @@ import {
   TokenSingleChainListItem,
   Button,
   Banner,
+  Input,
 } from "@terra-money/station-ui"
 import {
   useCustomTokensCW20,
@@ -17,8 +18,6 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import styles from "./AssetList.module.scss"
 import { useMemo, useState } from "react"
-import { useNetwork } from "data/wallet"
-import { Read } from "components/token"
 import { toInput } from "txs/utils"
 import classNames from "classnames"
 import { encode } from "js-base64"
@@ -30,18 +29,16 @@ const AssetList = () => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
   const { onlyShowWhitelist, hideLowBal, toggleHideLowBal } = useTokenFilters()
-  const readNativeDenom = useNativeDenoms()
   const native = useCustomTokensNative()
   const cw20 = useCustomTokensCW20()
   const list = useParsedAssetList()
+  const [search, setSearch] = useState("")
   const [showFilter, setShowFilter] = useState(false)
-  const [filterChain, setFilterChain] = useState("all")
-  const network = useNetwork()
   const navigate = useNavigate()
 
   const toggleFilter = () => {
+    setSearch("")
     setShowFilter(!showFilter)
-    setFilterChain("all")
   }
 
   const alwaysVisibleDenoms = useMemo(
@@ -54,31 +51,9 @@ const AssetList = () => {
   )
 
   const assets = useMemo(() => {
-    const baseAssets = Object.keys(network).reduce((acc, chain) => {
-      const { symbol, decimals } = readNativeDenom(
-        network[chain].baseAsset,
-        chain
-      )
-      const balance =
-        list.find((a) => a.denom === network[chain].baseAsset)?.balance ?? "0"
-      const token = {
-        symbol,
-        chain,
-        name: network[chain].name,
-        tokenImg: network[chain].icon,
-        decimals,
-        balance,
-      }
-      acc.push(token)
-      return acc
-    }, [] as any[])
-
-    const filtered = list
-      .filter((a) => (onlyShowWhitelist ? a.whitelisted : true))
-      .filter((a) =>
-        filterChain !== "all" ? a.chains.includes(filterChain) : true
-      )
-
+    const filtered = list.filter((a) =>
+      onlyShowWhitelist ? a.whitelisted : true
+    )
     const visible = filtered
       .filter(
         (a: any) =>
@@ -90,15 +65,8 @@ const AssetList = () => {
       )
 
     const lowBal = filtered.filter((a: any) => !visible.includes(a))
-    return { visible, lowBal, baseAssets }
-  }, [
-    list,
-    onlyShowWhitelist,
-    filterChain,
-    readNativeDenom,
-    network,
-    alwaysVisibleDenoms,
-  ])
+    return { visible, lowBal }
+  }, [list, onlyShowWhitelist, alwaysVisibleDenoms])
 
   const renderAsset = ({ denom, decimals, id, nativeChain, ...item }: any) => {
     const encodedDenomPath = encode(denom)
@@ -113,38 +81,6 @@ const AssetList = () => {
     )
   }
 
-  const AssetListTokenFilter = () => {
-    return (
-      <Dropdown
-        value={filterChain}
-        onChange={(chain) => setFilterChain(chain)}
-        options={[
-          { value: "all", label: "All Chains" },
-          ...assets.baseAssets.map((c: any) => ({
-            value: c.chain,
-            image: c.tokenImg,
-            label: c.name,
-          })),
-        ]}
-      >
-        {assets.baseAssets.map((asset: any) => (
-          <TokenSingleChainListItem
-            {...asset}
-            symbol={asset.name}
-            onClick={() => setFilterChain(asset.chain)}
-            amountNode={
-              <Read amount={asset.balance} decimals={asset.decimals} />
-            }
-            chain={{
-              name: asset.name,
-              icon: asset.tokenImg,
-            }}
-          />
-        ))}
-      </Dropdown>
-    )
-  }
-
   const render = () => {
     if (!assets) return
 
@@ -156,8 +92,23 @@ const AssetList = () => {
             title={t("Coins required to post transactions")}
           />
         )}
-        {showFilter && <AssetListTokenFilter />}
-        {assets.visible.map(renderAsset)}
+        {showFilter && (
+          <Input
+            autoFocus
+            value={search}
+            placeholder={t("Filter by tokens, chains, etc.")}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        )}
+
+        {assets.visible
+          .filter((a) =>
+            [a.symbol, a.denom].some((field) =>
+              field?.toLowerCase().includes(search.toLowerCase())
+            )
+          )
+          .map(renderAsset)}
+
         {assets.lowBal.length > 0 && (
           <>
             <button className={styles.low__bal} onClick={toggleHideLowBal}>
@@ -185,7 +136,7 @@ const AssetList = () => {
         />
       </div>
       <div className={styles.assetlist__list}>{render()}</div>
-      {filterChain !== "all" && (
+      {showFilter && (
         <Button
           className={cx(styles.filter, { [styles.inactive]: !showFilter })}
           onClick={toggleFilter}
