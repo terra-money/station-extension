@@ -66,6 +66,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
 
   /* store password */
   const [rememberPassword, setStorePassword] = useState(shouldStorePassword())
+  const [areFeesReady, setFeesReady] = useState(!("tx" in props))
 
   useEffect(() => {
     getStoredPassword().then((password) => {
@@ -260,7 +261,13 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
         <div>
           <OriginCard hostname={props.origin} />
 
-          {"tx" in props && <TxDetails {...props} tx={{ ...props.tx, fee }} />}
+          {"tx" in props && (
+            <TxDetails
+              {...props}
+              tx={{ ...props.tx, fee }}
+              onFeesReady={() => setFeesReady(true)}
+            />
+          )}
           {"bytes" in props && <SignBytesDetails {...props} />}
         </div>
 
@@ -284,7 +291,11 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
             )}
             <ButtonInlineWrapper>
               <Button variant="secondary" onClick={deny} label={t("Reject")} />
-              <SubmitButton variant="primary" label={label} />
+              <SubmitButton
+                variant="primary"
+                label={label}
+                disabled={!areFeesReady}
+              />
             </ButtonInlineWrapper>
           </Form>
         </FlexColumn>

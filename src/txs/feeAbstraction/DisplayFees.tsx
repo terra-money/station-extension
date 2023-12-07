@@ -25,7 +25,7 @@ export default function DisplayFees({
 }: {
   chainID: string
   gas: number | undefined
-  gasDenom: string
+  gasDenom: string | undefined
   setGasDenom: (gasDenom: string) => void
   descriptions?: { label: ReactNode; value: ReactNode }[]
   onReady: () => void
@@ -36,12 +36,15 @@ export default function DisplayFees({
   const readNativeDenom = useNativeDenoms()
   const network = useNetwork()
   const gasPrices = network[chainID]?.gasPrices ?? {}
-  const feeAmount = Math.ceil(gasPrices[gasDenom] * (gas ?? 0))
+  const feeAmount = Math.ceil(gasPrices[gasDenom ?? ""] * (gas ?? 0))
   const isBalanceLoading = useIsBalanceLoading(chainID)
   const queryClient = useQueryClient()
 
   useEffect(() => {
-    if (availableGasDenoms.length && !availableGasDenoms.includes(gasDenom)) {
+    if (
+      availableGasDenoms.length &&
+      !availableGasDenoms.includes(gasDenom ?? "")
+    ) {
       setGasDenom(availableGasDenoms[0])
     }
   }, [availableGasDenoms]) // eslint-disable-line
@@ -58,7 +61,7 @@ export default function DisplayFees({
   }, [gas, isBalanceLoading, availableGasDenoms, chainsWithGas, chainID])*/
 
   // gas is loading
-  if (!gas)
+  if (!gas || !gasDenom)
     return (
       <section className={styles.loading__card}>
         <LoadingCircular />
