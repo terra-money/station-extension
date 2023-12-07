@@ -37,6 +37,14 @@ export const getCanonicalMsg = (
   for (const [msgIdx, msg] of msgs.entries()) {
     const msgEvents = events.length ? events[msgIdx] : []
 
+    if (
+      (msg as any).from_address &&
+      (msg as any).to_address &&
+      (msg as any).amount
+    ) {
+      ;(msg as any)["@type"] = "/cosmos.bank.v1beta1.MsgSend"
+    }
+
     switch ((msg as any)["@type"]) {
       /* ---------------------------------- Send ---------------------------------- */
 
