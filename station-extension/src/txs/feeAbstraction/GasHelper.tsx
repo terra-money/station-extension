@@ -90,7 +90,7 @@ export default function GasHelper({
           ({ state, error }) => {
             if (state === SkipTxStatus.SUCCESS) {
               onSuccess()
-              setTxhash(null)
+              //setTxhash(null)
               clearInterval(int)
             } else if (state === SkipTxStatus.FAILED) {
               // TODO: show actual error code
