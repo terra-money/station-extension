@@ -1,18 +1,15 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
-import { LedgerKey } from "@terra-money/ledger-station-js"
 import validate from "../scripts/validate"
 import useAuth from "../hooks/useAuth"
-import { createBleTransport, isBleAvailable } from "utils/ledger"
+import { isBleAvailable, useLedgerKey } from "utils/ledger"
 import { wordsFromAddress } from "utils/bech32"
 
 import styles from "./AccessWithLedger.module.scss"
 import { TooltipIcon } from "components/display"
 import {
   Banner,
-  LedgerDeviceAction,
-  LedgerModal,
   Checkbox,
   InputWrapper,
   Input,
@@ -36,10 +33,10 @@ interface Values {
 
 enum Pages {
   form = "form",
-  connect = "connect",
-  openTerra = "openTerra",
+  //connect = "connect",
+  //openTerra = "openTerra",
   askCosmos = "askCosmos",
-  openCosmos = "openCosmos",
+  //openCosmos = "openCosmos",
   choosePasswordForm = "choosePasswordForm",
   complete = "complete",
 }
@@ -47,6 +44,7 @@ enum Pages {
 const AccessWithLedgerForm = () => {
   const { t } = useTranslation()
   const { connectLedger } = useAuth()
+  const getLedgerKey = useLedgerKey()
   const [error, setError] = useState<Error>()
   const [page, setPage] = useState(Pages.form)
   const [words, setWords] = useState<{ 330: string; 118?: string }>({ 330: "" })
@@ -75,13 +73,10 @@ const AccessWithLedgerForm = () => {
   const connectTerra = async () => {
     setError(undefined)
     try {
-      // wait until ledger is connected
-      setPage(Pages.connect)
-      // TODO: might want to use 118 on terra too
-      const key330 = await LedgerKey.create({
-        transport: bluetooth ? createBleTransport : undefined,
+      const key330 = await getLedgerKey({
+        bluetooth,
         index,
-        onConnect: () => setPage(Pages.openTerra),
+        coinType: 330,
       })
       setWords({ "330": wordsFromAddress(key330.accAddress("terra")) })
       // @ts-expect-error
@@ -97,13 +92,10 @@ const AccessWithLedgerForm = () => {
     setError(undefined)
     try {
       // wait until ledger is connected
-      setPage(Pages.connect)
-      // TODO: might want to use 118 on terra too
-      const key118 = await LedgerKey.create({
-        transport: bluetooth ? createBleTransport : undefined,
+      const key118 = await getLedgerKey({
+        bluetooth,
         index,
         coinType: 118,
-        onConnect: () => setPage(Pages.openCosmos),
       })
 
       if (legacy) {
@@ -225,19 +217,6 @@ const AccessWithLedgerForm = () => {
             </FlexColumn>
           </section>
         )
-      case Pages.connect:
-        return (
-          <LedgerModal
-            action={
-              bluetooth ? LedgerDeviceAction.UNLOCK : LedgerDeviceAction.CONNECT
-            }
-            appName="Terra"
-          />
-        )
-      case Pages.openTerra:
-        return (
-          <LedgerModal action={LedgerDeviceAction.OPEN_APP} appName="Terra" />
-        )
       case Pages.askCosmos:
         return (
           <section className={styles.form__container}>
@@ -277,10 +256,6 @@ const AccessWithLedgerForm = () => {
               </p>
             </FlexColumn>
           </section>
-        )
-      case Pages.openCosmos:
-        return (
-          <LedgerModal action={LedgerDeviceAction.OPEN_APP} appName="Cosmos" />
         )
 
       case Pages.choosePasswordForm:

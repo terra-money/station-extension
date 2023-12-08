@@ -9,7 +9,6 @@ import {
 } from "@terra-money/feather.js"
 import { AccAddress, SignDoc } from "@terra-money/feather.js"
 import { RawKey, SignatureV2 } from "@terra-money/feather.js"
-import { LedgerKey } from "@terra-money/ledger-station-js"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import is from "../scripts/is"
 import {
@@ -26,7 +25,7 @@ import { encrypt } from "../scripts/aes"
 import useAvailable from "./useAvailable"
 import { addressFromWords } from "utils/bech32"
 import { useNetwork } from "./useNetwork"
-import { createBleTransport } from "utils/ledger"
+import { createBleTransport, useLedgerKey } from "utils/ledger"
 import { useLogin } from "extension/modules/Login"
 
 export const walletState = atom({
@@ -51,6 +50,7 @@ const useAuth = () => {
   }, [isLoggedIn]) // eslint-disable-line
 
   const wallets = getStoredWallets()
+  const getLedger = useLedgerKey()
 
   /* connect */
   const connect = (name: string) => {
@@ -113,11 +113,14 @@ const useAuth = () => {
   const getLedgerKey = async (coinType: string) => {
     if (!is.ledger(wallet)) throw new Error("Ledger device is not connected")
     const { index, bluetooth, legacy } = wallet
-    const transport = bluetooth ? createBleTransport : undefined
 
     const ct = legacy && coinType === "330" ? "118" : coinType
 
-    return LedgerKey.create({ transport, index, coinType: Number(ct) })
+    return getLedger({
+      bluetooth,
+      index,
+      coinType: Number(ct),
+    })
   }
 
   /* manage: export */
