@@ -5,8 +5,6 @@ import { useNetworkName } from "data/wallet"
 import { useWhitelist } from "data/queries/chains"
 import { AssetType } from "./types"
 import { Read } from "components/token"
-import { capitalize } from "@mui/material"
-import { getChainNamefromID } from "data/queries/chains"
 import { truncate } from "@terra-money/terra-utils"
 import {
   SectionHeader,
@@ -31,8 +29,17 @@ const Token = () => {
   const tokens = useMemo(() => {
     return assetList.reduce((acc, a) => {
       a.tokenChainInfo.forEach((tokenChainData: any) => {
-        const { balance, denom, chain, name, id, icon, price, decimals } =
-          tokenChainData
+        const {
+          denom,
+          id,
+          balance,
+          decimals,
+          tokenPrice: price,
+          chainID: chain,
+          chainName: name,
+          tokenIcon: icon,
+          supported,
+        } = tokenChainData
 
         if (acc.some((asset: AssetType) => asset.id === id)) {
           return acc
@@ -49,7 +56,7 @@ const Token = () => {
             ibcDenoms[networkName][`${destination}:${denom}`]?.icsChannel,
         })
 
-        if (isNative || channel) {
+        if ((isNative || channel) && supported) {
           const balVal = balance * price
           const senderAddress = addresses?.[chain]
           const item = {
