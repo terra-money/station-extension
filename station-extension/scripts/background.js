@@ -254,7 +254,7 @@ browser.tabs.onRemoved.addListener(() => {
 })
 
 const POPUP_WIDTH = 400
-const POPUP_HEIGHT = 630 // Chrome extension maximum height
+const POPUP_HEIGHT = 632 // Chrome extension maximum height
 
 const getCenter = (window) => {
   return {
