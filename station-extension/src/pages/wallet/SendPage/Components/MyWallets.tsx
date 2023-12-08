@@ -28,7 +28,7 @@ export const WalletButtonList = ({
   if (!items.length) return null
   return (
     <Grid gap={8}>
-      {title && <SectionHeader icon={icon} title={title} />}
+      {title && <SectionHeader icon={icon} indented title={title} />}
       {items.map((i) => (
         <WalletButton
           key={i.name + i.recipient}
