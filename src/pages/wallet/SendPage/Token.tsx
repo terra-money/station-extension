@@ -31,8 +31,17 @@ const Token = () => {
   const tokens = useMemo(() => {
     return assetList.reduce((acc, a) => {
       a.tokenChainInfo.forEach((tokenChainData: any) => {
-        const { balance, denom, chain, name, id, icon, price, decimals } =
-          tokenChainData
+        const {
+          balance,
+          denom,
+          chain,
+          name,
+          id,
+          icon,
+          price,
+          decimals,
+          supported,
+        } = tokenChainData
 
         if (acc.some((asset: AssetType) => asset.id === id)) {
           return acc
@@ -49,7 +58,7 @@ const Token = () => {
             ibcDenoms[networkName][`${destination}:${denom}`]?.icsChannel,
         })
 
-        if (isNative || channel) {
+        if ((isNative || channel) && supported) {
           const balVal = balance * price
           const senderAddress = addresses?.[chain]
           const item = {

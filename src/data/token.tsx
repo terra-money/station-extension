@@ -346,6 +346,21 @@ export const useParsedAssetList = () => {
           )
         }
 
+        const supported = !coins.filter((b) => {
+          if (chain) {
+            return (
+              unknownIBCDenoms[[b.denom, b.chain].join("*")]?.baseDenom ===
+                data.token &&
+              unknownIBCDenoms[[b.denom, b.chain].join("*")]?.chainIDs?.[0] ===
+                data.chainID
+            )
+          }
+          return (
+            unknownIBCDenoms[[b.denom, b.chain].join("*")]?.baseDenom ===
+            data.token
+          )
+        }).length
+
         const tokenID = `${denom}*${chain}`
         const chainTokenItem = {
           balance: parseInt(amount),
@@ -356,6 +371,7 @@ export const useParsedAssetList = () => {
           price: tokenPrice,
           decimals: data.decimals,
           id: tokenID,
+          supported,
         }
 
         if (acc[data.symbol]) {
