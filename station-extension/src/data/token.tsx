@@ -314,6 +314,7 @@ export const useParsedAssetList = () => {
   const readNativeDenom = useNativeDenoms()
   const networks = useNetwork()
   const unknownIBCDenoms = useUnknownIBCDenoms()
+  const balances = useBankBalance()
 
   const list = useMemo(() => {
     return (
@@ -346,16 +347,29 @@ export const useParsedAssetList = () => {
           )
         }
 
+        const supported = chain
+          ? !(
+              unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom ===
+                data?.token &&
+              unknownIBCDenoms[[denom, chain].join("*")]?.chainID ===
+                nativeChain
+            )
+          : unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom ===
+            data?.token
+
+        const { name: chainName, icon: chainIcon } = networks[chain] || {}
         const tokenID = `${denom}*${chain}`
         const chainTokenItem = {
-          balance: parseInt(amount),
-          denom: denom,
-          chain,
-          name: networks[chain]?.name,
-          icon: tokenIcon,
-          price: tokenPrice,
-          decimals: data.decimals,
+          denom,
           id: tokenID,
+          balance: parseInt(amount),
+          decimals: data.decimals,
+          tokenPrice,
+          chainID: chain,
+          chainName,
+          chainIcon,
+          tokenIcon,
+          supported,
         }
 
         if (acc[data.symbol]) {

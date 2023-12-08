@@ -21,6 +21,13 @@ export interface Props extends TokenItem, QueryState {
 
 interface AssetInfo {
   balance: string
+  chainID: string
+  chainName: string
+  chainIcon: string
+}
+
+interface TokenChainData {
+  balance: string
   chain: string
   name: string
   icon: string
@@ -44,15 +51,19 @@ const Asset = (props: Props) => {
     return props.tokenChainInfo.reduce((acc, chain) => {
       const bal = Math.pow(10, -decimals) * parseInt(chain.balance)
 
+      // console.log("chain", chain)
+
       if (!isNaN(bal)) {
         acc.push({
-          ...chain,
+          name: chain.chainName,
+          chain: chain.chainID,
+          icon: chain.chainIcon,
           balance: bal.toFixed(2),
         })
       }
 
       return acc
-    }, [] as AssetInfo[])
+    }, [] as TokenChainData[])
   }, [decimals, props.tokenChainInfo])
 
   const AmountNode = () => {
