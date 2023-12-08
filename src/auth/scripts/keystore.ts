@@ -268,6 +268,7 @@ type AddWalletParams =
   | {
       words: { "330": string; "118"?: string; "60"?: string }
       seed: Buffer
+      mnemonic?: string
       name: string
       index: number
       legacy: boolean
@@ -301,11 +302,20 @@ export const addWallet = (params: AddWalletParams, password: string) => {
     storeWallets([...next, params])
   } else {
     if ("seed" in params) {
-      const { name, words, seed, pubkey, index, legacy } = params
+      const { name, words, seed, pubkey, index, legacy, mnemonic } = params
       const encryptedSeed = encrypt(seed.toString("hex"), password)
+      const encryptedMnemonic = mnemonic && encrypt(mnemonic, password)
       storeWallets([
         ...next,
-        { name, words, encryptedSeed, pubkey, index, legacy },
+        {
+          name,
+          words,
+          encryptedSeed,
+          pubkey,
+          index,
+          legacy,
+          encryptedMnemonic,
+        },
       ])
     } else {
       const { name, words, key, pubkey } = params
