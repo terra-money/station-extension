@@ -92,6 +92,7 @@ const CoinTypeMnemonicForm = ({ close }: { close: () => void }) => {
             "60": key60.publicKey.key,
           },
           seed,
+          mnemonic,
         },
         password
       )
