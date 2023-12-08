@@ -21,6 +21,7 @@ import InitQueryClient from "app/InitQueryClient"
 import { initAnalytics } from "utils/analytics"
 import { createRoot } from "react-dom/client"
 import LoginProvider from "extension/modules/LoginProvider"
+import { LedgerProvider } from "utils/ledger"
 
 const root = createRoot(document.getElementById("station")!)
 
@@ -32,19 +33,21 @@ root.render(
       <HashRouter>
         <ScrollToTop />
         <InitQueryClient>
-          <InitNetworks>
-            <WithNodeInfo>
-              <InitChains>
-                <InitWallet>
-                  <InitTheme />
-                  <ElectronVersion />
-                  <LoginProvider>
-                    <App />
-                  </LoginProvider>
-                </InitWallet>
-              </InitChains>
-            </WithNodeInfo>
-          </InitNetworks>
+          <LedgerProvider>
+            <InitNetworks>
+              <WithNodeInfo>
+                <InitChains>
+                  <InitWallet>
+                    <InitTheme />
+                    <ElectronVersion />
+                    <LoginProvider>
+                      <App />
+                    </LoginProvider>
+                  </InitWallet>
+                </InitChains>
+              </WithNodeInfo>
+            </InitNetworks>
+          </LedgerProvider>
         </InitQueryClient>
         {debug.query && <ReactQueryDevtools position="bottom-right" />}
       </HashRouter>
