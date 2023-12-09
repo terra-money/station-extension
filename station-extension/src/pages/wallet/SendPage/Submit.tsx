@@ -13,20 +13,40 @@ import { useCurrency } from "data/settings/Currency"
 import { toInput } from "txs/utils"
 import { useTranslation } from "react-i18next"
 import style from "./Send.module.scss"
+import { useEffect } from "react"
 
 const Submit = () => {
   const { form, getWalletName, goToStep } = useSend()
-  const { register, formState, watch, setValue } = form
+  const { register, formState, watch, setValue, trigger } = form
   const { errors } = formState
-  const { assetInfo, recipient, input } = watch()
+  const { assetInfo, recipient, input, currencyAmount } = watch()
   const currency = useCurrency()
   const { t } = useTranslation()
-  if (!(assetInfo && recipient)) return null
+
+  useEffect(() => {
+    setValue("input", 0)
+    setValue("currencyAmount", 0)
+  }, [setValue])
+
+  if (!(assetInfo && recipient)) {
+    goToStep(1)
+    return null
+  }
+  const { balance, decimals, price, tokenImg, symbol } = assetInfo
+
+  const handleMax = () => {
+    setValue("input", toInput(balance, decimals))
+    if (price) {
+      setValue("currencyAmount", toInput(Number(balance) * price, decimals))
+    }
+    trigger("input")
+  }
+
   return (
     <>
       <InputInLine
         disabled
-        label={"To"}
+        label={t("To")}
         extra={truncate(recipient)}
         value={getWalletName(recipient)}
       />
@@ -36,13 +56,10 @@ const Submit = () => {
           ...register("input", {
             required: true,
             valueAsNumber: true,
-            validate: validate.input(
-              toInput(assetInfo.balance, assetInfo.decimals),
-              assetInfo.decimals
-            ),
+            validate: validate.input(toInput(balance, decimals), decimals),
           }),
         }}
-        tokenAmount={watch("input") ?? 0}
+        tokenAmount={input ?? 0}
         currencyInputAttrs={{
           ...register("currencyAmount", {
             valueAsNumber: true,
@@ -50,20 +67,19 @@ const Submit = () => {
             deps: ["input"],
           }),
         }}
-        currencyAmount={watch("currencyAmount") ?? 0}
-        tokenIcon={assetInfo.tokenImg}
-        symbol={assetInfo.symbol}
+        currencyAmount={currencyAmount ?? 0}
+        tokenIcon={tokenImg}
+        symbol={symbol}
         currencySymbol={currency.symbol}
-        price={assetInfo?.price}
+        price={price}
         formState={formState}
       />
-      <TokenSingleChainListItem {...assetInfo} />
+      <TokenSingleChainListItem {...assetInfo} onClick={handleMax} />
       <InputWrapper
         label={`${t("Memo")} (${t("optional")})`}
         error={errors.memo?.message}
       >
         <Input
-          // onFocus={() => max?.reset()}
           {...register("memo", {
             validate: {
               size: validate.size(256, "Memo"),

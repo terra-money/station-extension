@@ -3,7 +3,6 @@ import { CoinBalance, useBankBalance } from "data/queries/bank"
 import { useNavigate, useParams } from "react-router-dom"
 import { useExchangeRates } from "data/queries/coingecko"
 import WalletActionButtons from "./WalletActionButtons"
-import { useCurrency } from "data/settings/Currency"
 import { Read, TokenIcon } from "components/token"
 import { useTranslation } from "react-i18next"
 import styles from "./AssetPage.module.scss"
@@ -14,7 +13,6 @@ import { decode } from "js-base64"
 import { useMemo } from "react"
 
 const AssetPage = () => {
-  const currency = useCurrency()
   const { data: prices } = useExchangeRates()
   const balances = useBankBalance()
   const readNativeDenom = useNativeDenoms()
@@ -29,12 +27,12 @@ const AssetPage = () => {
   const navigate = useNavigate()
 
   const price = useMemo(() => {
-    if (params.denom === "uluna" && params.chain === "columbus-5") {
+    if (routeDenom === "uluna" && params.chain === "columbus-5") {
       return prices?.["uluna:classic"]?.price ?? 0
     } else if (!symbol.endsWith("...")) {
       return prices?.[token]?.price ?? 0
     } else return 0
-  }, [prices, symbol, token, params])
+  }, [prices, symbol, token, params, routeDenom])
 
   const supportedAssets = useMemo(() => {
     return balances.filter((b) => {
@@ -108,9 +106,13 @@ const AssetPage = () => {
           {symbol}
         </span>
         <h1>
-          {currency.symbol}{" "}
           {price ? (
-            <Read decimals={decimals} amount={totalBalance * price} fixed={2} />
+            <Read
+              decimals={decimals}
+              currency
+              amount={totalBalance * price}
+              fixed={2}
+            />
           ) : (
             <span>—</span>
           )}

@@ -5,6 +5,7 @@ import {
   Form,
   SectionHeader,
   ActivityListItem,
+  Banner,
 } from "@terra-money/station-ui"
 import { useSend } from "./SendContext"
 import { truncate } from "@terra-money/terra-utils"
@@ -21,7 +22,7 @@ import {
 import { AccAddress } from "@terra-money/feather.js"
 import { useRecentRecipients } from "utils/localStorage"
 import Tx from "txs/Tx"
-import { useCallback, useMemo } from "react"
+import { useCallback, useMemo, useEffect, useState, ReactNode } from "react"
 import { Coin } from "@terra-money/feather.js"
 import { queryKey } from "data/query"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
@@ -35,26 +36,31 @@ enum TxType {
   TRANSFER = "Transfer",
 }
 
+interface InfoProps {
+  render: (
+    descriptions?: {
+      label: ReactNode
+      value: ReactNode
+    }[]
+  ) => ReactNode
+  amount: string
+  denom: string
+  decimals: number | undefined
+}
+
 const Confirm = () => {
-  const { form, networks, getWalletName, getICSContract } = useSend()
+  const { form, networks, getWalletName, getICSContract, goToStep } = useSend()
   const { t } = useTranslation()
   const currency = useCurrency()
-  const { handleSubmit, setValue, trigger } = form
+  const { handleSubmit, setValue } = form
   const { addRecipient } = useRecentRecipients()
   const navigate = useNavigate()
   const addresses = useInterchainAddresses()
+  const [error, setError] = useState<string | null>(null)
   const { input, assetInfo, destination, recipient, chain, memo } = form.watch()
 
-  const onChangeMax = useCallback(
-    async (input: number) => {
-      setValue("input", input)
-      await trigger("input")
-    },
-    [setValue, trigger]
-  )
-
   /* fee */
-  const coins = [{ input, denom: "" }] as CoinInput[]
+  const coins = useMemo(() => [{ input, denom: "" }] as CoinInput[], [input])
   const estimationTxValues = useMemo(() => {
     return {
       address: addresses?.[chain ?? "phoenix-1"],
@@ -126,63 +132,86 @@ const Confirm = () => {
     [assetInfo, recipient, chain, getICSContract, destination, input, txType]
   )
 
-  if (!(input && destination && chain && recipient)) return null
-  const msg = `${input} ${assetInfo?.symbol}`
-  const value = assetInfo?.price ? (input * assetInfo?.price).toFixed(2) : "—"
+  if (!(input && destination && chain && recipient)) {
+    goToStep(1)
+    return null
+  }
 
-  const rows = [
-    { label: t("Total Value"), value },
-    {
-      label: t("Token Sent"),
-      value: msg,
-    },
-    { label: t("From"), value: truncate(assetInfo?.senderAddress) },
-    ...(memo
-      ? [
-          {
-            label: t("Memo"),
-            value: memo,
-          },
-        ]
-      : []),
-  ]
+  const TxInfo = (fee: InfoProps) => {
+    useEffect(() => {
+      // If is max and fee token === asset denom then subtract fee amount from input
+      if (fee.denom !== assetInfo?.denom) return
+      if (assetInfo.balance === amount) {
+        const newAmount = Number(assetInfo.balance) - Number(fee.amount)
+        setValue("input", toInput(newAmount, assetInfo.decimals))
+        setError(
+          "This transaction will use your whole balance. Consider leaving some to pay for subsequent fees."
+        )
+      }
+    }, [fee])
 
-  const Info = () => (
-    <>
-      <SendHeader
-        heading={t("Sending")}
-        label={`${input} ${assetInfo?.symbol}`}
-        subLabel={currency.symbol + " " + value}
-      />
-      <SectionHeader withLine title={t("Send")} />
-      <Timeline
-        startOverride={
-          <ActivityListItem
-            variant={"success"}
-            chain={{
-              icon: networks[chain].icon,
-              label: networks[chain].name,
-            }}
-            msg={
-              <>
-                Send <span>{msg}</span> to{" "}
-                <span className={style.green}>{getWalletName(recipient)}</span>
-              </>
-            }
-            type={txType as string}
-          />
-        }
-      />
-      <SectionHeader withLine title={t("Details")} />
-      <InputInLine
-        disabled
-        label={"To"}
-        extra={truncate(recipient)}
-        value={getWalletName(recipient)}
-      />
-    </>
-  )
+    const msg = `${input} ${assetInfo?.symbol}`
+    const currencyValue = `${currency.symbol} ${
+      assetInfo?.price ? (input * assetInfo?.price).toFixed(2) : "—"
+    }`
 
+    const rows = [
+      { label: t("Total Value"), value: currencyValue },
+      {
+        label: t("Token Sent"),
+        value: msg,
+      },
+      { label: t("From"), value: truncate(assetInfo?.senderAddress) },
+      ...(memo
+        ? [
+            {
+              label: t("Memo"),
+              value: memo,
+            },
+          ]
+        : []),
+    ]
+
+    return (
+      <>
+        <SendHeader
+          heading={t("Sending")}
+          label={`${input} ${assetInfo?.symbol}`}
+          subLabel={currencyValue}
+        />
+        <SectionHeader withLine title={t("Send")} />
+        <Timeline
+          startOverride={
+            <ActivityListItem
+              variant={"success"}
+              chain={{
+                icon: networks[chain].icon,
+                label: networks[chain].name,
+              }}
+              msg={
+                <>
+                  {t("Send")} <span>{msg}</span> {t("to")}{" "}
+                  <span className={style.green}>
+                    {getWalletName(recipient)}
+                  </span>
+                </>
+              }
+              type={txType as string}
+            />
+          }
+        />
+        <SectionHeader withLine title={t("Details")} />
+        <InputInLine
+          disabled
+          label={t("To")}
+          extra={truncate(recipient)}
+          value={getWalletName(recipient)}
+        />
+
+        {fee.render(rows)}
+      </>
+    )
+  }
   const tx = {
     token: assetInfo?.denom,
     decimals: assetInfo?.decimals,
@@ -193,7 +222,6 @@ const Confirm = () => {
     balance: assetInfo?.balance,
     estimationTxValues,
     createTx,
-    onChangeMax,
     onSuccess: () => {
       addRecipient({ recipient, name: getWalletName(recipient ?? "") })
       navigate("/")
@@ -206,9 +234,9 @@ const Confirm = () => {
     <Tx {...tx}>
       {({ submit, fee }) => (
         <Form onSubmit={handleSubmit(submit.fn)}>
-          <Info />
-          {fee.render(rows)}
+          <TxInfo {...fee} />
           {submit.button}
+          {error && <Banner variant="warning" title={t(error)} />}
         </Form>
       )}
     </Tx>

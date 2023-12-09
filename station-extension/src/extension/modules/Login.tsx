@@ -116,14 +116,14 @@ const Login = () => {
           </InputWrapper>
           <InputWrapper>
             <Checkbox
-              label={t("Don't ask for password again")}
+              label={t("Save password")}
               checked={rememberPassword}
               onChange={(e) => setRememberPassword(e.target.checked)}
             />
           </InputWrapper>
           <SubmitButton
             variant="secondary"
-            label={t("Sumbit")}
+            label={t("Submit")}
             loading={isSubmitting}
           />
         </form>
