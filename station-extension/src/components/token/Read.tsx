@@ -1,12 +1,16 @@
+import {
+  FormatConfig,
+  formatPercent,
+  readAmount,
+  truncate,
+} from "@terra-money/terra-utils"
 import { ForwardedRef, forwardRef, Fragment } from "react"
-import classNames from "classnames/bind"
-import { FormatConfig } from "@terra-money/terra-utils"
-import { formatPercent, readAmount, truncate } from "@terra-money/terra-utils"
-import { WithTokenItem } from "data/token"
-import styles from "./Read.module.scss"
-import { AccAddress } from "@terra-money/feather.js"
-import BigNumber from "bignumber.js"
 import { useCurrency } from "data/settings/Currency"
+import { AccAddress } from "@terra-money/feather.js"
+import { WithTokenItem } from "data/token"
+import classNames from "classnames/bind"
+import styles from "./Read.module.scss"
+import BigNumber from "bignumber.js"
 
 const cx = classNames.bind(styles)
 
@@ -48,6 +52,7 @@ const Read = forwardRef(
 
     const config = { ...props, comma, fixed }
     const [integer, decimal] = readAmount(amountBN, config).split(".")
+    const formattedInteger = Number(integer).toLocaleString()
 
     const renderDecimal = () => {
       return (
@@ -84,7 +89,7 @@ const Read = forwardRef(
         {approx && "≈ "}
         {!!lessThanFixed && "< "}
         {props.currency && currency.symbol}
-        {integer}
+        {formattedInteger}
         {renderDecimal()}
         {renderSymbol()}
       </span>
