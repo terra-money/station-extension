@@ -245,12 +245,40 @@ browser.runtime.onMessage.addListener(function (request, sender) {
 })
 
 /* popup */
-// TODO: Actions such as transaction rejection if user closes a popup
 let tabId = undefined
 let isPopupOpen = false
 browser.tabs.onRemoved.addListener(() => {
   tabId = undefined
   isPopupOpen = false
+  // reject transaction and connect requests
+  browser.storage.local
+    .get(["sign", "post", "connect"])
+    .then(({ sign = [], post = [], connect = { request: [] } }) => {
+      browser.storage.local.set({
+        sign: sign.map((s) =>
+          typeof success !== "boolean"
+            ? {
+                ...s,
+                success: false,
+                error: "User denied, extension popup was closed.",
+              }
+            : s
+        ),
+        post: post.map((s) =>
+          typeof success !== "boolean"
+            ? {
+                ...s,
+                success: false,
+                error: "User denied, extension popup was closed.",
+              }
+            : s
+        ),
+        connect: {
+          ...connect,
+          request: [],
+        },
+      })
+    })
 })
 
 const POPUP_WIDTH = 400
