@@ -1,5 +1,4 @@
 import { Read } from "components/token"
-import { useCurrency } from "data/settings/Currency"
 import { useNetwork, useNetworkName } from "data/wallet"
 import styles from "./AssetChain.module.scss"
 import { useNetworks } from "app/InitNetworks"
@@ -21,7 +20,6 @@ export interface Props {
 const AssetChain = (props: Props) => {
   const { chain, symbol, balance, decimals, path, denom, sendBack, price } =
     props
-  const currency = useCurrency()
   const networkName = useNetworkName()
   const allNetworks = useNetworks().networks[networkName]
   const networks = useNetwork()
@@ -45,10 +43,10 @@ const AssetChain = (props: Props) => {
           chain={{ icon, label: name }}
           priceNode={
             <>
-              {currency.symbol}
               {price ? (
                 <Read
                   {...props}
+                  currency
                   amount={price * parseInt(balance ?? "0")}
                   decimals={decimals}
                   fixed={2}

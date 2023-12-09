@@ -29,7 +29,7 @@ export default function ManageWalletsButton() {
   if (!selectedWallet && !isLedger)
     return (
       <button className={styles.manage__wallets} onClick={() => navigate("/")}>
-        <WalletIcon style={{ fontSize: 20 }} /> Connect wallet
+        <WalletIcon style={{ fontSize: 18 }} /> Connect wallet
       </button>
     )
 
@@ -48,8 +48,10 @@ export default function ManageWalletsButton() {
       ) : (
         <WalletIcon style={{ fontSize: 18 }} />
       )}{" "}
-      {wallet && "name" in wallet ? wallet.name : "Ledger"}
-      <ArrowDropDownIcon style={{ marginLeft: "-6px", fontSize: "1.25rem" }} />
+      <div className={styles.selector}>
+        <span>{wallet && "name" in wallet ? wallet.name : "Ledger"}</span>
+        <ArrowDropDownIcon />
+      </div>
     </button>
   )
 }

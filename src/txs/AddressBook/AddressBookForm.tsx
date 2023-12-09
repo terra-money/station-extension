@@ -18,14 +18,14 @@ import { useLocation, useNavigate } from "react-router-dom"
 interface Props {
   item?: AddressBook
   icon?: string
-  index?: number // exsisting item index for edit/remove
+  index?: number
 }
 
 const AddressBookForm = (props: Props) => {
   const { t } = useTranslation()
-  const { edit, add, list, remove } = useAddressBook()
+  const { edit, add, list } = useAddressBook()
   const { state } = useLocation()
-  const index = state?.walletIndex ?? props.index
+  const index = state?.index ?? props.index
   const navigate = useNavigate()
 
   /* form */
@@ -33,7 +33,6 @@ const AddressBookForm = (props: Props) => {
   const { register, handleSubmit, formState, watch, setValue } = form
   const { errors } = formState
   const { favorite, icon } = watch()
-
   const close = () => navigate(`/preferences/address-book`)
 
   useEffect(() => {
@@ -43,10 +42,6 @@ const AddressBookForm = (props: Props) => {
   const submit = (values: AddressBook) => {
     if (index !== undefined) edit(values, index)
     else add(values)
-    close()
-  }
-  const deleteOnClick = () => {
-    if (index !== undefined) remove(index)
     close()
   }
 
@@ -95,7 +90,13 @@ const AddressBookForm = (props: Props) => {
         />
       </InputWrapper>
       <ButtonInlineWrapper>
-        {index !== undefined && <DeleteButton onClick={deleteOnClick} />}
+        {index !== undefined && (
+          <DeleteButton
+            onClick={() =>
+              navigate("/preferences/address-book/delete", { state: { index } })
+            }
+          />
+        )}
         <SubmitButton label={t("Save")} />
       </ButtonInlineWrapper>
     </Form>

@@ -309,79 +309,68 @@ export const useUnknownIBCDenoms = () => {
   )
   return unknownIBCDenoms
 }
-
 export const useParsedAssetList = () => {
   const coins = useBankBalance()
   const { data: prices } = useExchangeRates()
   const readNativeDenom = useNativeDenoms()
   const networks = useNetwork()
-  const networkName = useNetworkName()
   const unknownIBCDenoms = useUnknownIBCDenoms()
 
-  const list = useMemo(
-    () => [
-      ...Object.values(
-        coins.reduce((acc, { denom, amount, chain }) => {
-          const data = readNativeDenom(
-            unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom ?? denom,
-            unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs[0] ?? chain
-          )
+  const list = useMemo(() => {
+    return (
+      coins.reduce((acc, { denom, amount, chain }) => {
+        const { chainID, symbol, decimals, token, icon } = readNativeDenom(
+          denom,
+          chain
+        )
 
-          const key = [
-            unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs[0] ??
-              data?.chainID ??
-              chain,
-            data.token,
-          ].join("*")
+        const nativeChain = chainID ?? chain
 
-          if (acc[key]) {
-            acc[key].balance = `${
-              parseInt(acc[key].balance) + parseInt(amount)
-            }`
-            acc[key].chains.push(chain)
-            return acc
-          } else if (key === "columbus-5*uluna" && networkName !== "classic") {
-            return {
-              ...acc,
-              [key]: {
-                denom: data.token,
-                decimals: data.decimals,
-                balance: amount,
-                icon: "https://assets.terra.dev/icon/svg/LUNC.svg",
-                symbol: "LUNC",
-                price: prices?.["uluna:classic"]?.price ?? 0,
-                change: prices?.["uluna:classic"]?.change ?? 0,
-                chains: [chain],
-                id: key,
-                whitelisted: true,
-              },
-            }
-          } else {
-            return {
-              ...acc,
-              [key]: {
-                denom: data.token,
-                decimals: data.decimals,
-                balance: amount,
-                icon: data.icon,
-                symbol: data.symbol,
-                price: prices?.[data.token]?.price ?? 0,
-                change: prices?.[data.token]?.change ?? 0,
-                chains: [chain],
-                id: key,
-                whitelisted: !(
-                  data.isNonWhitelisted ||
-                  unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs.find(
-                    (c: any) => !networks[c]
-                  )
-                ),
-              },
-            }
+        if (acc[symbol]) {
+          acc[symbol].balance = `${
+            parseInt(acc[symbol].balance) + parseInt(amount)
+          }`
+          acc[symbol].chains.push(chain)
+          return acc
+        } else if (symbol === "LUNC") {
+          return {
+            ...acc,
+            [symbol]: {
+              denom: token,
+              decimals,
+              balance: amount,
+              icon: "https://assets.terra.dev/icon/svg/LUNC.svg",
+              symbol: "LUNC",
+              price: prices?.["uluna:classic"]?.price ?? 0,
+              change: prices?.["uluna:classic"]?.change ?? 0,
+              chains: [chain],
+              nativeChain: nativeChain,
+              id: symbol,
+              whitelisted: true,
+            },
           }
-        }, {} as Record<string, any>) ?? {}
-      ),
-    ],
-    [coins, readNativeDenom, unknownIBCDenoms, networkName, prices, networks]
-  )
-  return list
+        } else {
+          return {
+            ...acc,
+            [symbol]: {
+              denom: token,
+              decimals: decimals,
+              balance: amount,
+              icon,
+              symbol: symbol,
+              price: prices?.[token]?.price ?? 0,
+              change: prices?.[token]?.change ?? 0,
+              chains: [chain],
+              nativeChain: nativeChain,
+              id: symbol,
+              whitelisted: !unknownIBCDenoms[
+                [denom, chain].join("*")
+              ]?.chainIDs.find((c: any) => !networks[c]),
+            },
+          }
+        }
+      }, {} as Record<string, any>) ?? {}
+    )
+  }, [coins, readNativeDenom, unknownIBCDenoms, prices, networks])
+  return Object.values(list)
 }

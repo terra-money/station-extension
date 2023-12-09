@@ -19,6 +19,7 @@ import AddAddressBookForm from "txs/AddressBook/AddressBookForm"
 import PreferencesPage, { SettingsPage } from "./PreferencesPage"
 import { getStoredLegacyWallets, lockWallet } from "auth/scripts/keystore"
 import { openURL } from "extension/storage"
+import WalletAddresses from "txs/AddressBook/WalletAddresses"
 
 export const useSettingsRoutes = () => {
   const { i18n, t } = useTranslation()
@@ -105,6 +106,11 @@ export const useSettingsRoutes = () => {
       route: "address-book/new",
       element: <AddAddressBookForm />,
       title: t("New Address Entry"),
+    },
+    myWallet: {
+      route: "address-book/my-addresses",
+      element: <WalletAddresses />,
+      title: t("My Addresses"),
     },
   }
   const home = {
