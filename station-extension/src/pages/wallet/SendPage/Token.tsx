@@ -38,7 +38,6 @@ const Token = () => {
           chainID: chain,
           chainName: name,
           tokenIcon: icon,
-          supported,
         } = tokenChainData
 
         if (acc.some((asset: AssetType) => asset.id === id)) {
@@ -56,7 +55,7 @@ const Token = () => {
             ibcDenoms[networkName][`${destination}:${denom}`]?.icsChannel,
         })
 
-        if ((isNative || channel) && supported) {
+        if (isNative || channel) {
           const balVal = balance * price
           const senderAddress = addresses?.[chain]
           const item = {
