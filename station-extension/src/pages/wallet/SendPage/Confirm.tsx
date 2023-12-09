@@ -3,7 +3,6 @@ import {
   SendHeader,
   Timeline,
   Form,
-  SummaryTable,
   SectionHeader,
   ActivityListItem,
   Banner,
@@ -23,14 +22,13 @@ import {
 import { AccAddress } from "@terra-money/feather.js"
 import { useRecentRecipients } from "utils/localStorage"
 import Tx from "txs/Tx"
-import { useCallback, useMemo, useEffect, useState } from "react"
+import { useCallback, useMemo, useEffect, useState, ReactNode } from "react"
 import { Coin } from "@terra-money/feather.js"
 import { queryKey } from "data/query"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { CoinInput } from "txs/utils"
 import { useNavigate } from "react-router-dom"
 import style from "./Send.module.scss"
-import { useNativeDenoms } from "data/token"
 
 enum TxType {
   SEND = "Send",
@@ -39,6 +37,12 @@ enum TxType {
 }
 
 interface InfoProps {
+  render: (
+    descriptions?: {
+      label: ReactNode
+      value: ReactNode
+    }[]
+  ) => ReactNode
   amount: string
   denom: string
   decimals: number | undefined
@@ -51,7 +55,6 @@ const Confirm = () => {
   const { handleSubmit, setValue } = form
   const { addRecipient } = useRecentRecipients()
   const navigate = useNavigate()
-  const readNativeDenom = useNativeDenoms()
   const addresses = useInterchainAddresses()
   const [error, setError] = useState<string | null>(null)
   const { input, assetInfo, destination, recipient, chain, memo } = form.watch()
@@ -147,11 +150,6 @@ const Confirm = () => {
       }
     }, [fee])
 
-    const feeValue = useMemo(() => {
-      const { symbol = "", decimals } = readNativeDenom(fee.denom ?? "", chain)
-      return `${toInput(fee.amount, decimals)} ${symbol}`
-    }, [fee])
-
     const msg = `${input} ${assetInfo?.symbol}`
     const currencyValue = `${currency.symbol} ${
       assetInfo?.price ? (input * assetInfo?.price).toFixed(2) : "—"
@@ -163,8 +161,15 @@ const Confirm = () => {
         label: t("Token Sent"),
         value: msg,
       },
-      { label: t("From"), value: truncate(assetInfo?.senderAddress, [11, 6]) },
-      { label: t("Fee"), value: feeValue },
+      { label: t("From"), value: truncate(assetInfo?.senderAddress) },
+      ...(memo
+        ? [
+            {
+              label: t("Memo"),
+              value: memo,
+            },
+          ]
+        : []),
     ]
 
     return (
@@ -202,11 +207,11 @@ const Confirm = () => {
           extra={truncate(recipient)}
           value={getWalletName(recipient)}
         />
-        <SummaryTable rows={rows} />
+
+        {fee.render(rows)}
       </>
     )
   }
-
   const tx = {
     token: assetInfo?.denom,
     decimals: assetInfo?.decimals,
