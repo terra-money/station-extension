@@ -52,7 +52,7 @@ const Read = forwardRef(
 
     const config = { ...props, comma, fixed }
     const [integer, decimal] = readAmount(amountBN, config).split(".")
-    const formattedInteger = Number(integer).toLocaleString()
+    const formattedInteger = Number(integer).toLocaleString("en-US")
 
     const renderDecimal = () => {
       return (
