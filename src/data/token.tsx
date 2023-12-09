@@ -340,14 +340,6 @@ export const useParsedAssetList = () => {
           )
         }
 
-        const supported = chain
-          ? !(
-              unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom === token &&
-              unknownIBCDenoms[[denom, chain].join("*")]?.chainID ===
-                nativeChain
-            )
-          : unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom === token
-
         const { name: chainName, icon: chainIcon } = networks[chain] || {}
         const tokenID = `${denom}*${chain}`
         const chainTokenItem = {
@@ -360,7 +352,6 @@ export const useParsedAssetList = () => {
           chainName,
           chainIcon,
           tokenIcon,
-          supported,
         }
 
         if (acc[symbol]) {
