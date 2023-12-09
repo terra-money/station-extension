@@ -307,40 +307,33 @@ export const useUnknownIBCDenoms = () => {
   )
   return unknownIBCDenoms
 }
-
 export const useParsedAssetList = () => {
-  const coins = useBankBalance()
+  const unknownIBCDenoms = useUnknownIBCDenoms()
   const { data: prices } = useExchangeRates()
   const readNativeDenom = useNativeDenoms()
+  const coins = useBankBalance()
   const networks = useNetwork()
-  const unknownIBCDenoms = useUnknownIBCDenoms()
-  const balances = useBankBalance()
 
   const list = useMemo(() => {
     return (
       coins.reduce((acc, { denom, amount, chain }) => {
-        const data = readNativeDenom(
-          unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom ?? denom,
-          unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs[0] ?? chain
-        )
+        const { chainID, symbol, decimals, token, icon, isNonWhitelisted } =
+          readNativeDenom(denom, chain)
 
-        const nativeChain =
-          data?.chainID ??
-          unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs[0] ??
-          chain
+        const nativeChain = chainID ?? chain
 
         let tokenIcon, tokenPrice, tokenChange, tokenWhitelisted
-        if (data?.symbol === "LUNC") {
+        if (symbol === "LUNC") {
           tokenIcon = "https://assets.terra.dev/icon/svg/LUNC.svg"
           tokenPrice = prices?.["uluna:classic"]?.price ?? 0
           tokenChange = prices?.["uluna:classic"]?.change ?? 0
           tokenWhitelisted = true
         } else {
-          tokenIcon = data.icon
-          tokenPrice = prices?.[data.token]?.price ?? 0
-          tokenChange = prices?.[data.token]?.change ?? 0
+          tokenIcon = icon
+          tokenPrice = prices?.[token]?.price ?? 0
+          tokenChange = prices?.[token]?.change ?? 0
           tokenWhitelisted = !(
-            data.isNonWhitelisted ||
+            isNonWhitelisted ||
             unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs.find(
               (c: any) => !networks[c]
             )
@@ -349,13 +342,11 @@ export const useParsedAssetList = () => {
 
         const supported = chain
           ? !(
-              unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom ===
-                data?.token &&
+              unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom === token &&
               unknownIBCDenoms[[denom, chain].join("*")]?.chainID ===
                 nativeChain
             )
-          : unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom ===
-            data?.token
+          : unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom === token
 
         const { name: chainName, icon: chainIcon } = networks[chain] || {}
         const tokenID = `${denom}*${chain}`
@@ -363,7 +354,7 @@ export const useParsedAssetList = () => {
           denom,
           id: tokenID,
           balance: parseInt(amount),
-          decimals: data.decimals,
+          decimals: decimals,
           tokenPrice,
           chainID: chain,
           chainName,
@@ -372,22 +363,22 @@ export const useParsedAssetList = () => {
           supported,
         }
 
-        if (acc[data.symbol]) {
-          acc[data.symbol].totalBalance = `${
-            parseInt(acc[data.symbol].totalBalance) + parseInt(amount)
+        if (acc[symbol]) {
+          acc[symbol].totalBalance = `${
+            parseInt(acc[symbol].totalBalance) + parseInt(amount)
           }`
-          acc[data.symbol].tokenChainInfo.push(chainTokenItem)
+          acc[symbol].tokenChainInfo.push(chainTokenItem)
           return acc
         } else {
           return {
             ...acc,
-            [data.symbol]: {
+            [symbol]: {
               balance: amount,
-              denom: data.token,
-              decimals: data.decimals,
+              denom: token,
+              decimals: decimals,
               totalBalance: amount,
               icon: tokenIcon,
-              symbol: data.symbol,
+              symbol: symbol,
               price: tokenPrice,
               change: tokenChange,
               tokenChainInfo: [chainTokenItem],
