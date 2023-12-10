@@ -65,14 +65,12 @@ export const useLogin = () => {
 function getMomentOfTheDay() {
   const hour = new Date().getHours()
 
-  if (hour >= 5 && hour < 12) {
+  if (hour >= 3 && hour < 12) {
     return "morning"
   } else if (hour >= 12 && hour < 18) {
     return "afternoon"
   } else if (hour >= 18 && hour < 23) {
     return "evening"
-  } else {
-    return "night"
   }
 }
 
@@ -81,8 +79,8 @@ function getRandomGreetings() {
     "Welcome back!",
     "Hey there!",
     "Nice to see you again!",
-    `Good ${getMomentOfTheDay()}!`,
-  ]
+    getMomentOfTheDay() && `Good ${getMomentOfTheDay()}!`,
+  ].filter((g) => !!g) as string[]
 
   return greetings[Math.floor(Math.random() * greetings.length)]
 }
