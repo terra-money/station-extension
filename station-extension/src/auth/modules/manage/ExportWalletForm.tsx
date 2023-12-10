@@ -78,7 +78,7 @@ const ExportWalletForm = ({ walletName }: Props) => {
             onClick={() => setMode(ExportType.MNEMONIC)}
           />
           <p className={styles.text}>
-            {t("This is your 12- or 24-word mnemonic phrase.")}
+            {t("Export your 12 or 24-word mnemonic phrase.")}
           </p>
         </FlexColumn>
         <FlexColumn gap={8}>
