@@ -12,10 +12,10 @@ import { RawKey, SignatureV2 } from "@terra-money/feather.js"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import is from "../scripts/is"
 import {
-  addWallet,
   disconnectWallet,
   isPasswordValid,
   connectWallet,
+  addLedgerWallet,
 } from "../scripts/keystore"
 import { getDecryptedKey } from "../scripts/keystore"
 import { getWallet, lockWallet } from "../scripts/keystore"
@@ -60,7 +60,6 @@ const useAuth = () => {
   }
 
   const connectLedger = (
-    password: string,
     words: { "330": string; "118"?: string },
     pubkey: { "330": string; "118"?: string },
     index = 0,
@@ -78,7 +77,7 @@ const useAuth = () => {
       name,
       legacy,
     }
-    addWallet(wallet, password)
+    addLedgerWallet(wallet)
     connectWallet(name)
     setWallet(wallet)
   }
