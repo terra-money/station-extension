@@ -89,7 +89,7 @@ const ExportWalletForm = ({ walletName }: Props) => {
           />
           <p className={styles.text}>
             {t(
-              "Exporting with seed key requires the same password to be used where you import the wallet."
+              "Export your seed key.  When importing your wallet utilizing the seed key, make sure to specify the same password you use to log in to this wallet."
             )}
           </p>
         </FlexColumn>
