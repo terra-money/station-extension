@@ -25,7 +25,7 @@ import { encrypt } from "../scripts/aes"
 import useAvailable from "./useAvailable"
 import { addressFromWords } from "utils/bech32"
 import { useNetwork } from "./useNetwork"
-import { createBleTransport, useLedgerKey } from "utils/ledger"
+import { useLedgerKey } from "utils/ledger"
 import { useLogin } from "extension/modules/Login"
 
 export const walletState = atom({
