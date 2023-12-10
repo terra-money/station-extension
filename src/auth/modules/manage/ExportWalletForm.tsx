@@ -85,7 +85,7 @@ const ExportWalletForm = ({ walletName }: Props) => {
           <NavButton
             icon={<KeyIcon fill="white" />}
             label={t("Seed Key")}
-            onClick={() => setMode(ExportType.MNEMONIC)}
+            onClick={() => setMode(ExportType.SEED)}
           />
           <p className={styles.text}>
             {t(
@@ -106,7 +106,7 @@ const ExportWalletForm = ({ walletName }: Props) => {
         <Banner
           variant="warning"
           title={t(
-            "Your {{keyType}} gives FULL access to your wallet, make sure to keep it safe!",
+            "Your {{keyType}} allows for FULL access to your wallet.  Make sure to keep it safe!",
             { keyType: mode }
           )}
         />
