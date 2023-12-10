@@ -5,7 +5,6 @@ import BluetoothTransport from "@ledgerhq/hw-transport-web-ble"
 import { LEDGER_TRANSPORT_TIMEOUT } from "config/constants"
 import {
   FlexColumn,
-  Grid,
   LedgerAnimation,
   LedgerDeviceAction,
 } from "@terra-money/station-ui"
@@ -131,10 +130,12 @@ export const useLedgerKey = () => {
           }),
       })
 
+      const legacySign = key.sign.bind(key)
+
       key.sign = async (m: Buffer) => {
         setState({ action: LedgerDeviceAction.CONFIRM })
         try {
-          const res = await key.sign(m)
+          const res = await legacySign(m)
           setState({})
           return res
         } catch (e) {
