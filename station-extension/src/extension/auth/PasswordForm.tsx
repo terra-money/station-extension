@@ -75,7 +75,6 @@ const PasswordForm = ({ onComplete, onCompleteLedger }: Props) => {
   }, [reset])
 
   const submit = ({ password, rememberPassword }: Values) => {
-    console.log("sumbit")
     if (passwordExists() && !isPasswordValid(password)) {
       setError(
         "password",
@@ -84,7 +83,6 @@ const PasswordForm = ({ onComplete, onCompleteLedger }: Props) => {
       )
       return
     }
-    console.log("no errors")
     if (rememberPassword) {
       setShouldStorePassword(true)
       storePassword(password)
@@ -92,7 +90,6 @@ const PasswordForm = ({ onComplete, onCompleteLedger }: Props) => {
       setShouldStorePassword(false)
     }
 
-    console.log("complete")
     onComplete && onComplete(password)
   }
 
