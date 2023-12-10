@@ -207,6 +207,12 @@ export const getStoredWallet = (name: string): ResultStoredWallet => {
   return wallet
 }
 
+export const createNewPassword = (password: string) => {
+  if (passwordExists()) throw new Error("Password already exists")
+
+  storePasswordChallenge(password)
+}
+
 const storePasswordChallenge = (password: string) => {
   localStorage.setItem(
     LocalStorage.PASSWORD_CHALLENGE,
@@ -313,6 +319,21 @@ export const addWallet = (params: AddWalletParams, password: string) => {
       storeWallets([...next, { name, words, encrypted, pubkey }])
     }
   }
+}
+
+export const addLedgerWallet = (params: LedgerWallet) => {
+  const wallets = getStoredWallets()
+
+  if (wallets.find((wallet) => wallet.name === params.name))
+    throw new Error("Wallet already exists")
+
+  const next = wallets.filter((wallet) =>
+    "words" in wallet
+      ? wallet.words["330"] !== params.words["330"]
+      : wallet.address !== addressFromWords(params.words["330"])
+  )
+
+  storeWallets([...next, params])
 }
 
 export const addMultisigWallet = (params: MultisigWallet) => {
