@@ -69,7 +69,7 @@ function getMomentOfTheDay() {
     return "morning"
   } else if (hour >= 12 && hour < 18) {
     return "afternoon"
-  } else if (hour >= 18 && hour < 23) {
+  } else if (hour >= 18 && hour < 21) {
     return "evening"
   }
 }
