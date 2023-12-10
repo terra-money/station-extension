@@ -60,7 +60,9 @@ const AssetList = () => {
         chain
       )
       const balance =
-        list.find((a) => a.denom === network[chain].baseAsset)?.balance ?? "0"
+        list.find((a) => a.denom === network[chain].baseAsset)?.totalBalance ??
+        "0"
+
       const token = {
         symbol,
         chain,
@@ -82,11 +84,13 @@ const AssetList = () => {
     const visible = filtered
       .filter(
         (a: any) =>
-          a.price * toInput(a.balance) >= 1 || alwaysVisibleDenoms.has(a.denom)
+          a.price * toInput(a.totalBalance) >= 1 ||
+          alwaysVisibleDenoms.has(a.denom)
       )
       .sort(
         (a: any, b: any) =>
-          b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
+          b.price * parseInt(b.totalBalance) -
+          a.price * parseInt(a.totalBalance)
       )
 
     const lowBal = filtered.filter((a: any) => !visible.includes(a))
@@ -133,7 +137,7 @@ const AssetList = () => {
             symbol={asset.name}
             onClick={() => setFilterChain(asset.chain)}
             amountNode={
-              <Read amount={asset.balance} decimals={asset.decimals} />
+              <Read amount={asset.totalBalance} decimals={asset.decimals} />
             }
             chain={{
               name: asset.name,
