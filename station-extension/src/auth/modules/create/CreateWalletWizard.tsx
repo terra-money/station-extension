@@ -84,6 +84,7 @@ const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
         {
           name,
           words,
+          mnemonic,
           seed,
           pubkey,
           index,
