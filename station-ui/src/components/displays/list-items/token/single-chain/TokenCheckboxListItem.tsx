@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import classNames from 'classnames/bind';
 import { ReactComponent as CircleCheck } from 'assets/icon/SmallCircleCheck.svg';
+import DefaultTokenIcon from 'assets/icon/DefaultToken.svg';
+import DefaultChainIcon from 'assets/icon/DefaultChain.svg';
 import styles from '../TokenListItem.module.scss';
 
 const cx = classNames.bind(styles);
@@ -19,15 +22,27 @@ const TokenCheckboxListItem = ({
   onClick,
   checked
 }: TokenCheckboxListItemProps) => {
+  const [displayTokenImg, setDisplayTokenImg] = useState(tokenImg)
+  const [displayChainImg, setDisplayChainImg] = useState(chain.icon);
+
+  const handleTokenImgError = (e: { stopPropagation: () => void; }, type: string) => {
+    e.stopPropagation()
+    if (type === 'token') {
+      setDisplayTokenImg(DefaultTokenIcon)
+    } else if (type === 'chain') {
+      setDisplayChainImg(DefaultChainIcon)
+    }
+  }
 
   return (
     <div className={styles.token__container} onClick={onClick}>
       <div className={styles.details}>
         <div className={styles.token__icon__container}>
           <img
-            src={tokenImg}
+            src={displayTokenImg}
             alt={symbol}
             className={styles.token__icon}
+            onError={(e) => handleTokenImgError(e, 'token')}
           />
         </div>
         <div className={styles.details__container__lr}>
@@ -36,11 +51,12 @@ const TokenCheckboxListItem = ({
               <span className={styles.symbol__name}>{symbol}</span>
             </h2>
             <h3 className={styles.chain__label}>
-              <img
-                src={chain.icon}
-                alt={chain.label}
-                className={styles.chain__icon}
-              />
+                <img
+                  src={displayChainImg}
+                  alt={chain.label}
+                  className={styles.chain__icon}
+                  onError={(e) => handleTokenImgError(e, 'chain')}
+                />
               {chain.label}
             </h3>
           </div>

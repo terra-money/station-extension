@@ -2,9 +2,31 @@ import classNames from "classnames"
 import { Tooltip } from "components"
 import { ReactComponent as TrendUp } from "assets/icon/TrendUp.svg"
 import { ReactComponent as TrendDown } from "assets/icon/TrendDown.svg"
+import DefaultTokenIcon from 'assets/icon/DefaultToken.svg';
+import DefaultChainIcon from 'assets/icon/DefaultChain.svg';
 import styles from "../TokenListItem.module.scss"
+import { useState } from 'react'
 
 const cx = classNames.bind(styles)
+
+const BuildChainList = (chain: { name: string, icon: string, balance: string }, index: number) => {
+  const [imgSrc, setImgSrc] = useState(chain.icon)
+
+  const handleError = (e: { stopPropagation: () => void; }) => {
+    e.stopPropagation()
+    setImgSrc(DefaultChainIcon)
+  }
+
+  return (
+    <div key={index} className={styles.container}>
+      <img src={imgSrc} alt={chain.name} onError={handleError} />
+      <div className={styles.text__container}>
+        <span className={styles.chain}>{chain.name}</span>
+        <span className={styles.balance}>{chain.balance}</span>
+      </div>
+    </div>
+  )
+}
 
 export interface TokenListItemProps {
   chains: { name: string, icon: string, balance: string }[]
@@ -25,29 +47,30 @@ const TokenListItem = ({
   amountNode,
   onClick,
 }: TokenListItemProps) => {
+  const [displayTokenImg, setDisplayTokenImg] = useState(tokenImg)
 
-  const TooltipContent = () => (
-    <div className={styles.chains__list}>
-      {chains.map((c, index) => (
-        <div key={index} className={styles.container}>
-          <img src={c.icon} alt={c.name} />
-          <div className={styles.text__container}>
-            <span className={styles.chain}>{c.name}</span>
-            <span className={styles.balance}>{c.balance}</span>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
+  const handleTokenImgError = (e: { stopPropagation: () => void; }) => {
+    e.stopPropagation()
+    setDisplayTokenImg(DefaultTokenIcon)
+  }
+
+  const TooltipContent = () => {
+    return (
+      <div className={styles.chains__list}>
+        {chains.map((c, index) => BuildChainList(c, index))}
+      </div>
+    )
+  }
 
   return (
     <div className={styles.token__container} onClick={onClick}>
       <div className={styles.details}>
         <div className={styles.token__icon__container}>
           <img
-            src={tokenImg}
+            src={displayTokenImg}
             alt={symbol}
             className={styles.token__icon}
+            onError={handleTokenImgError}
           />
         </div>
         <div className={styles.details__container}>
