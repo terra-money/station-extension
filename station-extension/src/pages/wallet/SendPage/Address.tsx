@@ -81,6 +81,7 @@ const Address = () => {
         <>
           <SectionHeader title="Recently Used" withLine />
           <WalletButtonList
+            variant="secondary"
             items={recipients.map((r) => ({
               ...r,
               name: getWalletName(r.recipient),

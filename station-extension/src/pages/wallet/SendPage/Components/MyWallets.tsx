@@ -7,9 +7,12 @@ import { truncate } from "@terra-money/terra-utils"
 import { useAuth } from "auth"
 import { getWallet } from "auth/scripts/keystore"
 import { addressFromWords } from "utils/bech32"
+import { ReactComponent as FavoriteIcon } from "styles/images/icons/Favorite.svg"
+import { ReactComponent as ActiveWalletIcon } from "styles/images/icons/ActiveWallet.svg"
+import { useTranslation } from "react-i18next"
 
 interface Props {
-  onClick?: (address: string) => void
+  onClick?: (address: string, index: number) => void
   tab: string
 }
 
@@ -18,25 +21,29 @@ export const WalletButtonList = ({
   title,
   icon,
   onClick,
+  variant = "primary",
 }: {
   items: AddressBook[]
   title?: string
   icon?: ReactNode
-  onClick?: (address: string) => void
+  variant?: "primary" | "secondary"
+  onClick?: (address: string, index: number) => void
 }) => {
   const network = useNetwork()
+  const { t } = useTranslation()
   if (!items.length) return null
   return (
     <Grid gap={8}>
-      {title && <SectionHeader icon={icon} indented title={title} />}
-      {items.map((i) => (
+      {title && <SectionHeader icon={icon} indented title={t(title)} />}
+      {items.map((i, index) => (
         <WalletButton
+          variant={variant}
           key={i.name + i.recipient}
           emoji={i.icon}
           walletName={i.name}
           walletAddress={truncate(i.recipient)}
           chainIcon={network[getChainIdFromAddress(i.recipient, network)]?.icon}
-          onClick={() => onClick?.(i.recipient)}
+          onClick={() => onClick?.(i.recipient, index)}
         />
       ))}
     </Grid>
@@ -51,7 +58,7 @@ const MyWallets = ({ tab, onClick }: Props) => {
     name: connectedWallet?.name ?? "",
     recipient: addressFromWords(connectedWallet?.words["330"] ?? ""),
   }
-  const myOtherWallets = wallets
+  const otherWallets = wallets
     .map((wallet) => {
       const { words } = getWallet(wallet.name)
       return {
@@ -67,21 +74,14 @@ const MyWallets = ({ tab, onClick }: Props) => {
         <>
           <WalletButtonList
             onClick={onClick}
+            variant="secondary"
             title="Favorites"
-            icon={
-              <div
-                style={{
-                  borderRadius: "50%",
-                  backgroundColor: "yellow",
-                  width: "8px",
-                  height: "8px",
-                }}
-              />
-            }
+            icon={<FavoriteIcon />}
             items={addressList.filter((i) => i.favorite)}
           />
           <WalletButtonList
-            title="All"
+            variant="secondary"
+            title="All Addresses"
             onClick={onClick}
             items={addressList.filter((i) => !i.favorite)}
           />
@@ -91,20 +91,11 @@ const MyWallets = ({ tab, onClick }: Props) => {
           <WalletButtonList
             onClick={onClick}
             title="Active"
-            icon={
-              <div
-                style={{
-                  borderRadius: "50%",
-                  backgroundColor: "var(--token-primary-500)",
-                  width: "8px",
-                  height: "8px",
-                }}
-              />
-            }
+            icon={<ActiveWalletIcon />}
             items={[activeWallet]}
           />
           <WalletButtonList
-            items={myOtherWallets}
+            items={otherWallets}
             onClick={onClick}
             title="Other Wallets"
           />
