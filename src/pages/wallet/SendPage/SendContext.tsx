@@ -28,6 +28,7 @@ const SendContext = ({ children }: PropsWithChildren<{}>) => {
   const getWalletName = useGetWalletName()
   const balances = useBankBalance()
   const assetList = useParsedAssetList()
+
   const networks = useNetwork()
   const { getIBCChannel, getICSContract } = useIBCChannels()
 

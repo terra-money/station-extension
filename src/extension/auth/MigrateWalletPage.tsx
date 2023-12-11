@@ -15,7 +15,7 @@ import {
   TextArea,
   Form,
   Banner,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { addressFromWords, wordsFromAddress } from "utils/bech32"
 import { ReactComponent as WalletIcon } from "styles/images/icons/Wallet.svg"
 import { truncate } from "@terra-money/terra-utils"
@@ -83,7 +83,7 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
   const { errors, isValid } = formState
   const { mode, secret, index } = watch()
 
-  function sumbit({ mode, secret, index }: Values) {
+  function submit({ mode, secret, index }: Values) {
     // PASSWORD VALIDATION (if needed)
     if (mode === "password") {
       try {
@@ -133,12 +133,12 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
     })
     const key118 = new SeedKey({
       seed,
-      coinType: wallet.legacy ? 118 : 330,
+      coinType: 118,
       index: index || wallet.index || 0,
     })
     const key60 = new SeedKey({
       seed,
-      coinType: wallet.legacy ? 118 : 330,
+      coinType: 60,
       index: index || wallet.index || 0,
     })
 
@@ -213,7 +213,7 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
       )}
       fullHeight
     >
-      <Form onSubmit={handleSubmit(sumbit)}>
+      <Form onSubmit={handleSubmit(submit)}>
         <Grid gap={18}>
           <Tabs
             activeTabKey={mode}

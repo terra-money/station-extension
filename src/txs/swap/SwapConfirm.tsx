@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { MsgTransfer, Coin, MsgExecuteContract } from "@terra-money/feather.js"
-import { Form, SectionHeader, SummaryTable } from "station-ui"
+import { Form, SectionHeader, SummaryTable } from "@terra-money/station-ui"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import SwapTimeline from "./components/SwapTimeline"
