@@ -52,6 +52,21 @@ Wallet button without an emoji.
   `} />
 </div>
 
+## Secondary
+Wallet button with secondary variant
+<div className="story_with_source_below">
+  <Canvas of={WalletButtonStories.Secondary} />
+  <Source code={`
+    <WalletButton
+    variant="secondary"
+  walletName="my-wallet"
+  walletAddress="terra1hod3...pazdy5"
+  chainIcon="https://station-assets.terra.dev/img/chains/Terra.svg"
+  onClick={() => console.log("clicked!")}
+/>
+  `} />
+</div>
+
 <br />
 <br />
 <br />

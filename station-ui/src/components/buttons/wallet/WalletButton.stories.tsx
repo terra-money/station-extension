@@ -37,3 +37,18 @@ export const NoEmoji: StoryObj<WalletButtonProps> = {
   },
   argTypes: {},
 };
+
+export const Secondary: StoryObj<WalletButtonProps> = {
+  render: () => {
+    return (
+      <WalletButton
+        variant='secondary'
+        walletName="my-wallet"
+        walletAddress="terra1hod3...pazdy5"
+        chainIcon="https://station-assets.terra.dev/img/chains/Terra.svg"
+        onClick={() => console.log("clicked!")}
+      />
+    )
+  },
+  argTypes: {},
+};

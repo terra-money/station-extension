@@ -1,14 +1,17 @@
 import { ReactComponent as RightArrow } from "assets/icon/RightArrow.svg"
 import styles from "./WalletButton.module.scss"
 import { WalletEmoji } from "components"
-
+import classNames from "classnames"
 export interface WalletButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   emoji?: string
   walletName: string
   walletAddress: string
   chainIcon: string
   onClick: () => void
+  variant?: 'primary' | 'secondary'
 }
+
+const cx = classNames.bind(styles)
 
 const WalletButton = ({
   emoji,
@@ -16,10 +19,11 @@ const WalletButton = ({
   walletAddress,
   chainIcon,
   onClick,
+  variant = 'primary',
   ...rest
 }: WalletButtonProps) => {
   return (
-    <button {...rest} type='button' className={styles.wallet__button} onClick={onClick}>
+    <button {...rest} type='button' className={cx(styles.wallet__button, { secondary: variant === 'secondary'})} onClick={onClick}>
       <div className={styles.left__side}>
         <WalletEmoji id={emoji ?? walletName} />
         <div className={styles.details}>
