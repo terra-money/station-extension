@@ -17,7 +17,7 @@ import {
   InputWrapper,
   ButtonInlineWrapper,
   SubmitButton,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import classNames from "classnames"
 import DeleteButton from "components/form/DeleteButton"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -42,7 +42,11 @@ const LCDSetting = (props: Props) => {
   const navigate = useNavigate()
   const { customLCDs, changeCustomLCDs } = useCustomLCDs()
   const location = useLocation()
-  const form = useForm<FormValues>({ mode: "onChange" })
+  const form = useForm<FormValues>({
+    mode: "onChange",
+    defaultValues: { network: networkName },
+  })
+
   const {
     register,
     watch,
@@ -54,7 +58,7 @@ const LCDSetting = (props: Props) => {
   const selectedChainID = location.state?.chainID ?? props.selectedChainID
   const networksList = useMemo(
     () =>
-      Object.values(networks[network] ?? {})
+      Object.values(networks[network])
         .sort((a, b) => {
           if (a?.prefix === "terra") return -1
           if (b?.prefix === "terra") return 1
@@ -65,14 +69,7 @@ const LCDSetting = (props: Props) => {
   )
 
   useEffect(() => {
-    if (!network) {
-      const index = networkOptions.findIndex((n) => n.value === networkName)
-      setValue("network", networkOptions[index].value)
-    }
-  }, [network, networkName, networkOptions, setValue])
-
-  useEffect(() => {
-    if (!networksList.length) return
+    if (!networksList?.length) return
     setValue("chainID", selectedChainID ?? networksList[0].value)
   }, [setValue, networksList, selectedChainID])
 
@@ -147,12 +144,12 @@ const LCDSetting = (props: Props) => {
 
       <InputWrapper label={t("Source Chain")} error={errors?.chainID?.message}>
         <Dropdown
+          withSearch
           options={networksList}
           value={chainID}
           onChange={(chainID) => setValue("chainID", chainID)}
         />
       </InputWrapper>
-
       <InputWrapper
         label={t("Custom URL")}
         error={errorMessage}

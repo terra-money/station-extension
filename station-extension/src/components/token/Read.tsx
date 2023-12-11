@@ -1,10 +1,16 @@
+import {
+  FormatConfig,
+  formatPercent,
+  readAmount,
+  truncate,
+} from "@terra-money/terra-utils"
 import { ForwardedRef, forwardRef, Fragment } from "react"
-import classNames from "classnames/bind"
-import { FormatConfig } from "@terra-money/terra-utils"
-import { formatPercent, readAmount, truncate } from "@terra-money/terra-utils"
-import { WithTokenItem } from "data/token"
-import styles from "./Read.module.scss"
+import { useCurrency } from "data/settings/Currency"
 import { AccAddress } from "@terra-money/feather.js"
+import { WithTokenItem } from "data/token"
+import classNames from "classnames/bind"
+import styles from "./Read.module.scss"
+import BigNumber from "bignumber.js"
 
 const cx = classNames.bind(styles)
 
@@ -12,63 +18,65 @@ interface Props extends Partial<FormatConfig> {
   amount?: Amount | Value
   denom?: Denom
   token?: Token
+  currency?: boolean
 
   approx?: boolean
   block?: boolean
   className?: string
-
-  auto?: boolean
 }
 
 const Read = forwardRef(
   (
-    { amount, denom, approx, block, auto, ...props }: Props,
+    { amount, denom, approx, block, comma = false, ...props }: Props,
     ref: ForwardedRef<HTMLSpanElement>
   ) => {
-    if (!(amount || Number.isFinite(amount))) return null
+    const currency = useCurrency()
 
-    const comma = !(typeof props.comma === "boolean" && props.comma === false)
+    const amountBN = new BigNumber(amount ?? "")
+    if (!amount || amountBN.isNaN()) return null
+    const tenToThePowerOf = (exp: number) => new BigNumber(10).pow(exp)
+    const decimals = props.decimals ?? 6
 
-    const fixed = !auto
+    const fixed = props.fixed
       ? props.fixed
-      : Number(amount) >= Math.pow(10, (props.decimals ?? 6) + 3)
+      : amountBN.gte(tenToThePowerOf(decimals + 3))
       ? 0
-      : Number(amount) < Math.pow(10, props.decimals ?? 6)
+      : amountBN.lt(tenToThePowerOf(decimals))
       ? props.decimals
       : 2
 
-    const lessThanFloor = fixed && Math.pow(10, -fixed)
+    const lessThanFloor = fixed ? tenToThePowerOf(-fixed) : 0
     const lessThanFixed =
-      amount && lessThanFloor && amount > 0 && amount < lessThanFloor
+      amountBN.isPositive() &&
+      amountBN.times(tenToThePowerOf(-decimals)).lt(lessThanFloor)
 
     const config = { ...props, comma, fixed }
-    const [integer, decimal] = readAmount(amount, config).split(".")
+    const [integer, decimal] = readAmount(amountBN, config).split(".")
+    const formattedInteger = Number(integer).toLocaleString("en-US")
 
     const renderDecimal = () => {
       return (
         <span className={cx({ small: !props?.prefix })}>
           {lessThanFixed
             ? `.${lessThanFloor.toString().split(".")[1]}`
-            : `.${decimal || (0).toFixed(fixed || 2).split(".")[1]}`}
+            : `.${decimal ?? (0).toFixed(fixed || 2).split(".")[1]}`}
         </span>
       )
     }
 
     const renderSymbol = () => {
       const token = props.token ?? denom
-
       if (!token) return null
 
       return (
         <span className={styles.small}>
           {" "}
           <WithTokenItem token={token}>
-            {({ symbol }) => {
-              if (AccAddress.validate(symbol)) {
-                return truncate(symbol)
-              }
-              return symbol ?? truncate(token)
-            }}
+            {({ symbol }) =>
+              AccAddress.validate(symbol)
+                ? truncate(symbol)
+                : symbol ?? truncate(token)
+            }
           </WithTokenItem>
         </span>
       )
@@ -80,7 +88,8 @@ const Read = forwardRef(
       <span className={className} ref={ref}>
         {approx && "≈ "}
         {!!lessThanFixed && "< "}
-        {integer}
+        {props.currency && currency.symbol}
+        {formattedInteger}
         {renderDecimal()}
         {renderSymbol()}
       </span>

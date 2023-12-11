@@ -1,6 +1,6 @@
 import { useQuery } from "react-query"
 import styles from "./ChangeLogModal.module.scss"
-import { LoadingCircular, Modal } from "station-ui"
+import { LoadingCircular, Modal } from "@terra-money/station-ui"
 import axios from "axios"
 import { RefetchOptions } from "data/query"
 import browser from "webextension-polyfill"

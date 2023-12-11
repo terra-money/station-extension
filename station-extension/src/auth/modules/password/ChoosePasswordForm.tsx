@@ -5,7 +5,12 @@ import { Form } from "components/form"
 import { isWallet } from "auth"
 import { deleteWallet, isPasswordValid } from "../../scripts/keystore"
 import useAuth from "../../hooks/useAuth"
-import { Banner, Input, InputWrapper, SubmitButton } from "station-ui"
+import {
+  Banner,
+  Input,
+  InputWrapper,
+  SubmitButton,
+} from "@terra-money/station-ui"
 
 interface Values {
   password: string

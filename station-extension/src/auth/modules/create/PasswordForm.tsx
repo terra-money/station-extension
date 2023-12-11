@@ -12,7 +12,7 @@ import {
   Flex,
   Button,
   Checkbox,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import styles from "./CreateWalletForm.module.scss"
 import {
   getStoredPassword,
@@ -116,7 +116,7 @@ const PasswordForm = () => {
 
         <InputWrapper>
           <Checkbox
-            label={t("Don't ask for password again")}
+            label={t("Save password")}
             checked={rememberPassword}
             {...register("rememberPassword")}
           />
