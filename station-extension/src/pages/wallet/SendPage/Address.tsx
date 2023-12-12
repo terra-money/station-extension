@@ -14,6 +14,7 @@ import MyWallets from "./Components/MyWallets"
 import validate from "txs/validate"
 import { useRecentRecipients } from "utils/localStorage"
 import { useTranslation } from "react-i18next"
+import { useGetLocalWalletName } from "auth/hooks/useAddress"
 
 const Address = () => {
   const { form, goToStep, getWalletName, networks } = useSend()
@@ -23,6 +24,7 @@ const Address = () => {
   const { errors } = formState
   const { recipient } = watch()
   const { t } = useTranslation()
+  const getLocalWalletName = useGetLocalWalletName()
 
   // useEffect(() => {
   //   // Handle routing from asset-specific page
@@ -45,8 +47,13 @@ const Address = () => {
   ]
 
   const handleKnownWallet = (recipient: AccAddress) => {
-    setValue("recipient", recipient)
-    goToStep(2)
+    const walletName = getLocalWalletName(recipient)
+    if (walletName) {
+      setValue("recipient", walletName)
+      goToStep(2)
+    } else {
+      handleKnownChain(recipient)
+    }
   }
 
   const handleKnownChain = (recipient: AccAddress) => {
