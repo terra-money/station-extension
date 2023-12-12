@@ -1,23 +1,21 @@
-import { ReactNode } from "react"
-import { isDenomIBC } from "@terra-money/terra-utils"
-import { readDenom, truncate } from "@terra-money/terra-utils"
-import { AccAddress } from "@terra-money/feather.js"
-import { ASSETS } from "config/constants"
-import { useTokenInfoCW20 } from "./queries/wasm"
-import { useCustomTokensCW20 } from "./settings/CustomTokens"
-import { useExchangeRates } from "data/queries/coingecko"
 import {
   useGammTokens,
   GAMM_TOKEN_DECIMALS,
   OSMO_ICON,
 } from "./external/osmosis"
+import { isDenomIBC, readDenom, truncate } from "@terra-money/terra-utils"
 import { useCW20Whitelist, useIBCWhitelist } from "./Terra/TerraAssets"
-import { useWhitelist } from "./queries/chains"
+import { useCustomTokensCW20 } from "./settings/CustomTokens"
+import { useExchangeRates } from "data/queries/coingecko"
 import { useNetworkName, useNetwork } from "./wallet"
 import { getChainIDFromAddress } from "utils/bech32"
-import { useBankBalance } from "./queries/bank"
-import { useMemo } from "react"
+import { AccAddress } from "@terra-money/feather.js"
 import { useIBCBaseDenoms } from "data/queries/ibc"
+import { useTokenInfoCW20 } from "./queries/wasm"
+import { useBankBalance } from "./queries/bank"
+import { useWhitelist } from "./queries/chains"
+import { ReactNode, useMemo } from "react"
+import { ASSETS } from "config/constants"
 
 export const DEFAULT_NATIVE_DECIMALS = 6
 
@@ -309,70 +307,75 @@ export const useUnknownIBCDenoms = () => {
   )
   return unknownIBCDenoms
 }
-
 export const useParsedAssetList = () => {
-  const coins = useBankBalance()
+  const unknownIBCDenoms = useUnknownIBCDenoms()
   const { data: prices } = useExchangeRates()
   const readNativeDenom = useNativeDenoms()
+  const coins = useBankBalance()
   const networks = useNetwork()
-  const unknownIBCDenoms = useUnknownIBCDenoms()
 
   const list = useMemo(() => {
     return (
       coins.reduce((acc, { denom, amount, chain }) => {
-        const data = readNativeDenom(
-          unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom ?? denom,
-          unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs[0] ?? chain
-        )
+        const { chainID, symbol, decimals, token, icon, isNonWhitelisted } =
+          readNativeDenom(denom, chain)
 
-        const nativeChain =
-          data?.chainID ??
-          unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs[0] ??
-          chain
+        const nativeChain = chainID ?? chain
 
-        if (acc[data?.symbol]) {
-          acc[data?.symbol].balance = `${
-            parseInt(acc[data?.symbol].balance) + parseInt(amount)
+        let tokenIcon, tokenPrice, tokenChange, tokenWhitelisted
+        if (symbol === "LUNC") {
+          tokenIcon = "https://assets.terra.dev/icon/svg/LUNC.svg"
+          tokenPrice = prices?.["uluna:classic"]?.price ?? 0
+          tokenChange = prices?.["uluna:classic"]?.change ?? 0
+          tokenWhitelisted = true
+        } else {
+          tokenIcon = icon
+          tokenPrice = prices?.[token]?.price ?? 0
+          tokenChange = prices?.[token]?.change ?? 0
+          tokenWhitelisted = !(
+            isNonWhitelisted ||
+            unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs.find(
+              (c: any) => !networks[c]
+            )
+          )
+        }
+
+        const { name: chainName, icon: chainIcon } = networks[chain] || {}
+        const tokenID = `${denom}*${chain}`
+        const chainTokenItem = {
+          denom,
+          id: tokenID,
+          balance: parseInt(amount),
+          decimals: decimals,
+          tokenPrice,
+          chainID: chain,
+          chainName,
+          chainIcon,
+          tokenIcon,
+        }
+
+        if (acc[symbol]) {
+          acc[symbol].totalBalance = `${
+            parseInt(acc[symbol].totalBalance) + parseInt(amount)
           }`
-          acc[data?.symbol].chains.push(chain)
+          acc[symbol].tokenChainInfo.push(chainTokenItem)
           return acc
-        } else if (data?.symbol === "LUNC") {
-          return {
-            ...acc,
-            [data?.symbol]: {
-              denom: data.token,
-              decimals: data.decimals,
-              balance: amount,
-              icon: "https://assets.terra.dev/icon/svg/LUNC.svg",
-              symbol: "LUNC",
-              price: prices?.["uluna:classic"]?.price ?? 0,
-              change: prices?.["uluna:classic"]?.change ?? 0,
-              chains: [chain],
-              nativeChain: nativeChain,
-              id: data?.symbol,
-              whitelisted: true,
-            },
-          }
         } else {
           return {
             ...acc,
-            [data?.symbol]: {
-              denom: data.token,
-              decimals: data.decimals,
+            [symbol]: {
               balance: amount,
-              icon: data.icon,
-              symbol: data.symbol,
-              price: prices?.[data.token]?.price ?? 0,
-              change: prices?.[data.token]?.change ?? 0,
-              chains: [chain],
+              denom: token,
+              decimals: decimals,
+              totalBalance: amount,
+              icon: tokenIcon,
+              symbol: symbol,
+              price: tokenPrice,
+              change: tokenChange,
+              tokenChainInfo: [chainTokenItem],
               nativeChain: nativeChain,
-              id: data?.symbol,
-              whitelisted: !(
-                data.isNonWhitelisted ||
-                unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs.find(
-                  (c: any) => !networks[c]
-                )
-              ),
+              id: tokenID,
+              whitelisted: tokenWhitelisted,
             },
           }
         }
