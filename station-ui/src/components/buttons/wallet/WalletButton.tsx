@@ -6,7 +6,7 @@ export interface WalletButtonProps extends React.HTMLAttributes<HTMLButtonElemen
   emoji?: string
   walletName: string
   walletAddress: string
-  chainIcon: string
+  chainIcon?: string
   onClick: () => void
   variant?: 'primary' | 'secondary'
 }
@@ -23,19 +23,19 @@ const WalletButton = ({
   ...rest
 }: WalletButtonProps) => {
   return (
-    <button {...rest} type='button' className={cx(styles.wallet__button, { secondary: variant === 'secondary'})} onClick={onClick}>
+    <button {...rest} type='button' className={cx(styles.wallet__button, { [styles.secondary]: variant === 'secondary'})} onClick={onClick}>
       <div className={styles.left__side}>
         <WalletEmoji id={emoji ?? walletName} />
         <div className={styles.details}>
           <h3 className={styles.wallet__name}>{walletName}</h3>
           <div className={styles.wallet__address__container}>
-            <img src={chainIcon} />
+            {chainIcon && <img src={chainIcon} /> }
             <h6 className={styles.address}>{walletAddress}</h6>
           </div>
         </div>
       </div>
       <div className={styles.right__side}>
-        <RightArrow fill='var(--token-light-white)' />
+        <RightArrow fill={variant === 'secondary' ? 'var(--token-light-white)' : 'var(--token-light-white)'} />
       </div>
     </button>
   )

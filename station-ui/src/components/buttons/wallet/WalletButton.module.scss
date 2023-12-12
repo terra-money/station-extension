@@ -10,7 +10,7 @@
   border-radius: 8px;
 
   &.secondary {
-    background-color: green;
+    background-color: var(--token-dark-100);
     border: 1px solid var(--token-dark-700);
   }
 

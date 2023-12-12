@@ -44,8 +44,7 @@ export const Secondary: StoryObj<WalletButtonProps> = {
       <WalletButton
         variant='secondary'
         walletName="my-wallet"
-        walletAddress="terra1hod3...pazdy5"
-        chainIcon="https://station-assets.terra.dev/img/chains/Terra.svg"
+        walletAddress="Multiple Addresses"
         onClick={() => console.log("clicked!")}
       />
     )

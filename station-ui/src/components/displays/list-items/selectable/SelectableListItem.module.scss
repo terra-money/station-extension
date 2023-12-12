@@ -10,11 +10,6 @@
   background-color: var(--token-dark-700);
   border-radius: 8px;
 
-  &.secondary {
-    background-color: 'green';
-    border: 1px solid var(--token-dark-700);
-  }
-
   &:hover {
     cursor: pointer;
   }
