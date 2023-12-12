@@ -2,7 +2,6 @@ import { ReactNode } from "react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { QueryKey, useQuery } from "react-query"
-import { useNavigate } from "react-router-dom"
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import classNames from "classnames"
 import BigNumber from "bignumber.js"
@@ -269,8 +268,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<Error>()
-
-  const navigate = useNavigate()
   const toPostMultisigTx = useToPostMultisigTx()
   const submit = async (values: TxValues) => {
     setSubmitting(true)

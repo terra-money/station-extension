@@ -6,7 +6,7 @@ import {
   SectionHeader,
   SubmitButton,
   TextArea,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import {
   LegacyAminoMultisigPublicKey,
   MultiSignature,
