@@ -5,8 +5,6 @@ import { Grid, SectionHeader, WalletButton } from "@terra-money/station-ui"
 import { useNetwork } from "data/wallet"
 import { truncate } from "@terra-money/terra-utils"
 import { useAuth } from "auth"
-import { getWallet } from "auth/scripts/keystore"
-import { addressFromWords } from "utils/bech32"
 import { ReactComponent as FavoriteIcon } from "styles/images/icons/Favorite.svg"
 import { ReactComponent as ActiveWalletIcon } from "styles/images/icons/ActiveWallet.svg"
 import { useTranslation } from "react-i18next"
@@ -15,6 +13,11 @@ interface Props {
   onClick?: (address: string, index: number) => void
   tab: string
 }
+interface ButtonListItem {
+  name: string
+  icon?: string
+  recipient?: string
+}
 
 export const WalletButtonList = ({
   items,
@@ -22,11 +25,13 @@ export const WalletButtonList = ({
   icon,
   onClick,
   variant = "primary",
+  isMultipleAddresses = false,
 }: {
-  items: AddressBook[]
+  items: ButtonListItem[]
   title?: string
   icon?: ReactNode
   variant?: "primary" | "secondary"
+  isMultipleAddresses?: boolean
   onClick?: (address: string, index: number) => void
 }) => {
   const network = useNetwork()
@@ -38,12 +43,20 @@ export const WalletButtonList = ({
       {items.map((i, index) => (
         <WalletButton
           variant={variant}
-          key={i.name + i.recipient}
+          key={i.name}
           emoji={i.icon}
           walletName={i.name}
-          walletAddress={truncate(i.recipient)}
-          chainIcon={network[getChainIdFromAddress(i.recipient, network)]?.icon}
-          onClick={() => onClick?.(i.recipient, index)}
+          walletAddress={
+            isMultipleAddresses
+              ? t("Multiple Addresses")
+              : truncate(i.recipient)
+          }
+          chainIcon={
+            i.recipient
+              ? network[getChainIdFromAddress(i.recipient, network)]?.icon
+              : undefined
+          }
+          onClick={() => onClick?.(i.recipient ?? i.name, index)}
         />
       ))}
     </Grid>
@@ -54,19 +67,10 @@ const MyWallets = ({ tab, onClick }: Props) => {
   const { list: addressList } = useAddressBook()
   const { wallets, connectedWallet } = useAuth()
 
-  const activeWallet = {
-    name: connectedWallet?.name ?? "",
-    recipient: addressFromWords(connectedWallet?.words["330"] ?? ""),
-  }
-  const otherWallets = wallets
-    .map((wallet) => {
-      const { words } = getWallet(wallet.name)
-      return {
-        name: wallet.name,
-        recipient: addressFromWords(words["330"]),
-      }
-    })
-    .filter((w) => w.name !== connectedWallet?.name)
+  const localWallets: ButtonListItem[] = wallets.map((w) => ({
+    name: w.name,
+    icon: w.icon,
+  }))
 
   return (
     <>
@@ -88,16 +92,20 @@ const MyWallets = ({ tab, onClick }: Props) => {
         </>
       ) : (
         <>
+          {connectedWallet && (
+            <WalletButtonList
+              onClick={onClick}
+              title="Active"
+              icon={<ActiveWalletIcon />}
+              items={[connectedWallet]}
+              isMultipleAddresses={true}
+            />
+          )}
           <WalletButtonList
-            onClick={onClick}
-            title="Active"
-            icon={<ActiveWalletIcon />}
-            items={[activeWallet]}
-          />
-          <WalletButtonList
-            items={otherWallets}
+            items={localWallets.filter((w) => w.name !== connectedWallet?.name)}
             onClick={onClick}
             title="Other Wallets"
+            isMultipleAddresses={true}
           />
         </>
       )}
