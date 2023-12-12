@@ -16,16 +16,11 @@ const SignMultisigTxPage = () => {
   const chainID = useChainID()
   const addresses = useInterchainAddresses()
 
-  const render = () => {
-    if (isWallet.multisig(wallet))
-      return (
-        <Card>
-          <Wrong>{t("Multisig wallet cannot sign a tx")}</Wrong>
-        </Card>
-      )
-
-    return <SignMultisigTxForm defaultValues={defaultValues} />
-  }
+  const incorrectWalletErrorPage = (
+    <Card>
+      <Wrong>{t(`A multisig wallet cannot sign a transaction`)}</Wrong>
+    </Card>
+  )
 
   return (
     <ExtensionPage
@@ -33,8 +28,13 @@ const SignMultisigTxPage = () => {
       title={t("Sign Multisig Tx")}
       subtitle={truncate(addresses?.[chainID], [13, 6])}
       fullHeight
+      modal
     >
-      {render()}
+      {isWallet.multisig(wallet) ? (
+        incorrectWalletErrorPage
+      ) : (
+        <SignMultisigTxForm defaultValues={defaultValues} />
+      )}
     </ExtensionPage>
   )
 }

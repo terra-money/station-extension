@@ -38,6 +38,8 @@ import { getErrorMessage } from "utils/error"
 import ManageWalletsButton from "./auth/ManageWalletsButton"
 import ManageWalletRouter from "./auth/ManageWalletRouter"
 import PreferencesButton from "app/sections/settings/PreferencesButton"
+import InitActivity from "pages/activity/InitActivity"
+import DashboardButton from "app/sections/DashboardButton"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -85,7 +87,7 @@ const App = () => {
     { path: "/preferences/*", element: <PreferencesRouter /> },
 
     /* default txs */
-    { path: "/swap", element: <SwapTx /> },
+    { path: "/swap/*", element: <SwapTx /> },
     { path: "/multisig/sign", element: <SignMultisigTxPage /> },
     { path: "/multisig/post", element: <PostMultisigTxPage /> },
 
@@ -107,15 +109,16 @@ const App = () => {
       <>
         {!hideHeader && (
           <Header>
-            <Flex gap={0}>
+            <Flex>
               <ManageWalletsButton />
               <NetworkHeader />
             </Flex>
-            <Flex gap={5}>
+            <Flex>
               <LatestTx />
               <EnableCoinType />
               <NetworkStatus />
               <PreferencesButton />
+              <DashboardButton />
             </Flex>
           </Header>
         )}
@@ -128,7 +131,9 @@ const App = () => {
   return (
     <ErrorBoundary fallback={fallback}>
       <InitBankBalance>
-        <RequestContainer>{render()}</RequestContainer>
+        <InitActivity>
+          <RequestContainer>{render()}</RequestContainer>
+        </InitActivity>
       </InitBankBalance>
       <ChangeLogModal />
     </ErrorBoundary>

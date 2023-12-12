@@ -1,6 +1,10 @@
 import { useNetworkOptions, useNetworkState } from "data/wallet"
 import SettingsSelector from "components/layout/SettingsSelector"
-import { NavButton, SectionHeader, AddressSelectableListItem } from "station-ui"
+import {
+  NavButton,
+  SectionHeader,
+  AddressSelectableListItem,
+} from "@terra-money/station-ui"
 import { FlexColumn } from "components/layout"
 import AddIcon from "@mui/icons-material/Add"
 import { useCustomLCDs } from "utils/localStorage"
@@ -14,15 +18,11 @@ const NetworkSetting = () => {
   const networks = useNetwork()
   const navigate = useNavigate()
 
-  const list = Object.keys(customLCDs ?? {}).map((chainID) => {
-    const { name, icon } = networks[chainID]
-    return {
-      name,
-      chainID,
-      chain: { icon, label: name },
-      lcd: customLCDs[chainID],
-    }
+  const list = Object.entries(customLCDs ?? {}).map(([chainID, lcd]) => {
+    const { name = "", icon = "" } = networks?.[chainID] ?? {}
+    return { name, chainID, chain: { icon, label: name }, lcd }
   })
+
   if (!networkOptions) return null
 
   return (

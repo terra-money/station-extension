@@ -16,6 +16,7 @@
     "fix-extension-polyfills": "sed -i '' 's/!globalThis\\.chrome\\?\\.runtime\\?\\.id/false/g' \"node_modules/webextension-polyfill/dist/browser-polyfill.js\""
   },
   "dependencies": {
+    "@0xsquid/sdk": "^1.14.11",
     "@amplitude/analytics-browser": "^2.1.2",
     "@ledgerhq/hw-transport-web-ble": "^6.27.1",
     "@mui/icons-material": "^5.8.0",
@@ -26,7 +27,8 @@
     "@terra-money/log-finder-ruleset": "^3.0.3",
     "@terra-money/msg-reader": "^3.0.1",
     "@terra-money/station-connector": "^1.0.12",
-    "@terra-money/terra-utils": "^1.0.9",
+    "@terra-money/station-ui": "file:../station-ui/terra-money-station-ui-0.0.0.tgz",
+    "@terra-money/terra-utils": "^1.2.0-beta.0",
     "@terra-money/terra.js": "^3.1.9",
     "@terra-money/terra.proto": "^2.0.0",
     "@terra-money/wallet-kit": "^1.0.15",
@@ -36,7 +38,7 @@
     "bignumber.js": "^9.0.2",
     "buffer": "^6.0.3",
     "classnames": "^2.3.2",
-    "crypto-js": "^4.2.0",
+    "crypto-js": "^4.1.1",
     "date-fns": "^2.28.0",
     "i18next": "^21.8.14",
     "i18next-browser-languagedetector": "^6.1.4",
@@ -44,6 +46,7 @@
     "js-base64": "^3.7.2",
     "keccak256": "^1.0.6",
     "lottie-react": "^2.3.1",
+    "moment": "^2.29.4",
     "numeral": "^2.0.6",
     "prettier": "^2.6.2",
     "qrcode.react": "^3.1.0",
@@ -63,7 +66,6 @@
     "secp256k1": "^4.0.3",
     "semver": "^7.3.7",
     "sentence-case": "^3.0.4",
-    "station-ui": "file:../station-ui/station-ui-0.0.0.tgz",
     "xss": "1.0.11"
   },
   "devDependencies": {

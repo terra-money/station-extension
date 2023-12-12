@@ -207,6 +207,12 @@ export const getStoredWallet = (name: string): ResultStoredWallet => {
   return wallet
 }
 
+export const createNewPassword = (password: string) => {
+  if (passwordExists()) throw new Error("Password already exists")
+
+  storePasswordChallenge(password)
+}
+
 const storePasswordChallenge = (password: string) => {
   localStorage.setItem(
     LocalStorage.PASSWORD_CHALLENGE,
@@ -268,6 +274,7 @@ type AddWalletParams =
   | {
       words: { "330": string; "118"?: string; "60"?: string }
       seed: Buffer
+      mnemonic?: string
       name: string
       index: number
       legacy: boolean
@@ -301,11 +308,20 @@ export const addWallet = (params: AddWalletParams, password: string) => {
     storeWallets([...next, params])
   } else {
     if ("seed" in params) {
-      const { name, words, seed, pubkey, index, legacy } = params
+      const { name, words, seed, pubkey, index, legacy, mnemonic } = params
       const encryptedSeed = encrypt(seed.toString("hex"), password)
+      const encryptedMnemonic = mnemonic && encrypt(mnemonic, password)
       storeWallets([
         ...next,
-        { name, words, encryptedSeed, pubkey, index, legacy },
+        {
+          name,
+          words,
+          encryptedSeed,
+          pubkey,
+          index,
+          legacy,
+          encryptedMnemonic,
+        },
       ])
     } else {
       const { name, words, key, pubkey } = params
@@ -313,6 +329,21 @@ export const addWallet = (params: AddWalletParams, password: string) => {
       storeWallets([...next, { name, words, encrypted, pubkey }])
     }
   }
+}
+
+export const addLedgerWallet = (params: LedgerWallet) => {
+  const wallets = getStoredWallets()
+
+  if (wallets.find((wallet) => wallet.name === params.name))
+    throw new Error("Wallet already exists")
+
+  const next = wallets.filter((wallet) =>
+    "words" in wallet
+      ? wallet.words["330"] !== params.words["330"]
+      : wallet.address !== addressFromWords(params.words["330"])
+  )
+
+  storeWallets([...next, params])
 }
 
 export const addMultisigWallet = (params: MultisigWallet) => {

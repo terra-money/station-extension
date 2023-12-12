@@ -1,4 +1,5 @@
 import {
+  Checkbox,
   Copy,
   Input,
   InputWrapper,
@@ -7,7 +8,8 @@ import {
   SubmitButton,
   SummaryHeader,
   TextArea,
-} from "station-ui"
+} from "@terra-money/station-ui"
+import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
 import { AccAddress, SignatureV2 } from "@terra-money/feather.js"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
@@ -15,11 +17,12 @@ import { Form, FormError } from "components/form"
 import { SAMPLE_ADDRESS } from "config/constants"
 import styles from "./MultisigTxForm.module.scss"
 import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
 import validate from "auth/scripts/validate"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { isWallet, useAuth } from "auth"
 import { useChainID } from "data/wallet"
-import { useState } from "react"
 import ReadTx from "./ReadTx"
 
 interface TxValues {
@@ -36,6 +39,7 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
   const { wallet, createSignature } = useAuth()
   const lcd = useInterchainLCDClient()
   const chainID = useChainID()
+  const navigate = useNavigate()
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange", defaultValues })
@@ -46,7 +50,19 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
   /* submit */
   const passwordRequired = isWallet.single(wallet)
   const [password, setPassword] = useState("")
+  const [rememberPassword, setRememberPassword] = useState(
+    shouldStorePassword()
+  )
+  const [showPasswordInput, setShowPasswordInput] = useState(false)
   const [incorrect, setIncorrect] = useState<string>()
+
+  // autofill stored password if exists
+  useEffect(() => {
+    getStoredPassword().then((password) => {
+      setPassword(password ?? "")
+      setShowPasswordInput(!password)
+    })
+  }, []) // eslint-disable-line
 
   const [signature, setSignature] = useState<SignatureV2>()
   const [submitting, setSubmitting] = useState(false)
@@ -106,27 +122,41 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
 
       <SectionHeader title="Confirm" withLine />
 
-      {passwordRequired && (
-        <InputWrapper label={t("Password")} error={incorrect}>
-          <Input
-            type="password"
-            value={password}
-            onChange={(e) => {
-              setIncorrect(undefined)
-              setPassword(e.target.value)
-            }}
-          />
-        </InputWrapper>
+      {passwordRequired && showPasswordInput && !incorrect && (
+        <>
+          <InputWrapper label={t("Password")} error={incorrect}>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setIncorrect(undefined)
+                setPassword(e.target.value)
+              }}
+            />
+          </InputWrapper>
+
+          <InputWrapper>
+            <Checkbox
+              label={t("Save password")}
+              checked={rememberPassword}
+              onChange={() => setRememberPassword((r) => !r)}
+            />
+          </InputWrapper>
+        </>
       )}
 
       {error && <FormError>{error.message}</FormError>}
 
       <ModalButton
+        hideCloseButton
         isOpen={!!signature}
         closeIcon={undefined}
         renderButton={(open) => submitButton}
-        footer={(close) => (
-          <SubmitButton className={styles.donebutton} onClick={close}>
+        footer={() => (
+          <SubmitButton
+            className={styles.donebutton}
+            onClick={() => navigate("/")}
+          >
             {"Done"}
           </SubmitButton>
         )}

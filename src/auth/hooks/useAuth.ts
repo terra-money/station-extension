@@ -13,10 +13,10 @@ import { LedgerKey } from "@terra-money/ledger-station-js"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import is from "../scripts/is"
 import {
-  addWallet,
   disconnectWallet,
   isPasswordValid,
   connectWallet,
+  addLedgerWallet,
 } from "../scripts/keystore"
 import { getDecryptedKey } from "../scripts/keystore"
 import { getWallet, lockWallet } from "../scripts/keystore"
@@ -60,12 +60,12 @@ const useAuth = () => {
   }
 
   const connectLedger = (
-    password: string,
     words: { "330": string; "118"?: string },
     pubkey: { "330": string; "118"?: string },
     index = 0,
     bluetooth = false,
-    name = "Ledger"
+    name = "Ledger",
+    legacy: boolean
   ) => {
     const wallet = {
       words,
@@ -75,8 +75,9 @@ const useAuth = () => {
       bluetooth,
       lock: false as const,
       name,
+      legacy,
     }
-    addWallet(wallet, password)
+    addLedgerWallet(wallet)
     connectWallet(name)
     setWallet(wallet)
   }
@@ -110,10 +111,12 @@ const useAuth = () => {
 
   const getLedgerKey = async (coinType: string) => {
     if (!is.ledger(wallet)) throw new Error("Ledger device is not connected")
-    const { index, bluetooth } = wallet
+    const { index, bluetooth, legacy } = wallet
     const transport = bluetooth ? createBleTransport : undefined
 
-    return LedgerKey.create({ transport, index, coinType: Number(coinType) })
+    const ct = legacy && coinType === "330" ? "118" : coinType
+
+    return LedgerKey.create({ transport, index, coinType: Number(ct) })
   }
 
   /* manage: export */

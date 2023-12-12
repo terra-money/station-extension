@@ -2,6 +2,15 @@
 
 .manage__wallets {
   @include flex(flex-start);
-  gap: 8px;
+  gap: 12px;
   padding-inline: 10px;
+  color: var(--token-dark-900);
+}
+
+.selector {
+  @include flex(flex-start);
+  span,
+  svg {
+    color: var(--token-light-white);
+  }
 }

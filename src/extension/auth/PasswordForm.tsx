@@ -8,7 +8,6 @@ import {
 } from "auth/scripts/keystore"
 import validate from "auth/scripts/validate"
 import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import {
   Checkbox,
@@ -19,7 +18,8 @@ import {
   InputWrapper,
   LoadingCircular,
   SubmitButton,
-} from "station-ui"
+} from "@terra-money/station-ui"
+import { useForm } from "react-hook-form"
 
 interface Values {
   password: string
@@ -29,22 +29,32 @@ interface Values {
 
 interface Props {
   onComplete: (password: string) => void
+  // for ledger wallets, should show the form only to choose a new password if it doesn't exists
+  onCompleteLedger?: () => void
 }
 
-const PasswordForm = ({ onComplete }: Props) => {
+const PasswordForm = ({ onComplete, onCompleteLedger }: Props) => {
   const { t } = useTranslation()
   // loading while checking if there is a stored password
   const [isLoading, setLoading] = useState(true)
 
   // check if there is a stored password
   useEffect(() => {
-    getStoredPassword().then((password) => {
-      if (password) {
-        onComplete(password)
-      } else {
-        setLoading(false)
-      }
-    })
+    if (onComplete) {
+      getStoredPassword().then((password) => {
+        if (password) {
+          onComplete(password)
+        } else {
+          setLoading(false)
+        }
+      })
+    } else {
+      setLoading(false)
+    }
+
+    if (onCompleteLedger && passwordExists()) {
+      onCompleteLedger()
+    }
   }, []) // eslint-disable-line
 
   /* form */
@@ -73,7 +83,6 @@ const PasswordForm = ({ onComplete }: Props) => {
       )
       return
     }
-
     if (rememberPassword) {
       setShouldStorePassword(true)
       storePassword(password)
@@ -81,7 +90,7 @@ const PasswordForm = ({ onComplete }: Props) => {
       setShouldStorePassword(false)
     }
 
-    onComplete(password)
+    onComplete && onComplete(password)
   }
 
   // don't show the form while checking for stored passwords
@@ -93,7 +102,7 @@ const PasswordForm = ({ onComplete }: Props) => {
     )
 
   return (
-    <Form onSubmit={handleSubmit(submit)}>
+    <Form onSubmit={(e) => e.preventDefault()}>
       <FlexColumn gap={18}>
         <InputWrapper label={t("Password")} error={errors.password?.message}>
           <Input
@@ -121,13 +130,20 @@ const PasswordForm = ({ onComplete }: Props) => {
 
         <InputWrapper>
           <Checkbox
-            label={t("Don't ask for password again")}
+            label={t("Save password")}
             checked={rememberPassword}
             {...register("rememberPassword")}
           />
         </InputWrapper>
         <Flex gap={12} style={{ marginTop: 22 }}>
-          <SubmitButton disabled={!isValid} label={t("Submit")} />
+          <SubmitButton
+            disabled={!isValid}
+            label={t("Submit")}
+            onClick={(e) => {
+              e.preventDefault()
+              handleSubmit(submit)()
+            }}
+          />
         </Flex>
       </FlexColumn>
     </Form>

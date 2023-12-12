@@ -19,7 +19,7 @@ import {
   SummaryHeader,
   Grid,
   Button,
-} from "station-ui"
+} from "@terra-money/station-ui"
 
 interface Values {
   current: string
@@ -110,7 +110,7 @@ const ChangePasswordForm = () => {
       </InputWrapper>
       <InputWrapper>
         <Checkbox
-          label={t("Don't ask for password again")}
+          label={t("Save password")}
           checked={rememberPassword}
           {...register("rememberPassword")}
         />

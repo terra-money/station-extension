@@ -17,7 +17,7 @@ import {
   InputWrapper,
   Banner,
   SubmitButton,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { wordsFromAddress } from "utils/bech32"
 import { truncate } from "@terra-money/terra-utils"
 import { addMultisigWallet } from "auth/scripts/keystore"

@@ -16,7 +16,7 @@ import {
   Grid,
   Banner,
   SummaryHeader,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { FlexColumn } from "components/layout"
 
 import { ReactComponent as CheckIcon } from "styles/images/icons/Check.svg"

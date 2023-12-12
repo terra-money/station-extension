@@ -1,8 +1,9 @@
 import NetWorth from "./NetWorth"
 import AssetList from "./AssetList"
 import { useState } from "react"
-import { PageTabs } from "station-ui"
+import { PageTabs } from "@terra-money/station-ui"
 import { useTranslation } from "react-i18next"
+import ActivityList from "../activity/ActivityList"
 import styles from "./WalletMain.module.scss"
 import ExtensionFooter from "extension/components/ExtensionFooter"
 import UpdateNotification from "extension/update/UpdateNotification"
@@ -13,17 +14,19 @@ const WalletMain = () => {
   return (
     <>
       <section className={styles.wallet__page}>
-        <UpdateNotification />
-        <NetWorth />
-        <div className={styles.tabs__container}>
-          <PageTabs
-            activeTab={tab}
-            onClick={setTab}
-            tabs={[t("Assets"), t("Activity")]}
-          />
+        <div className={styles.main__container}>
+          <UpdateNotification />
+          <NetWorth />
+          <div className={styles.tabs__container}>
+            <PageTabs
+              activeTab={tab}
+              onClick={setTab}
+              tabs={[t("Assets"), t("Activity")]}
+            />
+          </div>
         </div>
         <div className={styles.list__container}>
-          {tab === 0 ? <AssetList /> : <p>Activty component</p>}
+          {tab === 0 ? <AssetList /> : <ActivityList />}
         </div>
       </section>
       <ExtensionFooter />

@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next"
 import styles from "./NetWorth.module.scss"
 import { capitalize } from "@mui/material"
 import { useMemo } from "react"
-import { FlexColumn, RoundedButton } from "station-ui"
+import { FlexColumn, RoundedButton } from "@terra-money/station-ui"
 import { ReactComponent as Swap } from "styles/images/icons/Swap.svg"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
@@ -51,16 +51,16 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
   const buttons: WalletActionButton[] = [
     {
       icon: <SendIcon />,
-      label: t("send"),
       primary: true,
-      onClick: () => navigate(`/send`),
+      label: t("send"),
+      onClick: () => navigate(`/send/1`, { state: { denom } }),
       disabled: sendButtonDisabled,
     },
     {
       icon: <Swap />,
       label: t("swap"),
-      onClick: () => navigate(`swap`),
-      hide: pathname.includes("/swap/"),
+      onClick: () => navigate(`/swap`, { state: { denom } }),
+      hide: networkName !== "mainnet",
     },
     {
       icon: <ReceiveIcon />,
@@ -70,7 +70,7 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
     {
       icon: <AddIcon />,
       label: t("buy"),
-      onClick: openModal,
+      onClick: () => openModal(),
       disabled: networkName !== "mainnet",
       hide: pathname.includes("/asset/"),
     },

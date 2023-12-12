@@ -2,10 +2,9 @@ import { useTranslation } from "react-i18next"
 import { useThemeFavicon } from "data/settings/Theme"
 import styles from "./Welcome.module.scss"
 import ExtensionPage from "extension/components/ExtensionPage"
-import { Button, WalletList } from "station-ui"
+import { Button, WalletList } from "@terra-money/station-ui"
 import { useAuth } from "auth"
 import { openURL } from "extension/storage"
-import { truncate } from "@terra-money/terra-utils"
 import { addressFromWords } from "utils/bech32"
 import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
 import { ReactComponent as UsbIcon } from "styles/images/icons/Usb.svg"
@@ -31,16 +30,12 @@ const Welcome = () => {
       <main className={styles.welcome__container}>
         {existsWallets ? (
           <WalletList
-            otherWallets={wallets.map((wallet) => ({
-              name: wallet.name,
-              address: truncate(
-                "address" in wallet
-                  ? wallet.address
-                  : addressFromWords(wallet.words["330"], "terra"),
-                [11, 6]
-              ),
+            otherWallets={wallets.map((w) => ({
+              name: w.name,
+              address:
+                "address" in w ? w.address : addressFromWords(w.words["330"]),
               onClick: () => {
-                connect(wallet.name)
+                connect(w.name)
               },
             }))}
           />

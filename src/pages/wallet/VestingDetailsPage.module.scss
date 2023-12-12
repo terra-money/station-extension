@@ -1,20 +1,7 @@
-.wrapper {
-  display: flex;
-  flex-direction: column;
+.header {
+  margin-bottom: 10px;
 }
 
-.label {
-  color: var(--token-light-100);
-}
-
-.value {
-  color: var(--token-light-white);
-}
-
-.row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
+.period {
+  background-color: var(--token-dark-300);
 }
