@@ -1,22 +1,28 @@
 .wallet__page {
   margin: 0 auto;
   max-width: var(--extension-width);
+  height: calc(100vh - var(--header-height));
+
+  display: grid;
+  grid-template-rows: min-content min-content 1fr;
+  grid-template-areas: "main" "tabs" "list";
+
   background-color: var(--token-dark-300);
-  min-height: calc(100vh - var(--header-height));
 
   .main__container {
-    position: sticky;
+    grid-area: main;
     top: var(--header-height);
-    z-index: 999;
   }
 
   .tabs__container {
+    grid-area: tabs;
     background-color: var(--token-dark-500);
   }
 
   .list__container {
+    grid-area: list;
+    position: relative;
+    overflow: scroll;
     padding: 0 12px;
-    height: 100%;
-    overflow: auto;
   }
 }
