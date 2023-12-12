@@ -1,8 +1,7 @@
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
 import useAuth from "../../hooks/useAuth"
 import { addressFromWords } from "utils/bech32"
-import { Button, Grid, SummaryHeader } from "station-ui"
+import { Button, Grid, SummaryHeader } from "@terra-money/station-ui"
 
 interface Props extends SingleWallet {
   onConfirm?: () => void
@@ -10,7 +9,6 @@ interface Props extends SingleWallet {
 
 const CreatedWallet = ({ name, words, onConfirm }: Props) => {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const { connect } = useAuth()
 
   const address = addressFromWords(words["330"])
@@ -20,7 +18,7 @@ const CreatedWallet = ({ name, words, onConfirm }: Props) => {
     } else {
       connect(name)
     }
-    navigate("/", { replace: true })
+    window.close()
   }
 
   return (

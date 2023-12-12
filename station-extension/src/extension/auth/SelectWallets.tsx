@@ -8,7 +8,7 @@ import {
   NavButton,
   WalletList,
   useModal,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import AddWallet from "./AddWallet"
@@ -121,6 +121,10 @@ function ManageWalletsModal({ route, setRoute }: Props) {
   const { t } = useTranslation()
   const { closeModal } = useModal()
   const { wallets, connect, connectedWallet } = useAuth()
+  const activeWalletAddress = addressFromWords(
+    connectedWallet?.words["330"] ?? "",
+    "terra"
+  )
 
   switch (route.path) {
     case Path.select:
@@ -133,10 +137,7 @@ function ManageWalletsModal({ route, setRoute }: Props) {
           <WalletList
             activeWallet={{
               name: connectedWallet?.name ?? "",
-              address: truncate(
-                addressFromWords(connectedWallet?.words["330"] ?? "", "terra"),
-                [11, 6]
-              ),
+              address: activeWalletAddress,
               settingsOnClick: () =>
                 setRoute({
                   path: Path.manage,
@@ -147,12 +148,10 @@ function ManageWalletsModal({ route, setRoute }: Props) {
               .filter(({ name }) => name !== connectedWallet?.name)
               .map((wallet) => ({
                 name: wallet.name,
-                address: truncate(
+                address:
                   "address" in wallet
                     ? wallet.address
                     : addressFromWords(wallet.words["330"], "terra"),
-                  [11, 6]
-                ),
                 onClick: () => {
                   connect(wallet.name)
                   closeModal()

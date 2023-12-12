@@ -4,14 +4,19 @@ import BigNumber from "bignumber.js"
 import { always } from "ramda"
 import themes, { Theme } from "styles/themes/themes"
 import { DefaultTheme, SettingKey } from "utils/localStorage"
-import { getLocalSetting, setLocalSetting } from "utils/localStorage"
+import {
+  //getLocalSetting,
+  setLocalSetting,
+} from "utils/localStorage"
 import { debug } from "utils/env"
 import { useAddress, useChainID, useNetworkName } from "data/wallet"
 import { calcDelegationsTotal, useDelegations } from "../queries/staking"
 
 export const themeNameState = atom({
   key: "themeName",
-  default: getLocalSetting<Theme["name"]>(SettingKey.Theme),
+  // force dark theme
+  // TODO: when we implement other themes remove this
+  default: "dark", //getLocalSetting<Theme["name"]>(SettingKey.Theme),
 })
 
 export const useFindTheme = () => {

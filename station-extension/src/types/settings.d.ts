@@ -26,6 +26,7 @@ type CustomToken = CustomTokenCW20 | CustomTokenCW721 | NativeTokenBasicInfo
 
 interface CustomTokenCW20 extends CW20TokenInfoResponse {
   token: TerraAddress
+  chainID?: string
 }
 
 interface CustomTokenCW721 extends CW721ContractInfoResponse {

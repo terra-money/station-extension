@@ -1,28 +1,28 @@
-import { useBankBalance, useIsWalletEmpty } from "data/queries/bank"
-import { useNativeDenoms } from "data/token"
-import { useMemo, useState } from "react"
-import { useTranslation } from "react-i18next"
-import Asset from "./Asset"
-import styles from "./AssetList.module.scss"
-import { useTokenFilters } from "utils/localStorage"
-import { toInput } from "txs/utils"
-import {
-  useCustomTokensCW20,
-  useCustomTokensNative,
-} from "data/settings/CustomTokens"
-import FilterListIcon from "@mui/icons-material/FilterList"
-import { useUnknownIBCDenoms, useParsedAssetList } from "data/token"
 import {
   SectionHeader,
   Dropdown,
   TokenSingleChainListItem,
   Button,
   Banner,
-} from "station-ui"
-import classNames from "classnames"
+} from "@terra-money/station-ui"
+import {
+  useCustomTokensCW20,
+  useCustomTokensNative,
+} from "data/settings/CustomTokens"
+import { useNativeDenoms, useParsedAssetList } from "data/token"
+import FilterListIcon from "@mui/icons-material/FilterList"
+import { useIsWalletEmpty } from "data/queries/bank"
+import { useTokenFilters } from "utils/localStorage"
+import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
+import styles from "./AssetList.module.scss"
+import { useMemo, useState } from "react"
 import { useNetwork } from "data/wallet"
 import { Read } from "components/token"
-import { useNavigate } from "react-router-dom"
+import { toInput } from "txs/utils"
+import classNames from "classnames"
+import { encode } from "js-base64"
+import Asset from "./Asset"
 
 const cx = classNames.bind(styles)
 
@@ -30,8 +30,6 @@ const AssetList = () => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
   const { onlyShowWhitelist, hideLowBal, toggleHideLowBal } = useTokenFilters()
-  const unknownIBCDenoms = useUnknownIBCDenoms()
-  const coins = useBankBalance()
   const readNativeDenom = useNativeDenoms()
   const native = useCustomTokensNative()
   const cw20 = useCustomTokensCW20()
@@ -56,20 +54,15 @@ const AssetList = () => {
   )
 
   const assets = useMemo(() => {
-    const filtered = list
-      .filter((a) => (onlyShowWhitelist ? a.whitelisted : true))
-      .filter((a) =>
-        filterChain !== "all" ? a.chains.includes(filterChain) : true
-      )
-
     const baseAssets = Object.keys(network).reduce((acc, chain) => {
-      if (acc.includes(chain)) return acc
       const { symbol, decimals } = readNativeDenom(
         network[chain].baseAsset,
         chain
       )
       const balance =
-        list.find((a) => a.denom === network[chain].baseAsset)?.balance ?? "0"
+        list.find((a) => a.denom === network[chain].baseAsset)?.totalBalance ??
+        "0"
+
       const token = {
         symbol,
         chain,
@@ -82,16 +75,25 @@ const AssetList = () => {
       return acc
     }, [] as any[])
 
-    const visible = filtered
-      .filter(
-        (a) =>
-          a.price * toInput(a.balance) >= 1 || alwaysVisibleDenoms.has(a.denom)
-      )
-      .sort(
-        (a, b) => b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
+    const filtered = list
+      .filter((a) => (onlyShowWhitelist ? a.whitelisted : true))
+      .filter((a) =>
+        filterChain !== "all" ? a.chains.includes(filterChain) : true
       )
 
-    const lowBal = filtered.filter((a) => !visible.includes(a))
+    const visible = filtered
+      .filter(
+        (a: any) =>
+          a.price * toInput(a.totalBalance) >= 1 ||
+          alwaysVisibleDenoms.has(a.denom)
+      )
+      .sort(
+        (a: any, b: any) =>
+          b.price * parseInt(b.totalBalance) -
+          a.price * parseInt(a.totalBalance)
+      )
+
+    const lowBal = filtered.filter((a: any) => !visible.includes(a))
     return { visible, lowBal, baseAssets }
   }, [
     list,
@@ -102,18 +104,15 @@ const AssetList = () => {
     alwaysVisibleDenoms,
   ])
 
-  const renderAsset = ({ denom, chainID, ...item }: any) => {
+  const renderAsset = ({ denom, decimals, id, nativeChain, ...item }: any) => {
+    const encodedDenomPath = encode(denom)
     return (
       <Asset
-        {...readNativeDenom(
-          unknownIBCDenoms[[denom, chainID].join("*")]?.baseDenom ?? denom,
-          unknownIBCDenoms[[denom, chainID].join("*")]?.chainID ?? chainID
-        )}
         {...item}
         denom={denom}
-        key={item.id}
-        coins={coins}
-        onClick={() => navigate(`asset/${denom}`)}
+        decimals={decimals}
+        key={id}
+        onClick={() => navigate(`asset/${nativeChain}/${encodedDenomPath}`)}
       />
     )
   }
@@ -138,7 +137,7 @@ const AssetList = () => {
             symbol={asset.name}
             onClick={() => setFilterChain(asset.chain)}
             amountNode={
-              <Read amount={asset.balance} decimals={asset.decimals} />
+              <Read amount={asset.totalBalance} decimals={asset.decimals} />
             }
             chain={{
               name: asset.name,
@@ -165,11 +164,14 @@ const AssetList = () => {
         {assets.visible.map(renderAsset)}
         {assets.lowBal.length > 0 && (
           <>
-            <SectionHeader
-              title={t(`Show Low Balance Assets (${assets.lowBal.length})`)}
-              withLine
-              onClick={toggleHideLowBal}
-            />
+            <button className={styles.low__bal} onClick={toggleHideLowBal}>
+              <SectionHeader
+                title={t(`Show Low Balance Assets ({{count}})`, {
+                  count: assets.lowBal.length,
+                })}
+                withLine
+              />
+            </button>
             {!hideLowBal && assets.lowBal.map(renderAsset)}
           </>
         )}

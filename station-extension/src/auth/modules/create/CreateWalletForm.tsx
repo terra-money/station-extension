@@ -17,7 +17,7 @@ import {
   Tabs,
   FlexColumn,
   SubmitButton,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import styles from "./CreateWalletForm.module.scss"
 import { decrypt } from "auth/scripts/aes"
 
@@ -82,7 +82,7 @@ const CreateWalletForm = () => {
         coinType: legacy ? 118 : 330,
         seedPassword,
       })
-      setStep(3)
+      setStep(2)
     } else {
       setValues({ name, mnemonic: mnemonic.trim(), index })
       setStep(2)

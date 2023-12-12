@@ -14,7 +14,7 @@ import {
   Button,
   FlexColumn,
   SummaryHeader,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import styles from "./DeleteWalletForm.module.scss"
 
 interface Values {

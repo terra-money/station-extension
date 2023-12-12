@@ -6,7 +6,7 @@ import { isJSON } from "utils/json"
 import { capitalize } from "@mui/material"
 import { FinderLink } from "components/general"
 import { AccAddress } from "@terra-money/feather.js"
-import { InputWrapper, SummaryTable, TextArea } from "station-ui"
+import { InputWrapper, SummaryTable, TextArea } from "@terra-money/station-ui"
 import { truncate } from "@terra-money/terra-utils"
 
 const SignBytesDetails = ({ origin, timestamp, bytes }: SignBytesRequest) => {

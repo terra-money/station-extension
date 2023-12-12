@@ -2,11 +2,11 @@ import { Route, Routes } from "react-router-dom"
 import AssetPage from "./AssetPage"
 import ReceivePage from "./ReceivePage"
 import AddressChain from "pages/wallet/AddressChain"
-import SendPage from "./SendPage"
 import WalletMain from "./WalletMain"
 import { useTranslation } from "react-i18next"
 import ExtensionPage from "extension/components/ExtensionPage"
 import VestingDetailsPage from "./VestingDetailsPage"
+import SendTx from "./SendPage/SendTx"
 
 interface IRoute {
   path: string
@@ -21,6 +21,7 @@ export const useWalletRoutes = (): IRoute[] => {
     {
       path: "/",
       element: <WalletMain />,
+      title: "",
     },
     {
       path: "/receive",
@@ -29,17 +30,16 @@ export const useWalletRoutes = (): IRoute[] => {
     },
     {
       path: "/receive/:address",
-      backPath: "receive",
+      backPath: "/receive",
       element: <AddressChain />,
       title: t("Copy Address"),
     },
     {
       path: "/send/*",
-      title: t("Send"),
-      element: <SendPage />,
+      element: <SendTx />,
     },
     {
-      path: "/asset/:denom",
+      path: "/asset/:chain/:denom",
       element: <AssetPage />,
       backPath: "/",
       title: t("Asset"),
@@ -64,7 +64,6 @@ export default function WalletRouter() {
           element={
             route.title ? (
               <ExtensionPage
-                fullHeight
                 title={route.title}
                 backButtonPath={route.backPath}
                 modal

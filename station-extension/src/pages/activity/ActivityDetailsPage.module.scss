@@ -1,0 +1,14 @@
+@import "mixins";
+
+.txcontainer {
+  margin: 5px 0px;
+  padding: 0px 8px;
+
+  & > *:not(:first-child) {
+    margin-top: 30px;
+  }
+}
+
+.activityitem {
+  overflow-wrap: anywhere;
+}

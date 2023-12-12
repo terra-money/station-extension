@@ -47,6 +47,7 @@ interface LedgerWallet {
   ledger: true
   index: number
   bluetooth: boolean
+  legacy: boolean
   icon?: string
   lock?: boolean
 }
@@ -66,6 +67,7 @@ interface InterchainStoredWallet extends SingleWallet {
 
 interface SeedStoredWallet extends SingleWallet {
   encryptedSeed: string
+  encryptedMnemonic?: string
   index: number
   legacy: boolean
 }

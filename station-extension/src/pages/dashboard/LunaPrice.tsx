@@ -19,7 +19,9 @@ const LunaPrice = () => {
     const { uluna: price } = prices
     return (
       <DashboardContent
-        value={<Read amount={String(price.price * 1e6)} denom={denom} auto />}
+        value={
+          <Read amount={String(price.price * 1e6)} denom={denom} fixed={2} />
+        }
         footer={
           <ModalButton
             title={t("Luna price")}

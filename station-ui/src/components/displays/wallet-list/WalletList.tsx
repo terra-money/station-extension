@@ -1,7 +1,7 @@
 import WalletSelectableListItem from "components/displays/list-items/selectable/wallet/WalletSelectableListItem"
 import SectionHeader from "components/headers/section/SectionHeader"
 import styles from "./WalletList.module.scss"
-
+import { truncate } from '@terra-money/terra-utils'
 export interface WalletListProps {
   activeWallet?: {
     name: string
@@ -31,7 +31,7 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
             label={activeWallet.name}
             walletName="Big Money"
             copyValue={activeWallet.address}
-            subLabel={activeWallet.address}
+            subLabel={truncate(activeWallet.address, [11, 6])}
             active
             onClick={() => {}}
             settingsOnClick={activeWallet.settingsOnClick}
@@ -47,7 +47,7 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
               label={wallet.name}
               walletName="Money"
               copyValue={wallet.address}
-              subLabel={wallet.address}
+              subLabel={truncate(wallet.address, [11, 6])}
               onClick={wallet.onClick}
               settingsOnClick={wallet.settingsOnClick}
             />

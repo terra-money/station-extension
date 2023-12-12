@@ -6,7 +6,7 @@ const cx = classNames.bind(styles)
 
 export interface SummaryTableProps {
   rows: {
-    label: string
+    label: string | ReactNode
     value: string | ReactNode
   }[]
   className?: string
