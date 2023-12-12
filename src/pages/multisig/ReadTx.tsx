@@ -1,4 +1,9 @@
-import { SectionHeader, InputWrapper, TextArea, SummaryTable } from "station-ui"
+import {
+  SectionHeader,
+  InputWrapper,
+  TextArea,
+  SummaryTable,
+} from "@terra-money/station-ui"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { ReadMultiple } from "components/token"
 import { useTranslation } from "react-i18next"

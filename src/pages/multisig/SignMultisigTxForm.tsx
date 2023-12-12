@@ -7,7 +7,7 @@ import {
   SubmitButton,
   SummaryHeader,
   TextArea,
-} from "station-ui"
+} from "@terra-money/station-ui"
 import { AccAddress, SignatureV2 } from "@terra-money/feather.js"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
@@ -15,6 +15,7 @@ import { Form, FormError } from "components/form"
 import { SAMPLE_ADDRESS } from "config/constants"
 import styles from "./MultisigTxForm.module.scss"
 import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
 import validate from "auth/scripts/validate"
 import { useForm } from "react-hook-form"
 import { isWallet, useAuth } from "auth"
@@ -36,6 +37,7 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
   const { wallet, createSignature } = useAuth()
   const lcd = useInterchainLCDClient()
   const chainID = useChainID()
+  const navigate = useNavigate()
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange", defaultValues })
@@ -122,11 +124,15 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
       {error && <FormError>{error.message}</FormError>}
 
       <ModalButton
+        hideCloseButton
         isOpen={!!signature}
         closeIcon={undefined}
         renderButton={(open) => submitButton}
-        footer={(close) => (
-          <SubmitButton className={styles.donebutton} onClick={close}>
+        footer={() => (
+          <SubmitButton
+            className={styles.donebutton}
+            onClick={() => navigate("/")}
+          >
             {"Done"}
           </SubmitButton>
         )}

@@ -1,14 +1,14 @@
+import { ButtonItem, LinkItem } from "extension/components/ExtensionList"
+import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined"
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
+import PasswordIcon from "@mui/icons-material/Password"
+import LogoutIcon from "@mui/icons-material/Logout"
+import QrCodeIcon from "@mui/icons-material/QrCode"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import QrCodeIcon from "@mui/icons-material/QrCode"
-import PasswordIcon from "@mui/icons-material/Password"
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
-import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined"
-import LogoutIcon from "@mui/icons-material/Logout"
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
-import is from "../../scripts/is"
 import useAuth from "../../hooks/useAuth"
-import { ButtonItem, LinkItem } from "extension/components/ExtensionList"
+import is from "../../scripts/is"
 
 export const useManageWallet = (walletName: string) => {
   const { t } = useTranslation()
