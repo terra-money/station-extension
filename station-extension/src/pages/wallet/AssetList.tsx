@@ -51,17 +51,20 @@ const AssetList = () => {
           field?.toLowerCase().includes(search.toLowerCase())
         )
       )
+
     const visible = filtered
       .filter(
-        (a: any) =>
+        (a) =>
           a.price * toInput(a.balance) >= 1 || alwaysVisibleDenoms.has(a.denom)
       )
       .sort(
-        (a: any, b: any) =>
-          b.price * parseInt(b.balance) - a.price * parseInt(a.balance)
+        (a, b) =>
+          b.price * parseInt(b.totalBalance) -
+          a.price * parseInt(a.totalBalance)
       )
 
     const lowBal = filtered.filter((a: any) => !visible.includes(a))
+
     return { visible, lowBal }
   }, [list, onlyShowWhitelist, alwaysVisibleDenoms, search])
 
