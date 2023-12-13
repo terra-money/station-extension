@@ -4,8 +4,9 @@ import {
   AssetSelectorFrom,
   Modal,
   Button,
-  RoundedButton,
   Banner,
+  FlipButton,
+  Grid,
 } from "@terra-money/station-ui"
 import { useMemo, useState } from "react"
 import { SwapAssetExtra, SwapState } from "data/queries/swap/types"
@@ -15,7 +16,6 @@ import { toInput } from "txs/utils"
 import SwapTokenSelector from "./components/SwapTokenSelector"
 import { useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { ReactComponent as SwapArrows } from "styles/images/icons/SwapArrows.svg"
 import styles from "./Swap.module.scss"
 import { useCurrency } from "data/settings/Currency"
 import { has } from "utils/num"
@@ -139,36 +139,38 @@ const SwapForm = () => {
       >
         <SwapTokenSelector tokenOnClick={tokenOnClick} tokens={displayTokens} />
       </Modal>
-      <AssetSelectorFrom
-        extra={
-          <AssetFormExtra asset={offerAsset} onClick={onOfferBalanceClick} />
-        }
-        symbol={offerAsset.symbol}
-        chainIcon={offerAsset.chain?.icon}
-        chainName={offerAsset.chain?.name}
-        tokenIcon={offerAsset.icon ?? ""}
-        onSymbolClick={() => handleOpenModal(SwapAssetType.OFFER)}
-        currencyAmount={currencyAmount.offer}
-        amountInputAttrs={{ ...register("offerInput") }}
-      />
-      <RoundedButton
-        className={styles.swapper}
-        onClick={swapAssetsOnClick}
-        variant="secondary"
-        icon={<SwapArrows />}
-      />
-      <AssetSelectorTo
-        extra={<AssetFormExtra asset={askAsset} />}
-        symbol={askAsset?.symbol}
-        chainIcon={askAsset?.chain?.icon}
-        chainName={askAsset?.chain?.name}
-        tokenIcon={askAsset?.icon ?? ""}
-        onSymbolClick={() => handleOpenModal(SwapAssetType.ASK)}
-        amount={Number(askAssetAmount).toFixed(2)}
-        currencyAmount={currencyAmount.ask}
-      />
-      <Footer />
-      {error && <Banner title={t(error)} variant="error" />}
+      <Grid gap={24}>
+        <Grid gap={4}>
+          <AssetSelectorFrom
+            extra={
+              <AssetFormExtra
+                asset={offerAsset}
+                onClick={onOfferBalanceClick}
+              />
+            }
+            symbol={offerAsset.symbol}
+            chainIcon={offerAsset.chain?.icon}
+            chainName={offerAsset.chain?.name}
+            tokenIcon={offerAsset.icon ?? ""}
+            onSymbolClick={() => handleOpenModal(SwapAssetType.OFFER)}
+            currencyAmount={currencyAmount.offer}
+            amountInputAttrs={{ ...register("offerInput") }}
+          />
+          <FlipButton className={styles.swapper} onClick={swapAssetsOnClick} />
+          <AssetSelectorTo
+            extra={<AssetFormExtra asset={askAsset} />}
+            symbol={askAsset?.symbol}
+            chainIcon={askAsset?.chain?.icon}
+            chainName={askAsset?.chain?.name}
+            tokenIcon={askAsset?.icon ?? ""}
+            onSymbolClick={() => handleOpenModal(SwapAssetType.ASK)}
+            amount={Number(askAssetAmount).toFixed(2)}
+            currencyAmount={currencyAmount.ask}
+          />
+        </Grid>
+        <Footer />
+        {error && <Banner title={t(error)} variant="error" />}
+      </Grid>
       <Button
         variant="primary"
         loading={loading}
