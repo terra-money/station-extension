@@ -3,7 +3,7 @@
 .swapper {
   border: 1px solid var(--token-light-100);
   z-index: 2;
-  margin: -35px 0px -35px 200px;
+  margin: -20px 0px -20px 65%;
 }
 .container {
   margin: 10px;
@@ -25,14 +25,17 @@
   justify-content: space-between;
   background-color: var(--token-dark-300);
   width: 100%;
-  margin-top: 15px;
   border-radius: 8px;
-  padding: 10px;
+  padding: 16px;
 
   .item {
     display: flex;
     align-items: center;
     color: var(--token-light-100);
     font-weight: var(--bold);
+
+    svg {
+      margin-left: 8px;
+    }
   }
 }
