@@ -35,7 +35,7 @@ const WalletButton = ({
         </div>
       </div>
       <div className={styles.right__side}>
-        <RightArrow fill={variant === 'secondary' ? 'var(--token-light-white)' : 'var(--token-light-white)'} />
+        <RightArrow fill={variant === 'secondary' ? 'var(--token-dark-900)' : 'var(--token-light-white)'} />
       </div>
     </button>
   )
