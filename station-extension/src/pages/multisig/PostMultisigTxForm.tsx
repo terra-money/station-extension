@@ -55,7 +55,7 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
 
   /* form */
   const form = useForm<Values>({ mode: "onChange", defaultValues })
-  const { register, control, watch, handleSubmit, formState } = form
+  const { register, control, watch, handleSubmit, formState, setValue } = form
   const { isValid } = formState
   const { tx } = watch()
   const { signatures } = watch()
@@ -127,7 +127,8 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
         extra={tx ? <Copy copyText={tx} /> : null}
       >
         <TextArea
-          {...register("tx", { required: true })}
+          value={tx}
+          onChange={(e) => setValue("tx", e.target.value)}
           placeholder={SAMPLE_ENCODED_TX}
           rows={4}
         />
