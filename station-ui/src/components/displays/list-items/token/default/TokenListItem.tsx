@@ -3,6 +3,7 @@ import { Tooltip } from "components"
 import { ReactComponent as TrendUp } from "assets/icon/TrendUp.svg"
 import { ReactComponent as TrendDown } from "assets/icon/TrendDown.svg"
 import { ChainImage, TokenImage } from "../utils"
+import { truncate } from 'utils/format'
 import styles from "../TokenListItem.module.scss"
 
 const cx = classNames.bind(styles)
@@ -64,7 +65,7 @@ const TokenListItem = ({
         <div className={styles.details__container}>
           <div className={styles.top__row}>
             <h2 className={styles.symbol}>
-              <span className={styles.symbol__name}>{symbol}</span>
+              <span className={styles.symbol__name}>{truncate(symbol, [15, 15])}</span>
               {chains?.length > 1 ? (
                 <Tooltip className={styles.tooltip} placement="top" content={<TooltipContent/>}>
                   <span className={cx(styles.chain__details, styles.num)}>{chains.length}</span>

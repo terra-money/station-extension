@@ -1,6 +1,7 @@
 import classNames from "classnames/bind"
 import { ReactComponent as CircleCheck } from "assets/icon/SmallCircleCheck.svg"
 import { ChainImage, TokenImage } from "../utils"
+import { truncate } from 'utils/format'
 import styles from "../TokenListItem.module.scss"
 
 const cx = classNames.bind(styles)
@@ -33,7 +34,7 @@ const TokenCheckboxListItem = ({
         <div className={styles.details__container__lr}>
           <div className={styles.left}>
             <h2 className={styles.symbol}>
-              <span className={styles.symbol__name}>{symbol}</span>
+              <span className={styles.symbol__name}>{truncate(symbol, [15, 15])}</span>
             </h2>
             <h3 className={styles.chain__label}>
               <ChainImage
