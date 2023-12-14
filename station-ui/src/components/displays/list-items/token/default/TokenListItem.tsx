@@ -2,24 +2,19 @@ import classNames from "classnames"
 import { Tooltip } from "components"
 import { ReactComponent as TrendUp } from "assets/icon/TrendUp.svg"
 import { ReactComponent as TrendDown } from "assets/icon/TrendDown.svg"
-import DefaultTokenIcon from 'assets/icon/DefaultToken.svg';
-import DefaultChainIcon from 'assets/icon/DefaultChain.svg';
 import styles from "../TokenListItem.module.scss"
-import { useState } from 'react'
+import { ChainImage, TokenImage } from '../utils';
 
 const cx = classNames.bind(styles)
 
 const BuildChainList = (chain: { name: string, icon: string, balance: string }, index: number) => {
-  const [imgSrc, setImgSrc] = useState(chain.icon)
-
-  const handleError = (e: { stopPropagation: () => void; }) => {
-    e.stopPropagation()
-    setImgSrc(DefaultChainIcon)
-  }
-
   return (
     <div key={index} className={styles.container}>
-      <img src={imgSrc} alt={chain.name} onError={handleError} />
+      <ChainImage
+        chainImg={chain.icon}
+        chainName={chain.name}
+        className={styles.chain__icon}
+      />
       <div className={styles.text__container}>
         <span className={styles.chain}>{chain.name}</span>
         <span className={styles.balance}>{chain.balance}</span>
@@ -47,13 +42,6 @@ const TokenListItem = ({
   amountNode,
   onClick,
 }: TokenListItemProps) => {
-  const [displayTokenImg, setDisplayTokenImg] = useState(tokenImg)
-
-  const handleTokenImgError = (e: { stopPropagation: () => void; }) => {
-    e.stopPropagation()
-    setDisplayTokenImg(DefaultTokenIcon)
-  }
-
   const TooltipContent = () => {
     return (
       <div className={styles.chains__list}>
@@ -66,11 +54,10 @@ const TokenListItem = ({
     <div className={styles.token__container} onClick={onClick}>
       <div className={styles.details}>
         <div className={styles.token__icon__container}>
-          <img
-            src={displayTokenImg}
-            alt={symbol}
+          <TokenImage
+            tokenImg={tokenImg}
+            tokenName={symbol}
             className={styles.token__icon}
-            onError={handleTokenImgError}
           />
         </div>
         <div className={styles.details__container}>

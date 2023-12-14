@@ -29,6 +29,25 @@ export const Successful: StoryObj<ActivityListItemProps> = {
   argTypes: {},
 };
 
+export const SuccessfulNoImage: StoryObj<ActivityListItemProps> = {
+  render: () => {
+    return (
+      <ActivityListItem
+        variant={"success"}
+        chain={{ icon: "https://station-assets.terra.dev/img/chains/T.svg", label: "Terra" }}
+        msg={
+          <div>
+            Sent <span>420.00 LUNA</span> to <span>terra1...20k38v</span>
+          </div>
+        }
+        type={"Execute Contract"}
+        msgCount={1}
+      />
+    )
+  },
+  argTypes: {},
+};
+
 export const Failed: StoryObj<ActivityListItemProps> = {
   render: () => {
     return (
