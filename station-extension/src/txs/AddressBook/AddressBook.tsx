@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 import { useState } from "react"
-import { Button, Grid, Tabs, NavButton } from "@terra-money/station-ui"
+import { Grid, Tabs, NavButton } from "@terra-money/station-ui"
 import { useNavigate } from "react-router-dom"
 import MyWallets from "pages/wallet/SendPage/Components/MyWallets"
 import { AccAddress } from "@terra-money/feather.js"
@@ -11,7 +11,7 @@ const AddressBook = () => {
   const navigate = useNavigate()
 
   const handleOpen = (index?: number) => {
-    navigate(`new`, index !== undefined ? { state: { index } } : {})
+    navigate(`new`, { state: { index } })
   }
 
   const tabs = [
@@ -32,6 +32,7 @@ const AddressBook = () => {
   //     handleOpen(item.index)
   //   }
   // }
+
   const onClick = (address: AccAddress, index: number) => {
     if (tabKey === "wallets") {
       navigate("my-addresses", { state: address })
