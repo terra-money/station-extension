@@ -371,6 +371,13 @@ function Tx<TxValues>(props: Props<TxValues>) {
     : isWalletEmpty
     ? t("Coins required to post transactions")
     : ""
+  console.log(!estimatedGas || !!disabled || !!walletError || !feesReady)
+  console.log("estimatedGas", {
+    estimatedGas,
+    disabled,
+    walletError,
+    feesReady,
+  })
 
   const submitButton = (
     <>
