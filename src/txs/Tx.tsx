@@ -2,7 +2,6 @@ import { ReactNode } from "react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { QueryKey, useQuery } from "react-query"
-import { useNavigate } from "react-router-dom"
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import classNames from "classnames"
 import BigNumber from "bignumber.js"
@@ -45,6 +44,7 @@ import {
   SubmitButton,
 } from "@terra-money/station-ui"
 import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
+import { openURL } from "extension/storage"
 import DisplayFees from "./feeAbstraction/DisplayFees"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 
@@ -268,8 +268,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<Error>()
-
-  const navigate = useNavigate()
   const toPostMultisigTx = useToPostMultisigTx()
   const submit = async (values: TxValues) => {
     setSubmitting(true)
@@ -297,7 +295,9 @@ function Tx<TxValues>(props: Props<TxValues>) {
       if (isWallet.multisig(wallet)) {
         // TODO: broadcast only to terra if wallet is multisig
         const unsignedTx = await auth.create({ ...tx, fee })
-        navigate(toPostMultisigTx(unsignedTx))
+        const { pathname, search } = toPostMultisigTx(unsignedTx)
+        openURL([pathname, search].join("?"))
+        return
       } else if (wallet) {
         const result = await auth.post({ ...tx, fee }, password)
         !hideLoader &&
