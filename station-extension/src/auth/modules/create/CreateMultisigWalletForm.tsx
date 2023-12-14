@@ -19,6 +19,7 @@ import {
   SubmitButton,
 } from "@terra-money/station-ui"
 import { wordsFromAddress } from "utils/bech32"
+import { truncate } from "@terra-money/terra-utils"
 import { addMultisigWallet } from "auth/scripts/keystore"
 
 interface Values {
@@ -126,13 +127,13 @@ const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
         )}
       />
 
-      <MultiInputWrapper label={t("Addresses")} layout="vertical">
+      <MultiInputWrapper label={t("Wallets")} layout="vertical">
         {fields.map(({ id }, index) => (
           <Input
             {...register(`addresses.${index}.value`, {
               validate: validate.address,
             })}
-            placeholder={SAMPLE_ADDRESS}
+            placeholder={truncate(SAMPLE_ADDRESS, [14, 5])}
             key={id}
             actionIcon={
               fields.length > 2
