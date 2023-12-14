@@ -3,7 +3,7 @@ import { useSwap } from "../SwapContext"
 import style from "../Swap.module.scss"
 import { useTranslation } from "react-i18next"
 import { useMemo } from "react"
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
+import { DropdownArrowIcon } from "@terra-money/station-ui"
 import { has } from "utils/num"
 
 const Footer = () => {
@@ -23,7 +23,7 @@ const Footer = () => {
       <div className={style.item}>{exchangeRate}</div>
       <button onClick={() => navigate("slippage")} className={style.item}>
         {t("Max Slip:")} <span className={style.text}>{slippage}%</span>{" "}
-        <ArrowDropDownIcon />
+        <DropdownArrowIcon fill="var(--token-light-500)" />
       </button>
     </div>
   )
