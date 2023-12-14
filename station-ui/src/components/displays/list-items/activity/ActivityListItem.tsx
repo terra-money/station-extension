@@ -3,7 +3,7 @@ import classNames from "classnames/bind"
 import { LoadingIcon, AlertIcon, SmallCircleCheckIcon } from "components"
 import Pill from "components/general/pill/Pill"
 import styles from "./ActivityListItem.module.scss"
-import { ChainImage } from '../token/utils'
+import { ChainImage } from "../token/utils"
 
 const cx = classNames.bind(styles)
 

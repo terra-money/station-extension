@@ -1,6 +1,6 @@
-import Pill from "components/general/pill/Pill"
+import { Pill } from "components"
+import { ChainImage, TokenImage } from "../utils"
 import styles from "../TokenListItem.module.scss"
-import { ChainImage, TokenImage } from '../utils';
 // import { truncate } from "@terra-money/terra-utils"
 
 export interface TokenSingleChainListItemProps {
@@ -48,6 +48,7 @@ const TokenSingleChainListItem = ({
                 chainImg={chain.icon}
                 chainName={chain.label}
                 className={styles.chain__icon}
+                small
               />
               {chain.label}
             </h5>

@@ -1,7 +1,7 @@
 import classNames from "classnames/bind"
 import { ReactComponent as CircleCheck } from "assets/icon/SmallCircleCheck.svg"
-import styles from "../TokenListItem.module.scss"
 import { ChainImage, TokenImage } from "../utils"
+import styles from "../TokenListItem.module.scss"
 
 const cx = classNames.bind(styles)
 
@@ -40,6 +40,7 @@ const TokenCheckboxListItem = ({
                 chainImg={chain.icon}
                 chainName={chain.label}
                 className={styles.chain__icon}
+                small
               />
               {chain.label}
             </h3>

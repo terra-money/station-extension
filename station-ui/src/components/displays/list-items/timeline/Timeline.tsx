@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactNode, useEffect, useState } from "react"
 import classNames from "classnames/bind"
-import { BuyIcon, AlertIcon, SmallCircleCheckIcon } from "components"
-import Pill from "components/general/pill/Pill"
+import { BuyIcon, AlertIcon, SmallCircleCheckIcon, Pill } from "components"
+import { ChainImage, TokenImage } from "../token/utils"
 import styles from "./Timeline.module.scss"
-import { ChainImage, TokenImage } from '../token/utils'
 
 const cx = classNames.bind(styles)
 
@@ -92,6 +91,7 @@ const Timeline = ({
               <ChainImage
                 chainImg={startItem.chain.icon}
                 chainName={startItem.chain.label}
+                small
               />
               <h6 className={styles.details__msg}>
                 {startItem.chain.label}
@@ -174,6 +174,7 @@ const Timeline = ({
                 chainImg={endItem.chain.icon}
                 chainName={endItem.chain.label}
                 className={styles.chain__icon}
+                small
               />
               <h6 className={styles.details__msg}>
                 {endItem.chain.label}

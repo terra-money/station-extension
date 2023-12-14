@@ -2,8 +2,8 @@ import classNames from "classnames"
 import { Tooltip } from "components"
 import { ReactComponent as TrendUp } from "assets/icon/TrendUp.svg"
 import { ReactComponent as TrendDown } from "assets/icon/TrendDown.svg"
+import { ChainImage, TokenImage } from "../utils"
 import styles from "../TokenListItem.module.scss"
-import { ChainImage, TokenImage } from '../utils';
 
 const cx = classNames.bind(styles)
 
@@ -14,6 +14,7 @@ const BuildChainList = (chain: { name: string, icon: string, balance: string }, 
         chainImg={chain.icon}
         chainName={chain.name}
         className={styles.chain__icon}
+        small
       />
       <div className={styles.text__container}>
         <span className={styles.chain}>{chain.name}</span>

@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import ActivityListItem, { ActivityListItemProps } from './ActivityListItem';
-import { Pill, ProgressTracker } from 'components';
+import type { Meta, StoryObj } from "@storybook/react";
+import ActivityListItem, { ActivityListItemProps } from "./ActivityListItem";
+import { Pill, TransactionTracker } from "components";
 
 const meta: Meta<ActivityListItemProps> = {
-  title: 'Components/List Items/Activity/Stories',
+  title: "Components/List Items/Activity/Stories",
   component: ActivityListItem,
   argTypes: {},
 } as Meta;
@@ -124,7 +124,7 @@ export const SecondaryPill: StoryObj<ActivityListItemProps> = {
   argTypes: {},
 };
 
-export const WithProgressTracker: StoryObj<ActivityListItemProps> = {
+export const WithTransactionTracker: StoryObj<ActivityListItemProps> = {
   render: () => {
     return (
       <ActivityListItem
@@ -139,7 +139,7 @@ export const WithProgressTracker: StoryObj<ActivityListItemProps> = {
         msgCount={1}
         secondaryPill={<Pill variant={"warning"} text={"Pending"} />}
         progressTracker={
-          <ProgressTracker
+          <TransactionTracker
             steps={["completed", "incomplete", "incomplete"]}
             stepLabels={["Terra", "Osmosis", "Something"]}
           />

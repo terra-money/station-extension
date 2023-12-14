@@ -11,7 +11,7 @@ import * as ProgressBarStories from "./progress-bar/ProgressBar.stories.tsx";
 import * as RadioListStories from "./radio-lists/full-list/RadioList.stories.tsx";
 import * as RadioListItemStories from './radio-lists/item/RadioListItem.stories.tsx';
 import * as SwapSummaryStories from "./swap-summary/SwapSummary.stories.tsx";
-import * as ProgressTrackerStories from "./progress-tracker/ProgressTracker.stories.tsx";
+import * as TransactionTrackerStories from "./transaction-tracker/TransactionTracker.stories";
 import * as VotingSummaryStories from "./voting-summary/VotingSummary.stories.tsx";
 import * as WalletListStories from "./wallet-list/WalletList.stories.tsx";
 import "scss/storybookoverrides.scss";
@@ -314,89 +314,89 @@ import { SwapSummary } from "station-ui";
 <br />
 <br />
 
-# Progress Tracker [<InLineDocsLink />](/docs/components-displays-progress-tracker--docs)
+# Transaction Tracker [<InLineDocsLink />](/docs/components-displays-transaction-tracker--docs)
 
 ##### This displays the progress of a transactions.
 
-## ProgressTracker Props
+## TransactionTracker Props
 - **`steps`** - <RequiredText /> - `StepStatus[]` - The status of each step.
   - **`StepStatus`** = `'incomplete' | 'completed' | 'inProgress' | 'failed'`
 - **`stepLabels`** - `string[]` - Adds labels below the steps.
 
 ## Import
 ```jsx
-import { ProgressTracker } from "station-ui";
+import { TransactionTracker } from "station-ui";
 ```
 
 ## Variants
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Displays/Transaction Progress" linkToID="with-labels">
+    <DocsLink linkToRoute="Components/Displays/Transaction Tracker" linkToID="with-labels">
       <h6 className="h6">With Labels</h6>
-      <Story of={ProgressTrackerStories.WithLabels} />
+      <Story of={TransactionTrackerStories.WithLabels} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Displays/Transaction Progress" linkToID="first-in-progress">
+    <DocsLink linkToRoute="Components/Displays/Transaction Tracker" linkToID="first-in-progress">
       <h6 className="h6">First In Progress</h6>
-      <Story of={ProgressTrackerStories.FirstInProgress} />
+      <Story of={TransactionTrackerStories.FirstInProgress} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Displays/Transaction Progress" linkToID="first-completed">
+    <DocsLink linkToRoute="Components/Displays/Transaction Tracker" linkToID="first-completed">
       <h6 className="h6">First Completed</h6>
-      <Story of={ProgressTrackerStories.FirstCompleted} />
+      <Story of={TransactionTrackerStories.FirstCompleted} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Displays/Transaction Progress" linkToID="second-in-progress">
+    <DocsLink linkToRoute="Components/Displays/Transaction Tracker" linkToID="second-in-progress">
       <h6 className="h6">Second In Progress</h6>
-      <Story of={ProgressTrackerStories.SecondInProgress} />
+      <Story of={TransactionTrackerStories.SecondInProgress} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Displays/Transaction Progress" linkToID="second-completed">
+    <DocsLink linkToRoute="Components/Displays/Transaction Tracker" linkToID="second-completed">
       <h6 className="h6">Second Completed</h6>
-      <Story of={ProgressTrackerStories.SecondCompleted} />
+      <Story of={TransactionTrackerStories.SecondCompleted} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Displays/Transaction Progress" linkToID="third-in-progress">
+    <DocsLink linkToRoute="Components/Displays/Transaction Tracker" linkToID="third-in-progress">
       <h6 className="h6">Third In Progress</h6>
-      <Story of={ProgressTrackerStories.ThirdInProgress} />
+      <Story of={TransactionTrackerStories.ThirdInProgress} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Displays/Transaction Progress" linkToID="all-completed">
+    <DocsLink linkToRoute="Components/Displays/Transaction Tracker" linkToID="all-completed">
       <h6 className="h6">All Completed</h6>
-      <Story of={ProgressTrackerStories.AllCompleted} />
+      <Story of={TransactionTrackerStories.AllCompleted} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Displays/Transaction Progress" linkToID="first-failed">
+    <DocsLink linkToRoute="Components/Displays/Transaction Tracker" linkToID="first-failed">
       <h6 className="h6">First Failed</h6>
-      <Story of={ProgressTrackerStories.FirstFailed} />
+      <Story of={TransactionTrackerStories.FirstFailed} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Displays/Transaction Progress" linkToID="second-failed">
+    <DocsLink linkToRoute="Components/Displays/Transaction Tracker" linkToID="second-failed">
       <h6 className="h6">Second Failed</h6>
-      <Story of={ProgressTrackerStories.SecondFailed} />
+      <Story of={TransactionTrackerStories.SecondFailed} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
   <div className="story__wrapper" style={{ width: "calc(50% - 4px)" }}>
-    <DocsLink linkToRoute="Components/Displays/Transaction Progress" linkToID="third-failed">
+    <DocsLink linkToRoute="Components/Displays/Transaction Tracker" linkToID="third-failed">
       <h6 className="h6">Third Failed</h6>
-      <Story of={ProgressTrackerStories.ThirdFailed} />
+      <Story of={TransactionTrackerStories.ThirdFailed} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
