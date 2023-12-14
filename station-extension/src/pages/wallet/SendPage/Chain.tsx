@@ -1,9 +1,11 @@
 import { useMemo } from "react"
 import { useSend } from "./SendContext"
-import { convertAddress } from "utils/chain"
 import { useNetwork } from "data/wallet"
 import { getChainNamefromID } from "data/queries/chains"
 import { SearchChains } from "../ReceivePage"
+import { addressFromWords } from "utils/bech32"
+import { AccAddress } from "@terra-money/feather.js"
+import { getWallet } from "auth/scripts/keystore"
 
 const Chain = () => {
   const { form, goToStep, balances } = useSend()
@@ -17,24 +19,30 @@ const Chain = () => {
     return Array.from(chainsSet) as string[]
   }, [balances])
 
-  const chains = useMemo(
-    () =>
-      availableChains.map((chain) => {
-        const address = convertAddress(recipient ?? "", networks[chain]?.prefix)
-        const name = getChainNamefromID(chain, networks) ?? chain
-        return {
-          name,
-          onClick: () => {
-            setValue("destination", chain)
-            setValue("recipient", address)
-            goToStep(3)
-          },
-          id: chain,
-          address,
-        }
-      }),
-    [availableChains, networks, recipient, setValue, goToStep]
+  const chains = useMemo(() => {
+    const { words } = getWallet(recipient)
+    return availableChains.map((chain) => {
+      const address = addressFromWords(
+        words[networks[chain]?.coinType ?? "330"],
+        networks[chain]?.prefix
+      )
+      const name = getChainNamefromID(chain, networks) ?? chain
+      return {
+        name,
+        onClick: () => {
+          setValue("destination", chain)
+          setValue("recipient", address)
+          goToStep(3)
+        },
+        id: chain,
+        address,
+      }
+    })
+  }, [availableChains, networks, recipient, setValue, goToStep])
+  return (
+    <SearchChains
+      data={chains.filter((item) => AccAddress.validate(item.address))}
+    />
   )
-  return <SearchChains data={chains} />
 }
 export default Chain

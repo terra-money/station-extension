@@ -18,6 +18,7 @@ import {
 } from "data/queries/swap/types"
 import { UseFormReturn, useForm } from "react-hook-form"
 import { useSwapSlippage } from "utils/localStorage"
+import SwapLoadingPage from "./components/SwapLoadingPage"
 
 interface Swap {
   tokens: SwapAssetExtra[]
@@ -81,7 +82,7 @@ const SwapContext = ({ children }: PropsWithChildren<{}>) => {
   }
 
   return !state.isSuccess ? (
-    <span>loader</span>
+    <SwapLoadingPage />
   ) : (
     <Fetching {...state}>{render()}</Fetching>
   )

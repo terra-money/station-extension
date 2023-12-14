@@ -1,7 +1,7 @@
 import { Pill } from "components"
 import { ChainImage, TokenImage } from "../utils"
+import { truncate } from "utils/format"
 import styles from "../TokenListItem.module.scss"
-// import { truncate } from "@terra-money/terra-utils"
 
 export interface TokenSingleChainListItemProps {
   tokenImg: string

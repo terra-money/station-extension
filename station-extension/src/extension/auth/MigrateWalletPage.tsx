@@ -35,6 +35,14 @@ export type MigratedWalletResult =
       words: Record<"330", string>
       pubkey: Record<"330", string>
     }
+  | {
+      name: string
+      words: Record<"330", string>
+      pubkey: Record<"330", string>
+      multisig: true
+      addresses: string[]
+      threshold: number
+    }
 interface Props {
   wallet: {
     name: string
@@ -125,12 +133,12 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
     })
     const key118 = new SeedKey({
       seed,
-      coinType: wallet.legacy ? 118 : 330,
+      coinType: 118,
       index: index || wallet.index || 0,
     })
     const key60 = new SeedKey({
       seed,
-      coinType: wallet.legacy ? 118 : 330,
+      coinType: 60,
       index: index || wallet.index || 0,
     })
 

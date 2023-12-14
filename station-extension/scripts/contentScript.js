@@ -167,7 +167,7 @@ async function setupStationProvider() {
 
       case "theme":
         const handleGetTheme = ({ connect = { allowed: [] }, theme }) => {
-          const isAllowed = connect.allowed.includes(origin)
+          const isAllowed = (connect.allowed || []).includes(origin)
 
           if (isAllowed) {
             sendResponse(true, theme)
@@ -188,8 +188,10 @@ async function setupStationProvider() {
 
             const denied =
               oldValue &&
-              oldValue.request.length - 1 === newValue.request.length &&
-              oldValue.allowed.length === newValue.allowed.length
+              (oldValue.request || []).length - 1 ===
+                (newValue.request || []).length &&
+              (oldValue.allowed || []).length ===
+                (newValue.allowed || []).length
 
             if (denied) {
               sendResponse(false, "User denied the connection request.")
@@ -211,12 +213,12 @@ async function setupStationProvider() {
           //    - send back the response and close the popup.
           // 2. If not,
           //    - store the address on the storage and open the popup to request it (only if it is not the requested address).
-          const isAllowed = connect.allowed.includes(origin)
+          const allowed = connect.allowed || []
+          const request = connect.request || []
+
+          const isAllowed = allowed.includes(origin)
           const walletExists = wallet.address
-          const alreadyRequested = [
-            ...connect.request,
-            ...connect.allowed,
-          ].includes(origin)
+          const alreadyRequested = [...request, ...allowed].includes(origin)
 
           if (isAllowed && walletExists) {
             sendResponse(true, wallet)
@@ -225,7 +227,7 @@ async function setupStationProvider() {
           } else {
             !alreadyRequested &&
               browser.storage.local.set({
-                connect: { ...connect, request: [origin, ...connect.request] },
+                connect: { ...connect, request: [origin, ...request] },
               })
 
             openPopup()
@@ -268,7 +270,7 @@ async function setupStationProvider() {
           //    - send back the response and close the popup.
           // 2. If not,
           //    - store the address on the storage and open the popup to request it (only if it is not the requested address).
-          const isAllowed = connect.allowed.includes(origin)
+          const isAllowed = (connect.allowed || []).includes(origin)
           const hasPubKey = wallet.pubkey
 
           if (isAllowed && hasPubKey) {

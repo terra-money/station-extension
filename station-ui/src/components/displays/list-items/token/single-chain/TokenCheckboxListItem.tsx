@@ -21,7 +21,7 @@ const TokenCheckboxListItem = ({
   checked
 }: TokenCheckboxListItemProps) => {
   return (
-    <div className={styles.token__container} onClick={onClick}>
+    <div className={cx(styles.token__container, { [styles.pointer] : !!onClick})} onClick={onClick}>
       <div className={styles.details}>
         <div className={styles.token__icon__container}>
           <TokenImage
