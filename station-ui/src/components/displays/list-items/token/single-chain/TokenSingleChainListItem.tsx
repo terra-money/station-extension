@@ -1,6 +1,7 @@
 import Pill from "components/general/pill/Pill"
 import styles from "../TokenListItem.module.scss"
-// import { truncate } from "@terra-money/terra-utils"
+import { truncate } from "@terra-money/terra-utils"
+import classNames from "classnames"
 
 export interface TokenSingleChainListItemProps {
   tokenImg: string
@@ -11,6 +12,7 @@ export interface TokenSingleChainListItemProps {
   isSendBack?: boolean
   onClick?: () => void
 }
+const cx = classNames.bind(styles)
 
 const TokenSingleChainListItem = ({
   tokenImg,
@@ -22,7 +24,7 @@ const TokenSingleChainListItem = ({
   onClick,
 }: TokenSingleChainListItemProps) => {
   return (
-    <div className={styles.token__container} onClick={onClick}>
+    <div className={cx(styles.token__container, {[styles.pointer] : !!onClick})} onClick={onClick}>
       <div className={styles.details}>
         <div className={styles.token__icon__container}>
           <img
