@@ -37,3 +37,17 @@ export const NoEmoji: StoryObj<WalletButtonProps> = {
   },
   argTypes: {},
 };
+
+export const Secondary: StoryObj<WalletButtonProps> = {
+  render: () => {
+    return (
+      <WalletButton
+        variant='secondary'
+        walletName="my-wallet"
+        walletAddress="Multiple Addresses"
+        onClick={() => console.log("clicked!")}
+      />
+    )
+  },
+  argTypes: {},
+};
