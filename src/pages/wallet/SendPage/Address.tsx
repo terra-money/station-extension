@@ -9,12 +9,12 @@ import {
   Tabs,
   Button,
 } from "@terra-money/station-ui"
-import { WalletButtonList } from "./Components/MyWallets"
+import { AddressBookList } from "./Components/AddressBookList"
 import MyWallets from "./Components/MyWallets"
 import validate from "txs/validate"
 import { useRecentRecipients } from "utils/localStorage"
 import { useTranslation } from "react-i18next"
-import { useGetLocalWalletName } from "auth/hooks/useAddress"
+import { WalletName } from "types/network"
 
 const Address = () => {
   const { form, goToStep, getWalletName, networks } = useSend()
@@ -24,7 +24,6 @@ const Address = () => {
   const { errors } = formState
   const { recipient } = watch()
   const { t } = useTranslation()
-  const getLocalWalletName = useGetLocalWalletName()
 
   // useEffect(() => {
   //   // Handle routing from asset-specific page
@@ -46,10 +45,9 @@ const Address = () => {
     },
   ]
 
-  const handleKnownWallet = (recipient: AccAddress) => {
-    const walletName = getLocalWalletName(recipient)
-    if (walletName) {
-      setValue("recipient", walletName)
+  const handleKnownWallet = (recipient: AccAddress | WalletName) => {
+    if (!AccAddress.validate(recipient ?? "")) {
+      setValue("recipient", recipient)
       goToStep(2)
     } else {
       handleKnownChain(recipient)
@@ -87,7 +85,7 @@ const Address = () => {
       {recipients.length > 0 && (
         <>
           <SectionHeader title="Recently Used" withLine />
-          <WalletButtonList
+          <AddressBookList
             items={recipients.map((r) => ({
               ...r,
               name: getWalletName(r.recipient),

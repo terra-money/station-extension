@@ -1,9 +1,9 @@
 import {
   Checkbox,
   Copy,
+  Grid,
   Input,
   InputWrapper,
-  ModalButton,
   SectionHeader,
   SubmitButton,
   SummaryHeader,
@@ -15,7 +15,6 @@ import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
 import { Form, FormError } from "components/form"
 import { SAMPLE_ADDRESS } from "config/constants"
-import styles from "./MultisigTxForm.module.scss"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import validate from "auth/scripts/validate"
@@ -94,14 +93,29 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
     ? t("Confirm in ledger")
     : "Generate Signature"
 
-  const submitButton = (
-    <SubmitButton loading={submitting} disabled={!isValid}>
-      {submittingLabel}
-    </SubmitButton>
-  )
+  if (signature) {
+    return (
+      <Grid gap={40} style={{ marginTop: 20 }}>
+        <SummaryHeader
+          statusLabel={"Success!"}
+          statusMessage={"Signature generated"}
+          status={"success"}
+        />
+        {signature && (
+          <InputWrapper
+            label={t("Signature")}
+            extra={<Copy copyText={toBytes(signature)} />}
+          >
+            <TextArea readOnly={true} value={toBytes(signature)} rows={10} />
+          </InputWrapper>
+        )}
+        <SubmitButton onClick={() => navigate("/")}>{"Done"}</SubmitButton>
+      </Grid>
+    )
+  }
 
   return (
-    <Form onSubmit={handleSubmit(submit)} className={styles.form}>
+    <Form onSubmit={handleSubmit(submit)}>
       <InputWrapper label={t("Multisig Address")}>
         <Input
           {...register("address", {
@@ -147,37 +161,9 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
 
       {error && <FormError>{error.message}</FormError>}
 
-      <ModalButton
-        hideCloseButton
-        isOpen={!!signature}
-        closeIcon={undefined}
-        renderButton={(open) => submitButton}
-        footer={() => (
-          <SubmitButton
-            className={styles.donebutton}
-            onClick={() => navigate("/")}
-          >
-            {"Done"}
-          </SubmitButton>
-        )}
-      >
-        <div className={styles.signaturemodal}>
-          <SummaryHeader
-            statusLabel={"Success!"}
-            statusMessage={"Signature generated"}
-            status={"success"}
-          />
-          <br />
-          {signature && (
-            <InputWrapper
-              label={t("Signature")}
-              extra={<Copy copyText={toBytes(signature)} />}
-            >
-              <TextArea readOnly={true} value={toBytes(signature)} rows={10} />
-            </InputWrapper>
-          )}
-        </div>
-      </ModalButton>
+      <SubmitButton loading={submitting} disabled={!isValid}>
+        {submittingLabel}
+      </SubmitButton>
     </Form>
   )
 }
