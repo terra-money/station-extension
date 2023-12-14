@@ -27,12 +27,6 @@ const AddressBook = () => {
     },
   ]
 
-  // const handleSettingsClick = (item: AddressBook) => {
-  //   if (item.index !== undefined) {
-  //     handleOpen(item.index)
-  //   }
-  // }
-
   const onClick = (address: AccAddress, index: number) => {
     if (tabKey === "wallets") {
       navigate("my-addresses", { state: address })

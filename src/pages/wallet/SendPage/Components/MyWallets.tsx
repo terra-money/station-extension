@@ -1,9 +1,8 @@
 import { useAddressBook } from "data/settings/AddressBook"
 import { AddressBookList } from "./AddressBookList"
 import { LocalWalletList } from "./LocalWalletList"
-
+import { FavoriteIcon } from "@terra-money/station-ui"
 import { useAuth } from "auth"
-import { ReactComponent as FavoriteIcon } from "styles/images/icons/Favorite.svg"
 import { ReactComponent as ActiveWalletIcon } from "styles/images/icons/ActiveWallet.svg"
 
 interface MyWalletsProps {
@@ -22,7 +21,7 @@ const MyWallets = ({ tab, onClick }: MyWalletsProps) => {
           <AddressBookList
             onClick={onClick}
             title="Favorites"
-            icon={<FavoriteIcon />}
+            icon={<FavoriteIcon fill={"var(--token-warning-500)"} />}
             items={addressList.filter((i) => i.favorite)}
           />
           <AddressBookList
