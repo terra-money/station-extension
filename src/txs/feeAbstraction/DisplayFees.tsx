@@ -49,18 +49,6 @@ export default function DisplayFees({
     }
   }, [availableGasDenoms]) // eslint-disable-line
 
-  /*useEffect(() => {
-    if (
-      gas &&
-      !isBalanceLoading &&
-      availableGasDenoms.length &&
-      chainsWithGas.includes(chainID)
-    ) {
-      onReady()
-    }
-  }, [gas, isBalanceLoading, availableGasDenoms, chainsWithGas, chainID])*/
-
-  // gas is loading
   if (!gas || !gasDenom)
     return (
       <section className={styles.loading__card}>
@@ -93,8 +81,7 @@ export default function DisplayFees({
       />
     )
 
-  // if we are at this point fees are ready
-  onReady()
+  onReady() // if we are at this point fees are ready
 
   return (
     <SummaryTable
