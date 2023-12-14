@@ -93,12 +93,14 @@ const AssetList = () => {
           />
         )}
         {showFilter && (
-          <Input
-            autoFocus
-            value={search}
-            placeholder={t("Filter by tokens, chains, etc.")}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+          <div className={styles.filter__input}>
+            <Input
+              autoFocus
+              value={search}
+              placeholder={t("Filter by tokens, chains, etc.")}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
         )}
         {assets.visible.map(renderAsset)}
         {assets.lowBal.length > 0 && (
