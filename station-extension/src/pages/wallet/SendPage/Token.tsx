@@ -15,6 +15,7 @@ import { Read } from "components/token"
 import { AssetType } from "./types"
 import { useMemo } from "react"
 import { has } from "utils/num"
+import { useNativeDenoms } from "data/token"
 
 const Token = () => {
   const { form, goToStep, getWalletName, assetList, getIBCChannel, networks } =
@@ -24,7 +25,9 @@ const Token = () => {
   const addresses = useInterchainAddresses()
   const { ibcDenoms } = useWhitelist()
   const { t } = useTranslation()
-  const { destination, recipient } = watch()
+  const readNativeDenoms = useNativeDenoms()
+  const { destination, recipient, asset } = watch()
+  const defaultSearch = readNativeDenoms(asset ?? "")
 
   const tokens = useMemo(() => {
     return assetList.reduce((acc, a) => {
@@ -122,9 +125,10 @@ const Token = () => {
       <SectionHeader title={t("My Tokens")} withLine />
       <WithSearchInput
         label="Search Tokens"
+        defaultInput={defaultSearch?.symbol} // pre-selected asset from asset page
         placeholder="Token symbol or chain"
       >
-        {(search: string) => {
+        {(search) => {
           const filtered = tokens
             .filter(
               (t: AssetType) =>
