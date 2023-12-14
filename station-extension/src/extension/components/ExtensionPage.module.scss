@@ -97,6 +97,7 @@
 
 .container {
   padding: 20px;
+  overflow-y: scroll;
 
   .header & {
     padding-top: 0;

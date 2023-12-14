@@ -1,6 +1,6 @@
 import Pill from "components/general/pill/Pill"
 import styles from "../TokenListItem.module.scss"
-// import { truncate } from "@terra-money/terra-utils"
+import { truncate } from "utils/format"
 
 export interface TokenSingleChainListItemProps {
   tokenImg: string
@@ -34,7 +34,7 @@ const TokenSingleChainListItem = ({
         <div className={styles.details__container}>
           <div className={styles.top__row}>
             <h3 className={styles.symbol}>
-              <span className={styles.symbol__name}>{symbol}</span>
+              <span className={styles.symbol__name}>{truncate(symbol, [15, 15])}</span>
               {isSendBack && <Pill variant="warning" text="Send Back" />}
             </h3>
             <h3 className={styles.amount}>

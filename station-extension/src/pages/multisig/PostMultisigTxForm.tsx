@@ -94,7 +94,7 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
   }
 
   return (
-    <ReadTx tx={tx.trim()}>
+    <>
       <Form onSubmit={handleSubmit(submit)}>
         <FormItem label={t("Multisig address")}>
           <Input
@@ -112,6 +112,8 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
             rows={6}
           />
         </FormItem>
+
+        <ReadTx tx={tx.trim()} />
 
         <FormItem label={t("Signature")}>
           {fields.map(({ address, id }, index) => (
@@ -132,7 +134,7 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
 
         <Submit submitting={submitting} disabled={!isValid} />
       </Form>
-    </ReadTx>
+    </>
   )
 }
 
