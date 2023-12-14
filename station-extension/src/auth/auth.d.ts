@@ -54,6 +54,8 @@ interface LedgerWallet {
 
 interface MultisigWallet extends SingleWallet {
   multisig: true
+  pubkeys: string[]
+  threshold: number
 }
 
 interface InterchainStoredWallet extends SingleWallet {

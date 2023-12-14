@@ -19,6 +19,7 @@ import {
   SubmitButton,
 } from "@terra-money/station-ui"
 import { wordsFromAddress } from "utils/bech32"
+import { addMultisigWallet } from "auth/scripts/keystore"
 
 interface Values {
   name: string
@@ -83,13 +84,20 @@ const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
 
     try {
       const values = addresses.map(({ value }) => value)
-      const publicKeys = await getPublicKeys(values)
-      const publicKey = new LegacyAminoMultisigPublicKey(threshold, publicKeys)
+      const pubkeys = await getPublicKeys(values)
+      const publicKey = new LegacyAminoMultisigPublicKey(threshold, pubkeys)
       onPubkey?.(publicKey)
       if (!onCreated) return
       const address = publicKey.address("terra")
       const words = { "330": wordsFromAddress(address) }
-      const wallet = { name, words, multisig: true as const }
+      const wallet = {
+        name,
+        words,
+        multisig: true as const,
+        pubkeys: pubkeys.map((k) => k.toAminoJSON()),
+        threshold,
+      }
+      addMultisigWallet(wallet)
       onCreated(wallet)
     } catch (error) {
       setError(error as Error)

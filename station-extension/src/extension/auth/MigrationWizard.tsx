@@ -31,8 +31,6 @@ import { useThemeFavicon } from "data/settings/Theme"
 function needsMigration(w: any): boolean {
   // ledger wallets with pubkey do not need migration
   if (w.ledger && w.pubkey) return false
-  // multisig wallet do not need migratyion
-  if (w.multisig) return false
 
   // TODO: add more edge cases
   return true
