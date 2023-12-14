@@ -28,6 +28,12 @@ const Confirm = () => {
   const { watch, handleSubmit, getValues } = form
   const { offerAsset, offerInput, msgs: swapMsgs } = watch()
   const amount = toAmount(offerInput, { decimals: offerAsset.decimals })
+  const estimationTxValues = useMemo(() => getValues(), [getValues])
+
+  if (!swapMsgs) {
+    navigate("/swap")
+    return null
+  }
 
   const createTx = ({ offerAsset }: SwapState) => {
     const msg = JSON.parse(swapMsgs?.[0].msg)
@@ -55,8 +61,6 @@ const Confirm = () => {
     }
     return { msgs: [msgs] ?? [], chainID: offerAsset.chainId }
   }
-
-  const estimationTxValues = useMemo(() => getValues(), [getValues])
 
   const tx = {
     token: offerAsset.denom,
