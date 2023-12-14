@@ -34,7 +34,7 @@ export const SearchChains = ({ data }: SearchChainsProps) => {
                 key={id}
                 label={capitalize(name)}
                 chain={{
-                  icon: networks[id].icon,
+                  icon: networks[id]?.icon,
                   label: name,
                 }}
                 subLabel={truncate(address)}

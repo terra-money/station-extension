@@ -22,8 +22,10 @@ const Chain = () => {
   const chains = useMemo(() => {
     const { words } = getWallet(recipient)
     return availableChains.map((chain) => {
-      const { coinType, prefix } = networks[chain]
-      const address = addressFromWords(words[coinType], prefix)
+      const address = addressFromWords(
+        words[networks[chain]?.coinType ?? "330"],
+        networks[chain]?.prefix
+      )
       const name = getChainNamefromID(chain, networks) ?? chain
       return {
         name,
