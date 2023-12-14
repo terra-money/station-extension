@@ -2,6 +2,8 @@ export { default as AssetSelectorFrom } from "./asset-selector/AssetSelectorFrom
 export * from "./asset-selector/AssetSelectorFrom"
 export { default as AssetSelectorTo } from "./asset-selector/AssetSelectorTo"
 export * from "./asset-selector/AssetSelectorTo"
+export { default as AssetSelectorSkeleton } from "./asset-selector/skeleton/AssetSelectorSkeleton";
+export * from "./asset-selector/skeleton/AssetSelectorSkeleton";
 
 export { default as Input } from "./base/Input"
 export * from "./base/Input"
