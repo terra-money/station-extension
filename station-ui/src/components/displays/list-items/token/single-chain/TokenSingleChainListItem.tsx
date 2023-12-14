@@ -35,7 +35,7 @@ const TokenSingleChainListItem = ({
         <div className={styles.details__container}>
           <div className={styles.top__row}>
             <h3 className={styles.symbol}>
-              <span className={styles.symbol__name}>{symbol}</span>
+              <span className={styles.symbol__name}>{truncate(symbol, [15, 15])}</span>
               {isSendBack && <Pill variant="warning" text="Send Back" />}
             </h3>
             <h3 className={styles.amount}>
