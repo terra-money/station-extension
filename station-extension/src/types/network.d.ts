@@ -2,6 +2,7 @@ import { AccAddress } from "@terra-money/feather.js"
 
 type NetworkName = string
 type ChainID = string
+type WalletName = string
 type InterchainNetworks = Record<
   NetworkName,
   Record<ChainID, InterchainNetwork>
