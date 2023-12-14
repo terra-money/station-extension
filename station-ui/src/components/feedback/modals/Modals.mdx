@@ -1,5 +1,7 @@
 import { Meta, Story, Canvas, Controls, ArgTypes, Description, Source } from '@storybook/addon-docs/blocks';
+import { RequiredText } from "../../../DocsHelpers";
 import ModalButton from './ModalButton';
+import * as ModalStories from './Modal.stories.tsx';
 import * as ModalButtonStories from './ModalButton.stories.tsx';
 import 'scss/storybookoverrides.scss';
 
@@ -14,50 +16,167 @@ Modal components use the `react-modal` npm package.
   - Used the majority of the time when we need a modal to pop up when a user clicks something (a button)
   - **Example:** when the preferences icon in the navbar is clicked a modal pops up containing .
 
-# ModalButton
+# Modal Props
+- **`title`** - `ReactNode` - The title of the modal.
+- **`subtitle`** - `ReactNode` - The subtitle of the modal.
+- **`footer`** - `(close: ReactModal.Props["onRequestClose"]) => ReactNode` - The footer of the modal. It is a function that takes a `close` function and returns a JSX element.
+
+- **`confirm`** - `boolean` - Sets the font-size to "inherit"...
+- **`minimal`** - `boolean` - Sets the width to "fit-content" amd the padding to "0px".
+- **`maxHeight`** - `boolean | number` - Forces a maximum height
+
+- **`closeIcon`** - `ReactNode` - Replace the default close icon.
+- **`icon`** - `ReactNode` - An Icon that is displayed above the title.
+- **`rootID`** - `string` - The ID of the root element.
+- **`backAction`** - `() => void` - A function that is called when the back button is clicked.
+- **`hideCloseButton`** - `boolean` - Forces the "close" button to be hidden.
+
+## Modal Stories
+
+## Extension - ***makes the modal look like a full page***
+## Extension Default
+<div className="story_with_source_below">
+  <Source code={`
+    <Modal title="Modal Title" isOpen={true} onRequestClose={() => {}}>
+  <Form>
+    <InputWrapper label={"This is a label"}>
+      <Input inputMode="text" placeholder={"am placeholder"} />
+    </InputWrapper>
+
+    <SubmitButton variant="primary" onClick={() => {}} label={"Submit"} />
+  </Form>
+</Modal>
+  `} />
+</div>
+
+## Extension With Back Button
+<div className="story_with_source_below">
+  <Source code={`
+    <Modal
+  title="Modal Title"
+  isOpen={true}
+  onRequestClose={() => {}}
+  backAction={() => {}}
+>
+  <Form>
+    <InputWrapper label={"This is a label"}>
+      <Input inputMode="text" placeholder={"am placeholder"} />
+    </InputWrapper>
+
+    <SubmitButton variant="primary" onClick={() => {}} label={"Submit"} />
+  </Form>
+</Modal>
+  `} />
+</div>
+
+## Extension With Sub Title
+<div className="story_with_source_below">
+  <Source code={`
+    <Modal
+  title="Modal Title"
+  isOpen={true}
+  onRequestClose={() => {}}
+  subtitle="terra1oid33d3...pazdy5"
+>
+  <Form>
+    <InputWrapper label={"This is a label"}>
+      <Input inputMode="text" placeholder={"am placeholder"} />
+    </InputWrapper>
+
+    <SubmitButton variant="primary" onClick={() => {}} label={"Submit"} />
+  </Form>
+</Modal>
+  `} />
+</div>
+
+## Extension With Sub Title And Back
+<div className="story_with_source_below">
+  <Source code={`
+    <Modal
+  title="Modal Title"
+  isOpen={true}
+  onRequestClose={() => {}}
+  backAction={() => {}}
+  subtitle="terra1oid33d3...pazdy5"
+>
+  <Form>
+    <InputWrapper label={"This is a label"}>
+      <Input inputMode="text" placeholder={"am placeholder"} />
+    </InputWrapper>
+
+    <SubmitButton variant="primary" onClick={() => {}} label={"Submit"} />
+  </Form>
+</Modal>
+  `} />
+</div>
+
+## Extension No Close Button
+<div className="story_with_source_below">
+  <Source code={`
+    <Modal
+  title="Modal Title"
+  isOpen={true}
+  onRequestClose={() => {}}
+  hideCloseButton
+>
+  <Form>
+    <InputWrapper label={"This is a label"}>
+      <Input inputMode="text" placeholder={"am placeholder"} />
+    </InputWrapper>
+
+    <SubmitButton variant="primary" onClick={() => {}} label={"Submit"} />
+  </Form>
+</Modal>
+  `} />
+</div>
+
+## ModalButton
+
+# ModalButton Props extends Modal Props
 `<ModalButton>` opens a modal when clicked. It is based on `<Modal />`.
-* `title` is the title of the modal.
-* `renderButton` is the button that opens the modal. It is a function that takes an `open` boolean and returns a JSX element.
+- **`renderButton`** - <RequiredText /> - `(openModal: () => void) => ReactNode` - The button that opens the modal. It is a function that takes an `open` boolean and returns a JSX element.
+- **`children`** - `ReactNode` - The content of the modal. It is a function that takes an `open` boolean and returns a JSX element.
+- **`hideCloseButton`** - `boolean` - Forces the "close" button to be hidden.
 
-## Imports
+## Import
 ```tsx
-import ModalButton, { ModalButtonProps } from '@terra-station-ui/components/feedback';
+import { Modal } from 'station-ui';
 ```
 
-## Simple Example:
-You can use `<ModalButton>` to display a [`<Button />`](?path=/docs/components-general-button--docs) that opens the modal.
-```jsx
-  <ModalButton
-    title='Modal Title'
-    renderButton={(open) => (
-      <Button onClick={open}>Open Modal</Button>
-    )}
-  >
-    {**children**}
-  </ModalButton>
-```
+## Stories
 
-## Complex Example:
-This more complex example of how the Modal opeerates with other components.
-In this example, `renderButton` is passed [`<Input />`](?path=/docs/components-form-components-input--docs) which has an `actionButton` that gets `open` from `renderButton` as its `onClick` prop.
-```jsx
-  <ModalButton
-    title='Modal Title'
-    renderButton={(open) => (
-      <Input
-        {...register("recipient")}
-        placeholder={SAMPLE_ADDRESS}
-        actionButton={{
-          icon: <ContactsIcon />,
-          onClick: open,
-        }}
-        autoFocus
-      />
-    )}
-  >
-    {**children**}
-  </ModalButton>
-```
+## Default
+<div className="story_with_source_below">
+  <Canvas of={ModalButtonStories.Default} />
+  <Source code={`
+    <ModalButton
+  renderButton={(open) => (
+    <button onClick={open} type="button">
+      Open Modal
+    </button>
+  )}
+>
+  <p>Modal Content</p>
+</ModalButton>
+  `} />
+</div>
+
+## No Close Icon
+<div className="story_with_source_below">
+  <Canvas of={ModalButtonStories.NoCloseIcon} />
+  <Source code={`
+    <ModalButton
+  renderButton={(open) => (
+    <button onClick={open} type="button">
+      Open Modal
+    </button>
+  )}
+  hideCloseButton
+>
+  <p>Modal Content</p>
+</ModalButton>
+  `} />
+</div>
 
 ## Playground - ModalButton
 <Canvas of={ModalButtonStories.Playground} />

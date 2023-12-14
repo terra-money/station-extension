@@ -144,12 +144,24 @@ export const Default: StoryObj = {
   render: () => (
     <ModalButton
       renderButton={(open) => (
-        <button onClick={open} type="button">
-          Open Modal
-        </button>
+        <Button onClick={open} variant="primary" label="Open Modal" />
       )}
     >
       <p>Modal Content</p>
     </ModalButton>
   ),
 }
+
+export const NoCloseIcon: StoryObj = {
+  render: () => (
+    <ModalButton
+      renderButton={(open) => (
+        <Button onClick={open} variant="primary" label="Open Modal" />
+      )}
+      hideCloseButton
+    >
+      <p>Modal Content</p>
+    </ModalButton>
+  ),
+}
+

@@ -31,6 +31,7 @@ export interface ModalButtonProps extends Omit<ModalProps, "isOpen"> {
   minimal?: boolean
   children?: ReactNode
   isOpen?: boolean
+  hideCloseButton?: boolean
 }
 
 const ModalButton = (props: ModalButtonProps) => {
@@ -53,7 +54,11 @@ const ModalButton = (props: ModalButtonProps) => {
     <ModalContext.Provider value={modalContextValue}>
       {renderButton(openModal)}
       {isModalOpen && (
-        <Modal {...rest} isOpen={isModalOpen} onRequestClose={closeModal} />
+        <Modal
+          {...rest}
+          isOpen={isModalOpen}
+          onRequestClose={closeModal}
+        />
       )}
     </ModalContext.Provider>
   )
