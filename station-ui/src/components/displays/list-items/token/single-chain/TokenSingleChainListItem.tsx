@@ -25,7 +25,7 @@ const TokenSingleChainListItem = ({
   onClick,
 }: TokenSingleChainListItemProps) => {
   return (
-    <div className={cx(styles.token__container, { pointer: !!onClick })} onClick={onClick}>
+    <div className={cx(styles.token__container, { [styles.pointer]: !!onClick })} onClick={onClick}>
       <div className={styles.details}>
         <div className={styles.token__icon__container}>
           <img
