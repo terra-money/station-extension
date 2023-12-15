@@ -24,7 +24,6 @@ const TokenSingleChainListItem = ({
   isSendBack,
   onClick,
 }: TokenSingleChainListItemProps) => {
-  console.log('onClick', onClick)
   return (
     <div className={cx(styles.token__container, { pointer: !!onClick })} onClick={onClick}>
       <div className={styles.details}>

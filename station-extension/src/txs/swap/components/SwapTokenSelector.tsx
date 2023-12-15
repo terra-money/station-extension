@@ -2,7 +2,7 @@ import {
   InputWrapper,
   SectionHeader,
   Dropdown,
-  FlexColumn,
+  Grid,
   TokenSingleChainListItem,
 } from "@terra-money/station-ui"
 import WithSearchInput from "pages/custom/WithSearchInput"
@@ -14,6 +14,8 @@ import { useState } from "react"
 import { useNetwork } from "data/wallet"
 import { ChainID } from "types/network"
 import { Read } from "components/token"
+import styles from "./SwapTokenSelector.module.scss"
+import { FlexColumn } from "components/layout"
 
 interface Props {
   tokenOnClick: (token: SwapAssetExtra) => void
@@ -45,9 +47,9 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
         />
       </InputWrapper>
       <SectionHeader title={t("Tokens")} withLine />
-      <WithSearchInput gap={8} small label={t("Search tokens...")}>
+      <WithSearchInput gap={16} small label={t("Search tokens...")}>
         {(input) => (
-          <FlexColumn gap={20}>
+          <Grid gap={20}>
             {tokens
               .filter((t) => {
                 return (
@@ -80,7 +82,7 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
                   onClick={() => tokenOnClick(token)}
                 />
               ))}
-          </FlexColumn>
+          </Grid>
         )}
       </WithSearchInput>
     </FlexColumn>
