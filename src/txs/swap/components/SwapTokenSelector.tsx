@@ -14,7 +14,6 @@ import { useState } from "react"
 import { useNetwork } from "data/wallet"
 import { ChainID } from "types/network"
 import { Read } from "components/token"
-import styles from "./SwapTokenSelector.module.scss"
 import { FlexColumn } from "components/layout"
 
 interface Props {
