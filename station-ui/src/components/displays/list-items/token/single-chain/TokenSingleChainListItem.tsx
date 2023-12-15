@@ -1,6 +1,9 @@
 import Pill from "components/general/pill/Pill"
 import styles from "../TokenListItem.module.scss"
 import { truncate } from "utils/format"
+import classNames from "classnames"
+
+const cx = classNames.bind(styles)
 
 export interface TokenSingleChainListItemProps {
   tokenImg: string
@@ -21,8 +24,9 @@ const TokenSingleChainListItem = ({
   isSendBack,
   onClick,
 }: TokenSingleChainListItemProps) => {
+  console.log('onClick', onClick)
   return (
-    <div className={styles.token__container} onClick={onClick}>
+    <div className={cx(styles.token__container, { pointer: !!onClick })} onClick={onClick}>
       <div className={styles.details}>
         <div className={styles.token__icon__container}>
           <img

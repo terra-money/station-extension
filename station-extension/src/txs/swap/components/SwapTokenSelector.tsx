@@ -55,35 +55,30 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
                   t.chain?.name.toLowerCase().includes(input.toLowerCase())
                 )
               })
-              .filter((t) => {
-                if (chainFilter === "all") return true
-                return t.chainId === chainFilter
-              })
+              .filter((t) => t.chainId === chainFilter || chainFilter === "all")
               .sort((a, b) => b.value - a.value)
               .map((token) => (
-                <div style={{ width: 300 }}>
-                  <TokenSingleChainListItem
-                    key={token.denom + token.chainId}
-                    amountNode={toInput(token.balance, token.decimals)}
-                    priceNode={
-                      token.price === 0 ? (
-                        "—"
-                      ) : (
-                        <>
-                          {symbol}{" "}
-                          <Read amount={token.value} decimals={0} fixed={2} />
-                        </>
-                      )
-                    }
-                    symbol={token.symbol}
-                    chain={{
-                      label: token.chain?.name ?? "",
-                      icon: token.chain?.icon ?? "",
-                    }}
-                    tokenImg={token.icon ?? ""}
-                    onClick={() => tokenOnClick(token)}
-                  />
-                </div>
+                <TokenSingleChainListItem
+                  key={token.denom + token.chainId}
+                  amountNode={toInput(token.balance, token.decimals)}
+                  priceNode={
+                    token.price === 0 ? (
+                      "—"
+                    ) : (
+                      <>
+                        {symbol}{" "}
+                        <Read amount={token.value} decimals={0} fixed={2} />
+                      </>
+                    )
+                  }
+                  symbol={token.symbol}
+                  chain={{
+                    label: token.chain?.name ?? "",
+                    icon: token.chain?.icon ?? "",
+                  }}
+                  tokenImg={token.icon ?? ""}
+                  onClick={() => tokenOnClick(token)}
+                />
               ))}
           </FlexColumn>
         )}
