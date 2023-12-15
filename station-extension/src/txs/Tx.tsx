@@ -24,7 +24,6 @@ import { useIsWalletEmpty } from "data/queries/bank"
 
 import { Pre } from "components/general"
 import { Grid, Flex } from "components/layout"
-import { Modal } from "components/feedback"
 import { Read } from "components/token"
 import ConnectWallet from "app/sections/ConnectWallet"
 import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
@@ -42,6 +41,7 @@ import {
   Input,
   InputWrapper,
   SubmitButton,
+  Modal,
 } from "@terra-money/station-ui"
 import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
 import { openURL } from "extension/storage"
