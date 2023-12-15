@@ -52,24 +52,24 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
     {
       icon: <SendIcon />,
       primary: true,
-      label: t("send"),
+      label: t("Send"),
       onClick: () => navigate(`/send/1`, { state: { denom } }),
       disabled: sendButtonDisabled,
     },
     {
       icon: <Swap />,
-      label: t("swap"),
+      label: t("Swap"),
       onClick: () => navigate(`/swap`, { state: { denom } }),
       hide: networkName !== "mainnet",
     },
     {
       icon: <ReceiveIcon />,
-      label: t("receive"),
+      label: t("Receive"),
       onClick: () => navigate(`/receive/${address ?? ""}`),
     },
     {
       icon: <AddIcon />,
-      label: t("buy"),
+      label: t("Buy"),
       onClick: () => openModal(),
       disabled: networkName !== "mainnet",
       hide: pathname.includes("/asset/"),
