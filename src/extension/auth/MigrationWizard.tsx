@@ -92,14 +92,14 @@ const MigrationWizard = () => {
               />
             ))}
           </FlexColumn>
-          {legacyWallets.length && (
+          {legacyWallets.length ? (
             <Banner
               variant="info"
               title={t(
                 "You can import other wallets later from the settings page."
               )}
             />
-          )}
+          ) : null}
           <Button
             variant="primary"
             onClick={() => {
