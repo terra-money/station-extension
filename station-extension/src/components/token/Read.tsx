@@ -4,10 +4,10 @@ import {
   readAmount,
   truncate,
 } from "@terra-money/terra-utils"
+import { useNativeDenoms, WithTokenItem } from "data/token"
 import { ForwardedRef, forwardRef, Fragment } from "react"
 import { useCurrency } from "data/settings/Currency"
 import { AccAddress } from "@terra-money/feather.js"
-import { WithTokenItem } from "data/token"
 import classNames from "classnames/bind"
 import styles from "./Read.module.scss"
 import BigNumber from "bignumber.js"
@@ -131,14 +131,19 @@ export const ReadPercent = forwardRef(
 
 /* helpers */
 export const ReadMultiple = ({ list }: { list: Props[] }) => {
+  const readNativeDenom = useNativeDenoms()
   return (
     <>
-      {list.map((item, index) => (
-        <Fragment key={index}>
-          {!!index && " + "}
-          <Read {...item} />
-        </Fragment>
-      ))}
+      {list.map((item, index) => {
+        const { denom } = item
+        const { decimals } = denom ? readNativeDenom(denom) : { decimals: 6 }
+        return (
+          <Fragment key={index}>
+            {!!index && " + "}
+            <Read {...item} decimals={decimals} />
+          </Fragment>
+        )
+      })}
     </>
   )
 }
