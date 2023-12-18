@@ -43,21 +43,19 @@ const NetworkSetting = () => {
       {!!list.length && (
         <>
           <SectionHeader title="Custom LCD Endpoints" withLine />
-          {list
-            .filter((i) => i.lcd !== undefined)
-            .map((i) => (
-              <AddressSelectableListItem
-                active
-                subLabel={i.lcd ?? ""}
-                chain={i.chain}
-                label={i.name}
-                onClick={() =>
-                  navigate("/preferences/network/lcd", {
-                    state: { chainID: i.chainID },
-                  })
-                }
-              />
-            ))}
+          {list.map((i) => (
+            <AddressSelectableListItem
+              active
+              subLabel={i.lcd ?? ""}
+              chain={i.chain}
+              label={i.name}
+              onClick={() =>
+                navigate("/preferences/network/lcd", {
+                  state: { chainID: i.chainID },
+                })
+              }
+            />
+          ))}
         </>
       )}
     </FlexColumn>
