@@ -64,7 +64,7 @@ const MigrationWizard = () => {
 
   if (completed) {
     return (
-      <ExtensionPage>
+      <ExtensionPage fullHeight>
         <Grid gap={24} style={{ marginTop: 50 }}>
           <SummaryHeader
             statusLabel={t("Success!")}
