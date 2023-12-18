@@ -18,10 +18,12 @@ const NetworkSetting = () => {
   const networks = useNetwork()
   const navigate = useNavigate()
 
-  const list = Object.entries(customLCDs ?? {}).map(([chainID, lcd]) => {
-    const { name = "", icon = "" } = networks?.[chainID] ?? {}
-    return { name, chainID, chain: { icon, label: name }, lcd }
-  })
+  const list = Object.entries(customLCDs ?? {})
+    .map(([chainID, lcd]) => {
+      const { name = "", icon = "" } = networks?.[chainID] ?? {}
+      return { name, chainID, chain: { icon, label: name }, lcd }
+    })
+    .filter((i) => !!i.lcd)
 
   if (!networkOptions) return null
 
@@ -38,22 +40,24 @@ const NetworkSetting = () => {
         label="Add Custom LCD Endpoint"
         onClick={() => navigate("/preferences/network/lcd")}
       />
-      {list.some((i) => !!i.lcd) && (
+      {!!list.length && (
         <>
           <SectionHeader title="Custom LCD Endpoints" withLine />
-          {list.map((i) => (
-            <AddressSelectableListItem
-              active
-              subLabel={i.lcd ?? "Not set"}
-              chain={i.chain}
-              label={i.name}
-              onClick={() =>
-                navigate("/preferences/network/lcd", {
-                  state: { chainID: i.chainID },
-                })
-              }
-            />
-          ))}
+          {list
+            .filter((i) => i.lcd !== undefined)
+            .map((i) => (
+              <AddressSelectableListItem
+                active
+                subLabel={i.lcd ?? ""}
+                chain={i.chain}
+                label={i.name}
+                onClick={() =>
+                  navigate("/preferences/network/lcd", {
+                    state: { chainID: i.chainID },
+                  })
+                }
+              />
+            ))}
         </>
       )}
     </FlexColumn>
