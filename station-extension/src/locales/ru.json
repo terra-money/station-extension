@@ -13,7 +13,6 @@
     "Fee": "Комиссия",
     "Memo": "Мемо",
     "decimals": "дробь",
-    "Buy": "Купить",
     "Exchanges": "Обменники",
     "Fiat": "фиатная валюта",
     "APY": "ГПД",
@@ -22,7 +21,7 @@
   "Form": {
     "Amount": "Количество",
     "Recipient": "Получатель",
-    "Asset": "",
+    "Asset": "Актив",
     "Source chain": "",
     "Name": "Имя",
     "optional": "необязательно",
@@ -124,14 +123,17 @@
     "Add tokens": "Добавить токен",
     "Manage list": "Управление списком",
     "Assets": "Активы",
-    "receive": "получить",
+    "Activity": "Активность",
+    "Send": "Отправить",
+    "Swap": "Обменять",
+    "Receive": "Получить",
+    "Buy": "Купить",
     "select a coin": "выберите монету",
     "asset value": "стоимость активов",
     "{{balance}} available": ""
   },
   "Txs": {
-    "Send": "Отправить",
-    "Swap": "Обменять",
+    "Transaction": "Транзакция",
     "Stake": "Стейкинг",
     "Delegate": "Делегировать",
     "Redelegate": "Ределегировать",
@@ -239,8 +241,8 @@
     "Instantiate a code": "Инициализация кода"
   },
   "NFT": { "Marketplace": "Торговые площадки", "Collection": "Коллекция" },
-  "Address book": {
-    "Address book": "Адресная книга",
+  "Address Book": {
+    "Address Book": "Адресная книга",
     "Add a new address": "Добавить новый адрес"
   }
 }

@@ -17,6 +17,7 @@
       .description {
         @include Small;
         color: var(--token-light-100);
+        text-align: center;
       }
     }
   }
@@ -33,7 +34,7 @@
     .summary__card__value {
       @include SmallLH;
       color: var(--token-light-100);
-      word-break: break-all;
+      word-break: break-word;
     }
   }
 }

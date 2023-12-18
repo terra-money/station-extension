@@ -13,7 +13,6 @@
     "Fee": "수수료",
     "Memo": "메모",
     "decimals": "소수점",
-    "Buy": "구매",
     "Exchanges": "거래소",
     "Fiat": "",
     "APY": "연간 수익률",
@@ -22,7 +21,7 @@
   "Form": {
     "Amount": "금액",
     "Recipient": "받는 사람",
-    "Asset": "",
+    "Asset": "자산",
     "Source chain": "",
     "Name": "이름",
     "optional": "선택",
@@ -123,15 +122,18 @@
   "Wallet": {
     "Add tokens": "토큰 추가",
     "Manage list": "목록 관리",
-    "Assets": "",
-    "receive": "",
+    "Assets": "자산",
+    "Activity": "활동",
+    "Send": "보내기",
+    "Swap": "교환",
+    "Receive": "받기",
+    "Buy": "구매",
     "select a coin": "",
     "asset value": "",
     "{{balance}} available": ""
   },
   "Txs": {
-    "Send": "송금",
-    "Swap": "환전",
+    "Transaction": "거래",
     "Stake": "지분",
     "Delegate": "위임",
     "Redelegate": "재위임",
@@ -239,8 +241,8 @@
     "Instantiate a code": ""
   },
   "NFT": { "Marketplace": "시장", "Collection": "컬렉션" },
-  "Address book": {
-    "Address book": "주소록",
+  "Address Book": {
+    "Address Book": "주소록",
     "Add a new address": "새 주소 추가"
   }
 }

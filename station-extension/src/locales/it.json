@@ -22,7 +22,7 @@
   "Form": {
     "Amount": "Quantità",
     "Recipient": "Destinatario",
-    "Asset": "Token",
+    "Asset": "Asset",
     "Source chain": "Chain di provenienza",
     "Name": "Nome",
     "optional": "opzionale",
@@ -124,14 +124,17 @@
     "Add tokens": "Aggiungi tokens",
     "Manage list": "Gestisci lista",
     "Assets": "Assets",
-    "receive": "ricevi",
+    "Activity": "Attività",
+    "Send": "Invia",
+    "Swap": "Scambia",
+    "Receive": "Ricevi",
+    "Buy": "Compra",
     "select a coin": "selezionare un token",
     "asset value": "valore degli asset",
     "{{balance}} available": "{{balance}} disponibili"
   },
   "Txs": {
-    "Send": "Invia",
-    "Swap": "Swap",
+    "Transaction": "Transazione",
     "Stake": "Staking",
     "Delegate": "Delega",
     "Redelegate": "Ridelega",
@@ -239,8 +242,8 @@
     "Instantiate a code": "Inizializza un codice"
   },
   "NFT": { "Marketplace": "Marketplace", "Collection": "Collezione" },
-  "Address book": {
-    "Address book": "Rubbrica indirizzi",
+  "Address Book": {
+    "Address Book": "Rubbrica indirizzi",
     "Add a new address": "Aggiungi un nuovo indirizzo"
   }
 }
