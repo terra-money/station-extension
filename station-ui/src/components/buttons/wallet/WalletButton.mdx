@@ -11,9 +11,9 @@ import "scss/storybookoverrides.scss";
 
 ## Props
 - **`emoji`** - **`string`** - An emoji that is passed in.
+- **`chainIcon`** - **`string`** - The chain icon of the wallet.
 - **`walletName`** - <RequiredText /> - **`string`** - The name of the wallet.
 - **`walletAddress`** - <RequiredText /> - **`string`** - The address of the wallet.
-- **`chainIcon`** - <RequiredText /> - **`string`** - The chain icon of the wallet.
 - **`onClick`** - <RequiredText /> - **`() => void`** - Onclick functionality for the button.
 
 ## Import
@@ -44,6 +44,21 @@ Wallet button without an emoji.
   <Canvas of={WalletButtonStories.NoEmoji} />
   <Source code={`
     <WalletButton
+  walletName="my-wallet"
+  walletAddress="terra1hod3...pazdy5"
+  chainIcon="https://station-assets.terra.dev/img/chains/Terra.svg"
+  onClick={() => console.log("clicked!")}
+/>
+  `} />
+</div>
+
+## Secondary
+Wallet button with secondary variant
+<div className="story_with_source_below">
+  <Canvas of={WalletButtonStories.Secondary} />
+  <Source code={`
+    <WalletButton
+    variant="secondary"
   walletName="my-wallet"
   walletAddress="terra1hod3...pazdy5"
   chainIcon="https://station-assets.terra.dev/img/chains/Terra.svg"

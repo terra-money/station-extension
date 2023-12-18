@@ -24,6 +24,7 @@ export const Default: StoryObj<TokenListItemProps> = {
           symbol={"LUNA"}
           change={0.1}
           amountNode={<span>420.00</span>}
+          onClick={() => {}}
         />
       </div>
     )
@@ -56,6 +57,7 @@ export const ChainDisplay: StoryObj<TokenSingleChainListItemProps> = {
         symbol={"LUNA"}
         amountNode={<span>420.00</span>}
         chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+        onClick={() => {}}
       />
     )
   },

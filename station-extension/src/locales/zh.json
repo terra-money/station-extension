@@ -13,7 +13,6 @@
     "Fee": "费用",
     "Memo": "Memo",
     "decimals": "小数",
-    "Buy": "购买",
     "Exchanges": "交易所",
     "Fiat": "法币",
     "APY": "APY",
@@ -124,14 +123,17 @@
     "Add tokens": "添加代币",
     "Manage list": "管理列表",
     "Assets": "资产",
-    "receive": "收到",
+    "Activity": "活动",
+    "Send": "发送",
+    "Swap": "交换",
+    "Receive": "收到",
+    "Buy": "购买",
     "select a coin": "选择一个资产",
     "asset value": "资产价值",
     "{{balance}} available": ""
   },
   "Txs": {
-    "Send": "发送",
-    "Swap": "交换",
+    "Transaction": "交易",
     "Stake": "质押",
     "Delegate": "委托",
     "Redelegate": "重新委托",
@@ -239,8 +241,8 @@
     "Instantiate a code": "实例化一个代码"
   },
   "NFT": { "Marketplace": "市场", "Collection": "收藏品" },
-  "Address book": {
-    "Address book": "地址簿",
+  "Address Book": {
+    "Address Book": "地址簿",
     "Add a new address": "添加一个新的地址"
   }
 }

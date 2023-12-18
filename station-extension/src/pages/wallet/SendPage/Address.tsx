@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useSend } from "./SendContext"
 import { AccAddress } from "@terra-money/feather.js"
 import { getChainIDFromAddress } from "utils/bech32"
@@ -9,25 +9,26 @@ import {
   Tabs,
   Button,
 } from "@terra-money/station-ui"
-import { WalletButtonList } from "./Components/MyWallets"
+import { AddressBookList } from "./Components/AddressBookList"
 import MyWallets from "./Components/MyWallets"
 import validate from "txs/validate"
 import { useRecentRecipients } from "utils/localStorage"
 import { useTranslation } from "react-i18next"
+import { WalletName } from "types/network"
+import { useLocation } from "react-router-dom"
 
 const Address = () => {
   const { form, goToStep, getWalletName, networks } = useSend()
-  // const { state } = useLocation()
+  const { state } = useLocation()
   const { recipients } = useRecentRecipients()
   const { register, setValue, formState, watch, trigger } = form
   const { errors } = formState
   const { recipient } = watch()
   const { t } = useTranslation()
 
-  // useEffect(() => {
-  //   // Handle routing from asset-specific page
-  //   setValue("asset", state?.denom)
-  // })
+  useEffect(() => {
+    setValue("asset", state?.denom)
+  }, [state?.denom, setValue])
 
   const [tab, setTab] = useState("wallets")
 
@@ -44,9 +45,13 @@ const Address = () => {
     },
   ]
 
-  const handleKnownWallet = (recipient: AccAddress) => {
-    setValue("recipient", recipient)
-    goToStep(2)
+  const handleKnownWallet = (recipient: AccAddress | WalletName) => {
+    if (!AccAddress.validate(recipient ?? "")) {
+      setValue("recipient", recipient)
+      goToStep(2)
+    } else {
+      handleKnownChain(recipient)
+    }
   }
 
   const handleKnownChain = (recipient: AccAddress) => {
@@ -80,7 +85,7 @@ const Address = () => {
       {recipients.length > 0 && (
         <>
           <SectionHeader title="Recently Used" withLine />
-          <WalletButtonList
+          <AddressBookList
             items={recipients.map((r) => ({
               ...r,
               name: getWalletName(r.recipient),

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import AssetSelectorFrom, { AssetSelectorFromProps } from './AssetSelectorFrom';
 import AssetSelectorTo from './AssetSelectorTo';
+import AssetSelectorSkeleton from './skeleton/AssetSelectorSkeleton';
 import { ReactComponent as WalletIcon } from 'assets/icon/Wallet.svg';
 import { walletBalance, tokensBySymbol, tokenPrices } from './fakedata';
 import { useState } from 'react';
@@ -198,6 +199,14 @@ export const To: StoryObj<AssetSelectorFromProps> = {
         amount={`${(parseFloat(fromAmount) * tokenPrices.LUNA / tokenPrices.axlUSDC).toFixed(6)}`}
         currencyAmount={`$${(parseFloat(fromAmount) * tokenPrices.LUNA).toFixed(6)}`}
       />
+    )
+  },
+};
+
+export const Skeleton: StoryObj<AssetSelectorFromProps> = {
+  render: () => {
+    return (
+      <AssetSelectorSkeleton />
     )
   },
 };

@@ -37,6 +37,18 @@ export const ErrorWithSummaryCard: StoryObj<SummaryHeaderProps> = {
   },
 };
 
+export const WarningWithoutSummaryCard: StoryObj<SummaryHeaderProps> = {
+  render: () => {
+    return (
+      <SummaryHeader
+        statusLabel={"Delete Address"}
+        statusMessage={"Are you sure you want to remove this address from your address book?"}
+        status={"warning"}
+      />
+    );
+  },
+};
+
 export const WithoutSummaryCard: StoryObj<SummaryHeaderProps> = {
   render: () => {
     return (

@@ -1,7 +1,8 @@
 .flip__button {
+  background-color: var(--token-dark-300) !important;
+  border: 1px solid var(--token-dark-700) !important;
+
   svg {
-    width: 16px;
-    height: 16px;
     rotate: 135deg;
   }
 }

@@ -1,22 +1,21 @@
-import { useMemo } from "react"
-import { useSend } from "./SendContext"
-import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { useNetworkName } from "data/wallet"
-import { useWhitelist } from "data/queries/chains"
-import { AssetType } from "./types"
-import { Read } from "components/token"
-import { capitalize } from "@mui/material"
-import { getChainNamefromID } from "data/queries/chains"
-import { truncate } from "@terra-money/terra-utils"
 import {
   SectionHeader,
   InputInLine,
   TokenSingleChainListItem,
 } from "@terra-money/station-ui"
-import { useTranslation } from "react-i18next"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
 import WithSearchInput from "pages/custom/WithSearchInput"
+import { truncate } from "@terra-money/terra-utils"
+import { useWhitelist } from "data/queries/chains"
+import { useTranslation } from "react-i18next"
+import { useNetworkName } from "data/wallet"
 import { Empty } from "components/feedback"
+import { useSend } from "./SendContext"
+import { Read } from "components/token"
+import { AssetType } from "./types"
+import { useMemo } from "react"
 import { has } from "utils/num"
+import { useNativeDenoms } from "data/token"
 
 const Token = () => {
   const { form, goToStep, getWalletName, assetList, getIBCChannel, networks } =
@@ -26,54 +25,63 @@ const Token = () => {
   const addresses = useInterchainAddresses()
   const { ibcDenoms } = useWhitelist()
   const { t } = useTranslation()
-  const { destination, recipient } = watch()
+  const readNativeDenoms = useNativeDenoms()
+  const { destination, recipient, asset } = watch()
+  const defaultSearch = readNativeDenoms(asset ?? "")
 
   const tokens = useMemo(() => {
     return assetList.reduce((acc, a) => {
-      a.chains.forEach((tokenChain: string) => {
-        if (acc.some((asset: AssetType) => asset.id === a.id)) return acc
-        if (!has(a.balance)) return acc
-        const isNative = tokenChain === destination
+      a.tokenChainInfo.forEach((tokenChainData: any) => {
+        const {
+          denom,
+          id,
+          balance,
+          decimals,
+          tokenPrice: price,
+          chainID: chain,
+          chainName: name,
+          tokenIcon: icon,
+        } = tokenChainData
+
+        if (acc.some((asset: AssetType) => asset.id === id)) {
+          return acc
+        }
+        if (!has(a.balance)) {
+          return acc
+        }
+        const isNative = chain === destination
         const channel = getIBCChannel({
-          from: tokenChain,
+          from: chain,
           to: destination,
-          tokenAddress: a.denom,
+          tokenAddress: denom,
           icsChannel:
-            ibcDenoms[networkName][`${destination}:${a.denom}`]?.icsChannel,
+            ibcDenoms[networkName][`${destination}:${denom}`]?.icsChannel,
         })
 
         if (isNative || channel) {
-          const balVal = a.balance * a.price
-          const senderAddress = addresses?.[tokenChain]
+          const balVal = balance * price
+          const senderAddress = addresses?.[chain]
           const item = {
             ...a,
-            denom: a.denom,
-            tokenImg: a.icon,
+            id,
+            denom: denom,
+            tokenImg: icon,
             balVal,
             senderAddress,
-            balance: a.balance,
+            balance: balance,
             channel,
-            tokenChain,
-            amountNode: (
-              <Read amount={a.balance} fixed={2} decimals={a.decimals} />
-            ),
+            tokenChain: chain,
+            amountNode: <Read amount={balance} fixed={2} decimals={decimals} />,
             priceNode: balVal ? (
               <>
-                <Read
-                  amount={balVal}
-                  currency
-                  fixed={2}
-                  decimals={a.decimals}
-                />
+                <Read amount={balVal} currency fixed={2} decimals={decimals} />
               </>
             ) : (
               <span>—</span>
             ),
             chain: {
-              label: capitalize(
-                getChainNamefromID(tokenChain, networks) ?? tokenChain
-              ),
-              icon: networks[tokenChain]?.icon,
+              label: name ?? chain,
+              icon: networks[chain]?.icon,
             },
           } as AssetType
 
@@ -91,6 +99,8 @@ const Token = () => {
     networkName,
     getIBCChannel,
   ])
+
+  // console.log("tokens", tokens)
 
   const onClick = (asset: AssetType) => {
     setValue("asset", asset.denom)
@@ -115,9 +125,10 @@ const Token = () => {
       <SectionHeader title={t("My Tokens")} withLine />
       <WithSearchInput
         label="Search Tokens"
+        defaultInput={defaultSearch?.symbol} // pre-selected asset from asset page
         placeholder="Token symbol or chain"
       >
-        {(search: string) => {
+        {(search) => {
           const filtered = tokens
             .filter(
               (t: AssetType) =>
@@ -131,9 +142,9 @@ const Token = () => {
           return (
             <>
               {filtered.length === 0 && <Empty />}
-              {filtered.map((asset: AssetType) => (
+              {filtered.map((asset: AssetType, i: number) => (
                 <TokenSingleChainListItem
-                  key={asset.id}
+                  key={i}
                   {...asset}
                   onClick={() => onClick(asset)}
                 />
