@@ -56,18 +56,28 @@ export const usePubkey = () => {
   return wallet?.pubkey
 }
 
-export const useGetWalletName = () => {
-  const { list } = useAddressBook()
+export const useGetLocalWalletName = () => {
   const { wallets } = useAuth()
   return (address: AccAddress) => {
     const terraAddress = convertAddress(address, "terra")
     const wallet = wallets.find((w) =>
       "words" in w ? addressFromWords(w.words["330"]) === terraAddress : null
     )
+    return wallet?.name
+  }
+}
+export const useGetWalletName = () => {
+  const { list } = useAddressBook()
+  const getLocalWalletName = useGetLocalWalletName()
+
+  return (address: AccAddress) => {
+    const terraAddress = convertAddress(address, "terra")
+    const localWalletName = getLocalWalletName(address)
+
     const entry = list.find(
       (l) => convertAddress(l.recipient, "terra") === terraAddress
     )
-    const name = entry?.name ?? wallet?.name ?? truncate(address, [11, 6])
+    const name = entry?.name ?? localWalletName ?? truncate(address, [11, 6])
     return name
   }
 }

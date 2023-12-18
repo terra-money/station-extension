@@ -1,15 +1,13 @@
 import { useMemo } from "react"
 import { MsgTransfer, Coin, MsgExecuteContract } from "@terra-money/feather.js"
-import { Form, SectionHeader, SummaryTable } from "@terra-money/station-ui"
+import { Form } from "@terra-money/station-ui"
 import { useNavigate } from "react-router-dom"
-import { useTranslation } from "react-i18next"
 import SwapTimeline from "./components/SwapTimeline"
 import { SwapState } from "data/queries/swap/types"
 import { toAmount } from "@terra-money/terra-utils"
 import Tx from "txs/Tx"
 import { useSwap } from "./SwapContext"
 import { queryKey } from "data/query"
-import { Read } from "components/token"
 import Errors from "./components/ConfirmErrors"
 import { Coins } from "@terra-money/feather.js"
 
@@ -25,12 +23,17 @@ export const validateAssets = (
 }
 
 const Confirm = () => {
-  const { t } = useTranslation()
   const { form } = useSwap()
   const navigate = useNavigate()
   const { watch, handleSubmit, getValues } = form
-  const { route, askAsset, offerAsset, offerInput, msgs: swapMsgs } = watch()
+  const { offerAsset, offerInput, msgs: swapMsgs } = watch()
   const amount = toAmount(offerInput, { decimals: offerAsset.decimals })
+  const estimationTxValues = useMemo(() => getValues(), [getValues])
+
+  if (!swapMsgs) {
+    navigate("/swap")
+    return null
+  }
 
   const createTx = ({ offerAsset }: SwapState) => {
     const msg = JSON.parse(swapMsgs?.[0].msg)
@@ -59,8 +62,6 @@ const Confirm = () => {
     return { msgs: [msgs] ?? [], chainID: offerAsset.chainId }
   }
 
-  const estimationTxValues = useMemo(() => getValues(), [getValues])
-
   const tx = {
     token: offerAsset.denom,
     decimals: offerAsset.decimals,
@@ -78,32 +79,7 @@ const Confirm = () => {
       {({ fee, submit }) => (
         <Form onSubmit={handleSubmit(submit.fn)}>
           <SwapTimeline {...{ swapMsgs, ...getValues() }} />
-          <SectionHeader title={t("Details")} withLine />
-          <SummaryTable
-            rows={[
-              {
-                label: t("Min Received"),
-                value: (
-                  <>
-                    <Read
-                      amount={route?.amountOut}
-                      fixed={4}
-                      decimals={askAsset.decimals}
-                    />{" "}
-                    {askAsset.symbol}
-                  </>
-                ),
-              },
-              {
-                label: t("Transaction Fee"),
-                value: <Read {...fee} />,
-              },
-              // {
-              //   label: t("Price Impact"),
-              //   value: "N/A",
-              // },
-            ]}
-          />
+          {fee.render()}
           <Errors feeDenom={fee.denom} />
           {submit.button}
         </Form>

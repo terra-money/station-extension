@@ -1,21 +1,33 @@
-import { useState } from "react"
-import { useTranslation } from "react-i18next"
-import { useFieldArray, useForm } from "react-hook-form"
-import { useSetRecoilState } from "recoil"
-import { AccAddress, isTxError } from "@terra-money/feather.js"
-import { LegacyAminoMultisigPublicKey } from "@terra-money/feather.js"
-import { SimplePublicKey } from "@terra-money/feather.js"
-import { SignatureV2, MultiSignature } from "@terra-money/feather.js"
-import { SAMPLE_ADDRESS } from "config/constants"
+import {
+  Copy,
+  Input,
+  InputWrapper,
+  ProgressBar,
+  SectionHeader,
+  SubmitButton,
+  TextArea,
+} from "@terra-money/station-ui"
+import {
+  LegacyAminoMultisigPublicKey,
+  MultiSignature,
+  SignatureV2,
+  SimplePublicKey,
+} from "@terra-money/feather.js"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
+import { AccAddress, isTxError } from "@terra-money/feather.js"
+import { Form, FormError, FormGroup } from "components/form"
+import { useFieldArray, useForm } from "react-hook-form"
+import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
+import { truncate } from "@terra-money/terra-utils"
+import { SAMPLE_ADDRESS } from "config/constants"
+import styles from "./MultisigTxForm.module.scss"
 import { latestTxState } from "data/queries/tx"
-import { Copy } from "components/general"
-import { Form, FormError, FormGroup, FormItem } from "components/form"
-import { Input, Submit, TextArea } from "components/form"
-import { SAMPLE_ENCODED_TX, SAMPLE_SIGNATURE } from "./utils/placeholder"
-import ReadTx from "./ReadTx"
-import { useChainID } from "data/wallet"
+import { useTranslation } from "react-i18next"
 import validate from "auth/scripts/validate"
+import { useSetRecoilState } from "recoil"
+import { useChainID } from "data/wallet"
+import { useState } from "react"
+import ReadTx from "./ReadTx"
 
 interface Values {
   address: AccAddress
@@ -43,9 +55,16 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
 
   /* form */
   const form = useForm<Values>({ mode: "onChange", defaultValues })
-  const { register, control, watch, handleSubmit, formState } = form
+  const { register, control, watch, handleSubmit, formState, setValue } = form
   const { isValid } = formState
   const { tx } = watch()
+  const { signatures } = watch()
+  const signaturesWithTextCount = signatures.filter(
+    (sig) => sig.signature.trim() !== ""
+  ).length
+
+  const isSignatureThreshold = signaturesWithTextCount >= publicKey.threshold
+  const isFormValid = isValid && isSignatureThreshold
 
   const fieldArray = useFieldArray({ control, name: "signatures" })
   const { fields } = fieldArray
@@ -64,7 +83,6 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
 
   const submit = async ({ signatures, tx: encoded }: Values) => {
     setSubmitting(true)
-    setError(undefined)
 
     try {
       const tx = lcd.tx.decode(encoded.trim())
@@ -94,45 +112,65 @@ const PostMultisigTxForm = ({ publicKey, sequence, ...props }: Props) => {
   }
 
   return (
-    <ReadTx tx={tx.trim()}>
-      <Form onSubmit={handleSubmit(submit)}>
-        <FormItem label={t("Multisig address")}>
-          <Input
-            {...register("address", {
-              validate: validate.address,
-            })}
-            placeholder={SAMPLE_ADDRESS}
-          />
-        </FormItem>
+    <Form onSubmit={handleSubmit(submit)} className={styles.form}>
+      <InputWrapper label={t("Multisig Address")}>
+        <Input
+          {...register("address", {
+            validate: validate.address,
+          })}
+          placeholder={SAMPLE_ADDRESS}
+          autoFocus
+        />
+      </InputWrapper>
+      <InputWrapper
+        label={t("Hashed Transaction")}
+        extra={tx ? <Copy copyText={tx} /> : null}
+      >
+        <TextArea
+          value={tx}
+          onChange={(e) => setValue("tx", e.target.value)}
+          placeholder={SAMPLE_ENCODED_TX}
+          rows={4}
+        />
+      </InputWrapper>
 
-        <FormItem label={t("Tx")} extra={<Copy text={tx} />}>
-          <TextArea
-            {...register("tx", { required: true })}
-            placeholder={SAMPLE_ENCODED_TX}
-            rows={6}
-          />
-        </FormItem>
+      <ReadTx tx={tx.trim()}>
+        <SectionHeader title={t("Signatures")} withLine />
 
-        <FormItem label={t("Signature")}>
-          {fields.map(({ address, id }, index) => (
-            <FormGroup key={id}>
-              <FormItem label={address}>
-                <TextArea
-                  {...register(`signatures.${index}.signature`)}
-                  placeholder={SAMPLE_SIGNATURE}
-                  rows={6}
-                  autoFocus={!index}
-                />
-              </FormItem>
-            </FormGroup>
-          ))}
-        </FormItem>
+        {fields.map(({ address, id }, index) => (
+          <FormGroup key={id}>
+            <InputWrapper label={truncate(address, [13, 6])}>
+              <TextArea
+                {...register(`signatures.${index}.signature`)}
+                rows={2}
+                autoFocus={!index}
+              />
+            </InputWrapper>
+          </FormGroup>
+        ))}
+
+        <ProgressBar
+          labelOverride="Threshold"
+          data={[
+            {
+              type: "yes",
+              percent: `${100 * (signaturesWithTextCount / fields.length)}%`,
+            },
+          ]}
+          threshold={100 * (publicKey.threshold / fields.length)}
+        />
 
         {error && <FormError>{error.message}</FormError>}
+      </ReadTx>
 
-        <Submit submitting={submitting} disabled={!isValid} />
-      </Form>
-    </ReadTx>
+      <SectionHeader title={t("Confirm")} withLine />
+
+      <SubmitButton
+        label={"Submit"}
+        loading={submitting}
+        disabled={!isFormValid}
+      />
+    </Form>
   )
 }
 
