@@ -33,7 +33,6 @@ export interface SwapState {
 
 export interface SwapAssetBase {
   symbol: string // token symbol (ATOM, OSMO, ...)
-  name?: string // human readable name (Cosmos, Osmosis, ...)
   denom: string // denom axlusdc or IBC/asdfasdfadsfawe
   originDenom: string // denom on home chain
   decimals: number // exponent / etc
@@ -42,6 +41,7 @@ export interface SwapAssetBase {
 }
 
 export interface SwapAssetExtra extends SwapAssetBase {
+  name?: string // human readable name (Cosmos, Osmosis, ...)
   balance: string
   value: number
   price: number

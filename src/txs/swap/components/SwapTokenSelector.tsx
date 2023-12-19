@@ -36,7 +36,7 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
   ]
 
   return (
-    <Grid gap={24} style={{ maxHeight: "100%" }}>
+    <Grid gap={24}>
       <InputWrapper label={t("Chains")}>
         <Dropdown
           options={dropdownOptions}
@@ -47,7 +47,7 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
       <SectionHeader title={t("Tokens")} withLine />
       <WithSearchInput gap={16} small label={t("Search tokens...")}>
         {(input) => (
-          <Grid gap={20} style={{ height: "100%", overflowY: "scroll" }}>
+          <Grid gap={20}>
             {tokens
               .filter(
                 (t) =>
