@@ -48,7 +48,7 @@ const Confirm = () => {
         msg.receiver,
         undefined,
         (Date.now() + 120 * 1000) * 1e6,
-        msg.memo + " (via Terra Station Extension)"
+        msg.memo
       )
     } else {
       // for native swaps (osmo to osmo)
@@ -72,10 +72,12 @@ const Confirm = () => {
     onSuccess: () => navigate("/"),
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     chain: offerAsset.chainId,
+    memo: "Swapped via Station Extension",
   }
 
   return (
     <Tx {...tx}>
+      {/* @ts-ignore */}
       {({ fee, submit }) => (
         <Form onSubmit={handleSubmit(submit.fn)}>
           <SwapTimeline {...{ swapMsgs, ...getValues() }} />
