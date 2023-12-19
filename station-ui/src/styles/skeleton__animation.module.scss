@@ -1,0 +1,30 @@
+.animation {
+  position: relative;
+  user-select: none;
+  overflow: hidden;
+  z-index: 1;
+
+  &::after {
+    content: ' ';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-image: linear-gradient( 90deg, var(--token-dark-700), hsl(230, 8%, 25%), var(--token-dark-700) );
+    transform: translateX(-100%);
+    animation-name: loading-animation;
+    animation-direction: normal;
+    animation-duration: 1.5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+}
+
+@keyframes loading-animation {
+  100% {
+    transform: translateX(100%);
+  }
+}

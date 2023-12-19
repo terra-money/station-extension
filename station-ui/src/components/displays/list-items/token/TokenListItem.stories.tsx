@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import TokenListItem, { TokenListItemProps } from './default/TokenListItem';
 import TokenSingleChainListItem, { TokenSingleChainListItemProps } from './single-chain/TokenSingleChainListItem';
 import TokenCheckboxListItem, { TokenCheckboxListItemProps } from './single-chain/TokenCheckboxListItem';
+import TokenSkeleton from './skeleton/TokenSkeleton';
 
 const meta: Meta<TokenListItemProps> = {
   title: 'Components/List Items/Token/Stories',
@@ -95,3 +96,11 @@ export const WithChainCheckbox: StoryObj<TokenCheckboxListItemProps> = {
   },
   argTypes: {},
 };
+
+export const Skeleton: StoryObj<TokenListItemProps> = {
+  render: () => {
+    return (
+      <TokenSkeleton />
+    )
+  }
+}
