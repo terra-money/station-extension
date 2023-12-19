@@ -38,12 +38,13 @@
   font-size: small;
 
   .icon {
-    width: 18px;
-    left: 10px;
+    display: none;
+    //width: 18px;
+    //left: 10px;
   }
 
   .input {
-    padding-left: 36px;
+    //padding-left: 36px;
   }
 }
 
@@ -53,6 +54,7 @@
   margin: 4px 6px !important;
 
   .icon {
+    display: none;
     width: 18px;
     left: 10px;
   }
