@@ -15,7 +15,7 @@ import ExtensionPage from "../components/ExtensionPage"
 import TxDetails from "./TxDetails"
 import OriginCard from "extension/components/OriginCard"
 import { RefetchOptions, queryKey } from "data/query"
-import { useQuery } from "react-query"
+import { useQuery, useQueryClient } from "react-query"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useChainID, useNetwork } from "data/wallet"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
@@ -30,6 +30,7 @@ import {
   Input,
   InputWrapper,
   SubmitButton,
+  SummaryHeader,
 } from "@terra-money/station-ui"
 import styles from "./ConfirmTx.module.scss"
 import {
@@ -38,6 +39,7 @@ import {
   shouldStorePassword,
   storePassword,
 } from "auth/scripts/keystore"
+import { useNetworks } from "app/InitNetworks"
 
 interface Values {
   password: string
@@ -51,11 +53,14 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const passwordRequired = isWallet.single(wallet)
   const addresses = useInterchainAddresses()
   const network = useNetwork()
+  const { networksLoading } = useNetworks()
   const lcd = useInterchainLCDClient()
   const terraChainID = useChainID()
+  const queryClient = useQueryClient()
   const chainID =
     "tx" in props ? props.tx?.chainID ?? terraChainID : terraChainID
 
+  const [isRelaoding, setReloading] = useState(false)
   /* form */
   const form = useForm<Values>({
     defaultValues: { password: "" },
@@ -216,9 +221,9 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
     setSubmitting(false)
   }
 
-  const deny = () => {
+  const deny = (msg?: string) => {
     const { requestType } = props
-    const message = t("User denied")
+    const message = msg ?? t("User denied")
     const response = { success: false, error: { code: 1, message } }
     actions.tx(requestType, props, response)
   }
@@ -250,14 +255,52 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
     )
   }
 
-  return submitting ? (
-    <Overlay>
-      <FlexColumn gap={20}>
-        <img {...SIZE} src={animation} alt={t("Submitting...")} />
-        {isWallet.ledger(wallet) && <p>{t("Confirm in ledger")}</p>}
-      </FlexColumn>
-    </Overlay>
-  ) : (
+  if (submitting || (networksLoading && !network[chainID])) {
+    return (
+      <Overlay>
+        <FlexColumn gap={20}>
+          <img {...SIZE} src={animation} alt={t("Loading...")} />
+          {networksLoading && t("Loading...")}
+        </FlexColumn>
+      </Overlay>
+    )
+  }
+
+  if (!networksLoading && !network[chainID]) {
+    return (
+      <ExtensionPage>
+        <article className={styles.error__container}>
+          <SummaryHeader
+            statusLabel={t("Error")}
+            statusMessage={t(
+              "The requested network ({{chainID}}) is temporarily disabled.",
+              { chainID }
+            )}
+            status={"alert"}
+          />
+          <ButtonInlineWrapper>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                queryClient.invalidateQueries(queryKey.tendermint.nodeInfo)
+                setReloading(true)
+                setTimeout(() => setReloading(false), 3_000)
+              }}
+              loading={isRelaoding}
+              label={isRelaoding ? t("Loading...") : t("Try again")}
+            />
+            <Button
+              variant="warning"
+              onClick={() => deny(t("Network unavailable, user denied."))}
+              label={t("Reject tx")}
+            />
+          </ButtonInlineWrapper>
+        </article>
+      </ExtensionPage>
+    )
+  }
+
+  return (
     <ExtensionPage>
       <article className={styles.container}>
         <div>
@@ -292,7 +335,11 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
               </>
             )}
             <ButtonInlineWrapper>
-              <Button variant="secondary" onClick={deny} label={t("Reject")} />
+              <Button
+                variant="secondary"
+                onClick={() => deny()}
+                label={t("Reject")}
+              />
               <SubmitButton
                 variant="primary"
                 label={label}
