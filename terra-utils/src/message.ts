@@ -212,25 +212,27 @@ export const getCanonicalMsg = (
             })
           }
         } else if ((msg as any)?.msg?.claim_rewards) {
-          /* ---------------------- Withdraw Alliance Rewards --------------------- */
-
           const claimedRewards = getEventInfo(msgEvents, "claim_rewards")
+          
+          if (claimedRewards?.[0]?.rewardAsset) {
+            /* ---------------------- Withdraw Alliance Rewards --------------------- */
 
-          for (const claimedReward of claimedRewards) {
-            const { rewardAmount, rewardAsset, withdrawFromAddress } =
-              claimedReward
+            for (const claimedReward of claimedRewards) {
+              const { rewardAmount, rewardAsset, withdrawFromAddress } =
+                claimedReward
 
-            const splitAsset = rewardAsset.split(":")
-            const trueRewardAsset = splitAsset[splitAsset.length - 1]
-            const allianceRewardAsset = `${rewardAmount}${trueRewardAsset}`
+              const splitAsset = rewardAsset.split(":")
+              const trueRewardAsset = splitAsset[splitAsset.length - 1]
+              const allianceRewardAsset = `${rewardAmount}${trueRewardAsset}`
 
-            returnMsgs.push({
-              msgType: "Reward Withdrawal",
-              canonicalMsg: [
-                `Withdrew ${allianceRewardAsset} staking rewards from ${withdrawFromAddress}`,
-              ],
-              inAssets: [allianceRewardAsset],
-            })
+              returnMsgs.push({
+                msgType: "Reward Withdrawal",
+                canonicalMsg: [
+                  `Withdrew ${allianceRewardAsset} staking rewards from ${withdrawFromAddress}`,
+                ],
+                inAssets: [allianceRewardAsset],
+              })
+            }
           }
         } else if ((msg as any)?.msg?.send) {
           const msgData = Buffer.from(

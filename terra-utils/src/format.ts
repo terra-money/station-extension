@@ -1,15 +1,17 @@
-import BigNumber from "bignumber.js"
-import numeral from "numeral"
-import { isNil, pickBy } from "ramda"
-import { warn } from "./utils"
 import {
   isDenom,
   isDenomIBC,
+  isCW20Token,
   isDenomGamm,
   isDenomLuna,
   isDenomTerra,
   isDenomFactory
 } from "./is"
+import { isNil, pickBy } from "ramda"
+import BigNumber from "bignumber.js"
+import { truncate } from "./text"
+import { warn } from "./utils"
+import numeral from "numeral"
 
 const ROUNDING_MODE = BigNumber.ROUND_DOWN
 
@@ -106,6 +108,8 @@ export const readDenom = (denom: string) => {
       return denom.replace("gamm/", "")
     } else if (isDenomFactory(denom)) {
       return denom.replace("factory/", "")
+    } else if (isCW20Token(denom)) {
+      return truncate(denom)
     } else {
       return denom.slice(1).toUpperCase()
     }

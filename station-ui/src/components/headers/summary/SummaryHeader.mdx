@@ -17,7 +17,7 @@ import "scss/storybookoverrides.scss";
 - **`statusLabel`** - <RequiredText /> - `string` - Largest text.
 - **`statusMessage`** - <RequiredText /> - `string` - Secondary text.
 - **`status`** - `string` - Determines the icon.
-  - Options are `alert`, `success`.
+  - Options are `alert`, `success`, `warning`.
 - **`summaryTitle`** - `string` - The title in the summary box.
 - **`summaryValue`** - `string` - The secondary text in the summary box.
 
@@ -52,6 +52,18 @@ import { SummaryHeader } from "station-ui";
   status={"alert"}
   summaryTitle={"Am ERROR"}
   summaryValue={"Error message goes here, preferably very descriptive to avoid confusion."}
+/>
+  `} />
+</div>
+
+## Warning Without SummaryCard
+<div className="story_with_source_below">
+  <Canvas of={SummaryHeaderStories.WarningWithoutSummaryCard} />
+  <Source code={`
+    <SummaryHeader
+  statusLabel={"Delete Address"}
+  statusMessage={"Are you sure you want to remove this address from your address book?"}
+  status={"warning"}
 />
   `} />
 </div>

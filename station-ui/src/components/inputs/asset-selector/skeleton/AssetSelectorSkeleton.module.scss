@@ -1,0 +1,81 @@
+.skeleton {
+  background-color: var(--token-dark-300);
+  border: 1px solid var(--token-dark-700);
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .wallet__amount {
+      width: 64px;
+      height: 10px;
+      border-radius: 4px;
+      background: var(--token-dark-700, #2A2B32);
+    }
+  }
+
+  .inputs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2px;
+
+    .token__selector {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .image {
+        width: 26px;
+        height: 26px;
+        background-color: var(--token-dark-700, #2A2B32);
+        border-radius: 50%;
+      }
+
+      .token__wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .symbol {
+          width: 88px;
+          height: 16px;
+          border-radius: 4px;
+          background: var(--token-dark-700, #2A2B32);
+        }
+        .chain__wrapper {
+          width: 56px;
+          height: 10px;
+          border-radius: 4px;
+          background: var(--token-dark-700, #2A2B32);
+        }
+      }
+    }
+
+    .amounts__wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+
+      .input__amount {
+        width: 88px;
+        height: 16px;
+        border-radius: 4px;
+        background: var(--token-dark-700, #2A2B32);
+      }
+
+      .amount__currency {
+        width: 56px;
+        height: 10px;
+        border-radius: 4px;
+        background: var(--token-dark-700, #2A2B32);
+      }
+    }
+  }
+}

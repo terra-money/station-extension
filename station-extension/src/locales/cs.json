@@ -13,7 +13,6 @@
     "Fee": "Poplatek",
     "Memo": "Poznámka (Memo)",
     "decimals": "decimální",
-    "Buy": "Koupit",
     "Exchanges": "Vyměnit",
     "Fiat": "Fiat peníze",
     "APY": "APY",
@@ -22,7 +21,7 @@
   "Form": {
     "Amount": "Množství",
     "Recipient": "Příjemce",
-    "Asset": "",
+    "Asset": "Aktiva",
     "Source chain": "",
     "Name": "Jméno",
     "optional": "volitelný",
@@ -123,15 +122,18 @@
   "Wallet": {
     "Add tokens": "Přidat tokeny",
     "Manage list": "Upravit seznam",
-    "Assets": "Majetek",
-    "receive": "přijímat",
+    "Assets": "Aktiva",
+    "Activity": "Aktivita",
+    "Send": "Odeslat",
+    "Swap": "Vyměnit",
+    "Receive": "Přijímat",
+    "Buy": "Koupit",
     "select a coin": "vybrat minci",
     "asset value": "hodnota majetku",
     "{{balance}} available": ""
   },
   "Txs": {
-    "Send": "Odeslat",
-    "Swap": "Vyměnit",
+    "Transaction": "Transakce",
     "Stake": "Stake",
     "Delegate": "Delegovat",
     "Redelegate": "Re-delegovat",
@@ -239,8 +241,8 @@
     "Instantiate a code": "Doložit kód"
   },
   "NFT": { "Marketplace": "Obchod", "Collection": "Kolekce" },
-  "Address book": {
-    "Address book": "Adresář",
+  "Address Book": {
+    "Address Book": "Adresář",
     "Add a new address": "Přidat novou adresu"
   }
 }

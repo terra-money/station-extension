@@ -9,6 +9,11 @@
   background-color: var(--token-dark-700);
   border-radius: 8px;
 
+  &.secondary {
+    background-color: var(--token-dark-100);
+    border: 1px solid var(--token-dark-700);
+  }
+
   .left__side {
     display: flex;
     align-items: center;
