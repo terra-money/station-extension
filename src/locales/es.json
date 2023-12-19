@@ -13,7 +13,6 @@
     "Fee": "Tasa",
     "Memo": "Memo",
     "decimals": "decimales",
-    "Buy": "Compra",
     "Exchanges": "Exchanges",
     "Fiat": "Fiat",
     "APY": "APY",
@@ -22,7 +21,7 @@
   "Form": {
     "Amount": "Cantidad",
     "Recipient": "Destinatario",
-    "Asset": "",
+    "Asset": "Activo",
     "Source chain": "",
     "Name": "Nombre",
     "optional": "opcional",
@@ -133,14 +132,17 @@
     "Add tokens": "Añadir tokens",
     "Manage list": "Editar lista",
     "Assets": "Activos",
-    "receive": "reciba",
+    "Activity": "Actividad",
+    "Send": "Enviar",
+    "Swap": "Intercambio",
+    "Receive": "Reciba",
+    "Buy": "Compra",
     "select a coin": "seleccione una moneda",
     "asset value": "valor del activo",
     "{{balance}} available": ""
   },
   "Txs": {
-    "Send": "Enviar",
-    "Swap": "Intercambio",
+    "Transaction": "Transacción",
     "Stake": "Stake",
     "Delegate": "Delegar",
     "Redelegate": "Redelegar",
@@ -251,8 +253,8 @@
     "Marketplace": "Marcado",
     "Collection": "Colección"
   },
-  "Address book": {
-    "Address book": "Libro de direcciones",
+  "Address Book": {
+    "Address Book": "Libro de direcciones",
     "Add a new address": "Añade una nueva dirección"
   }
 }

@@ -13,7 +13,6 @@
     "Fee": "Prowizja",
     "Memo": "Memo",
     "decimals": "dziesiętne",
-    "Buy": "Kup",
     "Exchanges": "Wymiany",
     "Fiat": "Fiat",
     "APY": "APY",
@@ -22,7 +21,7 @@
   "Form": {
     "Amount": "Ilość",
     "Recipient": "Odbiorca",
-    "Asset": "Aktywo",
+    "Asset": "Aktywa",
     "Source chain": "źródło",
     "Name": "Nazwa",
     "optional": "opcjonalnie",
@@ -124,14 +123,17 @@
     "Add tokens": "Dodaj tokeny",
     "Manage list": "Zarządzaj listą",
     "Assets": "Aktywa",
-    "receive": "Odbierz",
+    "Activity": "Aktywność",
+    "Send": "Wyślij",
+    "Swap": "Wymień",
+    "Receive": "Odbierz",
+    "Buy": "Kup",
     "select a coin": "Wybierz monetę",
     "asset value": "wartość aktywów",
     "{{balance}} available": "dostępny"
   },
   "Txs": {
-    "Send": "Wyślij",
-    "Swap": "Wymień",
+    "Transaction": "Transakcja",
     "Stake": "Stakuj",
     "Delegate": "Deleguj",
     "Redelegate": "Redeleguj",
@@ -239,8 +241,8 @@
     "Instantiate a code": "Zainicjuj kod"
   },
   "NFT": { "Marketplace": "NFT Market", "Collection": "Kolekcja" },
-  "Address book": {
-    "Address book": "Książka adresowa",
+  "Address Book": {
+    "Address Book": "Książka adresowa",
     "Add a new address": "Dodaj nowy adres"
   }
 }

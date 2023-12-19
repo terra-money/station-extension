@@ -118,16 +118,15 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
     // Delete on reject
     browser.storage?.local
       .get(["connect"])
-      .then(({ connect = { allowed: [] } }) =>
+      .then(({ connect = { allowed: [] } }) => {
+        const allowed = connect.allowed || []
         browser.storage?.local.set({
           connect: {
             request: [],
-            allowed: uniq(
-              allow ? [...connect.allowed, origin] : connect.allowed
-            ),
+            allowed: uniq(allow ? [...allowed, origin] : allowed),
           },
         })
-      )
+      })
       .then(() => setConnect(undefined))
   }
 

@@ -2,7 +2,7 @@ import {
   InputWrapper,
   SectionHeader,
   Dropdown,
-  FlexColumn,
+  Grid,
   TokenSingleChainListItem,
 } from "@terra-money/station-ui"
 import WithSearchInput from "pages/custom/WithSearchInput"
@@ -14,6 +14,7 @@ import { useState } from "react"
 import { useNetwork } from "data/wallet"
 import { ChainID } from "types/network"
 import { Read } from "components/token"
+import { FlexColumn } from "components/layout"
 
 interface Props {
   tokenOnClick: (token: SwapAssetExtra) => void
@@ -45,9 +46,9 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
         />
       </InputWrapper>
       <SectionHeader title={t("Tokens")} withLine />
-      <WithSearchInput gap={8} small label={t("Search tokens...")}>
+      <WithSearchInput gap={16} small label={t("Search tokens...")}>
         {(input) => (
-          <FlexColumn gap={20}>
+          <Grid gap={20}>
             {tokens
               .filter((t) => {
                 return (
@@ -55,37 +56,32 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
                   t.chain?.name.toLowerCase().includes(input.toLowerCase())
                 )
               })
-              .filter((t) => {
-                if (chainFilter === "all") return true
-                return t.chainId === chainFilter
-              })
+              .filter((t) => t.chainId === chainFilter || chainFilter === "all")
               .sort((a, b) => b.value - a.value)
               .map((token) => (
-                <div style={{ width: 300 }}>
-                  <TokenSingleChainListItem
-                    key={token.denom + token.chainId}
-                    amountNode={toInput(token.balance, token.decimals)}
-                    priceNode={
-                      token.price === 0 ? (
-                        "—"
-                      ) : (
-                        <>
-                          {symbol}{" "}
-                          <Read amount={token.value} decimals={0} fixed={2} />
-                        </>
-                      )
-                    }
-                    symbol={token.symbol}
-                    chain={{
-                      label: token.chain?.name ?? "",
-                      icon: token.chain?.icon ?? "",
-                    }}
-                    tokenImg={token.icon ?? ""}
-                    onClick={() => tokenOnClick(token)}
-                  />
-                </div>
+                <TokenSingleChainListItem
+                  key={token.denom + token.chainId}
+                  amountNode={toInput(token.balance, token.decimals)}
+                  priceNode={
+                    token.price === 0 ? (
+                      "—"
+                    ) : (
+                      <>
+                        {symbol}{" "}
+                        <Read amount={token.value} decimals={0} fixed={2} />
+                      </>
+                    )
+                  }
+                  symbol={token.symbol}
+                  chain={{
+                    label: token.chain?.name ?? "",
+                    icon: token.chain?.icon ?? "",
+                  }}
+                  tokenImg={token.icon ?? ""}
+                  onClick={() => tokenOnClick(token)}
+                />
               ))}
-          </FlexColumn>
+          </Grid>
         )}
       </WithSearchInput>
     </FlexColumn>
