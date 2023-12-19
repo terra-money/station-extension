@@ -16,6 +16,7 @@ import { useCallback, useMemo } from "react"
 import { useAllInterchainAddresses } from "auth/hooks/useAddress"
 import { InterchainAddresses } from "types/network"
 import { toAmount } from "@terra-money/terra-utils"
+import { useNativeDenoms, useUnknownIBCDenoms } from "data/token"
 
 // Tokens
 const queryMap = {
@@ -37,6 +38,8 @@ export const useSwapTokens = (sources?: SupportedSource[]) => {
 export const useParseSwapTokens = (tokens: SwapAssetBase[]) => {
   const network = useNetwork()
   const balances = useBankBalance()
+  const readNativeDenom = useNativeDenoms()
+  const unknownIBCDenoms = useUnknownIBCDenoms()
   const { data: prices } = useExchangeRates()
 
   const parsedtoken = tokens
@@ -49,17 +52,25 @@ export const useParseSwapTokens = (tokens: SwapAssetBase[]) => {
       const price = prices?.[token.denom]?.price ?? 0
       const change = prices?.[token.denom]?.change ?? 0
       const value = Number(balance) * price * Math.pow(10, -token.decimals)
-      const { icon, name } = network[token.chainId]
+      const { icon: chainIcon, name: chainName } = network[token.chainId]
+      const ibcDenom = unknownIBCDenoms[[token.denom, token.chainId].join("*")]
+      const { icon, symbol, isNonWhitelisted, name } = readNativeDenom(
+        ibcDenom?.baseDenom ?? token.denom,
+        ibcDenom?.chainIDs?.[0] ?? token.chainId
+      )
 
       return {
         ...token,
+        symbol: isNonWhitelisted ? token.symbol : symbol,
+        icon: isNonWhitelisted ? token.icon : icon,
+        name,
         balance,
         price,
         change,
         value,
         chain: {
-          icon,
-          name,
+          icon: chainIcon,
+          name: chainName,
         },
       } as SwapAssetExtra
     })
