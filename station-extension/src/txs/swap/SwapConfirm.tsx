@@ -48,7 +48,7 @@ const Confirm = () => {
         msg.receiver,
         undefined,
         (Date.now() + 120 * 1000) * 1e6,
-        msg.memo
+        msg.memo + " (via Terra Station Extension)"
       )
     } else {
       // for native swaps (osmo to osmo)
