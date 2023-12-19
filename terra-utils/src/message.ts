@@ -37,7 +37,13 @@ export const getCanonicalMsg = (
   for (const [msgIdx, msg] of msgs.entries()) {
     const msgEvents = events.length ? events[msgIdx] : []
 
-    switch ((msg as any)["@type"]) {
+    // Adds `@type` key if not already in msg object.
+    const typePattern = /"@type\\"\s*:\s*\\"([^"]+)\\"/
+    const msgType = (msg as any)["@type"]
+      ? (msg as any)["@type"]
+      : (JSON.stringify(msg).match(typePattern) || [])[1] || null
+
+    switch (msgType) {
       /* ---------------------------------- Send ---------------------------------- */
 
       case "/cosmos.bank.v1beta1.MsgSend":
@@ -320,7 +326,7 @@ export const getCanonicalMsg = (
       default:
         returnMsgs.push({
           msgType: "Unknown",
-          canonicalMsg: [(msg as any)["@type"]],
+          canonicalMsg: [msgType],
         })
         break
     }
