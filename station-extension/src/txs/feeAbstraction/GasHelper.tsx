@@ -153,7 +153,7 @@ export default function GasHelper({
         <h3 className={styles.title}>{t("Not Enough Gas!")}</h3>
         <p className={styles.description}>
           {t(
-            "You don't have enough {{token}} to complete all the steps in this transaction but we can fix that for you! Please select an available token below to convert for gas fees.",
+            "You don't have enough {{token}} to complete all the steps in this transaction, but we can fix that for you! Please select an available token below to convert for gas fees.",
             { token: readNativeDenom(gasDenom, chainID).symbol }
           )}
         </p>
