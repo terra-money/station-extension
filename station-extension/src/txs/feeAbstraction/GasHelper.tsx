@@ -120,9 +120,13 @@ export default function GasHelper({
             width={80}
             height={80}
             src={loadingAnimation}
-            alt={t("Loading...")}
+            alt={t("Gas fee top-up loading...")}
           />
-          <p>{t("Loading...")}</p>
+          <p>
+            {t(
+              "Gas fee top-up initiated. Top-up will take ~30s — 1min to complete."
+            )}
+          </p>
         </FlexColumn>
       </section>
     )
