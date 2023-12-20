@@ -3,6 +3,17 @@
   gap: 24px;
 }
 
+.loading__container {
+  margin-top: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.banner__container {
+  margin: 16 0;
+}
+
 .card {
   padding: 24px;
   border-radius: 8px;
