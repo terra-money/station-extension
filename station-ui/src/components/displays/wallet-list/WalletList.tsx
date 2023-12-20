@@ -34,7 +34,6 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
             copyValue={activeWallet.address}
             subLabel={truncate(activeWallet.address)}
             active
-            onClick={() => {}}
             settingsOnClick={activeWallet.settingsOnClick}
           />
         </div>
