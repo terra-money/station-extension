@@ -219,7 +219,7 @@ export const getCanonicalMsg = (
           }
         } else if ((msg as any)?.msg?.claim_rewards) {
           const claimedRewards = getEventInfo(msgEvents, "claim_rewards")
-          
+
           if (claimedRewards?.[0]?.rewardAsset) {
             /* ---------------------- Withdraw Alliance Rewards --------------------- */
 
@@ -300,18 +300,27 @@ export const getCanonicalMsg = (
       /* ----------------------------- Receive Packet ----------------------------- */
 
       case "/ibc.core.channel.v1.MsgRecvPacket":
-        const { amount, denom, sender } = JSON.parse(
+        const {
+          amount,
+          denom,
+          sender,
+          receiver: packetReceiver,
+        } = JSON.parse(
           Buffer.from((msg as any).packet.data, "base64").toString()
         )
 
-        const trueDenom = getTrueDenom(denom)
-        const receiveIBCAmount = `${amount}${trueDenom}`
+        if (userAddresses.includes(packetReceiver)) {
+          const trueDenom = getTrueDenom(denom)
+          const receiveIBCAmount = `${amount}${trueDenom}`
 
-        returnMsgs.push({
-          msgType: "Send",
-          canonicalMsg: [`Received ${receiveIBCAmount} from ${sender} via IBC`],
-          inAssets: [receiveIBCAmount],
-        })
+          returnMsgs.push({
+            msgType: "Send",
+            canonicalMsg: [
+              `Received ${receiveIBCAmount} from ${sender} via IBC`,
+            ],
+            inAssets: [receiveIBCAmount],
+          })
+        }
 
         break
 
