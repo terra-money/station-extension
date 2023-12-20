@@ -64,7 +64,7 @@ const MigrationWizard = () => {
 
   if (completed) {
     return (
-      <ExtensionPage>
+      <ExtensionPage fullHeight>
         <Grid gap={24} style={{ marginTop: 50 }}>
           <SummaryHeader
             statusLabel={t("Success!")}
@@ -92,14 +92,14 @@ const MigrationWizard = () => {
               />
             ))}
           </FlexColumn>
-          {legacyWallets.length && (
+          {legacyWallets.length ? (
             <Banner
               variant="info"
               title={t(
                 "You can import other wallets later from the settings page."
               )}
             />
-          )}
+          ) : null}
           <Button
             variant="primary"
             onClick={() => {
@@ -173,7 +173,7 @@ const MigrationWizard = () => {
         if ("seed" in w) {
           return {
             name: fixWalletName(w.name),
-            encryptedSeed: encrypt(w.seed.toString("base64"), password),
+            encryptedSeed: encrypt(w.seed.toString("hex"), password),
             words: w.words,
             pubkey: w.pubkey,
             legacy: w.legacy,
@@ -182,7 +182,7 @@ const MigrationWizard = () => {
         } else if ("privatekey" in w) {
           return {
             name: fixWalletName(w.name),
-            encrypted: encrypt(w.privatekey.toString("base64"), password),
+            encrypted: encrypt(w.privatekey.toString("hex"), password),
             words: w.words,
             pubkey: w.pubkey,
           } as LegacyStoredWallet

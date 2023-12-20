@@ -23,10 +23,7 @@ const Welcome = () => {
   const migrationCompleted = isMigrationCompleted()
 
   return (
-    <ExtensionPage
-      backgroundColor={existsWallets ? undefined : "main"}
-      fullHeight
-    >
+    <ExtensionPage fullHeight>
       <main className={styles.welcome__container}>
         {existsWallets ? (
           <WalletList
@@ -85,7 +82,6 @@ const Welcome = () => {
                 block
                 icon={<WalletIcon />}
                 label={t("Import existing wallet")}
-                style={existsWallets ? { color: "var(--token-dark-200)" } : {}}
               />
               <Button
                 onClick={() => openURL("/auth/new")}

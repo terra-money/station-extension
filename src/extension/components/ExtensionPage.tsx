@@ -137,6 +137,7 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
               <Container
                 className={cx(
                   styles.container,
+                  styles.main,
                   fullHeight && styles.full__height__body
                 )}
               >

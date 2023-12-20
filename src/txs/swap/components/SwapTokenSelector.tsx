@@ -14,7 +14,6 @@ import { useState } from "react"
 import { useNetwork } from "data/wallet"
 import { ChainID } from "types/network"
 import { Read } from "components/token"
-import { FlexColumn } from "components/layout"
 
 interface Props {
   tokenOnClick: (token: SwapAssetExtra) => void
@@ -37,7 +36,7 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
   ]
 
   return (
-    <FlexColumn gap={24}>
+    <Grid gap={24}>
       <InputWrapper label={t("Chains")}>
         <Dropdown
           options={dropdownOptions}
@@ -50,17 +49,16 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
         {(input) => (
           <Grid gap={20}>
             {tokens
-              .filter((t) => {
-                return (
+              .filter(
+                (t) =>
                   t.symbol.toLowerCase().includes(input.toLowerCase()) ||
-                  t.chain?.name.toLowerCase().includes(input.toLowerCase())
-                )
-              })
+                  t.name?.toLowerCase().includes(input.toLowerCase())
+              )
               .filter((t) => t.chainId === chainFilter || chainFilter === "all")
               .sort((a, b) => b.value - a.value)
-              .map((token) => (
+              .map((token, i) => (
                 <TokenSingleChainListItem
-                  key={token.denom + token.chainId}
+                  key={`search-token-${i}`}
                   amountNode={toInput(token.balance, token.decimals)}
                   priceNode={
                     token.price === 0 ? (
@@ -81,10 +79,42 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
                   onClick={() => tokenOnClick(token)}
                 />
               ))}
+            {chainFilter === "all" &&
+              tokens
+                .filter(
+                  (t) =>
+                    !t.symbol.toLowerCase().includes(input.toLowerCase()) &&
+                    !t.name?.toLowerCase().includes(input.toLowerCase()) &&
+                    t.chain?.name?.toLowerCase().includes(input.toLowerCase())
+                )
+                .sort((a, b) => b.value - a.value)
+                .map((token, i) => (
+                  <TokenSingleChainListItem
+                    key={`search-chain-${i}`}
+                    amountNode={toInput(token.balance, token.decimals)}
+                    priceNode={
+                      token.price === 0 ? (
+                        "—"
+                      ) : (
+                        <>
+                          {symbol}{" "}
+                          <Read amount={token.value} decimals={0} fixed={2} />
+                        </>
+                      )
+                    }
+                    symbol={token.symbol}
+                    chain={{
+                      label: token.chain?.name ?? "",
+                      icon: token.chain?.icon ?? "",
+                    }}
+                    tokenImg={token.icon ?? ""}
+                    onClick={() => tokenOnClick(token)}
+                  />
+                ))}
           </Grid>
         )}
       </WithSearchInput>
-    </FlexColumn>
+    </Grid>
   )
 }
 

@@ -37,7 +37,7 @@ export const SearchChains = ({ data }: SearchChainsProps) => {
                   icon: networks[id]?.icon,
                   label: name,
                 }}
-                subLabel={truncate(address)}
+                subLabel={truncate(address, [11, 6])}
                 onClick={onClick}
               />
             ))

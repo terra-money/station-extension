@@ -55,7 +55,8 @@ const AssetList = () => {
     const visible = filtered
       .filter(
         (a) =>
-          a.price * toInput(a.balance) >= 1 || alwaysVisibleDenoms.has(a.denom)
+          a.price * toInput(a.balance) >= 0.1 ||
+          alwaysVisibleDenoms.has(a.denom)
       )
       .sort(
         (a, b) =>

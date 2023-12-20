@@ -7,7 +7,7 @@ const NetWorthTooltip = () => {
     <article>
       <p>
         {t(
-          "Portfolio value is the total value of your assets minus delegated and undelegating tokens"
+          "Portfolio value is the total value of your assets minus staked and unstaking tokens."
         )}
         .
       </p>
