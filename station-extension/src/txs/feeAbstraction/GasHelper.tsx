@@ -112,6 +112,10 @@ export default function GasHelper({
     Number(swapData?.amount) + Number(swapData?.gasAmount)
   )
 
+  const ErrorBanners = () => {
+
+  }
+
   if (submitting || txhash) {
     return (
       <section className={styles.card}>
@@ -188,16 +192,23 @@ export default function GasHelper({
             }
           />
         )}
-        {isLoading && <LoadingCircular />}
+        {isLoading && ( 
+          <div className={styles.loading__container}>
+        <LoadingCircular /> 
+        </div>
+        )}
         {isError ? (
+          <div className={styles.banner__container}> 
           <Banner
             variant="error"
             title={t("The selected asset cannot be swapped")}
           />
+          </div>
         ) : (
           swapDenom.includes(SEPARATOR) &&
           !isLoading &&
           insufficientBalance && (
+            <div className={styles.banner__container}> 
             <Banner
               variant="error"
               title={t(
@@ -210,8 +221,10 @@ export default function GasHelper({
                 }
               )}
             />
+            </div>
           )
-        )}
+        )
+        }
       </section>
       {swapData && !isError && !insufficientBalance && (
         <Grid gap={14}>
