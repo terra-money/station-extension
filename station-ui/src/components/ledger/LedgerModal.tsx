@@ -1,21 +1,8 @@
 import { PropsWithChildren } from "react"
-import Lottie from "lottie-react"
 import styles from "./LedgerModal.module.scss"
 import { Modal } from "../feedback/modals"
-import animations from "./animations"
-
-export enum LedgerDeviceModel {
-  NANOX = "nanox",
-  NANOS = "nanos",
-  NANOSP = "nanosp",
-}
-
-export enum LedgerDeviceAction {
-  CONNECT = "connect",
-  OPEN_APP = "openApp",
-  CONFIRM = "confirm",
-  UNLOCK = "unlock",
-}
+import { LedgerDeviceModel, LedgerDeviceAction } from "./animations"
+import LedgerAnimation from "./LedgerAnimation"
 
 export interface LedgerModalProps {
   device?: LedgerDeviceModel
@@ -55,8 +42,9 @@ const LedgerModal = (props: PropsWithChildren<Props>) => {
     <Modal isOpen={true} onRequestClose={onRequestClose}>
       <section className={styles.ledger__modal}>
         <div className={styles.ledger__container}>
-          <Lottie
-            animationData={animations[device][action]}
+          <LedgerAnimation
+            device={device}
+            action={action}
             className={styles.animation}
           />
           {renderText()}

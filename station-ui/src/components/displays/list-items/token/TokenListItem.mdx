@@ -30,6 +30,15 @@ import { TokenListItem } from "station-ui";
 
 ## Stories
 
+## Sekelton
+Displays a token item with a skeleton loader.
+<div className="story_with_source_below">
+  <Canvas of={TokenListItemStories.Skeleton} />
+  <Source code={`
+    <TokenSkeleton />
+  `} />
+</div>
+
 ## Default
 Displays an individual token item with a Tooltip that displays amounts on chains (if token is on multiple chains).
 <div className="story_with_source_below">

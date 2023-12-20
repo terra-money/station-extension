@@ -37,7 +37,13 @@ export const getCanonicalMsg = (
   for (const [msgIdx, msg] of msgs.entries()) {
     const msgEvents = events.length ? events[msgIdx] : []
 
-    switch ((msg as any)["@type"]) {
+    // Adds `@type` key if not already in msg object.
+    const typePattern = /"@type\\"\s*:\s*\\"([^"]+)\\"/
+    const msgType = (msg as any)["@type"]
+      ? (msg as any)["@type"]
+      : (JSON.stringify(msg).match(typePattern) || [])[1] || null
+
+    switch (msgType) {
       /* ---------------------------------- Send ---------------------------------- */
 
       case "/cosmos.bank.v1beta1.MsgSend":
@@ -212,25 +218,27 @@ export const getCanonicalMsg = (
             })
           }
         } else if ((msg as any)?.msg?.claim_rewards) {
-          /* ---------------------- Withdraw Alliance Rewards --------------------- */
-
           const claimedRewards = getEventInfo(msgEvents, "claim_rewards")
+          
+          if (claimedRewards?.[0]?.rewardAsset) {
+            /* ---------------------- Withdraw Alliance Rewards --------------------- */
 
-          for (const claimedReward of claimedRewards) {
-            const { rewardAmount, rewardAsset, withdrawFromAddress } =
-              claimedReward
+            for (const claimedReward of claimedRewards) {
+              const { rewardAmount, rewardAsset, withdrawFromAddress } =
+                claimedReward
 
-            const splitAsset = rewardAsset.split(":")
-            const trueRewardAsset = splitAsset[splitAsset.length - 1]
-            const allianceRewardAsset = `${rewardAmount}${trueRewardAsset}`
+              const splitAsset = rewardAsset.split(":")
+              const trueRewardAsset = splitAsset[splitAsset.length - 1]
+              const allianceRewardAsset = `${rewardAmount}${trueRewardAsset}`
 
-            returnMsgs.push({
-              msgType: "Reward Withdrawal",
-              canonicalMsg: [
-                `Withdrew ${allianceRewardAsset} staking rewards from ${withdrawFromAddress}`,
-              ],
-              inAssets: [allianceRewardAsset],
-            })
+              returnMsgs.push({
+                msgType: "Reward Withdrawal",
+                canonicalMsg: [
+                  `Withdrew ${allianceRewardAsset} staking rewards from ${withdrawFromAddress}`,
+                ],
+                inAssets: [allianceRewardAsset],
+              })
+            }
           }
         } else if ((msg as any)?.msg?.send) {
           const msgData = Buffer.from(
@@ -318,7 +326,7 @@ export const getCanonicalMsg = (
       default:
         returnMsgs.push({
           msgType: "Unknown",
-          canonicalMsg: [(msg as any)["@type"]],
+          canonicalMsg: [msgType],
         })
         break
     }
