@@ -64,10 +64,7 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
                     token.price === 0 ? (
                       "—"
                     ) : (
-                      <>
-                        {symbol}{" "}
-                        <Read amount={token.value} decimals={0} fixed={2} />
-                      </>
+                        <Read amount={token.value} currency decimals={0} fixed={2} />
                     )
                   }
                   symbol={token.symbol}

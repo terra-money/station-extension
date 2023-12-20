@@ -112,6 +112,38 @@ export default function GasHelper({
     Number(swapData?.amount) + Number(swapData?.gasAmount)
   )
 
+  const ErrorBanners = () => {
+    const insufficientTokens =  
+    swapDenom.includes(SEPARATOR) &&
+    !isLoading &&
+    insufficientBalance
+
+    return  (
+      <div className={styles.banner__container}> 
+      {isError && (
+        <Banner
+          variant="error"
+          title={t("The selected asset cannot be swapped")}
+        />
+      )}
+      {insufficientTokens && !isError && (
+        <Banner
+          variant="error"
+          title={t(
+            "You don't have enough {{token}} to complete this operation, please select another token.",
+            {
+              token: readNativeDenom(
+                swapDenom.split(SEPARATOR)[0],
+                swapDenom.split(SEPARATOR)[1]
+              ).symbol,
+            }
+          )}
+        />
+      )}
+      </div>
+    )
+  }
+
   if (submitting || txhash) {
     return (
       <section className={styles.card}>
@@ -188,30 +220,12 @@ export default function GasHelper({
             }
           />
         )}
-        {isLoading && <LoadingCircular />}
-        {isError ? (
-          <Banner
-            variant="error"
-            title={t("The selected asset cannot be swapped")}
-          />
-        ) : (
-          swapDenom.includes(SEPARATOR) &&
-          !isLoading &&
-          insufficientBalance && (
-            <Banner
-              variant="error"
-              title={t(
-                "You don't have enough {{token}} to complete this operation, please select another token.",
-                {
-                  token: readNativeDenom(
-                    swapDenom.split(SEPARATOR)[0],
-                    swapDenom.split(SEPARATOR)[1]
-                  ).symbol,
-                }
-              )}
-            />
-          )
+        {isLoading && ( 
+          <div className={styles.loading__container}>
+              <LoadingCircular /> 
+          </div>
         )}
+        <ErrorBanners />
       </section>
       {swapData && !isError && !insufficientBalance && (
         <Grid gap={14}>
