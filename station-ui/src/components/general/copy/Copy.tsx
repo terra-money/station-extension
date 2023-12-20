@@ -33,7 +33,8 @@ const Copy = ({
       type='button'
       className={cx(styles.button, className)}
       style={{ color: fillColor }}
-      onClick={() => {
+      onClick={(e) => {
+        e.stopPropagation();
         navigator.clipboard.writeText(copyText);
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);

@@ -1,9 +1,9 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import ActivityListItem, { ActivityListItemProps } from './ActivityListItem';
-import { Pill, ProgressTracker } from 'components';
+import type { Meta, StoryObj } from "@storybook/react";
+import ActivityListItem, { ActivityListItemProps } from "./ActivityListItem";
+import { Pill, TransactionTracker } from "components";
 
 const meta: Meta<ActivityListItemProps> = {
-  title: 'Components/List Items/Activity/Stories',
+  title: "Components/List Items/Activity/Stories",
   component: ActivityListItem,
   argTypes: {},
 } as Meta;
@@ -16,6 +16,25 @@ export const Successful: StoryObj<ActivityListItemProps> = {
       <ActivityListItem
         variant={"success"}
         chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+        msg={
+          <div>
+            Sent <span>420.00 LUNA</span> to <span>terra1...20k38v</span>
+          </div>
+        }
+        type={"Execute Contract"}
+        msgCount={1}
+      />
+    )
+  },
+  argTypes: {},
+};
+
+export const SuccessfulNoImage: StoryObj<ActivityListItemProps> = {
+  render: () => {
+    return (
+      <ActivityListItem
+        variant={"success"}
+        chain={{ icon: "https://station-assets.terra.dev/img/chains/T.svg", label: "Terra" }}
         msg={
           <div>
             Sent <span>420.00 LUNA</span> to <span>terra1...20k38v</span>
@@ -105,7 +124,7 @@ export const SecondaryPill: StoryObj<ActivityListItemProps> = {
   argTypes: {},
 };
 
-export const WithProgressTracker: StoryObj<ActivityListItemProps> = {
+export const WithTransactionTracker: StoryObj<ActivityListItemProps> = {
   render: () => {
     return (
       <ActivityListItem
@@ -120,7 +139,7 @@ export const WithProgressTracker: StoryObj<ActivityListItemProps> = {
         msgCount={1}
         secondaryPill={<Pill variant={"warning"} text={"Pending"} />}
         progressTracker={
-          <ProgressTracker
+          <TransactionTracker
             steps={["completed", "incomplete", "incomplete"]}
             stepLabels={["Terra", "Osmosis", "Something"]}
           />

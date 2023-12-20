@@ -30,6 +30,15 @@ import { TokenListItem } from "station-ui";
 
 ## Stories
 
+## Sekelton
+Displays a token item with a skeleton loader.
+<div className="story_with_source_below">
+  <Canvas of={TokenListItemStories.Skeleton} />
+  <Source code={`
+    <TokenSkeleton />
+  `} />
+</div>
+
 ## Default
 Displays an individual token item with a Tooltip that displays amounts on chains (if token is on multiple chains).
 <div className="story_with_source_below">
@@ -46,7 +55,24 @@ Displays an individual token item with a Tooltip that displays amounts on chains
   `} />
 </div>
 
-## Default Single Chain
+## Default With Image Fallback
+Displays an individual token item with a Tooltip that displays amounts on chains (if token is on multiple chains).
+Luna has no image, so it falls back to the default image.
+<div className="story_with_source_below">
+  <Canvas of={TokenListItemStories.DefaultWithImageFallbacks} />
+  <Source code={`
+    <TokenListItem
+  priceNode={<span>$ 421.00</span>}
+  chains={[{name: "terra",  icon: "no-image", balance: '100' }, { balance: '320' , name: "axelar", icon: "https://station-assets.terra.dev/img/chains/Axelar.svg"}]}
+  tokenImg={"no-image"}
+  symbol={"LUNA"}
+  change={0.1}
+  amountNode={<span>420.00</span>}
+/>
+  `} />
+</div>
+
+## Single Chain
 Displays an individual token item that is on a single chain (So, no Tooltip).
 <div className="story_with_source_below">
   <Canvas of={TokenListItemStories.DefaultSingleChain} />
@@ -55,6 +81,23 @@ Displays an individual token item that is on a single chain (So, no Tooltip).
   priceNode={<span>$ 421.00</span>}
   chains={[{name: "terra",  icon: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }]}
   tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
+  symbol={"LUNA"}
+  change={0.1}
+  amountNode={<span>420.00</span>}
+/>
+  `} />
+</div>
+
+## Single Chain No Token Image
+Displays an individual token item that is on a single chain (So, no Tooltip).
+Luna has no image, so it falls back to the default image.
+<div className="story_with_source_below">
+  <Canvas of={TokenListItemStories.SingleChainNoTokenImg} />
+  <Source code={`
+    <TokenListItem
+  priceNode={<span>$ 421.00</span>}
+  chains={[{name: "terra",  icon: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }]}
+  tokenImg={"no-image"}
   symbol={"LUNA"}
   change={0.1}
   amountNode={<span>420.00</span>}
@@ -102,10 +145,27 @@ A token displayed with a chain focus. So, removed 24hour change and replaces it 
   `} />
 </div>
 
+## Chain Display No Imgs
+A token displayed with a chain focus. So, removed 24hour change and replaces it with a chain icon and name.
+Luna has no image, so it falls back to the default image.
+Terra has no image, so it falls back to the default image.
+<div className="story_with_source_below">
+  <Canvas of={TokenListItemStories.ChainDisplayNoImgs} />
+  <Source code={`
+    <TokenSingleChainListItem
+  priceNode={<span>$42000</span>}
+  tokenImg={"no-image"}
+  symbol={"LUNA"}
+  amountNode={<span>420.00</span>}
+  chain={{ icon: "no-image", label: "Terra" }}
+/>
+  `} />
+</div>
+
 ## Send Back
 The same as ChainDisplay, but with a send back pill.
 <div className="story_with_source_below">
-  <Canvas of={TokenListItemStories.ChainDisplay} />
+  <Canvas of={TokenListItemStories.SendBack} />
   <Source code={`
     <TokenSingleChainListItem
   priceNode={<span>$ 42000</span>}
@@ -152,6 +212,23 @@ The same as ChainDisplay, but with a checkbox on the right side instead of the a
   onClick={() => setChecked(!checked)}
   checked={checked}
   chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+/>
+  `} />
+</div>
+
+## With Chain Checkbox No Images
+The same as ChainDisplay, but with a checkbox on the right side instead of the amounts.
+Luna has no image, so it falls back to the default image.
+Terra has no image, so it falls back to the default image.
+<div className="story_with_source_below">
+  <Canvas of={TokenListItemStories.WithChainCheckboxNoImgs} />
+  <Source code={`
+    <TokenCheckboxListItem
+  tokenImg={"no-image"}
+  symbol={"LUNA"}
+  onClick={() => setChecked(!checked)}
+  checked={checked}
+  chain={{ icon: "no-image", label: "Terra" }}
 />
   `} />
 </div>

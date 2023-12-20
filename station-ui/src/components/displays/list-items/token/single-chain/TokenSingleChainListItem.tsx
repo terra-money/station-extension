@@ -1,7 +1,8 @@
-import Pill from "components/general/pill/Pill"
-import styles from "../TokenListItem.module.scss"
-import { truncate } from "utils/format"
 import classNames from "classnames"
+import { Pill } from "components"
+import { ChainImage, TokenImage } from "../utils"
+import { truncate } from "utils/format"
+import styles from "../TokenListItem.module.scss"
 
 const cx = classNames.bind(styles)
 
@@ -28,9 +29,9 @@ const TokenSingleChainListItem = ({
     <div className={cx(styles.token__container, { [styles.pointer]: !!onClick })} onClick={onClick}>
       <div className={styles.details}>
         <div className={styles.token__icon__container}>
-          <img
-            src={tokenImg}
-            alt={symbol}
+          <TokenImage
+            tokenImg={tokenImg}
+            tokenName={symbol}
             className={styles.token__icon}
           />
         </div>
@@ -46,10 +47,11 @@ const TokenSingleChainListItem = ({
           </div>
           <div className={styles.bottom__row}>
             <h5 className={styles.chain__label}>
-              <img
-                src={chain.icon}
-                alt={chain.label}
+              <ChainImage
+                chainImg={chain.icon}
+                chainName={chain.label}
                 className={styles.chain__icon}
+                small
               />
               {chain.label}
             </h5>

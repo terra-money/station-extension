@@ -11,20 +11,30 @@ import {
   SettingsIcon,
   ConnectIcon,
   CopyIcon,
+  DashboardIcon,
+  DefaultChainIcon,
+  DefaultTokenIcon,
+  DiscordIcon,
+  DocsIcon,
   DropdownArrowIcon,
   ExternalLinkIcon,
   FavoriteIcon,
   FilterIcon,
   FlipArrowsIcon,
+  GithubIcon,
   GovernanceIcon,
   ImportSeedIcon,
+  InfoIcon,
   KeyIcon,
   LaughIcon,
   LedgerIcon,
+  LightbulbIcon,
   LoadingIcon,
   LockIcon,
   ManageAssetIcon,
   MultisigWalletIcon,
+  NoInternetIcon,
+  PuzzlePieceIcon,
   QRCodeIcon,
   ReceiveIcon,
   RightArrowIcon,
@@ -34,9 +44,11 @@ import {
   SmallCircleCheckIcon,
   StakeIcon,
   SwapArrowsIcon,
+  TelegramIcon,
   TrashIcon,
   TrendDownIcon,
   TrendUpIcon,
+  TwitterIcon,
   WalletIcon,
   WalletConnectIcon,
 } from "components"
@@ -83,11 +95,6 @@ const FullIconContainer = () => {
       iconCopy: `<CloseIcon stroke={"var(${selectedColor})"} />`
     },
     {
-      name: "Settings",
-      icon: <SettingsIcon fill={`var(${selectedColor})`} width={size} height={size} />,
-      iconCopy: `<SettingsIcon fill={"var(${selectedColor})"} />`
-    },
-    {
       name: "Connect",
       icon: <ConnectIcon fill={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<ConnectIcon fill={"var(${selectedColor})"} />`
@@ -96,6 +103,31 @@ const FullIconContainer = () => {
       name: "Copy",
       icon: <CopyIcon fill={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<CopyIcon fill={"var(${selectedColor})"} />`
+    },
+    {
+      name: "Dashboard",
+      icon: <DashboardIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<DashboardIcon fill={"var(${selectedColor})"} />`
+    },
+    {
+      name: "DefaultChain",
+      icon: <DefaultChainIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<DefaultChainIcon fill={"var(${selectedColor})"} />`
+    },
+    {
+      name: "DefaultToken",
+      icon: <DefaultTokenIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<DefaultTokenIcon fill={"var(${selectedColor})"} />`
+    },
+    {
+      name: "Discord",
+      icon: <DiscordIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<DiscordIcon fill={"var(${selectedColor})"} />`
+    },
+    {
+      name: "Docs",
+      icon: <DocsIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<DocsIcon fill={"var(${selectedColor})"} />`
     },
     {
       name: "DropdownArrow",
@@ -123,6 +155,11 @@ const FullIconContainer = () => {
       iconCopy: `<FlipArrowsIcon fill={"var(${selectedColor})"} />`
     },
     {
+      name: "Github",
+      icon: <GithubIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<GithubIcon fill={"var(${selectedColor})"} />`
+    },
+    {
       name: "Governance",
       icon: <GovernanceIcon fill={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<GovernanceIcon fill={"var(${selectedColor})"} />`
@@ -131,6 +168,11 @@ const FullIconContainer = () => {
       name: "ImportSeed",
       icon: <ImportSeedIcon fill={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<ImportSeedIcon fill={"var(${selectedColor})"} />`
+    },
+    {
+      name: "Info",
+      icon: <InfoIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<InfoIcon fill={"var(${selectedColor})"} />`
     },
     {
       name: "Key",
@@ -146,6 +188,11 @@ const FullIconContainer = () => {
       name: "Ledger",
       icon: <LedgerIcon fill={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<LedgerIcon fill={"var(${selectedColor})"} />`
+    },
+    {
+      name: "Lightbulb",
+      icon: <LightbulbIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<LightbulbIcon fill={"var(${selectedColor})"} />`
     },
     {
       name: "Loading",
@@ -166,6 +213,16 @@ const FullIconContainer = () => {
       name: "MultisigWallet",
       icon: <MultisigWalletIcon fill={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<MultisigWalletIcon fill={"var(${selectedColor})"} />`
+    },
+    {
+      name: "NoInternet",
+      icon: <NoInternetIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<NoInternetIcon fill={"var(${selectedColor})"} />`
+    },
+    {
+      name: "PuzzlePiece",
+      icon: <PuzzlePieceIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<PuzzlePieceIcon fill={"var(${selectedColor})"} />`
     },
     {
       name: "QRCode",
@@ -198,6 +255,11 @@ const FullIconContainer = () => {
       iconCopy: `<SendArrowIcon fill={"var(${selectedColor})"} />`
     },
     {
+      name: "Settings",
+      icon: <SettingsIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<SettingsIcon fill={"var(${selectedColor})"} />`
+    },
+    {
       name:"SmallCircleCheck",
       icon: <SmallCircleCheckIcon fill={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<SmallCircleCheckIcon fill={"var(${selectedColor})"} />`
@@ -213,6 +275,11 @@ const FullIconContainer = () => {
       iconCopy: `<SwapArrowsIcon fill={"var(${selectedColor})"} />`
     },
     {
+      name: "Telegram",
+      icon: <TelegramIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<TelegramIcon fill={"var(${selectedColor})"} />`
+    },
+    {
       name: "Trash",
       icon: <TrashIcon fill={`var(${selectedColor})`} stroke={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<TrashIcon fill={"var(${selectedColor})"} stroke={"var(${selectedColor})"} />`
@@ -226,6 +293,11 @@ const FullIconContainer = () => {
       name: "TrendUp",
       icon: <TrendUpIcon fill={"var(--token-success-500)"} width={size} height={size} />,
       iconCopy: `<TrendUpIcon fill={"var(--token-success-500)"} />`
+    },
+    {
+      name: "Twitter",
+      icon: <TwitterIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<TwitterIcon fill={"var(${selectedColor})"} />`
     },
     {
       name: "Wallet",

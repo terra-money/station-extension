@@ -47,7 +47,10 @@ const WalletSelectableListItem = ({
             iconOnly
           />
           {settingsOnClick && (
-            <SettingsIcon fill={iconFill} onClick={settingsOnClick} />
+            <SettingsIcon fill={iconFill} onClick={(e) => {
+              e.stopPropagation()
+              settingsOnClick()
+            }} />
           )}
         </div>
       </div>

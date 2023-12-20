@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactNode, useEffect, useState } from "react"
 import classNames from "classnames/bind"
-import { BuyIcon, AlertIcon, SmallCircleCheckIcon } from "components"
-import Pill from "components/general/pill/Pill"
+import { BuyIcon, AlertIcon, SmallCircleCheckIcon, Pill } from "components"
+import { ChainImage, TokenImage } from "../token/utils"
 import styles from "./Timeline.module.scss"
 
 const cx = classNames.bind(styles)
@@ -78,9 +78,9 @@ const Timeline = ({
       ) : startItem ? (
         <div className={styles.start__item}>
           <div className={styles.img__wrapper}>
-            <img
-              src={startItem.coin.icon}
-              alt={startItem.coin.label}
+            <TokenImage
+              tokenImg={startItem.coin.icon}
+              tokenName={startItem.coin.label}
               className={styles.item__coin}
             />
             <span className={styles.dashed__line} />
@@ -88,9 +88,10 @@ const Timeline = ({
           <div className={styles.details__wrapper}>
             <h3>{startItem.msg}</h3>
             <div className={styles.item__chain}>
-              <img
-                src={startItem.chain.icon}
-                alt={startItem.chain.label}
+              <ChainImage
+                chainImg={startItem.chain.icon}
+                chainName={startItem.chain.label}
+                small
               />
               <h6 className={styles.details__msg}>
                 {startItem.chain.label}
@@ -160,18 +161,20 @@ const Timeline = ({
       {endItem && (
         <div className={styles.end__item}>
           <div className={styles.img__wrapper}>
-            <img
-              src={endItem.coin.icon}
-              alt={endItem.coin.label}
+            <TokenImage
+              tokenImg={endItem.coin.icon}
+              tokenName={endItem.coin.label}
               className={styles.item__coin}
             />
           </div>
           <div className={styles.details__wrapper}>
             <h3>{endItem.msg}</h3>
             <div className={styles.item__chain}>
-              <img
-                src={endItem.chain.icon}
-                alt={endItem.chain.label}
+              <ChainImage
+                chainImg={endItem.chain.icon}
+                chainName={endItem.chain.label}
+                className={styles.chain__icon}
+                small
               />
               <h6 className={styles.details__msg}>
                 {endItem.chain.label}

@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import TokenListItem, { TokenListItemProps } from './default/TokenListItem';
 import TokenSingleChainListItem, { TokenSingleChainListItemProps } from './single-chain/TokenSingleChainListItem';
 import TokenCheckboxListItem, { TokenCheckboxListItemProps } from './single-chain/TokenCheckboxListItem';
+import TokenSkeleton from './skeleton/TokenSkeleton';
 
 const meta: Meta<TokenListItemProps> = {
   title: 'Components/List Items/Token/Stories',
@@ -32,6 +33,24 @@ export const Default: StoryObj<TokenListItemProps> = {
   argTypes: {},
 };
 
+export const DefaultWithImageFallbacks: StoryObj<TokenListItemProps> = {
+  render: () => {
+    return (
+      <div style={{ height: "150px", display: "flex", alignItems: "flex-end" }}>
+        <TokenListItem
+          priceNode={<span>$ 421.00</span>}
+          chains={[{name: "terra",  icon: "https://station-assets.terra.dev/img/chains/Terr.svg", balance: '100' }, { balance: '320' , name: "axelar", icon: "https://station-assets.terra.dev/img/chains/Axelar.svg"}]}
+          tokenImg={"https://station-assets.terra.dev/img/coins/Lun.svg"}
+          symbol={"LUNA"}
+          change={0.1}
+          amountNode={<span>420.00</span>}
+        />
+      </div>
+    )
+  },
+  argTypes: {},
+};
+
 export const DefaultSingleChain: StoryObj<TokenListItemProps> = {
   render: () => {
     return (
@@ -39,6 +58,22 @@ export const DefaultSingleChain: StoryObj<TokenListItemProps> = {
         priceNode={<span>$ 421.00</span>}
         chains={[{name: "terra",  icon: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }]}
         tokenImg={"https://station-assets.terra.dev/img/coins/Luna.svg"}
+        symbol={"LUNA"}
+        change={0.1}
+        amountNode={<span>420.00</span>}
+      />
+    )
+  },
+  argTypes: {},
+};
+
+export const SingleChainNoTokenImg: StoryObj<TokenListItemProps> = {
+  render: () => {
+    return (
+      <TokenListItem
+        priceNode={<span>$ 421.00</span>}
+        chains={[{name: "terra",  icon: "https://station-assets.terra.dev/img/chains/Terra.svg", balance: '100' }]}
+        tokenImg={""}
         symbol={"LUNA"}
         change={0.1}
         amountNode={<span>420.00</span>}
@@ -58,6 +93,21 @@ export const ChainDisplay: StoryObj<TokenSingleChainListItemProps> = {
         amountNode={<span>420.00</span>}
         chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
         onClick={() => {}}
+      />
+    )
+  },
+  argTypes: {},
+};
+
+export const ChainDisplayNoImgs: StoryObj<TokenSingleChainListItemProps> = {
+  render: () => {
+    return (
+      <TokenSingleChainListItem
+        priceNode={<span>$42000</span>}
+        tokenImg={"https://station-assets.terra.dev/img/coins/L.svg"}
+        symbol={"LUNA"}
+        amountNode={<span>420.00</span>}
+        chain={{ icon: "https://station-assets.terra.dev/img/chains/T.svg", label: "Terra" }}
       />
     )
   },
@@ -95,3 +145,27 @@ export const WithChainCheckbox: StoryObj<TokenCheckboxListItemProps> = {
   },
   argTypes: {},
 };
+
+export const WithChainCheckboxNoImgs: StoryObj<TokenCheckboxListItemProps> = {
+  render: () => {
+    const [checked, setChecked] = useState(false);
+    return (
+      <TokenCheckboxListItem
+        tokenImg={"https://station-assets.terra.dev/img/coins/L.svg"}
+        symbol={"LUNA"}
+        onClick={() => setChecked(!checked)}
+        checked={checked}
+        chain={{ icon: "https://station-assets.terra.dev/img/chains/T.svg", label: "Terra" }}
+      />
+    )
+  },
+  argTypes: {},
+};
+
+export const Skeleton: StoryObj<TokenListItemProps> = {
+  render: () => {
+    return (
+      <TokenSkeleton />
+    )
+  }
+}

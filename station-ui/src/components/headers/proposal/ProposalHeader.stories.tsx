@@ -21,3 +21,16 @@ export const Default: StoryObj<ProposalHeaderProps> = {
     );
   },
 };
+
+export const NoMetaImg: StoryObj<ProposalHeaderProps> = {
+  render: () => {
+    return (
+      <ProposalHeader
+        metaText={"4736 | Community pool spend proposal"}
+        metaImage={"https://station-assets.terra.dev/img/chains/T.svg"}
+        title={"OFFICIAL “Revitalizing Terra: A Backbone Labs and Eris Protocol Collaboration” (Not A Grant)"}
+        submittedDate={"3 July 2023, 18:49:03 UTC"}
+      />
+    );
+  },
+};
