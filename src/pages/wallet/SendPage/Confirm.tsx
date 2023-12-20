@@ -106,6 +106,7 @@ const Confirm = () => {
                   contract: getICSContract({
                     from: chain,
                     to: destination,
+                    tokenAddress: denom,
                   }),
                   amount: amount,
                   msg: Buffer.from(
