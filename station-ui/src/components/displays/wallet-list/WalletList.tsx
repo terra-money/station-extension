@@ -1,7 +1,7 @@
 import WalletSelectableListItem from "components/displays/list-items/selectable/wallet/WalletSelectableListItem"
 import SectionHeader from "components/headers/section/SectionHeader"
-import styles from "./WalletList.module.scss"
 import { truncate } from "utils/format"
+import styles from "./WalletList.module.scss"
 
 export interface WalletListProps {
   activeWallet?: {
