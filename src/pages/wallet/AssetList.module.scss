@@ -25,6 +25,7 @@
 
 .filter {
   cursor: pointer;
+  margin-bottom: 20px;
   &.inactive {
     color: var(--token-light-100);
   }
