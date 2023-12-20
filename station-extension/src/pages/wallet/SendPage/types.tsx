@@ -25,4 +25,5 @@ export interface TxValues {
   decimals?: number
   assetInfo?: AssetType
   currencyAmount?: number
+  ibcWarning?: boolean
 }
