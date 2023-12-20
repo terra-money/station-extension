@@ -41,7 +41,6 @@ export default function SelectWalletsPage() {
               return {
                 name: wallet.name,
                 address,
-                subLabel: truncate(address, [11, 6]),
                 onClick: () => {
                   connect(wallet.name)
                   navigate("/")
