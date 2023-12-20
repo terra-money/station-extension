@@ -5,6 +5,8 @@ import {
   Button,
   InputWrapper,
   Input,
+  Banner,
+  Checkbox
 } from "@terra-money/station-ui"
 import { useSend } from "./SendContext"
 import { truncate } from "@terra-money/terra-utils"
@@ -17,21 +19,33 @@ import { useEffect } from "react"
 
 const Submit = () => {
   const { form, getWalletName, goToStep } = useSend()
-  const { register, formState, watch, setValue, trigger } = form
+  const { register, formState, watch, setValue, trigger, setError, clearErrors } = form
   const { errors } = formState
-  const { assetInfo, recipient, input, currencyAmount } = watch()
+  const { assetInfo, recipient, input, currencyAmount, destination, ibcWarning } = watch()
   const currency = useCurrency()
   const { t } = useTranslation()
+  const showIBCWarning = assetInfo?.denom.startsWith("ibc/") && assetInfo.tokenChain !== destination
+
+  useEffect(() => {
+    if (showIBCWarning) {
+      setError('ibcWarning', { type: 'manual' })
+    } else {
+      clearErrors('ibcWarning');
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showIBCWarning, ibcWarning, assetInfo, destination])
 
   useEffect(() => {
     setValue("input", 0)
     setValue("currencyAmount", 0)
+    setValue('ibcWarning', false);
   }, [setValue])
 
   if (!(assetInfo && recipient)) {
     goToStep(1)
     return null
   }
+
   const { balance, decimals, price, tokenImg, symbol } = assetInfo
 
   const handleMax = () => {
@@ -89,6 +103,15 @@ const Submit = () => {
           })}
         />
       </InputWrapper>
+      {showIBCWarning && (
+        <>
+          <Banner
+            variant="warning"
+            title={t("Caution: This asset may not be recognized on the destination chain. Send asset back to home-chain first before proceeding.")}
+          />
+          <Checkbox {...register('ibcWarning')} className={style.checkbox} checked={ibcWarning} label={t(`I know what I'm doing`)}  />
+        </>
+      )}
       <Button
         className={style.button}
         disabled={
