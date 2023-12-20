@@ -86,10 +86,9 @@ const Confirm = () => {
       const amount = toAmount(input, { decimals: assetInfo?.decimals })
       const { senderAddress, denom, channel } = assetInfo ?? {}
       if (!(recipient && AccAddress.validate(recipient))) return
+      if (!(chain && destination && denom && amount && senderAddress)) return
 
       const execute_msg = { transfer: { recipient: address, amount } }
-
-      if (!chain || !destination || !denom || !amount || !senderAddress) return
       let msgs
 
       if (destination === chain) {
