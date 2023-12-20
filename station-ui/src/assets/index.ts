@@ -19,6 +19,7 @@ import { ReactComponent as KeyIconSVG } from "./icon/Key.svg"
 import { ReactComponent as LaughIconSVG } from "./icon/Laugh.svg"
 import { ReactComponent as LedgerIconSVG } from "./icon/Ledger.svg"
 import { ReactComponent as LoadingIconSVG } from "./icon/Loading.svg"
+import { ReactComponent as LoadingV2IconSVG } from "./icon/LoadingV2.svg"
 import { ReactComponent as LockIconSVG } from "./icon/Lock.svg"
 import { ReactComponent as ManageAssetIconSVG } from "./icon/ManageAsset.svg"
 import { ReactComponent as MultisigWalletIconSVG } from "./icon/MultisigWallet.svg"
@@ -58,6 +59,7 @@ export const KeyIcon = KeyIconSVG
 export const LaughIcon = LaughIconSVG
 export const LedgerIcon = LedgerIconSVG
 export const LoadingIcon = LoadingIconSVG
+export const LoadingV2Icon = LoadingV2IconSVG
 export const LockIcon = LockIconSVG
 export const ManageAssetIcon = ManageAssetIconSVG
 export const MultisigWalletIcon = MultisigWalletIconSVG
