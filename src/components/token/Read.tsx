@@ -47,7 +47,7 @@ const Read = forwardRef(
 
     const lessThanFloor = fixed ? tenToThePowerOf(-fixed) : 0
     const lessThanFixed =
-      amountBN.isPositive() &&
+      amountBN.isGreaterThan(0) &&
       amountBN.times(tenToThePowerOf(-decimals)).lt(lessThanFloor)
 
     const config = { ...props, comma, fixed }
@@ -55,11 +55,15 @@ const Read = forwardRef(
     const formattedInteger = Number(integer).toLocaleString("en-US")
 
     const renderDecimal = () => {
+      const decimalValue = lessThanFixed
+        ? `.${lessThanFloor.toString().split(".")[1]}`
+        : `.${decimal ?? (0).toFixed(fixed || 2).split(".")[1]}`
+
+      const formattedDecimalValue =
+        decimalValue.match(/^(\.\d{2,}?)0*?$/)?.[1] || decimalValue
       return (
         <span className={cx({ small: !props?.prefix })}>
-          {lessThanFixed
-            ? `.${lessThanFloor.toString().split(".")[1]}`
-            : `.${decimal ?? (0).toFixed(fixed || 2).split(".")[1]}`}
+          {formattedDecimalValue}
         </span>
       )
     }
