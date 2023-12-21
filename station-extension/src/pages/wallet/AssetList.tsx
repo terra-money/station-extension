@@ -53,16 +53,8 @@ const AssetList = () => {
       )
 
     const visible = filtered
-      .filter(
-        (a) =>
-          a.price * toInput(a.balance) >= 0.1 ||
-          alwaysVisibleDenoms.has(a.denom)
-      )
-      .sort(
-        (a, b) =>
-          b.price * parseInt(b.totalBalance) -
-          a.price * parseInt(a.totalBalance)
-      )
+      .filter((a) => a.totalValue >= 0.1 || alwaysVisibleDenoms.has(a.denom))
+      .sort( (a, b) => b.totalValue - a.totalValue)
 
     const lowBal = filtered.filter((a: any) => !visible.includes(a))
 
