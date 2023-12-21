@@ -21,7 +21,11 @@ import { getLocalSetting, SettingKey } from "utils/localStorage"
 import { combineState, RefetchOptions } from "data/query"
 import { queryKey } from "data/query"
 import { useNetwork } from "data/wallet"
-import { isBroadcastingState, latestTxState } from "data/queries/tx"
+import {
+  isBroadcastingState,
+  latestTxState,
+  useOsmosisGas,
+} from "data/queries/tx"
 import { useIsWalletEmpty } from "data/queries/bank"
 
 import { Pre } from "components/general"
@@ -102,6 +106,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const isBroadcasting = useRecoilValue(isBroadcastingState)
   const readNativeDenom = useNativeDenoms()
   const { data: carbonFees } = useCarbonFees()
+  const { data: osmosisGas } = useOsmosisGas()
 
   /* taxes */
   const isClassic = networks[chain]?.isClassic
@@ -145,6 +150,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
               carbonFees?.costs["default_fee"]
           )
         }
+
         const unsignedTx = await lcd.tx.create([{ address: key.address }], {
           ...simulationTx,
           feeDenoms: [gasDenom],
@@ -171,14 +177,18 @@ function Tx<TxValues>(props: Props<TxValues>) {
     (denom: CoinDenom) => {
       const gasPrice = chain?.startsWith("carbon-")
         ? carbonFees?.prices[denom]
+        : chain?.startsWith("osmosis")
+        ? (osmosisGas?.base_fee || 0.0025) * 10
         : networks[chain]?.gasPrices[denom]
+
       if (isNil(estimatedGas) || !gasPrice) return "0"
+
       return new BigNumber(estimatedGas)
         .times(gasPrice)
         .integerValue(BigNumber.ROUND_CEIL)
         .toString()
     },
-    [estimatedGas, chain, networks, carbonFees]
+    [chain, carbonFees?.prices, osmosisGas?.base_fee, networks, estimatedGas]
   )
 
   const gasAmount = getGasAmount(gasDenom)

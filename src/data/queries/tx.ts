@@ -1,8 +1,9 @@
 import { QueryKey, useQuery, useQueryClient } from "react-query"
 import { atom, useSetRecoilState } from "recoil"
+import axios from "axios"
+import { useNetworks } from "app/InitNetworks"
 import { queryKey } from "../query"
 import { useInterchainLCDClient } from "./lcdClient"
-import axios from "axios"
 import { RefetchOptions } from "../query"
 import { CARBON_API } from "config/constants"
 
@@ -47,6 +48,24 @@ export const useTxInfo = ({ txhash, queryKeys, chainID }: LatestTx) => {
         queryClient.invalidateQueries(queryKey.tx.create)
       },
     }
+  )
+}
+
+export const useOsmosisGas = () => {
+  const { networks } = useNetworks()
+
+  return useQuery(
+    [queryKey.tx.osmosisGas],
+    async () => {
+      const { data } = await axios.get(
+        "osmosis/txfees/v1beta1/cur_eip_base_fee",
+        {
+          baseURL: networks["mainnet"]["osmosis-1"].lcd, // hard set for now.
+        }
+      )
+      return data
+    },
+    { ...RefetchOptions.INFINITY }
   )
 }
 
