@@ -58,13 +58,18 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
               .sort((a, b) => b.value - a.value)
               .map((token, i) => (
                 <TokenSingleChainListItem
-                  key={`search-token-${i}`}
+                  key={`search-token-${token.denom}-${i}`}
                   amountNode={toInput(token.balance, token.decimals)}
                   priceNode={
                     token.price === 0 ? (
                       "—"
                     ) : (
-                        <Read amount={token.value} currency decimals={0} fixed={2} />
+                      <Read
+                        amount={token.value}
+                        currency
+                        decimals={0}
+                        fixed={2}
+                      />
                     )
                   }
                   symbol={token.symbol}
