@@ -11,6 +11,8 @@ import {
 import { LedgerKey } from "@terra-money/ledger-station-js"
 import styles from "./Ledger.module.scss"
 import { useTranslation } from "react-i18next"
+import { useAuth } from "auth"
+import is from "auth/scripts/is"
 
 interface LedgerState {
   action?: LedgerDeviceAction
@@ -155,6 +157,11 @@ export const useLedgerKey = () => {
       setState({})
     }
   }
+}
+
+export const useIsLedger = () => {
+  const { wallet } = useAuth()
+  return is.ledger(wallet)
 }
 
 // general helpers

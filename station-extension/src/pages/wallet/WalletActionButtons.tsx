@@ -13,6 +13,8 @@ import { ReactComponent as Swap } from "styles/images/icons/Swap.svg"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useNativeDenoms } from "data/token"
+import { openURL } from "extension/storage"
+import { useIsLedger } from "utils/ledger"
 
 interface WalletActionButton {
   icon: JSX.Element
@@ -35,6 +37,7 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
   const readNativeDenom = useNativeDenoms()
   const token = readNativeDenom(denom ?? "")
   const addresses = useInterchainAddresses()
+  const isLedger = useIsLedger()
 
   const address = useMemo(() => {
     if (!addresses) return ""
@@ -53,13 +56,18 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
       icon: <SendIcon />,
       primary: true,
       label: t("Send"),
-      onClick: () => navigate(`/send/1`, { state: { denom } }),
+      onClick: () =>
+        (isLedger ? openURL : navigate)(
+          `/send/1`,
+          denom ? { denom } : undefined
+        ),
       disabled: sendButtonDisabled,
     },
     {
       icon: <Swap />,
       label: t("Swap"),
-      onClick: () => navigate(`/swap`, { state: { denom } }),
+      onClick: () =>
+        (isLedger ? openURL : navigate)(`/swap`, denom ? { denom } : undefined),
       hide: networkName !== "mainnet",
     },
     {
@@ -88,7 +96,7 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
                 icon={icon}
                 disabled={disabled}
               />
-              <span>{capitalize(label)}</span>
+              <span className={styles.button__text}>{capitalize(label)}</span>
             </FlexColumn>
           )
       )}

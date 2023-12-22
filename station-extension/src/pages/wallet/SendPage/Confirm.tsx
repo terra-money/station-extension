@@ -29,6 +29,7 @@ import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { CoinInput } from "txs/utils"
 import { useNavigate } from "react-router-dom"
 import style from "./Send.module.scss"
+import { useIsLedger } from "utils/ledger"
 
 enum TxType {
   SEND = "Send",
@@ -58,6 +59,7 @@ const Confirm = () => {
   const addresses = useInterchainAddresses()
   const [error, setError] = useState<string | null>(null)
   const { input, assetInfo, destination, recipient, chain, memo } = form.watch()
+  const isLedger = useIsLedger()
 
   /* fee */
   const coins = useMemo(() => [{ input, denom: "" }] as CoinInput[], [input])
@@ -223,6 +225,7 @@ const Confirm = () => {
     createTx,
     onSuccess: () => {
       addRecipient({ recipient, name: getWalletName(recipient ?? "") })
+      isLedger && window.close()
       navigate("/")
     },
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
