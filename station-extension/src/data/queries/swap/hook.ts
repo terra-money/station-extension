@@ -91,7 +91,6 @@ export const useGetBestRoute = (sources?: SupportedSource[]) => {
   const getBestRoute = useCallback(
     async (swap: SwapState) => {
       const routePromises = routeSources.map(async (source) => {
-        try {
           const amount = toAmount(swap.offerInput, {
             decimals: swap.offerAsset.decimals,
           })
@@ -99,11 +98,8 @@ export const useGetBestRoute = (sources?: SupportedSource[]) => {
             { ...swap, offerInput: amount },
             network
           )
-        } catch (error) {
-          console.error(`Error getting route from ${source}:`, error)
-          return null // Return null in case of error to not break Promise.all
-        }
-      })
+        } 
+      )
 
       const results = await Promise.all(routePromises)
       const routes = results.filter(
@@ -114,7 +110,7 @@ export const useGetBestRoute = (sources?: SupportedSource[]) => {
         throw new Error("No routes available for this swap.")
       }
       const bestRoute = routes.sort(
-        (a, b) => Number(b.amountOut) - Number(a.amountOut)
+        (a, b) => a.txsRequired - b.txsRequired
       )[0]
       return bestRoute
     },
@@ -159,11 +155,12 @@ export const useGetMsgs = (sources?: SupportedSource[]) => {
 const DEFAULT_SWAP = {
   ask: {
     chainID: "phoenix-1",
-    denom: "uluna",
+    originDenom: "uluna",
   },
   offer: {
-    chainID: "axelar-dojo-1",
-    denom: "uusdc",
+    chainID: "phoenix-1",
+    originDenom: "uusdc",
+    symbol: "axlUSDC",
   },
 }
 
@@ -172,13 +169,14 @@ export const useGetSwapDefaults = (assets: SwapAssetExtra[]) => {
   const defaults = useMemo(() => {
     const askAsset = assets.find(
       (t) =>
-        t.originDenom === DEFAULT_SWAP.ask.denom &&
+        t.originDenom === DEFAULT_SWAP.ask.originDenom &&
         t.chainId === DEFAULT_SWAP.ask.chainID
     )
     const offerAsset = assets.find(
       (t) =>
-        t.originDenom === DEFAULT_SWAP.offer.denom &&
-        t.chainId === DEFAULT_SWAP.offer.chainID
+        t.originDenom === DEFAULT_SWAP.offer.originDenom &&
+        t.chainId === DEFAULT_SWAP.offer.chainID && 
+        t.symbol === DEFAULT_SWAP.offer.symbol
     )
 
     return {

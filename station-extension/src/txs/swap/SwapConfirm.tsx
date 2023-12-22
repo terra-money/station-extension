@@ -29,6 +29,7 @@ const Confirm = () => {
   const { offerAsset, offerInput, msgs: swapMsgs } = watch()
   const amount = toAmount(offerInput, { decimals: offerAsset.decimals })
   const estimationTxValues = useMemo(() => getValues(), [getValues])
+  console.log('swapMsgs', swapMsgs)
 
   if (!swapMsgs) {
     navigate("/swap")
@@ -36,7 +37,7 @@ const Confirm = () => {
   }
 
   const createTx = ({ offerAsset }: SwapState) => {
-    const msg = JSON.parse(swapMsgs?.[0].msg)
+    const msg = JSON.parse(swapMsgs?.[0]?.msg)
     let msgs
 
     if (msg.source_channel) {

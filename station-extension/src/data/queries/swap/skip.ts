@@ -44,24 +44,25 @@ export const skipApi = {
       console.log("Skip Token Error", err)
     }
   },
-  queryMsgs: async (state: SwapState, addresses: InterchainAddresses) => {
+  queryMsgs: async (swap: SwapState, addresses: InterchainAddresses) => {
     try {
       const { askAsset, offerInput, offerAsset, route, slippageTolerance } =
-        state
+      swap
       if (!route || !addresses) return null
+      const params = {
+        amount_in: offerInput,
+        amount_out: route.amountOut,
+        source_asset_denom: offerAsset.denom,
+        source_asset_chain_id: offerAsset.chainId,
+        dest_asset_denom: askAsset.denom,
+        dest_asset_chain_id: askAsset.chainId,
+        address_list: route.chainIds.map((chainId) => addresses[chainId]),
+        operations: route.operations,
+        slippage_tolerance_percent: slippageTolerance,
+      }
       const res = await axios.post(
         SKIP_SWAP_API.routes.msgs,
-        {
-          amount_in: offerInput,
-          amount_out: route.amountOut,
-          source_asset_denom: offerAsset.denom,
-          source_asset_chain_id: offerAsset.chainId,
-          dest_asset_denom: askAsset.denom,
-          dest_asset_chain_id: askAsset.chainId,
-          address_list: route.chainIds.map((chainId) => addresses[chainId]),
-          operations: route.operations,
-          slippage_tolerance_percent: slippageTolerance.toString(),
-        },
+        params,
         {
           baseURL: SKIP_SWAP_API.baseUrl,
           headers: {
@@ -69,12 +70,12 @@ export const skipApi = {
           },
         }
       )
-      if (!res.data.msgs) {
-        throw new Error("No msgs returned from Skip API")
+      if (!res?.data?.msgs) {
+        throw new Error("No messages returned from Skip API")
       }
       return res.data.msgs
     } catch (err) {
-      console.log("Skip Msgs Error", err)
+      throw new Error(`Unkown error`)
     }
   },
   queryRoute: async (swap: SwapState, network: IInterchainNetworks) => {
@@ -89,6 +90,7 @@ export const skipApi = {
           dest_asset_denom: askAsset.denom,
           dest_asset_chain_id: askAsset.chainId,
           cumulative_affiliate_fee_bps: "0",
+          
         },
         {
           baseURL: SKIP_SWAP_API.baseUrl,
@@ -98,8 +100,7 @@ export const skipApi = {
         }
       )
       if (!res?.data) throw new Error("No data returned from Skip API")
-
-      if (res.data.txs_required > 1)
+      if (res?.data.txs_required > 1)
         throw new Error(
           `Swap not supported, ${res.data.txs_required} txs required`
         )
