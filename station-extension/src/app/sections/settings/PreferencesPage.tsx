@@ -54,7 +54,12 @@ const PreferencesPage = () => {
         />
         <p className={styles.subtitle}>
           {t(
-            "Activating this will prioritize station over other wallet extensions you may have installed when connecting to apps"
+            "Activating this will prioritize station over other wallet extensions you may have installed when connecting to apps."
+          )}
+        </p>
+        <p className={styles.subtitle}>
+          {t(
+            "This is an experimental feature and may only work if other extensions are disabled."
           )}
         </p>
       </Grid>
