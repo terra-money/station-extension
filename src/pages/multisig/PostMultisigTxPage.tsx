@@ -21,7 +21,10 @@ const PostMultisigTxPage = () => {
   const { wallet } = useAuth()
 
   /* account info */
-  const { data: account, ...state } = useAccountInfo()
+  const { data: account, ...state } = useAccountInfo(
+    addresses?.[chainID] ?? "",
+    isWallet.multisig(wallet) && !!addresses?.[chainID]
+  )
 
   /* render */
   const defaultValues = useDefaultValues()
