@@ -7,6 +7,7 @@ import { useSettingsRoutes } from "./routes"
 import { useNavigate } from "react-router-dom"
 import styles from "./PreferencesPage.module.scss"
 import { useReplaceKeplr } from "utils/localStorage"
+import browser from "webextension-polyfill"
 
 export interface SettingsPage {
   route?: string
@@ -79,6 +80,7 @@ const PreferencesPage = () => {
       <SettingsGroup settings={functions} />
       <SectionHeader withLine />
       <SettingsGroup settings={settings} />
+      <p className={styles.version}>{'Station Wallet v' + browser.runtime?.getManifest?.()?.version}</p>
     </FlexColumn>
   )
 }
