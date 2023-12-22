@@ -269,3 +269,21 @@ export const Disabled: StoryObj<ButtonConfig> = {
     loading: { control: false },
   },
 };
+
+export const Small: StoryObj<ButtonConfig> = {
+  render: () => (
+    <Button variant='primary' label='Primary' small />
+  ),
+  argTypes: {
+    variant: {
+      control: false,
+      defaultValue: 'primary',
+      table: {
+        defaultValue: { summary: '"primary"' },
+      }
+    },
+    label: { control: false },
+    block: { control: false },
+    loading: { control: false },
+  },
+};

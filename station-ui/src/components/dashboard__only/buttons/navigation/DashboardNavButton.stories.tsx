@@ -2,8 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import NavButton, { NavButtonProps } from './NavButton';
 import { SwapArrowsIcon } from 'assets';
 
-// import
-
 const meta: Meta = {
   title: 'Dashboard/Buttons/Navigation/NavButton',
   component: NavButton,

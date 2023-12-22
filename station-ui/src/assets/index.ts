@@ -1,3 +1,4 @@
+import { ReactComponent as ActivityIconSVG } from "./icon/Activity.svg"
 import { ReactComponent as AddressBookIconSVG } from "./icon/AddressBook.svg"
 import { ReactComponent as AlertIconSVG } from "./icon/Alert.svg"
 import { ReactComponent as BackArrowIconSVG } from "./icon/BackArrow.svg"
@@ -50,6 +51,7 @@ import { ReactComponent as TwitterIconSVG } from "./icon/Twitter.svg"
 import { ReactComponent as WalletIconSVG } from "./icon/Wallet.svg"
 import { ReactComponent as WalletConnectIconSVG } from "./icon/WalletConnect.svg"
 
+export const ActivityIcon = ActivityIconSVG
 export const AddressBookIcon = AddressBookIconSVG
 export const AlertIcon = AlertIconSVG
 export const BackArrowIcon = BackArrowIconSVG
@@ -101,3 +103,10 @@ export const TrendUpIcon = TrendUpIconSVG
 export const TwitterIcon = TwitterIconSVG
 export const WalletIcon = WalletIconSVG
 export const WalletConnectIcon = WalletConnectIconSVG
+
+import { ReactComponent as TotalAssets } from "./backdrops/total-assets.svg"
+import { ReactComponent as StakedAssets } from "./backdrops/staked-assets.svg"
+import { ReactComponent as ClaimableAssets } from "./backdrops/claimable-rewards.svg"
+export const TotalAssetsSVG = TotalAssets
+export const StakedAssetsSVG = StakedAssets
+export const ClaimableAssetsSVG = ClaimableAssets
