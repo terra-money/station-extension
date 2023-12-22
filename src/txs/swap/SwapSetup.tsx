@@ -79,9 +79,11 @@ const SwapForm = () => {
 
     const fetchRouteAndMsgs = async () => {
       try {
-        setValue("route", await getBestRoute(getValues()))
-        setValue("msgs", await getMsgs(getValues()))
+        const state = getValues()
+        setValue("route", await getBestRoute(state))
+        setValue("msgs", await getMsgs(state))
       } catch (err: any) {
+        console.log('err', err)
         setError(err?.message ?? "Unknown error")
       }
     }
@@ -124,6 +126,7 @@ const SwapForm = () => {
       askAsset.decimals
     ).toFixed(2)}`
     return { offer: offer ?? "—", ask: ask ?? "—" }
+    
   }, [offerAsset, offerInput, askAsset, route, currency])
 
   const sameAssets = !validateAssets({ offerAsset, askAsset })
