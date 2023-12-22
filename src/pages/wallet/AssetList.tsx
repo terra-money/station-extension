@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import styles from "./AssetList.module.scss"
 import { useMemo, useState } from "react"
-import { toInput } from "txs/utils"
 import classNames from "classnames"
 import { encode } from "js-base64"
 import Asset from "./Asset"
@@ -53,15 +52,8 @@ const AssetList = () => {
       )
 
     const visible = filtered
-      .filter(
-        (a) =>
-          a.price * toInput(a.balance) >= 1 || alwaysVisibleDenoms.has(a.denom)
-      )
-      .sort(
-        (a, b) =>
-          b.price * parseInt(b.totalBalance) -
-          a.price * parseInt(a.totalBalance)
-      )
+      .filter((a) => a.totalValue >= 0.1 || alwaysVisibleDenoms.has(a.denom))
+      .sort((a, b) => b.totalValue - a.totalValue)
 
     const lowBal = filtered.filter((a: any) => !visible.includes(a))
 

@@ -121,9 +121,13 @@ export default function GasHelper({
             width={80}
             height={80}
             src={loadingAnimation}
-            alt={t("Loading...")}
+            alt={t("Gas fee top-up loading...")}
           />
-          <p>{t("Loading...")}</p>
+          <p>
+            {t(
+              "Gas fee top-up initiated. Top-up will take ~30s — 1min to complete."
+            )}
+          </p>
         </FlexColumn>
       </section>
     )
@@ -150,7 +154,7 @@ export default function GasHelper({
         <h3 className={styles.title}>{t("Not Enough Gas!")}</h3>
         <p className={styles.description}>
           {t(
-            "You don't have enough {{token}} to complete all the steps in this transaction but we can fix that for you! Please select an available token below to convert for gas fees.",
+            "You don't have enough {{token}} to complete all the steps in this transaction, but we can fix that for you! Please select an available token below to convert for gas fees.",
             { token: readNativeDenom(gasDenom, chainID).symbol }
           )}
         </p>

@@ -75,7 +75,7 @@ const SwapForm = () => {
 
     if (insufficientFunds) setError("Insufficient funds")
     if (sameAssets) setError("Swap assets must be different")
-    if (!has(offerInput) || error) return
+    if (!has(offerInput)) return
 
     const fetchRouteAndMsgs = async () => {
       try {

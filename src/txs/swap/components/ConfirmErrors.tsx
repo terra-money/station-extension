@@ -8,9 +8,7 @@ const Errors = ({ feeDenom }: { feeDenom: string }) => {
   const { t } = useTranslation()
   const { form } = useSwap()
   const { data: balances } = useBalances()
-  const { route, offerAsset, offerInput } = form.watch()
-  const ops = route?.operations.map((op) => Object.keys(op)[0])
-  const hasTransfer = ops?.includes("transfer")
+  const { offerAsset, offerInput } = form.watch()
   const balance = balances?.find((b) => b.denom === offerAsset?.denom)?.amount
   const offerAmount = toAmount(offerInput, { decimals: offerAsset?.decimals })
   const swappingFeeDenom =
@@ -18,14 +16,6 @@ const Errors = ({ feeDenom }: { feeDenom: string }) => {
 
   return (
     <>
-      {hasTransfer && (
-        <Banner
-          title={t(
-            "You are swapping between assets located on different chains - this action requires both a bridge and a swap, which can take longer and result in a higher total transaction cost"
-          )}
-          variant="warning"
-        />
-      )}
       {swappingFeeDenom && (
         <Banner
           title={t(

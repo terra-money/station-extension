@@ -8,37 +8,30 @@ import { AccAddress } from "@terra-money/feather.js"
 import { getWallet } from "auth/scripts/keystore"
 
 const Chain = () => {
-  const { form, goToStep, balances } = useSend()
+  const { form, goToStep } = useSend()
   const { setValue } = form
   const networks = useNetwork()
   const { recipient } = form.watch()
-
-  const availableChains = useMemo(() => {
-    const chainsSet = new Set()
-    balances.map((b) => chainsSet.add(b.chain))
-    return Array.from(chainsSet) as string[]
-  }, [balances])
+  const { words } = getWallet(recipient)
 
   const chains = useMemo(() => {
-    const { words } = getWallet(recipient)
-    return availableChains.map((chain) => {
+    return Object.values(networks).map(({ chainID }) => {
       const address = addressFromWords(
-        words[networks[chain]?.coinType ?? "330"],
-        networks[chain]?.prefix
+        words[networks[chainID]?.coinType ?? "330"],
+        networks[chainID]?.prefix
       )
-      const name = getChainNamefromID(chain, networks) ?? chain
       return {
-        name,
+        name: getChainNamefromID(chainID, networks) ?? chainID,
         onClick: () => {
-          setValue("destination", chain)
+          setValue("destination", chainID)
           setValue("recipient", address)
           goToStep(3)
         },
-        id: chain,
+        id: chainID,
         address,
       }
     })
-  }, [availableChains, networks, recipient, setValue, goToStep])
+  }, [networks, words, setValue, goToStep])
   return (
     <SearchChains
       data={chains.filter((item) => AccAddress.validate(item.address))}

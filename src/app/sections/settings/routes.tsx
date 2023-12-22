@@ -20,11 +20,13 @@ import PreferencesPage, { SettingsPage } from "./PreferencesPage"
 import { getStoredLegacyWallets, lockWallet } from "auth/scripts/keystore"
 import { openURL } from "extension/storage"
 import WalletAddresses from "txs/AddressBook/WalletAddresses"
+import { useNavigate } from "react-router"
 
 export const useSettingsRoutes = () => {
   const { i18n, t } = useTranslation()
   const { id: currencyId } = useCurrency()
   const networkName = useNetworkName()
+  const navigate = useNavigate()
   const existsLegacyWallets = getStoredLegacyWallets().length > 0
 
   const network = {
@@ -52,6 +54,7 @@ export const useSettingsRoutes = () => {
     lockWallet: {
       onClick: () => {
         lockWallet()
+        navigate("/")
         window.location.reload()
       },
       title: t("Lock Wallet"),
