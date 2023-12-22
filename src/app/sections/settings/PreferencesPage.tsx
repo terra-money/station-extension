@@ -5,6 +5,8 @@ import { NavButton, SectionHeader } from "@terra-money/station-ui"
 import { ReactElement } from "react"
 import { useSettingsRoutes } from "./routes"
 import { useNavigate } from "react-router-dom"
+import browser from "webextension-polyfill"
+import style from './PreferencesPage.module.scss'
 
 export interface SettingsPage {
   route?: string
@@ -19,7 +21,6 @@ export interface SettingsPage {
 const PreferencesPage = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-
   const { routes, functions, settings } = useSettingsRoutes()
 
   const SettingsGroup = ({
@@ -42,6 +43,7 @@ const PreferencesPage = () => {
   )
 
   return (
+    <>
     <FlexColumn gap={16}>
       {sandbox && (
         <NavButton
@@ -58,7 +60,9 @@ const PreferencesPage = () => {
       <SettingsGroup settings={functions} />
       <SectionHeader withLine />
       <SettingsGroup settings={settings} />
+      <p className={style.version}>{'Station Wallet v' + browser.runtime?.getManifest?.()?.version}</p>
     </FlexColumn>
+    </>
   )
 }
 
