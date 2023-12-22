@@ -1,5 +1,5 @@
 import { useSend } from "./SendContext"
-import { useNetwork } from "data/wallet"
+import { useAllNetworks } from "data/wallet"
 import { getChainNamefromID } from "data/queries/chains"
 import { SearchChains } from "../ReceivePage"
 import { addressFromWords } from "utils/bech32"
@@ -9,7 +9,7 @@ import { getWallet } from "auth/scripts/keystore"
 const Chain = () => {
   const { form, goToStep } = useSend()
   const { setValue } = form
-  const networks = useNetwork()
+  const networks = useAllNetworks()
   const { recipient } = form.watch()
   const { words } = getWallet(recipient)
 
