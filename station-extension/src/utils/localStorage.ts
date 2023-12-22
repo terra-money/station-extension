@@ -64,7 +64,7 @@ export const DefaultSettings = {
   [SettingKey.CustomTokens]: DefaultCustomTokens as CustomTokens,
   [SettingKey.MinimumValue]: 0,
   [SettingKey.NetworkCacheTime]: 0,
-  [SettingKey.SwapSlippage]: "1",
+  [SettingKey.SwapSlippage]: "0.5",
   [SettingKey.OnlyShowWhitelist]: true,
   [SettingKey.HideLowBalTokens]: true,
   [SettingKey.WithdrawAs]: "",
