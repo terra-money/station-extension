@@ -14,10 +14,10 @@ const Links = () => {
 
   const community = {
     medium: "https://medium.com/terra-money",
-    discord: "https://terra.sc/discord",
-    telegram: "https://t.me/TerraNetworkLobby",
-    twitter: "https://twitter.com/terra_money",
-    github: "https://github.com/terra-money",
+    discord: "https://terra.sc/stationdiscord",
+    telegram: "https://t.me/Station_Wallet",
+    twitter: "https://twitter.com/StationWallet",
+    github: "https://github.com/terra-money/station-wallet",
   }
 
   return (
