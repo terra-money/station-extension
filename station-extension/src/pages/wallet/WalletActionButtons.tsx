@@ -17,6 +17,7 @@ import { useNativeDenoms } from "data/token"
 interface WalletActionButton {
   icon: JSX.Element
   label: string
+  size: "default" | "large" | "small" | undefined
   onClick: () => void
   disabled?: boolean
   primary?: boolean
@@ -51,6 +52,7 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
   const buttons: WalletActionButton[] = [
     {
       icon: <SendIcon />,
+      size: "large",
       primary: true,
       label: t("Send"),
       onClick: () => navigate(`/send/1`, { state: { denom } }),
@@ -58,17 +60,20 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
     },
     {
       icon: <Swap />,
+      size: "large",
       label: t("Swap"),
       onClick: () => navigate(`/swap`, { state: { denom } }),
       hide: networkName !== "mainnet",
     },
     {
       icon: <ReceiveIcon />,
+      size: "large",
       label: t("Receive"),
       onClick: () => navigate(`/receive/${address ?? ""}`),
     },
     {
       icon: <AddIcon />,
+      size: "large",
       label: t("Buy"),
       onClick: () => openModal(),
       disabled: networkName !== "mainnet",
@@ -79,16 +84,19 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
   return (
     <div className={styles.networth__buttons}>
       {buttons.map(
-        ({ icon, label, onClick, disabled, primary, hide }) =>
+        ({ size, icon, label, onClick, disabled, primary, hide }) =>
           !hide && (
             <FlexColumn key={label}>
               <RoundedButton
+                size={size}
                 variant={primary ? "primary" : "secondary"}
                 onClick={onClick}
                 icon={icon}
                 disabled={disabled}
               />
-              <span>{capitalize(label)}</span>
+              <span className={styles.networth__buttons__labels}>
+                {capitalize(label)}
+              </span>
             </FlexColumn>
           )
       )}

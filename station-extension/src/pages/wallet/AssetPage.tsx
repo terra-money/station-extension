@@ -101,7 +101,9 @@ const AssetPage = () => {
     return (
       <section className={styles.details}>
         <span className={styles.token}>
-          <TokenIcon token={token} icon={icon} size={15} />
+          <span className={styles.icon}>
+            <TokenIcon token={token} icon={icon} size={15} />
+          </span>
           <Read decimals={decimals} amount={totalBalance} fixed={2} />
           {symbol}
         </span>

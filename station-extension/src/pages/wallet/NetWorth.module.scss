@@ -2,7 +2,7 @@
 
 .networth {
   @include flex-column;
-  padding: 2rem 1.6rem;
+  padding: 1.6rem 2rem 0.1rem 2rem;
 
   p {
     color: var(--text-muted);
@@ -11,7 +11,7 @@
   }
 
   h1 {
-    font-size: 32px;
+    font-size: 42px;
     line-height: 150%;
     margin-top: 4px;
   }
@@ -21,6 +21,10 @@
 
 .networth__buttons {
   @include flex;
-  margin-top: 10px;
+  margin-top: 3px;
   width: 100%;
+}
+
+.networth__buttons__labels {
+  padding-top: 4px;
 }
