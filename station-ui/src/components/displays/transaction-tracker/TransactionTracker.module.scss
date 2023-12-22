@@ -70,17 +70,10 @@
     color: var(--token-light-100);
 
     .label {
+      display: flex;
       width: 5px;
-
-      &.middle {
-        display: flex;
-        justify-content: center;
-      }
-
-      &.last {
-        display: flex;
-        justify-content: flex-end;
-      }
+      flex-wrap: nowrap;
+      width: auto;
 
       &.completed {
         color: var(--token-light-white);

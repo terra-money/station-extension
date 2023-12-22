@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Station Wallet",
-  "version": "7.5.0.20231217",
-  "version_name": "7.5.0.20231217-alpha-preview",
+  "version": "7.5.0.4",
+  "version_name": "7.5.0.4-alpha-preview",
   "background": {
     "service_worker": "background.js"
   },

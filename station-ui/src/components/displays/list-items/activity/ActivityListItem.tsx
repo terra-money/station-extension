@@ -3,6 +3,7 @@ import classNames from "classnames/bind"
 import { LoadingIcon, AlertIcon, SmallCircleCheckIcon } from "components"
 import Pill from "components/general/pill/Pill"
 import styles from "./ActivityListItem.module.scss"
+import { ChainImage } from "../token/utils"
 
 const cx = classNames.bind(styles)
 
@@ -46,9 +47,9 @@ const ActivityListItem = ({
       <div className={cx(styles.activity__li, { has__timeline: hasTimeline })}>
         <div className={styles.activity__icon__container}>
           {hasTimeline ? <span className={styles.dashed__line} /> : null}
-          <img
-            src={chain.icon}
-            alt={chain.label}
+          <ChainImage
+            chainImg={chain.icon}
+            chainName={chain.label}
             className={styles.activity__icon}
           />
           {variant && (

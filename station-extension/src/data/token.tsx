@@ -16,6 +16,7 @@ import { useBankBalance } from "./queries/bank"
 import { useWhitelist } from "./queries/chains"
 import { ReactNode, useMemo } from "react"
 import { ASSETS } from "config/constants"
+import { toInput } from "txs/utils"
 
 export const DEFAULT_NATIVE_DECIMALS = 6
 
@@ -358,6 +359,8 @@ export const useParsedAssetList = () => {
           acc[symbol].totalBalance = `${
             parseInt(acc[symbol].totalBalance) + parseInt(amount)
           }`
+          acc[symbol].totalValue = acc[symbol].totalValue +=
+            toInput(amount, decimals) * tokenPrice
           acc[symbol].tokenChainInfo.push(chainTokenItem)
           return acc
         } else {
@@ -368,6 +371,7 @@ export const useParsedAssetList = () => {
               denom: token,
               decimals: decimals,
               totalBalance: amount,
+              totalValue: tokenPrice * toInput(amount, decimals),
               icon: tokenIcon,
               symbol: symbol,
               price: tokenPrice,
