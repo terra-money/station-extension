@@ -9,6 +9,8 @@
 
   background-color: var(--token-dark-300);
 
+  overflow: scroll;
+
   .main__container {
     grid-area: main;
     top: var(--header-height);
@@ -16,13 +18,15 @@
 
   .tabs__container {
     grid-area: tabs;
+    position: sticky;
+    top: 0;
     background-color: var(--token-dark-500);
+    z-index: 1001;
   }
 
   .list__container {
     grid-area: list;
     position: relative;
-    overflow: scroll;
     padding: 0 12px;
   }
 }
