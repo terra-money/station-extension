@@ -1,4 +1,3 @@
-import { useMemo } from "react"
 import { useSend } from "./SendContext"
 import { useNetwork } from "data/wallet"
 import { getChainNamefromID } from "data/queries/chains"
@@ -14,12 +13,11 @@ const Chain = () => {
   const { recipient } = form.watch()
   const { words } = getWallet(recipient)
 
-  const chains = useMemo(() => {
-    return Object.values(networks).map(({chainID}) => {
-      const address = addressFromWords(
-        words[networks[chainID]?.coinType ?? "330"],
-        networks[chainID]?.prefix
-      )
+  const chains = Object.values(networks)
+    .filter(({ coinType }) => !!words[coinType])
+    .map(({ chainID, prefix, coinType }) => {
+      const address = addressFromWords(words[coinType], prefix)
+
       return {
         name: getChainNamefromID(chainID, networks) ?? chainID,
         onClick: () => {
@@ -31,7 +29,7 @@ const Chain = () => {
         address,
       }
     })
-  }, [networks, words, setValue, goToStep])
+
   return (
     <SearchChains
       data={chains.filter((item) => AccAddress.validate(item.address))}
