@@ -23,7 +23,6 @@ import AssetFormExtra from "./components/AssetFormExtra"
 import { toAmount } from "@terra-money/terra-utils"
 import { validateAssets } from "./SwapConfirm"
 import Footer from "./components/Footer"
-import { warn } from "console"
 
 enum SwapAssetType {
   ASK = "askAsset",
