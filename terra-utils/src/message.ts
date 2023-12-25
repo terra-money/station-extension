@@ -43,104 +43,128 @@ export const getCanonicalMsg = (
       ? (msg as any)["@type"]
       : (JSON.stringify(msg).match(typePattern) || [])[1] || null
 
+    // Declare logic to extract message. Used inside the extractMsg utility function
+    // to fail gracefully if error occurs.
+    let extractMsgFn
+
     switch (msgType) {
       /* ---------------------------------- Send ---------------------------------- */
 
       case "/cosmos.bank.v1beta1.MsgSend":
-        const sendMessageData = getSendMessage(msg, userAddresses)
-        returnMsgs.push(sendMessageData)
+        extractMsgFn = (msg: any) => {
+          const sendMessageData = getSendMessage(msg, userAddresses)
+          returnMsgs.push(sendMessageData)
+        }
+        extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
         break
 
       /* ----------------------- Withdraw Delegation Reward ----------------------- */
 
       case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward":
-        const rewardsMsgsData = getRewardMsgs(msgEvents)
-        returnMsgs.push(...rewardsMsgsData)
+        extractMsgFn = (msg: any) => {
+          const rewardsMsgsData = getRewardMsgs(msgEvents)
+          returnMsgs.push(...rewardsMsgsData)
+        }
+        extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
         break
 
       /* -------------------------------- Delegate -------------------------------- */
 
       case "/cosmos.staking.v1beta1.MsgDelegate":
-        const {
-          amount: { denom: delegatedDenom, amount: delegatedAmount },
-          validator_address: delegateValidator,
-        } = msg as any
+        extractMsgFn = (msg: any) => {
+          const {
+            amount: { denom: delegatedDenom, amount: delegatedAmount },
+            validator_address: delegateValidator,
+          } = msg as any
 
-        const trueDelegatedDenom = getTrueDenom(delegatedDenom)
-        const delegatedAsset = `${delegatedAmount}${trueDelegatedDenom}`
+          const trueDelegatedDenom = getTrueDenom(delegatedDenom)
+          const delegatedAsset = `${delegatedAmount}${trueDelegatedDenom}`
 
-        returnMsgs.push({
-          msgType: "Delegate",
-          canonicalMsg: [`Delegated ${delegatedAsset} to ${delegateValidator}`],
-          outAssets: [delegatedAsset],
-        })
+          returnMsgs.push({
+            msgType: "Delegate",
+            canonicalMsg: [
+              `Delegated ${delegatedAsset} to ${delegateValidator}`,
+            ],
+            outAssets: [delegatedAsset],
+          })
+        }
+        extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
         break
 
       /* -------------------------------- Transfer -------------------------------- */
 
       case "/ibc.applications.transfer.v1.MsgTransfer":
-        const {
-          token: { denom: ibcDenom, amount: ibcAmount },
-          receiver,
-        } = msg as any
+        extractMsgFn = (msg: any) => {
+          const {
+            token: { denom: ibcDenom, amount: ibcAmount },
+            receiver,
+          } = msg as any
 
-        const trueIBCDenom = getTrueDenom(ibcDenom)
-        const transferAsset = `${ibcAmount}${trueIBCDenom}`
+          const trueIBCDenom = getTrueDenom(ibcDenom)
+          const transferAsset = `${ibcAmount}${trueIBCDenom}`
 
-        returnMsgs.push({
-          msgType: "Send",
-          canonicalMsg: [
-            `Initiated IBC transfer of ${transferAsset} to ${receiver}`,
-          ],
-          outAssets: [transferAsset],
-        })
+          returnMsgs.push({
+            msgType: "Send",
+            canonicalMsg: [
+              `Initiated IBC transfer of ${transferAsset} to ${receiver}`,
+            ],
+            outAssets: [transferAsset],
+          })
+        }
+        extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
         break
 
       /* ------------------------------- Undelegate ------------------------------- */
 
       case "/cosmos.staking.v1beta1.MsgUndelegate":
-        const {
-          amount: { denom: undelegateDenom, amount: undelegateAmount },
-          validator_address: undelegateValidator,
-        } = msg as any
+        extractMsgFn = (msg: any) => {
+          const {
+            amount: { denom: undelegateDenom, amount: undelegateAmount },
+            validator_address: undelegateValidator,
+          } = msg as any
 
-        const trueUndelegateDenom = getTrueDenom(undelegateDenom)
-        const undelegatedAsset = `${undelegateAmount}${trueUndelegateDenom}`
+          const trueUndelegateDenom = getTrueDenom(undelegateDenom)
+          const undelegatedAsset = `${undelegateAmount}${trueUndelegateDenom}`
 
-        returnMsgs.push({
-          msgType: "Undelegate",
-          canonicalMsg: [
-            `Undelegated ${undelegatedAsset} from ${undelegateValidator}`,
-          ],
-          inAssets: [undelegatedAsset],
-        })
+          returnMsgs.push({
+            msgType: "Undelegate",
+            canonicalMsg: [
+              `Undelegated ${undelegatedAsset} from ${undelegateValidator}`,
+            ],
+            inAssets: [undelegatedAsset],
+          })
 
-        // Get any related rewards messages associated with undelegation.
-        const undelegateRewardsData = getRewardMsgs(msgEvents)
-        returnMsgs.push(...undelegateRewardsData)
+          // Get any related rewards messages associated with undelegation.
+          const undelegateRewardsData = getRewardMsgs(msgEvents)
+          returnMsgs.push(...undelegateRewardsData)
+        }
+        extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
         break
 
       /* ------------------------------- Redelegate ------------------------------- */
 
       case "/cosmos.staking.v1beta1.MsgBeginRedelegate":
-        const {
-          amount: { denom: redelegateDenom, amount: redelegateAmount },
-          validator_src_address: sourceVal,
-          validator_dst_address: destVal,
-        } = msg as any
+        extractMsgFn = (msg: any) => {
+          const {
+            amount: { denom: redelegateDenom, amount: redelegateAmount },
+            validator_src_address: sourceVal,
+            validator_dst_address: destVal,
+          } = msg as any
 
-        const trueRedelegateDenom = getTrueDenom(redelegateDenom)
+          const trueRedelegateDenom = getTrueDenom(redelegateDenom)
 
-        returnMsgs.push({
-          msgType: "Redelegate",
-          canonicalMsg: [
-            `Redelegated ${redelegateAmount}${trueRedelegateDenom} from ${sourceVal} to ${destVal}`,
-          ],
-        })
+          returnMsgs.push({
+            msgType: "Redelegate",
+            canonicalMsg: [
+              `Redelegated ${redelegateAmount}${trueRedelegateDenom} from ${sourceVal} to ${destVal}`,
+            ],
+          })
 
-        // Get any related rewards messages associated with redelegation.
-        const redelegateRewardsData = getRewardMsgs(msgEvents)
-        returnMsgs.push(...redelegateRewardsData)
+          // Get any related rewards messages associated with redelegation.
+          const redelegateRewardsData = getRewardMsgs(msgEvents)
+          returnMsgs.push(...redelegateRewardsData)
+        }
+        extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
         break
 
       /* ----------------------------- Proposal Voting ---------------------------- */
@@ -148,171 +172,181 @@ export const getCanonicalMsg = (
       case "/cosmos.gov.v1beta1.MsgVote" ||
         "/cosmos.gov.v1.MsgVote" ||
         "/cosmos.gov.v1beta1.MsgVoteWeighted":
-        const voteOptions: { [key: string]: any } = {
-          VOTE_OPTION_YES: "Yes",
-          VOTE_OPTION_ABSTAIN: "Abstain",
-          VOTE_OPTION_NO: "No",
-          VOTE_OPTION_NO_WITH_VETO: "No With Veto",
+        extractMsgFn = (msg: any) => {
+          const voteOptions: { [key: string]: any } = {
+            VOTE_OPTION_YES: "Yes",
+            VOTE_OPTION_ABSTAIN: "Abstain",
+            VOTE_OPTION_NO: "No",
+            VOTE_OPTION_NO_WITH_VETO: "No With Veto",
+          }
+
+          const { option, proposal_id } = msg as any
+
+          returnMsgs.push({
+            msgType: "Vote",
+            canonicalMsg: [
+              `Voted ${voteOptions[option]} on proposal:${proposal_id}`,
+            ],
+          })
         }
-
-        const { option, proposal_id } = msg as any
-
-        returnMsgs.push({
-          msgType: "Vote",
-          canonicalMsg: [
-            `Voted ${voteOptions[option]} on proposal:${proposal_id}`,
-          ],
-        })
+        extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
         break
 
       /* ---------------------------- Execute Contract ---------------------------- */
 
       case "/cosmwasm.wasm.v1.MsgExecuteContract":
-        const contractName = getContractName(msg, swapContractAddresses)
+        extractMsgFn = (msg: any) => {
+          const contractName = getContractName(msg, swapContractAddresses)
 
-        const swapsInfo = getEventInfo(msgEvents, "swap")
-        if (swapsInfo.length) {
-          /* -------------------------------- Swap -------------------------------- */
+          const swapsInfo = getEventInfo(msgEvents, "swap")
+          if (swapsInfo.length) {
+            /* -------------------------------- Swap -------------------------------- */
 
-          const swapMessageData = getSwapMessage(swapsInfo, contractName)
-          returnMsgs.push(swapMessageData)
-        } else if ((msg as any)?.msg?.provide_liquidity) {
-          /* -------------------------- Provide Liquidity ------------------------- */
+            const swapMessageData = getSwapMessage(swapsInfo, contractName)
+            returnMsgs.push(swapMessageData)
+          } else if ((msg as any)?.msg?.provide_liquidity) {
+            /* -------------------------- Provide Liquidity ------------------------- */
 
-          const liquidityInfo = getEventInfo(msgEvents, "provide_liquidity")
+            const liquidityInfo = getEventInfo(msgEvents, "provide_liquidity")
 
-          for (const liquidityTx of liquidityInfo) {
-            const { assets, contractAddress } = liquidityTx
+            for (const liquidityTx of liquidityInfo) {
+              const { assets, contractAddress } = liquidityTx
 
-            const providedAssetsText = formatAssetsText(assets)
-
-            returnMsgs.push({
-              msgType: "Provide Liquidity",
-              canonicalMsg: [
-                `Provided ${providedAssetsText} of liquidity to ${contractAddress}`,
-              ],
-              outAssets: providedAssetsText.split(/[,\s]+(?:and\s)?/),
-            })
-          }
-        } else if (
-          (msg as any)?.msg?.withdraw &&
-          (msg as any).msg.withdraw.lp_token
-        ) {
-          /* -------------------------- Unstake LP Token -------------------------- */
-
-          const transferInfo = getEventInfo(msgEvents, "transfer")
-          const unstakeLPInfo = getEventInfo(msgEvents, "withdraw")
-          const rewardsUnstakeLPInfo = getEventInfo(msgEvents, "claim")
-
-          const unstakeLPMsg = generateUnstakeLPMsg(
-            unstakeLPInfo,
-            rewardsUnstakeLPInfo,
-            transferInfo,
-            userAddresses
-          )
-
-          if (unstakeLPMsg) {
-            returnMsgs.push({
-              msgType: "Undelegate",
-              canonicalMsg: [unstakeLPMsg],
-            })
-          }
-        } else if ((msg as any)?.msg?.claim_rewards) {
-          const claimedRewards = getEventInfo(msgEvents, "claim_rewards")
-          
-          if (claimedRewards?.[0]?.rewardAsset) {
-            /* ---------------------- Withdraw Alliance Rewards --------------------- */
-
-            for (const claimedReward of claimedRewards) {
-              const { rewardAmount, rewardAsset, withdrawFromAddress } =
-                claimedReward
-
-              const splitAsset = rewardAsset.split(":")
-              const trueRewardAsset = splitAsset[splitAsset.length - 1]
-              const allianceRewardAsset = `${rewardAmount}${trueRewardAsset}`
+              const providedAssetsText = formatAssetsText(assets)
 
               returnMsgs.push({
-                msgType: "Reward Withdrawal",
+                msgType: "Provide Liquidity",
                 canonicalMsg: [
-                  `Withdrew ${allianceRewardAsset} staking rewards from ${withdrawFromAddress}`,
+                  `Provided ${providedAssetsText} of liquidity to ${contractAddress}`,
                 ],
-                inAssets: [allianceRewardAsset],
+                outAssets: providedAssetsText.split(/[,\s]+(?:and\s)?/),
               })
             }
-          }
-        } else if ((msg as any)?.msg?.send) {
-          const msgData = Buffer.from(
-            (msg as any).msg.send.msg,
-            "base64"
-          ).toString()
-          const submitMsgData = JSON.parse(msgData)
+          } else if (
+            (msg as any)?.msg?.withdraw &&
+            (msg as any).msg.withdraw.lp_token
+          ) {
+            /* -------------------------- Unstake LP Token -------------------------- */
 
-          if (submitMsgData.deposit) {
-            /* -------------------------- Stake LP Token -------------------------- */
+            const transferInfo = getEventInfo(msgEvents, "transfer")
+            const unstakeLPInfo = getEventInfo(msgEvents, "withdraw")
+            const rewardsUnstakeLPInfo = getEventInfo(msgEvents, "claim")
 
-            const { amount: LPTokenAmount, contract: stakingContract } = (
-              msg as any
-            )?.msg?.send
-
-            const LPTokenContract = contractName
-
-            returnMsgs.push({
-              msgType: "Deposit",
-              canonicalMsg: [
-                `Deposited ${LPTokenAmount}${LPTokenContract} to ${stakingContract}`,
-              ],
-            })
-          } else if (submitMsgData.withdraw_liquidity) {
-            /* ------------------------ Withdraw Liquidity ------------------------ */
-
-            const withdrawLiquidityInfo = getEventInfo(
-              msgEvents,
-              "withdraw_liquidity"
+            const unstakeLPMsg = generateUnstakeLPMsg(
+              unstakeLPInfo,
+              rewardsUnstakeLPInfo,
+              transferInfo,
+              userAddresses
             )
 
-            for (const withdrawLiquidityTx of withdrawLiquidityInfo) {
-              const { refundAssets } = withdrawLiquidityTx
-
-              const withdrawnAssetsText = formatAssetsText(refundAssets)
-
+            if (unstakeLPMsg) {
               returnMsgs.push({
-                msgType: "Withdraw Liquidity",
-                canonicalMsg: [
-                  `Withdrew ${withdrawnAssetsText} of liquidity from ${contractName}`,
-                ],
-                outAssets: withdrawnAssetsText.split(/[,\s]+(?:and\s)?/),
+                msgType: "Undelegate",
+                canonicalMsg: [unstakeLPMsg],
               })
             }
-          }
-        } else {
-          /* ------------------------- Contract Execution ------------------------- */
+          } else if ((msg as any)?.msg?.claim_rewards) {
+            const claimedRewards = getEventInfo(msgEvents, "claim_rewards")
 
-          for (const executable of Object.keys((msg as any).msg)) {
-            if (!["increase_allowance"].includes(executable))
+            if (claimedRewards?.[0]?.rewardAsset) {
+              /* ---------------------- Withdraw Alliance Rewards --------------------- */
+
+              for (const claimedReward of claimedRewards) {
+                const { rewardAmount, rewardAsset, withdrawFromAddress } =
+                  claimedReward
+
+                const splitAsset = rewardAsset.split(":")
+                const trueRewardAsset = splitAsset[splitAsset.length - 1]
+                const allianceRewardAsset = `${rewardAmount}${trueRewardAsset}`
+
+                returnMsgs.push({
+                  msgType: "Reward Withdrawal",
+                  canonicalMsg: [
+                    `Withdrew ${allianceRewardAsset} staking rewards from ${withdrawFromAddress}`,
+                  ],
+                  inAssets: [allianceRewardAsset],
+                })
+              }
+            }
+          } else if ((msg as any)?.msg?.send) {
+            const msgData = Buffer.from(
+              (msg as any).msg.send.msg,
+              "base64"
+            ).toString()
+            const submitMsgData = JSON.parse(msgData)
+
+            if (submitMsgData.deposit) {
+              /* -------------------------- Stake LP Token -------------------------- */
+
+              const { amount: LPTokenAmount, contract: stakingContract } = (
+                msg as any
+              )?.msg?.send
+
+              const LPTokenContract = contractName
+
               returnMsgs.push({
-                msgType: "Execute",
-                canonicalMsg: [`Executed ${executable} on ${contractName}`],
+                msgType: "Deposit",
+                canonicalMsg: [
+                  `Deposited ${LPTokenAmount}${LPTokenContract} to ${stakingContract}`,
+                ],
               })
+            } else if (submitMsgData.withdraw_liquidity) {
+              /* ------------------------ Withdraw Liquidity ------------------------ */
+
+              const withdrawLiquidityInfo = getEventInfo(
+                msgEvents,
+                "withdraw_liquidity"
+              )
+
+              for (const withdrawLiquidityTx of withdrawLiquidityInfo) {
+                const { refundAssets } = withdrawLiquidityTx
+
+                const withdrawnAssetsText = formatAssetsText(refundAssets)
+
+                returnMsgs.push({
+                  msgType: "Withdraw Liquidity",
+                  canonicalMsg: [
+                    `Withdrew ${withdrawnAssetsText} of liquidity from ${contractName}`,
+                  ],
+                  outAssets: withdrawnAssetsText.split(/[,\s]+(?:and\s)?/),
+                })
+              }
+            }
+          } else {
+            /* ------------------------- Contract Execution ------------------------- */
+
+            for (const executable of Object.keys((msg as any).msg)) {
+              if (!["increase_allowance"].includes(executable))
+                returnMsgs.push({
+                  msgType: "Execute",
+                  canonicalMsg: [`Executed ${executable} on ${contractName}`],
+                })
+            }
           }
         }
+        extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
         break
 
       /* ----------------------------- Receive Packet ----------------------------- */
 
       case "/ibc.core.channel.v1.MsgRecvPacket":
-        const { amount, denom, sender } = JSON.parse(
-          Buffer.from((msg as any).packet.data, "base64").toString()
-        )
+        extractMsgFn = (msg: any) => {
+          const { amount, denom, sender } = JSON.parse(
+            Buffer.from((msg as any).packet.data, "base64").toString()
+          )
 
-        const trueDenom = getTrueDenom(denom)
-        const receiveIBCAmount = `${amount}${trueDenom}`
+          const trueDenom = getTrueDenom(denom)
+          const receiveIBCAmount = `${amount}${trueDenom}`
 
-        returnMsgs.push({
-          msgType: "Send",
-          canonicalMsg: [`Received ${receiveIBCAmount} from ${sender} via IBC`],
-          inAssets: [receiveIBCAmount],
-        })
-
+          returnMsgs.push({
+            msgType: "Send",
+            canonicalMsg: [
+              `Received ${receiveIBCAmount} from ${sender} via IBC`,
+            ],
+            inAssets: [receiveIBCAmount],
+          })
+        }
+        extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
         break
 
       /* ------------------------- Irrelevant Transactions ------------------------ */
@@ -338,6 +372,32 @@ export const getCanonicalMsg = (
 /* -------------------------------------------------------------------------- */
 /*                              Utility Functions                             */
 /* -------------------------------------------------------------------------- */
+
+/**
+ * Attempts to extract and add canonical message utilizing the specified extractMsgFunction.
+ * If the attempt fails, it will log information about the message that it failed to parse.
+ *
+ * @param {Function} extractMsgFn Function containing logic to extract canonical message.
+ * @param {object} msg Object which contains message information.
+ * @param {string} msgType String that specifies the type of the current message.
+ * @param {string} txHash String corresponding to the tx hash of the transaction.
+ */
+const extractMsg = (
+  extractMsgFn: Function,
+  msg: any,
+  msgType: string,
+  txHash: string
+) => {
+  try {
+    extractMsgFn(msg)
+  } catch (error) {
+    console.log(`
+Failed to parse message:
+Type: ${msgType}
+Hash: ${txHash}
+    `)
+  }
+}
 
 /**
  * Extracts relevant event-specific data based on user specified event type.
@@ -477,7 +537,7 @@ const getRewardMsgs = (msgEvents: Event[]) => {
  *
  * @param {any[]} swapsInfo Array of objects containing information on swaps.
  * @param {string} swapPlatform Name of or contract address belonging to the platform used to carry out swap.
- * @return {Object} Object containing relevant swap message data.
+ * @return {object} Object containing relevant swap message data.
  */
 const getSwapMessage = (swapsInfo: any[], swapPlatform: string) => {
   // Extract original swap token and the requested return token.
