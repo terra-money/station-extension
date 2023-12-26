@@ -3,13 +3,14 @@ import { CoinBalance, useBankBalance } from "data/queries/bank"
 import { useNavigate, useParams } from "react-router-dom"
 import { useExchangeRates } from "data/queries/coingecko"
 import WalletActionButtons from "./WalletActionButtons"
+import { SectionHeader } from "@terra-money/station-ui"
 import { Read, TokenIcon } from "components/token"
 import { useTranslation } from "react-i18next"
 import styles from "./AssetPage.module.scss"
-import { SectionHeader } from "@terra-money/station-ui"
+import { decode, encode } from "js-base64"
+import { useChainID } from "data/wallet"
 import VestingCard from "./VestingCard"
 import AssetChain from "./AssetChain"
-import { decode } from "js-base64"
 import { useMemo } from "react"
 
 const AssetPage = () => {
@@ -123,6 +124,7 @@ const AssetPage = () => {
   }
 
   const VestingSection = () => {
+    const chainID = useChainID()
     if (token === "uluna" && symbol !== "LUNC") {
       return (
         <>
@@ -133,7 +135,9 @@ const AssetPage = () => {
           />
           <div
             className={styles.vesting}
-            onClick={() => navigate(`/asset/${token}/vesting`)}
+            onClick={() =>
+              navigate(`/asset/${chainID}/${encode(token)}/vesting`)
+            }
           >
             <VestingCard />
           </div>
