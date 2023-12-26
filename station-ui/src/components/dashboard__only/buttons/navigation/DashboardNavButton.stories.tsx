@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import NavButton, { NavButtonProps } from './NavButton';
+import DashboardNavButton, { DashboardNavButtonProps } from './DashboardNavButton';
 import { SwapArrowsIcon } from 'assets';
 
 const meta: Meta = {
   title: 'Dashboard/Buttons/Navigation/NavButton',
-  component: NavButton,
+  component: DashboardNavButton,
   argTypes: {
     label: {
       control: 'text',
@@ -27,13 +27,13 @@ const meta: Meta = {
 
 export default meta;
 
-interface NavButtonStoryObj extends NavButtonProps {
+interface NavButtonStoryObj extends DashboardNavButtonProps {
   displayIcon: boolean
 }
 
 export const Playground: StoryObj<NavButtonStoryObj> = {
   render: ({ label, icon, displayIcon }: NavButtonStoryObj) =>
-    <NavButton
+    <DashboardNavButton
       label={label}
       icon={displayIcon && icon}
     />,
@@ -52,7 +52,7 @@ export const Playground: StoryObj<NavButtonStoryObj> = {
 
 export const Default: StoryObj<NavButtonStoryObj> = {
   render: ({ label, icon }: NavButtonStoryObj) =>
-    <NavButton
+    <DashboardNavButton
       label={label}
       icon={icon}
       active={false}
@@ -76,7 +76,7 @@ export const Default: StoryObj<NavButtonStoryObj> = {
 
 export const ActiveState: StoryObj<NavButtonStoryObj> = {
   render: ({ label, icon }: NavButtonStoryObj) =>
-    <NavButton
+    <DashboardNavButton
       label={label}
       icon={icon}
       active={true}
@@ -100,7 +100,7 @@ export const ActiveState: StoryObj<NavButtonStoryObj> = {
 
 export const SmallSVG: StoryObj<NavButtonStoryObj> = {
   render: ({ label, icon }: NavButtonStoryObj) =>
-    <NavButton
+    <DashboardNavButton
       label={label}
       icon={icon}
       active={false}
@@ -125,7 +125,7 @@ export const SmallSVG: StoryObj<NavButtonStoryObj> = {
 
 export const IconOnly: StoryObj<NavButtonStoryObj> = {
   render: ({ icon }: NavButtonStoryObj) =>
-    <NavButton
+    <DashboardNavButton
       icon={icon}
     />,
   args: {
@@ -146,7 +146,7 @@ export const IconOnly: StoryObj<NavButtonStoryObj> = {
 
 export const WithIndicator: StoryObj<NavButtonStoryObj> = {
   render: ({ icon, label }: NavButtonStoryObj) =>
-    <NavButton
+    <DashboardNavButton
       icon={icon}
       label={label}
       withIndicator={true}
@@ -170,7 +170,7 @@ export const WithIndicator: StoryObj<NavButtonStoryObj> = {
 
 export const ActiveWithIndicator: StoryObj<NavButtonStoryObj> = {
   render: ({ icon, label }: NavButtonStoryObj) =>
-    <NavButton
+    <DashboardNavButton
       icon={icon}
       label={label}
       withIndicator={true}

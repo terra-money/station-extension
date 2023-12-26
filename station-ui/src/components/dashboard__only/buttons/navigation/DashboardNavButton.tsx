@@ -1,9 +1,9 @@
 import classNames from "classnames/bind"
-import styles from "./NavButton.module.scss"
+import styles from "./DashboardNavButton.module.scss"
 
 const cx = classNames.bind(styles)
 
-export interface NavButtonProps
+export interface DashboardNavButtonProps
   extends React.HTMLAttributes<HTMLButtonElement> {
   label?: string
   icon?: React.ReactNode
@@ -13,7 +13,7 @@ export interface NavButtonProps
   withIndicator?: boolean
 }
 
-const NavButton = ({
+const DashboardNavButton = ({
   label,
   icon,
   disabled,
@@ -21,7 +21,7 @@ const NavButton = ({
   small,
   withIndicator,
   ...rest
-}: NavButtonProps) => {
+}: DashboardNavButtonProps) => {
   return (
     <button
       {...rest}
@@ -37,4 +37,4 @@ const NavButton = ({
   )
 }
 
-export default NavButton
+export default DashboardNavButton

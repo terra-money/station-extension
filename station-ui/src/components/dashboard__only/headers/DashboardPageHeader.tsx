@@ -1,19 +1,19 @@
 import { ReactNode } from "react"
 import styles from "./PageHeader.module.scss"
 
-export interface PageHeaderProps {
+export interface DashboardPageHeaderProps {
   pageIcon: ReactNode
   title: string
   subtitle?: string
   secondaryNode?: ReactNode
 }
 
-const PageHeader = ({
+const DashboardPageHeader = ({
   pageIcon,
   title,
   subtitle,
   secondaryNode,
-}: PageHeaderProps) => {
+}: DashboardPageHeaderProps) => {
   return (
     <div className={styles.page__header}>
       <div className={styles.left__side}>
@@ -33,4 +33,4 @@ const PageHeader = ({
   )
 }
 
-export default PageHeader
+export default DashboardPageHeader

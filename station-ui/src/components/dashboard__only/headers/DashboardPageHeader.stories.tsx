@@ -1,27 +1,27 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import PageHeader, { PageHeaderProps } from './PageHeader';
+import DashboardPageHeader, { DashboardPageHeaderProps } from './DashboardPageHeader';
 import { ActivityIcon, DashboardIcon, GovernanceIcon, SearchIcon, SettingsIcon, StakeIcon, SwapArrowsIcon } from 'assets';
 import { Button, ButtonInlineWrapper, Flex, Input } from 'components';
 
 const meta: Meta = {
   title: 'Dashboard/Headers/PageHeader/Stories',
-  component: PageHeader,
+  component: DashboardPageHeader,
 } as Meta;
 
 export default meta;
 
-export const Horizontal: StoryObj<PageHeaderProps> = {
+export const Horizontal: StoryObj<DashboardPageHeaderProps> = {
   render: () =>
-    <PageHeader
+    <DashboardPageHeader
       pageIcon={<DashboardIcon fill="var(--token-dark-900)" />}
       title="Portfolio"
       subtitle="Overview of your wallet"
     />,
 };
 
-export const Portfolio: StoryObj<PageHeaderProps> = {
+export const Portfolio: StoryObj<DashboardPageHeaderProps> = {
   render: () =>
-    <PageHeader
+    <DashboardPageHeader
       pageIcon={<DashboardIcon fill="var(--token-dark-900)" />}
       title="Portfolio"
       subtitle="Overview of your wallet"
@@ -39,18 +39,18 @@ export const Portfolio: StoryObj<PageHeaderProps> = {
     />,
 };
 
-export const Settings: StoryObj<PageHeaderProps> = {
+export const Settings: StoryObj<DashboardPageHeaderProps> = {
   render: () =>
-    <PageHeader
+    <DashboardPageHeader
       pageIcon={<SettingsIcon fill="var(--token-dark-900)" />}
       title="Settings"
       subtitle="Set your preferences"
     />,
 };
 
-export const Contracts: StoryObj<PageHeaderProps> = {
+export const Contracts: StoryObj<DashboardPageHeaderProps> = {
   render: () =>
-    <PageHeader
+    <DashboardPageHeader
       pageIcon={<ActivityIcon fill="var(--token-dark-900)" />}
       title="Contracts"
       subtitle="Interface with the Terra blockchain"
@@ -63,18 +63,18 @@ export const Contracts: StoryObj<PageHeaderProps> = {
     />,
 };
 
-export const Swap: StoryObj<PageHeaderProps> = {
+export const Swap: StoryObj<DashboardPageHeaderProps> = {
   render: () =>
-    <PageHeader
+    <DashboardPageHeader
       pageIcon={<SwapArrowsIcon fill="var(--token-dark-900)" />}
       title="Swap"
       subtitle="Swap your tokens on any chain"
     />,
 };
 
-export const Activity: StoryObj<PageHeaderProps> = {
+export const Activity: StoryObj<DashboardPageHeaderProps> = {
   render: () =>
-    <PageHeader
+    <DashboardPageHeader
       pageIcon={<ActivityIcon fill="var(--token-dark-900)" />}
       title="Activity"
       subtitle="Check your wallet activity"
@@ -92,9 +92,9 @@ export const Activity: StoryObj<PageHeaderProps> = {
     />,
 };
 
-export const Stake: StoryObj<PageHeaderProps> = {
+export const Stake: StoryObj<DashboardPageHeaderProps> = {
   render: () =>
-    <PageHeader
+    <DashboardPageHeader
       pageIcon={<StakeIcon fill="var(--token-dark-900)" />}
       title="Stake"
       subtitle="Stake your assets to earn rewards"
@@ -115,9 +115,9 @@ export const Stake: StoryObj<PageHeaderProps> = {
     />,
 };
 
-export const Governance: StoryObj<PageHeaderProps> = {
+export const Governance: StoryObj<DashboardPageHeaderProps> = {
   render: () =>
-    <PageHeader
+    <DashboardPageHeader
       pageIcon={<GovernanceIcon fill="var(--token-dark-900)" />}
       title="Governance"
       subtitle="Vote on and review proposals"
@@ -138,9 +138,9 @@ export const Governance: StoryObj<PageHeaderProps> = {
     />,
 };
 
-export const Proposal: StoryObj<PageHeaderProps> = {
+export const Proposal: StoryObj<DashboardPageHeaderProps> = {
   render: () =>
-    <PageHeader
+    <DashboardPageHeader
       pageIcon={<GovernanceIcon fill="var(--token-dark-900)" />}
       title="Proposal"
       subtitle="Voting Proposal"
