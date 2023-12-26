@@ -1,12 +1,14 @@
-import { Route, Routes } from "react-router-dom"
-import AssetPage from "./AssetPage"
-import ReceivePage from "./ReceivePage"
-import AddressChain from "pages/wallet/AddressChain"
-import WalletMain from "./WalletMain"
-import { useTranslation } from "react-i18next"
 import ExtensionPage from "extension/components/ExtensionPage"
 import VestingDetailsPage from "./VestingDetailsPage"
+import AddressChain from "pages/wallet/AddressChain"
+import { Route, Routes } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import { useChainID } from "data/wallet"
+import ReceivePage from "./ReceivePage"
 import SendTx from "./SendPage/SendTx"
+import WalletMain from "./WalletMain"
+import AssetPage from "./AssetPage"
+import { encode } from "js-base64"
 
 interface IRoute {
   path: string
@@ -17,6 +19,8 @@ interface IRoute {
 
 export const useWalletRoutes = (): IRoute[] => {
   const { t } = useTranslation()
+  const chainID = useChainID()
+
   return [
     {
       path: "/",
@@ -45,9 +49,9 @@ export const useWalletRoutes = (): IRoute[] => {
       title: t("Asset"),
     },
     {
-      path: "/asset/uluna/vesting",
+      path: `/asset/${chainID}/${encode("uluna")}/vesting`,
       element: <VestingDetailsPage />,
-      backPath: "asset/uluna",
+      backPath: `/asset/${chainID}/${encode("uluna")}`,
       title: t("Vesting Details"),
     },
   ]

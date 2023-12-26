@@ -1,16 +1,17 @@
-import { useMemo } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import { decode } from "js-base64"
-import { useTranslation } from "react-i18next"
-import { SectionHeader } from "@terra-money/station-ui"
 import { useNativeDenoms, useUnknownIBCDenoms } from "data/token"
 import { CoinBalance, useBankBalance } from "data/queries/bank"
+import { useNavigate, useParams } from "react-router-dom"
 import { useExchangeRates } from "data/queries/coingecko"
-import { Read, TokenIcon } from "components/token"
 import WalletActionButtons from "./WalletActionButtons"
+import { SectionHeader } from "@terra-money/station-ui"
+import { Read, TokenIcon } from "components/token"
+import { useTranslation } from "react-i18next"
+import styles from "./AssetPage.module.scss"
+import { decode, encode } from "js-base64"
+import { useChainID } from "data/wallet"
 import VestingCard from "./VestingCard"
 import AssetChain from "./AssetChain"
-import styles from "./AssetPage.module.scss"
+import { useMemo } from "react"
 
 const AssetPage = () => {
   const { data: prices } = useExchangeRates()
@@ -106,7 +107,12 @@ const AssetPage = () => {
               <TokenIcon token={token} icon={icon} size={12} />
             </span>
             <span className={styles.token__amount}>
-              <Read decimals={decimals} amount={totalBalance} fixed={2} denom={symbol} />
+              <Read
+                decimals={decimals}
+                amount={totalBalance}
+                fixed={2}
+                denom={symbol}
+              />
             </span>
           </span>
           <h1>
@@ -129,6 +135,7 @@ const AssetPage = () => {
   }
 
   const VestingSection = () => {
+    const chainID = useChainID()
     if (token === "uluna" && symbol !== "LUNC") {
       return (
         <div className={styles.chainlist}>
@@ -139,7 +146,9 @@ const AssetPage = () => {
           />
           <div
             className={styles.vesting}
-            onClick={() => navigate(`/asset/${token}/vesting`)}
+            onClick={() =>
+              navigate(`/asset/${chainID}/${encode(token)}/vesting`)
+            }
           >
             <VestingCard />
           </div>

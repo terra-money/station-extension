@@ -54,7 +54,9 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
 
   const buttons: WalletActionButton[] = [
     {
-      icon: <SendArrowIcon width={16} height={16} fill="var(--token-light-white)" />,
+      icon: (
+        <SendArrowIcon width={16} height={16} fill="var(--token-light-white)" />
+      ),
       size: "default",
       primary: true,
       label: t("Send"),
@@ -62,14 +64,22 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
       disabled: sendButtonDisabled,
     },
     {
-      icon: <SwapArrowsIcon width={16} height={16} fill="var(--token-light-white)" />,
+      icon: (
+        <SwapArrowsIcon
+          width={16}
+          height={16}
+          fill="var(--token-light-white)"
+        />
+      ),
       size: "default",
       label: t("Swap"),
       onClick: () => navigate(`/swap`, { state: { denom } }),
       hide: networkName !== "mainnet",
     },
     {
-      icon: <ReceiveIcon width={16} height={16} fill="var(--token-light-white)" />,
+      icon: (
+        <ReceiveIcon width={16} height={16} fill="var(--token-light-white)" />
+      ),
       size: "default",
       label: t("Receive"),
       onClick: () => navigate(`/receive/${address ?? ""}`),

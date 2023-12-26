@@ -36,6 +36,7 @@ const SlippagePage = () => {
       <InputWrapper>
         <Input placeholder={slippage} {...register("slippage")} emoji="%" />
       </InputWrapper>
+
       <ButtonInlineWrapper>
         <Button
           label={t("Cancel")}
