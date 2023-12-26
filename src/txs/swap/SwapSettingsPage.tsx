@@ -7,6 +7,7 @@ import {
   ButtonInlineWrapper,
   Form,
   SubmitButton,
+  Banner
 } from "@terra-money/station-ui"
 import { useSwap } from "./SwapContext"
 import { useForm } from "react-hook-form"
@@ -36,6 +37,7 @@ const SlippagePage = () => {
       <InputWrapper>
         <Input placeholder={slippage} {...register("slippage")} emoji="%" />
       </InputWrapper>
+
       <ButtonInlineWrapper>
         <Button
           label={t("Cancel")}
