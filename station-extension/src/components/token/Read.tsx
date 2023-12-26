@@ -1,3 +1,6 @@
+import { ForwardedRef, forwardRef, Fragment } from "react"
+import BigNumber from "bignumber.js"
+import classNames from "classnames/bind"
 import {
   FormatConfig,
   formatPercent,
@@ -5,12 +8,9 @@ import {
   truncate,
 } from "@terra-money/terra-utils"
 import { useNativeDenoms, WithTokenItem } from "data/token"
-import { ForwardedRef, forwardRef, Fragment } from "react"
 import { useCurrency } from "data/settings/Currency"
 import { AccAddress } from "@terra-money/feather.js"
-import classNames from "classnames/bind"
 import styles from "./Read.module.scss"
-import BigNumber from "bignumber.js"
 
 const cx = classNames.bind(styles)
 
@@ -23,11 +23,12 @@ interface Props extends Partial<FormatConfig> {
   approx?: boolean
   block?: boolean
   className?: string
+  decimalColorSecondary?: boolean
 }
 
 const Read = forwardRef(
   (
-    { amount, denom, approx, block, comma = false, ...props }: Props,
+    { amount, denom, approx, block, comma = false, decimalColorSecondary, ...props }: Props,
     ref: ForwardedRef<HTMLSpanElement>
   ) => {
     const currency = useCurrency()
@@ -62,7 +63,7 @@ const Read = forwardRef(
       const formattedDecimalValue =
         decimalValue.match(/^(\.\d{2,}?)0*?$/)?.[1] || decimalValue
       return (
-        <span className={cx({ small: !props?.prefix })}>
+        <span className={cx({ [styles.grey__decimal]: decimalColorSecondary })}>
           {formattedDecimalValue}
         </span>
       )
@@ -73,7 +74,7 @@ const Read = forwardRef(
       if (!token) return null
 
       return (
-        <span className={styles.small}>
+        <span className={styles.symbol}>
           {" "}
           <WithTokenItem token={token}>
             {({ symbol }) =>
