@@ -1,18 +1,21 @@
-// import { ReactComponent as ReceiveIcon } from "styles/images/icons/Receive_v2.svg"
-// import { ReactComponent as SendIcon } from "styles/images/icons/Send_v2.svg"
-// import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
+import { useMemo } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import { capitalize } from "@mui/material"
+import {
+  BuyIcon,
+  FlexColumn,
+  ReceiveIcon,
+  RoundedButton,
+  SendArrowIcon,
+  SwapArrowsIcon
+} from "@terra-money/station-ui"
 import { useNetworkName, useNetwork, useChainID } from "data/wallet"
 import { useIsWalletEmpty } from "data/queries/bank"
-import { useKado } from "pages/wallet/Buy"
-import { useTranslation } from "react-i18next"
-import styles from "./NetWorth.module.scss"
-import { capitalize } from "@mui/material"
-import { useMemo } from "react"
-import { BuyIcon, FlexColumn, ReceiveIcon, RoundedButton, SendArrowIcon, SwapArrowsIcon } from "@terra-money/station-ui"
-import { ReactComponent as Swap } from "styles/images/icons/Swap.svg"
-import { useLocation, useNavigate } from "react-router-dom"
-import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useNativeDenoms } from "data/token"
+import { useKado } from "pages/wallet/Buy"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
+import styles from "./NetWorth.module.scss"
 
 interface WalletActionButton {
   icon: JSX.Element
