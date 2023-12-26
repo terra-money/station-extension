@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import MobilePageHeader, { MobilePageHeaderProps } from './MobilePageHeader';
-import { ActivityIcon, DashboardIcon, GovernanceIcon, SearchIcon, SettingsIcon, StakeIcon, SwapArrowsIcon } from 'assets';
-import { Button, ButtonInlineWrapper, Flex, Input } from 'components';
+import { DashboardIcon, SearchIcon } from 'assets';
+import { Input } from 'components';
 
 const meta: Meta = {
   title: 'Dashboard/Headers/Mobile/PageHeader/Stories',
