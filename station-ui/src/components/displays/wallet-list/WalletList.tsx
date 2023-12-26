@@ -42,7 +42,7 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
       {!!otherWallets.length && (
         <div className={styles.other__wallets}>
           {activeWallet && <SectionHeader title="Other Wallets" indented />}
-          {otherWallets.map((wallet) => (
+          {otherWallets.map((wallet, i) => (
             <WalletSelectableListItem
               label={wallet.name}
               walletName={wallet.name}
@@ -50,6 +50,7 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
               subLabel={truncate(wallet.address)}
               onClick={wallet.onClick}
               settingsOnClick={wallet.settingsOnClick}
+              key={i}
             />
           ))}
         </div>
