@@ -8,8 +8,14 @@ import { useTranslation } from "react-i18next"
 import styles from "./NetWorth.module.scss"
 import { capitalize } from "@mui/material"
 import { useMemo } from "react"
-import { BuyIcon, FlexColumn, ReceiveIcon, RoundedButton, SendArrowIcon, SwapArrowsIcon } from "@terra-money/station-ui"
-import { ReactComponent as Swap } from "styles/images/icons/Swap.svg"
+import {
+  BuyIcon,
+  FlexColumn,
+  ReceiveIcon,
+  RoundedButton,
+  SendArrowIcon,
+  SwapArrowsIcon,
+} from "@terra-money/station-ui"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useNativeDenoms } from "data/token"
@@ -51,7 +57,9 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
 
   const buttons: WalletActionButton[] = [
     {
-      icon: <SendArrowIcon width={16} height={16} fill="var(--token-light-white)" />,
+      icon: (
+        <SendArrowIcon width={16} height={16} fill="var(--token-light-white)" />
+      ),
       size: "default",
       primary: true,
       label: t("Send"),
@@ -59,14 +67,22 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
       disabled: sendButtonDisabled,
     },
     {
-      icon: <SwapArrowsIcon width={16} height={16} fill="var(--token-light-white)" />,
+      icon: (
+        <SwapArrowsIcon
+          width={16}
+          height={16}
+          fill="var(--token-light-white)"
+        />
+      ),
       size: "default",
       label: t("Swap"),
       onClick: () => navigate(`/swap`, { state: { denom } }),
       hide: networkName !== "mainnet",
     },
     {
-      icon: <ReceiveIcon width={16} height={16} fill="var(--token-light-white)" />,
+      icon: (
+        <ReceiveIcon width={16} height={16} fill="var(--token-light-white)" />
+      ),
       size: "default",
       label: t("Receive"),
       onClick: () => navigate(`/receive/${address ?? ""}`),
