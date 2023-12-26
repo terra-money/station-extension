@@ -1,6 +1,6 @@
-import { ReactComponent as ReceiveIcon } from "styles/images/icons/Receive_v2.svg"
-import { ReactComponent as SendIcon } from "styles/images/icons/Send_v2.svg"
-import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
+// import { ReactComponent as ReceiveIcon } from "styles/images/icons/Receive_v2.svg"
+// import { ReactComponent as SendIcon } from "styles/images/icons/Send_v2.svg"
+// import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
 import { useNetworkName, useNetwork, useChainID } from "data/wallet"
 import { useIsWalletEmpty } from "data/queries/bank"
 import { useKado } from "pages/wallet/Buy"
@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next"
 import styles from "./NetWorth.module.scss"
 import { capitalize } from "@mui/material"
 import { useMemo } from "react"
-import { FlexColumn, RoundedButton } from "@terra-money/station-ui"
+import { BuyIcon, FlexColumn, ReceiveIcon, RoundedButton, SendArrowIcon, SwapArrowsIcon } from "@terra-money/station-ui"
 import { ReactComponent as Swap } from "styles/images/icons/Swap.svg"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
@@ -51,29 +51,29 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
 
   const buttons: WalletActionButton[] = [
     {
-      icon: <SendIcon />,
-      size: "large",
+      icon: <SendArrowIcon width={16} height={16} fill="var(--token-light-white)" />,
+      size: "default",
       primary: true,
       label: t("Send"),
       onClick: () => navigate(`/send/1`, { state: { denom } }),
       disabled: sendButtonDisabled,
     },
     {
-      icon: <Swap />,
-      size: "large",
+      icon: <SwapArrowsIcon width={16} height={16} fill="var(--token-light-white)" />,
+      size: "default",
       label: t("Swap"),
       onClick: () => navigate(`/swap`, { state: { denom } }),
       hide: networkName !== "mainnet",
     },
     {
-      icon: <ReceiveIcon />,
-      size: "large",
+      icon: <ReceiveIcon width={16} height={16} fill="var(--token-light-white)" />,
+      size: "default",
       label: t("Receive"),
       onClick: () => navigate(`/receive/${address ?? ""}`),
     },
     {
-      icon: <AddIcon />,
-      size: "large",
+      icon: <BuyIcon width={16} height={16} fill="var(--token-light-white)" />,
+      size: "default",
       label: t("Buy"),
       onClick: () => openModal(),
       disabled: networkName !== "mainnet",
@@ -86,7 +86,7 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
       {buttons.map(
         ({ size, icon, label, onClick, disabled, primary, hide }) =>
           !hide && (
-            <FlexColumn key={label}>
+            <FlexColumn key={label} gap={8}>
               <RoundedButton
                 size={size}
                 variant={primary ? "primary" : "secondary"}

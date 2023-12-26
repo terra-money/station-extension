@@ -1,30 +1,29 @@
 @import "mixins";
+@import "font_mixins";
 
 .networth {
   @include flex-column;
-  padding: 1.6rem 2rem 0.1rem 2rem;
+  gap: 24px;
+  padding: 24px 24px 8px 24px;
+  background-color: var(--token-dark-500);
 
   p {
-    color: var(--text-muted);
-    font-size: 14px;
-    line-height: 140%;
+    @include X-Small;
+    color: var(--token-light-100);
   }
 
   h1 {
-    font-size: 42px;
-    line-height: 150%;
-    margin-top: 4px;
+    @include X-Large;
+    color: var(--token-light-white);
   }
-
-  background-color: var(--token-dark-500);
 }
 
 .networth__buttons {
   @include flex;
-  margin-top: 3px;
-  width: 100%;
+  gap: 4px;
+  width: 308px;
 }
 
 .networth__buttons__labels {
-  padding-top: 4px;
+  @include X-Small;
 }
