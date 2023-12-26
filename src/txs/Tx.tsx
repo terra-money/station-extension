@@ -178,7 +178,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
       const gasPrice = chain?.startsWith("carbon-")
         ? carbonFees?.prices[denom]
         : chain?.startsWith("osmosis")
-        ? (osmosisGas?.base_fee || 0.0025) * 10
+        ? (osmosisGas || 0.0025) * 10
         : networks[chain]?.gasPrices[denom]
 
       if (isNil(estimatedGas) || !gasPrice) return "0"
@@ -188,7 +188,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
         .integerValue(BigNumber.ROUND_CEIL)
         .toString()
     },
-    [chain, carbonFees?.prices, osmosisGas?.base_fee, networks, estimatedGas]
+    [chain, carbonFees?.prices, osmosisGas, networks, estimatedGas]
   )
 
   const gasAmount = getGasAmount(gasDenom)
@@ -353,7 +353,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
   const renderFee = (descriptions?: Contents) => {
     if (!estimatedGas) return null
-
     return (
       <Details>
         <dl>
@@ -388,7 +387,9 @@ function Tx<TxValues>(props: Props<TxValues>) {
           <dd>
             {gasFee.amount && (
               <Read
-                decimals={decimals}
+                decimals={
+                  gasDenom ? readNativeDenom(gasDenom).decimals : decimals
+                }
                 {...gasFee}
                 denom={
                   gasFee.denom === token

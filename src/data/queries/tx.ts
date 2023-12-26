@@ -15,6 +15,10 @@ interface LatestTx {
   onSuccess?: () => void
 }
 
+interface OsmosisGasResponse {
+  base_fee: string
+}
+
 export const latestTxState = atom<LatestTx>({
   key: "latestTx",
   default: { txhash: "", chainID: "" },
@@ -57,15 +61,22 @@ export const useOsmosisGas = () => {
   return useQuery(
     [queryKey.tx.osmosisGas],
     async () => {
-      const { data } = await axios.get(
-        "osmosis/txfees/v1beta1/cur_eip_base_fee",
-        {
-          baseURL: networks["mainnet"]["osmosis-1"].lcd, // hard set for now.
-        }
-      )
-      return data
+      try {
+        const { data } = await axios.get<OsmosisGasResponse>(
+          "osmosis/txfees/v1beta1/cur_eip_base_fee",
+          {
+            baseURL: networks["mainnet"]["osmosis-1"].lcd, // hard set for now.
+          }
+        )
+        return Number(data.base_fee)
+      } catch (e) {
+        return 0.0025
+      }
     },
-    { ...RefetchOptions.INFINITY }
+    {
+      ...RefetchOptions.INFINITY,
+      staleTime: 60 * 1000, // cache data for 1 min
+    }
   )
 }
 
