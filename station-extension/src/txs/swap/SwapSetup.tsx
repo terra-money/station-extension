@@ -31,18 +31,19 @@ enum SwapAssetType {
 
 const SwapForm = () => {
   // Hooks
-  const { tokens, getTokensWithBal, getBestRoute, form, getMsgs } = useSwap()
+  const { tokens, getTokensWithBal, getBestRoute, form, getMsgs, slippage } =
+    useSwap()
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { state } = useLocation()
   const currency = useCurrency()
-  const [error, setError] = useState<string | undefined>()
-
   // State
   const { watch, getValues, setValue, register } = form
   const [assetModal, setAssetModal] = useState<SwapAssetType | undefined>()
   const [displayTokens, setDisplayTokens] = useState<SwapAssetExtra[]>([])
   const { offerAsset, askAsset, offerInput, route } = watch()
+  const [error, setError] = useState<string | undefined>()
+  const [warning, setWarning] = useState<string | undefined>()
 
   const offerAssetAmount = useMemo(
     () => toAmount(offerInput, { decimals: offerAsset.decimals }),
@@ -71,10 +72,15 @@ const SwapForm = () => {
 
   useEffect(() => {
     setError(undefined)
+    setWarning(undefined)
     setValue("route", undefined) // for loading purposees
 
     if (insufficientFunds) setError("Insufficient funds")
     if (sameAssets) setError("Swap assets must be different")
+    if (Number(slippage) >= 1)
+      setWarning(
+        "Your transaction may be frontrun and result in an unfavorable trade."
+      )
     if (!has(offerInput)) return
 
     const fetchRouteAndMsgs = async () => {
@@ -170,6 +176,7 @@ const SwapForm = () => {
         </Grid>
         <Footer />
         {error && <Banner title={t(error)} variant="error" />}
+        {warning && <Banner title={t(warning)} variant="warning" />}
       </Grid>
       <Button
         variant="primary"
