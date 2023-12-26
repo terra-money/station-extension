@@ -68,7 +68,6 @@ const SwapContext = ({ children }: PropsWithChildren<{}>) => {
   }
 
   const render = () => {
-    if (!askAsset || !parsed) return null
     const value = {
       tokens: parsed,
       getTokensWithBal,
@@ -81,10 +80,14 @@ const SwapContext = ({ children }: PropsWithChildren<{}>) => {
     return <SwapProvider value={value}>{children}</SwapProvider>
   }
 
-  return !state.isSuccess ? (
-    <SwapLoadingPage />
-  ) : (
-    <Fetching {...state}>{render()}</Fetching>
+  return (
+    <Fetching {...state}>
+      {!state.isSuccess || !askAsset || !parsed ? (
+        <SwapLoadingPage />
+      ) : (
+        render()
+      )}
+    </Fetching>
   )
 }
 
