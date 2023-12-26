@@ -55,7 +55,14 @@ const AssetList = () => {
       .filter((a) => a.totalValue >= 0.1 || alwaysVisibleDenoms.has(a.denom))
       .sort((a, b) => b.totalValue - a.totalValue)
 
-    const lowBal = filtered.filter((a: any) => !visible.includes(a))
+    const lowBal = filtered
+      .filter((a: any) => !visible.includes(a))
+      .sort((a, b) => {
+        const normalizedAmountA = a.totalBalance / 10 ** a.decimals
+        const normalizedAmountB = b.totalBalance / 10 ** b.decimals
+
+        return normalizedAmountB - normalizedAmountA
+      })
 
     return { visible, lowBal }
   }, [list, onlyShowWhitelist, alwaysVisibleDenoms, search])
