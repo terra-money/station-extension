@@ -1,19 +1,24 @@
-import { SectionHeader, Button, Banner, Input } from "@terra-money/station-ui"
+import { useMemo, useState } from "react"
+import classNames from "classnames"
+import { encode } from "js-base64"
+import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
+import {
+  SectionHeader,
+  Button,
+  Banner,
+  Input,
+  FilterIcon
+} from "@terra-money/station-ui"
 import {
   useCustomTokensCW20,
   useCustomTokensNative,
 } from "data/settings/CustomTokens"
 import { useParsedAssetList } from "data/token"
-import FilterListIcon from "@mui/icons-material/FilterList"
 import { useIsWalletEmpty } from "data/queries/bank"
 import { useTokenFilters } from "utils/localStorage"
-import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
-import styles from "./AssetList.module.scss"
-import { useMemo, useState } from "react"
-import classNames from "classnames"
-import { encode } from "js-base64"
 import Asset from "./Asset"
+import styles from "./AssetList.module.scss"
 
 const cx = classNames.bind(styles)
 
@@ -84,7 +89,7 @@ const AssetList = () => {
     if (!assets) return
 
     return (
-      <section>
+      <section className={styles.asset__section}>
         {isWalletEmpty && (
           <Banner
             variant="error"
@@ -123,8 +128,11 @@ const AssetList = () => {
     <article className={styles.assetlist}>
       <div className={styles.assetlist__title}>
         <SectionHeader title={t("Assets")} />
-        <FilterListIcon
-          className={cx(styles.filter, { [styles.inactive]: !showFilter })}
+        <FilterIcon
+          className={cx(styles.filter, { [styles.active]: showFilter })}
+          fill={"var(--token-dark-900)"}
+          width={16}
+          height={16}
           onClick={toggleFilter}
         />
       </div>
