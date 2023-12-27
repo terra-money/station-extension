@@ -12,7 +12,8 @@ import { useLocation } from "react-router-dom"
 
 const WalletMain = () => {
   const { hash } = useLocation()
-  const [tab, setTab] = useState(hash === "1" ? 1 : 0)
+  console.log({ hash })
+  const [tab, setTab] = useState(hash === "#1" ? 1 : 0)
   const { ibcTxs, clearCompletedTxs } = useIbcTxs()
   const { t } = useTranslation()
 
