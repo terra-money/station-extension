@@ -25,7 +25,7 @@
 
   span {
     display: flex;
-    @include Medium;
+    @include Small;
     color: var(--token-light-white);
 
     img {
@@ -72,7 +72,7 @@
       display: flex;
       align-items: center;
       width: 100%;
-      padding: 20px 18px;
+      padding: 18px;
       background-color: var(--token-dark-200);
       border-radius: 8px 8px 0px 0px;
       border-bottom: 1px solid var(--token-dark-700);
@@ -81,7 +81,7 @@
         background-color: transparent;
 
         &::placeholder {
-          @include Medium;
+          @include Small;
           color: var(--token-dark-900);
         }
       }
@@ -94,7 +94,7 @@
     max-height: 200px;
 
     &.notChildren {
-      padding: 8px;
+      padding: 6px;
     }
 
     .children {
@@ -125,7 +125,7 @@
 
   button {
     padding: 8px 12px;
-    margin: 2px 0px;
+    margin: 1px 0px;
     width: 100%;
     transition: all .25s;
 
@@ -141,11 +141,41 @@
       display: flex;
       align-items: center;
       gap: 8px;
+
+      .checkbox__container {
+        display: flex;
+
+        svg {
+          height: 16px;
+          width: 16px;
+        }
+
+        .track {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          border: solid 2px var(--token-dark-900);
+          border-radius: 50%;
+          width: 16px;
+          height: 16px;
+        }
+      }
+
+      .checkbox__image__wrapper {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      span {
+        @include Small;
+      }
     }
 
     img {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
     }
 
     &:hover {

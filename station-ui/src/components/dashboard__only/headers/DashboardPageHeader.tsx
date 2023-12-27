@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import styles from "./PageHeader.module.scss"
+import styles from "./DashboardPageHeader.module.scss"
 
 export interface DashboardPageHeaderProps {
   pageIcon: ReactNode
