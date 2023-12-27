@@ -1,10 +1,9 @@
 import { RefetchOptions, combineState, queryKey } from "data/query"
-import { Account } from "@terra-money/feather.js"
-import createContext from "utils/createContext"
 import { isTerraChain } from "utils/chain"
 import { useNetwork } from "data/wallet"
-import { useQueries } from "react-query"
+import { useQueries, useQuery } from "react-query"
 import axios from "axios"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
 
 interface PaginationKeys {
   limit: string
@@ -34,17 +33,11 @@ function getPaginationKeys(isTerra: boolean): PaginationKeys {
   }
 }
 
-export type InterchainAccountInfo = Record<string, Account>
-
-export const [useInterchainAccountInfo, AccountInfoProvider] =
-  createContext<InterchainAccountInfo[]>("useAccountInfo")
-
-export const useInitialAccountInfo = (
-  addresses: Record<string, string> | undefined
-) => {
+export const useTxActivity = () => {
   const networks = useNetwork()
+  const addresses = useInterchainAddresses()
 
-  // const LIMIT = 100
+  const LIMIT = 100
   const EVENTS = [
     // any tx signed by the user
     "message.sender",
@@ -67,6 +60,7 @@ export const useInitialAccountInfo = (
           const hashArray: string[] = []
 
           if (!networks?.[chainID]?.lcd) {
+            console.log({ chainID })
             return result
           }
 
@@ -81,7 +75,7 @@ export const useInitialAccountInfo = (
                       //order_by: "ORDER_BY_DESC",
                       [paginationKeys.offset]: 0 || undefined,
                       [paginationKeys.reverse]: isTerra ? 2 : true,
-                      // [paginationKeys.limit]: LIMIT,
+                      [paginationKeys.limit]: LIMIT,
                     },
                   })
                 } catch (e) {
@@ -100,15 +94,12 @@ export const useInitialAccountInfo = (
             })
           }
 
-          return (
-            result
-              .sort((a, b) => Number(b.height) - Number(a.height))
-              // .slice(0, LIMIT)
-              .map((tx) => ({ ...tx, chain: chainID }))
-          )
+          return result
+            .sort((a, b) => Number(b.height) - Number(a.height))
+            .slice(0, LIMIT)
+            .map((tx) => ({ ...tx, chain: chainID }))
         },
-        // Data will never become stale and always stay in cache
-        ...RefetchOptions.INFINITY,
+        ...RefetchOptions.DEFAULT,
       }
     })
   )
@@ -121,7 +112,25 @@ export const useInitialAccountInfo = (
       (a, b) =>
         new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     )
-  // .slice(0, LIMIT)
-
+    .slice(0, LIMIT)
   return { activitySorted, state }
+}
+
+export const useTxInfo = (txhash: string, chainID: string) => {
+  const networks = useNetwork()
+
+  return useQuery(
+    [queryKey.tx.txInfo, txhash, chainID],
+    async () => {
+      const { data } = await axios.get(`/cosmos/tx/v1beta1/txs/${txhash}`, {
+        baseURL: networks[chainID]?.lcd,
+      })
+
+      return data.tx_response as AccountHistoryItem
+    },
+    {
+      ...RefetchOptions.INFINITY,
+      enabled: !!networks[chainID]?.lcd,
+    }
+  )
 }

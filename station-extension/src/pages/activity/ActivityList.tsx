@@ -1,19 +1,48 @@
+import { useState } from "react"
 import {
   LoadingCircular,
   SectionHeader,
   SubmitButton,
 } from "@terra-money/station-ui"
-import { useInitialAccountInfo } from "data/queries/accountInfo"
-import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { useTxActivity, useTxInfo } from "data/queries/activity"
 import styles from "./ActivityList.module.scss"
 import ActivityItem from "./ActivityItem"
 import { Page } from "components/layout"
-import React, { useState } from "react"
 import moment from "moment"
+import useIbcTxs, { IbcTxState } from "txs/useIbcTxs"
+import { useTranslation } from "react-i18next"
+
+interface IbcActivityItemProps {
+  chainID: string
+  txhash: string
+  state: IbcTxState
+  index: number
+}
+
+const IbcActivityItem = ({
+  txhash,
+  chainID,
+  state,
+  index,
+}: IbcActivityItemProps) => {
+  const { data } = useTxInfo(txhash, chainID)
+  const { t } = useTranslation()
+  return data ? (
+    <ActivityItem
+      {...data}
+      chain={chainID}
+      dateHeader={index === 0 ? <SectionHeader title={t("Pending")} /> : null}
+      variant={state}
+      showProgress
+    />
+  ) : (
+    <></>
+  )
+}
 
 const ActivityList = () => {
-  const addresses = useInterchainAddresses()
-  const { activitySorted: activity, state } = useInitialAccountInfo(addresses)
+  const { ibcTxs } = useIbcTxs()
+  const { activitySorted: activity, state } = useTxActivity()
 
   const activityItemsPerPage = 20
   const [visibleActivity, setVisibleActivity] = useState(activityItemsPerPage)
@@ -24,12 +53,17 @@ const ActivityList = () => {
 
   let priorDisplayDate = ""
   const visibleActivityItems = activity
+    // do not show pending txs in the main activity page
+    .filter(
+      ({ txhash }) =>
+        !ibcTxs.find(({ txhash: ibcTxhash }) => ibcTxhash === txhash)
+    )
     .slice(0, visibleActivity)
     .map((activityItem: AccountHistoryItem & { chain: string }) => {
       const activityItemDate = new Date(activityItem.timestamp)
       const displayDate = getDisplayDate(activityItemDate)
       let header = null
-      if (displayDate !== priorDisplayDate) {
+      if (!priorDisplayDate || displayDate !== priorDisplayDate) {
         priorDisplayDate = displayDate
         header = <SectionHeader title={displayDate} />
       }
@@ -73,11 +107,14 @@ const ActivityList = () => {
   }
 
   const render = () => {
-    if (addresses && !activity) return null
+    if (!activity) return null
 
     return (
       <div className={styles.activitylist}>
         {loader}
+        {ibcTxs.map((data, i) => (
+          <IbcActivityItem {...data} key={data.txhash} index={i} />
+        ))}
         {visibleActivityItems}
         {loadMoreButton}
       </div>

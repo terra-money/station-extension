@@ -47,6 +47,8 @@ import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
 import { openURL } from "extension/storage"
 import DisplayFees from "./feeAbstraction/DisplayFees"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
+import useIbcTxs from "./useIbcTxs"
+import { useNavigate } from "react-router-dom"
 
 const cx = classNames.bind(styles)
 
@@ -73,6 +75,7 @@ interface Props<TxValues> {
   onChangeMax?: (input: number) => void
 
   /* on tx success */
+  isIbc?: boolean
   onPost?: () => void
   hideLoader?: boolean
   onSuccess?: () => void
@@ -99,7 +102,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
     props
   const { estimationTxValues, createTx, gasAdjustment: txGasAdjustment } = props
   const { children, onChangeMax } = props
-  const { onPost, redirectAfterTx, queryKeys, onSuccess } = props
+  const { onPost, redirectAfterTx, queryKeys, onSuccess, isIbc } = props
 
   const [isMax, setIsMax] = useState(false)
   const [gasDenom, setGasDenom] = useState<string>("")
@@ -114,6 +117,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const setLatestTx = useSetRecoilState(latestTxState)
   const isBroadcasting = useRecoilValue(isBroadcastingState)
   const { data: carbonFees } = useCarbonFees()
+  const { trackIbcTx } = useIbcTxs()
 
   /* taxes */
   const isClassic = networks[chain]?.isClassic
@@ -245,6 +249,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const [showPasswordInput, setShowPasswordInput] = useState(false)
   const [incorrect, setIncorrect] = useState<string>()
   const [feesReady, setFeesReady] = useState(false)
+  const navigate = useNavigate()
 
   // autofill stored password if exists
   useEffect(() => {
@@ -300,12 +305,21 @@ function Tx<TxValues>(props: Props<TxValues>) {
         return
       } else if (wallet) {
         const result = await auth.post({ ...tx, fee }, password)
+
         !hideLoader &&
           setLatestTx({
             txhash: result.txhash,
             queryKeys,
-            onSuccess,
-            redirectAfterTx,
+            onSuccess: isIbc
+              ? () => {
+                  navigate("/#1")
+                  trackIbcTx(result.txhash, tx.chainID)
+                  onSuccess?.()
+                }
+              : onSuccess,
+            redirectAfterTx: isIbc
+              ? { label: t("Done!"), path: "/#1" }
+              : redirectAfterTx,
             chainID: chain,
           })
       }

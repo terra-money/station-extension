@@ -223,10 +223,11 @@ const Confirm = () => {
     createTx,
     onSuccess: () => {
       addRecipient({ recipient, name: getWalletName(recipient ?? "") })
-      navigate("/")
+      navigate(destination !== chain ? "/#1" : "/")
     },
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     gasAdjustment: destination !== chain ? 2 : 1,
+    isIbc: destination !== chain,
   }
 
   return (

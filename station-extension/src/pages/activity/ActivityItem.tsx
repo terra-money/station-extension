@@ -1,5 +1,9 @@
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { ActivityListItem, ModalButton } from "@terra-money/station-ui"
+import {
+  ActivityListItem,
+  ModalButton,
+  TransactionTracker,
+} from "@terra-money/station-ui"
 import ActivityDetailsPage from "./ActivityDetailsPage"
 import { getCanonicalMsg } from "@terra-money/terra-utils"
 import ActivityMessage from "./ActivityMessage"
@@ -8,14 +12,24 @@ import { useTranslation } from "react-i18next"
 import { useNetwork } from "data/wallet"
 import { toNow } from "utils/date"
 import { last } from "ramda"
+import { useState } from "react"
+import useInterval from "utils/hooks/useInterval"
+import { intervalToDuration } from "date-fns"
 
 const ActivityItem = ({
   txhash,
   timestamp,
   chain,
   dateHeader,
+  variant,
+  showProgress,
   ...props
-}: AccountHistoryItem & { chain: string; dateHeader: JSX.Element | null }) => {
+}: AccountHistoryItem & {
+  chain: string
+  dateHeader: JSX.Element | null
+  variant?: "success" | "failed" | "loading"
+  showProgress?: boolean
+}) => {
   const {
     code,
     tx: {
@@ -25,7 +39,8 @@ const ActivityItem = ({
     },
   } = props
   const success = code === 0
-  const activityVariant = success ? "success" : "failed"
+  const activityVariant = variant || (success ? "success" : "failed")
+  const timer = useTimer(new Date(timestamp).getTime(), variant === "loading")
   const { t } = useTranslation()
   const network = useNetwork()
   const addresses = useInterchainAddresses() || {}
@@ -74,9 +89,31 @@ const ActivityItem = ({
               }}
               msg={activityMessages[0]}
               type={t(activityType)}
-              time={t(toNow(new Date(timestamp)))}
+              time={showProgress ? undefined : t(toNow(new Date(timestamp)))}
               msgCount={activityMessages.slice(1).length}
             />
+            {showProgress && (
+              <div className={styles.transaction__progress}>
+                <TransactionTracker
+                  steps={[
+                    "completed",
+                    activityVariant === "loading"
+                      ? "incomplete"
+                      : activityVariant === "success"
+                      ? "completed"
+                      : activityVariant,
+                  ]}
+                  stepLabels={["Tx Initiated", "Tx Completed"]}
+                />
+                <p className={styles.transaction__timer}>
+                  {variant === "loading"
+                    ? timer
+                    : activityVariant === "success"
+                    ? t("Done!")
+                    : t("Error")}
+                </p>
+              </div>
+            )}
           </div>
         )}
       >
@@ -96,3 +133,14 @@ const ActivityItem = ({
 }
 
 export default ActivityItem
+
+/* helper */
+const useTimer = (startTime: number, run: boolean) => {
+  const start = new Date(startTime)
+  const [now, setNow] = useState(new Date())
+
+  useInterval(() => setNow(new Date()), run ? 1000 : null)
+
+  const { minutes, seconds } = intervalToDuration({ start, end: now })
+  return [minutes, seconds].map((str) => String(str).padStart(2, "0")).join(":")
+}
