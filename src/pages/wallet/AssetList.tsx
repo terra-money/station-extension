@@ -5,10 +5,10 @@ import {
   Input,
   FilterIcon,
 } from "@terra-money/station-ui"
-import {
-  useCustomTokensCW20,
-  useCustomTokensNative,
-} from "data/settings/CustomTokens"
+// import {
+//   useCustomTokensCW20,
+//   useCustomTokensNative,
+// } from "data/settings/CustomTokens"
 import { useIsWalletEmpty } from "data/queries/bank"
 import { useTokenFilters } from "utils/localStorage"
 import { useParsedAssetList } from "data/token"
@@ -26,8 +26,8 @@ const AssetList = () => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
   const { onlyShowWhitelist, hideLowBal, toggleHideLowBal } = useTokenFilters()
-  const native = useCustomTokensNative()
-  const cw20 = useCustomTokensCW20()
+  // const native = useCustomTokensNative()
+  // const cw20 = useCustomTokensCW20()
   const list = useParsedAssetList()
   const [search, setSearch] = useState("")
   const [showFilter, setShowFilter] = useState(false)
@@ -38,14 +38,14 @@ const AssetList = () => {
     setShowFilter(!showFilter)
   }
 
-  const alwaysVisibleDenoms = useMemo(
-    () =>
-      new Set([
-        ...cw20.list.map((a) => a.token),
-        ...native.list.map((a) => a.denom),
-      ]),
-    [cw20.list, native.list]
-  )
+  // const alwaysVisibleDenoms = useMemo(
+  //   () =>
+  //     new Set([
+  //       ...cw20.list.map((a) => a.token),
+  //       ...native.list.map((a) => a.denom),
+  //     ]),
+  //   [cw20.list, native.list]
+  // )
 
   const assets = useMemo(() => {
     const filtered = list
@@ -58,10 +58,7 @@ const AssetList = () => {
 
     const visible = filtered
       .filter(
-        (a) =>
-          a.totalValue >= 0.1 ||
-          alwaysVisibleDenoms.has(a.denom) ||
-          a.totalBalance / 10 ** a.decimals > 1
+        (a) => a.totalValue >= 0.1 || a.totalBalance / 10 ** a.decimals > 1
       )
       .sort((a, b) => {
         if (a.totalValue && b.totalValue) {
@@ -88,7 +85,7 @@ const AssetList = () => {
       })
 
     return { visible, lowBal }
-  }, [list, onlyShowWhitelist, alwaysVisibleDenoms, search])
+  }, [list, onlyShowWhitelist, search])
 
   const renderAsset = ({ denom, decimals, id, nativeChain, ...item }: any) => {
     const encodedDenomPath = encode(denom)
