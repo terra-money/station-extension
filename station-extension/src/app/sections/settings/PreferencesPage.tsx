@@ -1,12 +1,13 @@
 import { useTranslation } from "react-i18next"
-import { FlexColumn } from "@terra-money/station-ui"
+import { Checkbox, FlexColumn, Grid } from "@terra-money/station-ui"
 import { sandbox } from "auth/scripts/env"
 import { NavButton, SectionHeader } from "@terra-money/station-ui"
 import { ReactElement } from "react"
 import { useSettingsRoutes } from "./routes"
 import { useNavigate } from "react-router-dom"
+import styles from "./PreferencesPage.module.scss"
+import { useReplaceKeplr } from "utils/localStorage"
 import browser from "webextension-polyfill"
-import style from './PreferencesPage.module.scss'
 
 export interface SettingsPage {
   route?: string
@@ -21,6 +22,8 @@ export interface SettingsPage {
 const PreferencesPage = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { replaceKeplr, setReplaceKeplr } = useReplaceKeplr()
+
   const { routes, functions, settings } = useSettingsRoutes()
 
   const SettingsGroup = ({
@@ -43,7 +46,6 @@ const PreferencesPage = () => {
   )
 
   return (
-    <>
     <FlexColumn gap={16}>
       {sandbox && (
         <NavButton
@@ -60,9 +62,23 @@ const PreferencesPage = () => {
       <SettingsGroup settings={functions} />
       <SectionHeader withLine />
       <SettingsGroup settings={settings} />
-      <p className={style.version}>{'Station Wallet v' + browser.runtime?.getManifest?.()?.version}</p>
+      <SectionHeader withLine />
+      <Grid gap={8}>
+        <Checkbox
+          label={t("Set Station as default browser wallet")}
+          checked={replaceKeplr}
+          onClick={() => setReplaceKeplr(!replaceKeplr)}
+        />
+        <p className={styles.subtitle}>
+          {t(
+            "Activating this will prioritize station over other wallet extensions when connecting to apps."
+          )}
+        </p>
+      </Grid>
+      <p className={styles.version}>
+        {"Station Wallet v" + browser.runtime?.getManifest?.()?.version}
+      </p>
     </FlexColumn>
-    </>
   )
 }
 

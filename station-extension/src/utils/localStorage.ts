@@ -1,9 +1,10 @@
 import { DEFAULT_GAS_ADJUSTMENT } from "config/constants"
 import themes from "styles/themes/themes"
-import { useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { atom, useRecoilState } from "recoil"
 import { CustomNetwork, InterchainNetwork } from "types/network"
 import { AccAddress } from "@terra-money/feather.js"
+import browser from "webextension-polyfill"
 
 export enum SettingKey {
   Theme = "Theme",
@@ -23,7 +24,6 @@ export enum SettingKey {
   EnabledNetworks = "EnabledNetworks",
   NetworkCacheTime = "NetworkCacheTime",
   DevMode = "DevMode",
-  ReplaceKeplr = "ReplaceKeplr",
   RecentRecipients = "RecentRecipients",
 }
 
@@ -72,7 +72,6 @@ export const DefaultSettings = {
   [SettingKey.EnabledNetworks]: { time: 0, networks: [] as string[] },
   [SettingKey.CustomLCD]: {},
   [SettingKey.DevMode]: false,
-  [SettingKey.ReplaceKeplr]: false,
 }
 
 export const getLocalSetting = <T>(key: SettingKey): T => {
@@ -134,11 +133,6 @@ export const devModeState = atom({
 export const swapSlippageState = atom({
   key: "swapSlippageState",
   default: getLocalSetting(SettingKey.SwapSlippage) as string,
-})
-
-export const replaceKeplrState = atom({
-  key: "replaceKeplrState",
-  default: !!getLocalSetting(SettingKey.ReplaceKeplr),
 })
 
 export const useShowWelcomeModal = () => {
@@ -265,9 +259,33 @@ export const useDevMode = () => {
 }
 
 export const useReplaceKeplr = () => {
-  const [replaceKeplr, setReplaceKeplr] = useRecoilState(replaceKeplrState)
-  const toggleReplaceKeplr = () =>
-    toggleSetting(SettingKey.ReplaceKeplr, replaceKeplr, setReplaceKeplr)
+  const [replaceKeplr, setReplaceKeplr] = useState(false)
 
-  return { toggleReplaceKeplr, replaceKeplr }
+  useEffect(() => {
+    // if extension env
+    if (browser?.storage?.local?.get) {
+      browser.storage.local.get(["replaceKeplr"]).then(({ replaceKeplr }) => {
+        setReplaceKeplr(!!replaceKeplr)
+      })
+    }
+    // test env
+    else {
+      setReplaceKeplr(localStorage.getItem("replaceKeplr") === "true")
+    }
+  }, [])
+
+  return {
+    setReplaceKeplr: (state: boolean) => {
+      setReplaceKeplr(state)
+      // if extension env
+      if (browser?.storage?.local?.set) {
+        browser.storage.local.set({ replaceKeplr: state })
+      }
+      // test env
+      else {
+        localStorage.setItem("replaceKeplr", `${state}`)
+      }
+    },
+    replaceKeplr,
+  }
 }
