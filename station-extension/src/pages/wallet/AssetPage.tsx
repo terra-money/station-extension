@@ -101,23 +101,34 @@ const AssetPage = () => {
 
     return (
       <section className={styles.details}>
-        <span className={styles.token}>
-          <TokenIcon token={token} icon={icon} size={15} />
-          <Read decimals={decimals} amount={totalBalance} fixed={2} />
-          {symbol}
-        </span>
-        <h1>
-          {price ? (
-            <Read
-              decimals={decimals}
-              currency
-              amount={totalBalance * price}
-              fixed={2}
-            />
-          ) : (
-            <span>—</span>
-          )}
-        </h1>
+        <div className={styles.cost__container}>
+          <span className={styles.token}>
+            <span className={styles.icon}>
+              <TokenIcon token={token} icon={icon} size={12} />
+            </span>
+            <span className={styles.token__amount}>
+              <Read
+                decimals={decimals}
+                amount={totalBalance}
+                fixed={2}
+                denom={symbol}
+              />
+            </span>
+          </span>
+          <h1>
+            {price ? (
+              <Read
+                decimals={decimals}
+                currency
+                amount={totalBalance * price}
+                fixed={2}
+                decimalColorSecondary
+              />
+            ) : (
+              <span>—</span>
+            )}
+          </h1>
+        </div>
         <WalletActionButtons denom={token} />
       </section>
     )
@@ -127,7 +138,7 @@ const AssetPage = () => {
     const chainID = useChainID()
     if (token === "uluna" && symbol !== "LUNC") {
       return (
-        <>
+        <div className={styles.chainlist}>
           <SectionHeader
             className={styles.chainlist__title}
             withLine
@@ -141,7 +152,7 @@ const AssetPage = () => {
           >
             <VestingCard />
           </div>
-        </>
+        </div>
       )
     }
     return null

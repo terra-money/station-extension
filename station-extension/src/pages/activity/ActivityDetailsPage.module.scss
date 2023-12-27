@@ -3,6 +3,7 @@
 .txcontainer {
   margin: 5px 0px;
   padding: 0px 8px;
+  z-index: 1002;
 
   & > *:not(:first-child) {
     margin-top: 30px;
