@@ -30,7 +30,11 @@ interface Values {
 
 interface Props {
   onCreated?: (publicKey: MultisigWallet) => void
-  onPubkey?: (publicKey: LegacyAminoMultisigPublicKey) => void
+  onPubkey?: (data: {
+    pubkeys: string[]
+    threshold: number
+    words: { "330": string }
+  }) => void
 }
 
 const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
@@ -87,10 +91,18 @@ const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
       const values = addresses.map(({ value }) => value)
       const pubkeys = await getPublicKeys(values)
       const publicKey = new LegacyAminoMultisigPublicKey(threshold, pubkeys)
-      onPubkey?.(publicKey)
-      if (!onCreated) return
       const address = publicKey.address("terra")
       const words = { "330": wordsFromAddress(address) }
+      onPubkey?.({
+        pubkeys: pubkeys.map((k) => k.toAminoJSON()),
+        threshold,
+        words,
+      })
+
+      if (!onCreated) {
+        setSubmitting(false)
+        return
+      }
       const wallet = {
         name,
         words,
@@ -120,12 +132,14 @@ const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
           />
         </InputWrapper>
       )}
-      <Banner
-        variant="warning"
-        title={t(
-          "All wallets must have enough coins or tokens to cover gas fees."
-        )}
-      />
+      {!onPubkey && (
+        <Banner
+          variant="warning"
+          title={t(
+            "All wallets must have enough coins or tokens to cover gas fees."
+          )}
+        />
+      )}
 
       <MultiInputWrapper label={t("Wallets")} layout="vertical">
         {fields.map(({ id }, index) => (
