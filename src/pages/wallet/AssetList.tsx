@@ -1,24 +1,24 @@
-import { useMemo, useState } from "react"
-import classNames from "classnames"
-import { encode } from "js-base64"
-import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
 import {
   SectionHeader,
   Button,
   Banner,
   Input,
-  FilterIcon
+  FilterIcon,
 } from "@terra-money/station-ui"
 import {
   useCustomTokensCW20,
   useCustomTokensNative,
 } from "data/settings/CustomTokens"
-import { useParsedAssetList } from "data/token"
 import { useIsWalletEmpty } from "data/queries/bank"
 import { useTokenFilters } from "utils/localStorage"
-import Asset from "./Asset"
+import { useParsedAssetList } from "data/token"
+import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
 import styles from "./AssetList.module.scss"
+import { useMemo, useState } from "react"
+import classNames from "classnames"
+import { encode } from "js-base64"
+import Asset from "./Asset"
 
 const cx = classNames.bind(styles)
 
@@ -57,8 +57,26 @@ const AssetList = () => {
       )
 
     const visible = filtered
-      .filter((a) => a.totalValue >= 0.1 || alwaysVisibleDenoms.has(a.denom))
-      .sort((a, b) => b.totalValue - a.totalValue)
+      .filter(
+        (a) =>
+          a.totalValue >= 0.1 ||
+          alwaysVisibleDenoms.has(a.denom) ||
+          a.totalBalance / 10 ** a.decimals > 1
+      )
+      .sort((a, b) => {
+        if (a.totalValue && b.totalValue) {
+          return b.totalValue - a.totalValue
+        } else if (!a.totalValue && !b.totalValue) {
+          return (
+            b.totalBalance / 10 ** b.decimals -
+            a.totalBalance / 10 ** a.decimals
+          )
+        } else if (!a.totalValue) {
+          return 1
+        } else {
+          return -1
+        }
+      })
 
     const lowBal = filtered
       .filter((a: any) => !visible.includes(a))
