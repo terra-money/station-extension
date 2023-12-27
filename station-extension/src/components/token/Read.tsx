@@ -1,6 +1,3 @@
-import { ForwardedRef, forwardRef, Fragment } from "react"
-import BigNumber from "bignumber.js"
-import classNames from "classnames/bind"
 import {
   FormatConfig,
   formatPercent,
@@ -8,9 +5,12 @@ import {
   truncate,
 } from "@terra-money/terra-utils"
 import { useNativeDenoms, WithTokenItem } from "data/token"
+import { ForwardedRef, forwardRef, Fragment } from "react"
 import { useCurrency } from "data/settings/Currency"
 import { AccAddress } from "@terra-money/feather.js"
+import classNames from "classnames/bind"
 import styles from "./Read.module.scss"
+import BigNumber from "bignumber.js"
 
 const cx = classNames.bind(styles)
 
@@ -28,13 +28,21 @@ interface Props extends Partial<FormatConfig> {
 
 const Read = forwardRef(
   (
-    { amount, denom, approx, block, comma = false, decimalColorSecondary, ...props }: Props,
+    {
+      amount,
+      denom,
+      approx,
+      block,
+      comma = false,
+      decimalColorSecondary,
+      ...props
+    }: Props,
     ref: ForwardedRef<HTMLSpanElement>
   ) => {
     const currency = useCurrency()
 
     const amountBN = new BigNumber(amount ?? "")
-    if (!amount || amountBN.isNaN()) return null
+    if (amountBN.isNaN()) return null
     const tenToThePowerOf = (exp: number) => new BigNumber(10).pow(exp)
     const decimals = props.decimals ?? 6
 
