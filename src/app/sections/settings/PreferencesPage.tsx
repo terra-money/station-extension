@@ -47,24 +47,6 @@ const PreferencesPage = () => {
 
   return (
     <FlexColumn gap={16}>
-      <Grid gap={8}>
-        <Checkbox
-          label={t("Set Station as default browser wallet")}
-          checked={replaceKeplr}
-          onClick={() => setReplaceKeplr(!replaceKeplr)}
-        />
-        <p className={styles.subtitle}>
-          {t(
-            "Activating this will prioritize station over other wallet extensions you may have installed when connecting to apps."
-          )}
-        </p>
-        <p className={styles.subtitle}>
-          {t(
-            "This is an experimental feature and may only work if other extensions are disabled."
-          )}
-        </p>
-      </Grid>
-      <SectionHeader withLine />
       {sandbox && (
         <NavButton
           {...routes.network}
@@ -80,7 +62,22 @@ const PreferencesPage = () => {
       <SettingsGroup settings={functions} />
       <SectionHeader withLine />
       <SettingsGroup settings={settings} />
-      <p className={styles.version}>{'Station Wallet v' + browser.runtime?.getManifest?.()?.version}</p>
+      <SectionHeader withLine />
+      <Grid gap={8}>
+        <Checkbox
+          label={t("Set Station as default browser wallet")}
+          checked={replaceKeplr}
+          onClick={() => setReplaceKeplr(!replaceKeplr)}
+        />
+        <p className={styles.subtitle}>
+          {t(
+            "Activating this will prioritize station over other wallet extensions when connecting to apps."
+          )}
+        </p>
+      </Grid>
+      <p className={styles.version}>
+        {"Station Wallet v" + browser.runtime?.getManifest?.()?.version}
+      </p>
     </FlexColumn>
   )
 }
