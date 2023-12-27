@@ -69,10 +69,11 @@ const Confirm = () => {
     balance: offerAsset.balance,
     estimationTxValues,
     createTx,
-    onSuccess: () => navigate("/"),
+    onSuccess: () => navigate("/#1"),
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     chain: offerAsset.chainId,
     memo: "Swapped via Station Extension",
+    isIbc: true,
   }
 
   return (

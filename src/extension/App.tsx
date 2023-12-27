@@ -38,7 +38,6 @@ import { getErrorMessage } from "utils/error"
 import ManageWalletsButton from "./auth/ManageWalletsButton"
 import ManageWalletRouter from "./auth/ManageWalletRouter"
 import PreferencesButton from "app/sections/settings/PreferencesButton"
-import InitActivity from "pages/activity/InitActivity"
 import DashboardButton from "app/sections/DashboardButton"
 
 const App = () => {
@@ -131,9 +130,7 @@ const App = () => {
   return (
     <ErrorBoundary fallback={fallback}>
       <InitBankBalance>
-        <InitActivity>
-          <RequestContainer>{render()}</RequestContainer>
-        </InitActivity>
+        <RequestContainer>{render()}</RequestContainer>
       </InitBankBalance>
       <ChangeLogModal />
     </ErrorBoundary>
