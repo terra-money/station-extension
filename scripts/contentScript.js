@@ -352,7 +352,11 @@ function setupEvents() {
     // if replaceKeplr changed, refresh the page
     browser.storage.onChanged.addListener((changes, namespace) => {
       if (namespace === "local") {
+        // if replaceKeplr changed, refresh the page
         if (changes.replaceKeplr) {
+          console.warn(
+            "🛰️ STATION: Reloading window to set Station Extension as the default wallet."
+          )
           window.location.reload()
         }
       }

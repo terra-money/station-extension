@@ -1,9 +1,15 @@
+@import "font_mixins";
+
 .component {
   white-space: pre;
 }
 
-.small {
-  font-size: var(--font-size-small);
+.grey__decimal {
+  color: var(--token-light-100);
+}
+
+.symbol {
+  color: var(--token-light-100);
 }
 
 .block {
