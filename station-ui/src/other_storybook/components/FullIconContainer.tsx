@@ -21,6 +21,7 @@ import {
   FavoriteIcon,
   FilterIcon,
   FlipArrowsIcon,
+  GasIcon,
   GithubIcon,
   GovernanceIcon,
   ImportSeedIcon,
@@ -32,6 +33,7 @@ import {
   LoadingIcon,
   LockIcon,
   ManageAssetIcon,
+  MultisigIcon,
   MultisigWalletIcon,
   NoInternetIcon,
   PuzzlePieceIcon,
@@ -42,6 +44,8 @@ import {
   SearchIcon,
   SendArrowIcon,
   SmallCircleCheckIcon,
+  StationIcon,
+  StationIconLight,
   StakeIcon,
   SwapArrowsIcon,
   TelegramIcon,
@@ -155,6 +159,11 @@ const FullIconContainer = () => {
       iconCopy: `<FlipArrowsIcon fill={"var(${selectedColor})"} />`
     },
     {
+      name: "Gas",
+      icon: <GasIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<GasIcon fill={"var(${selectedColor})"} />`
+    },
+    {
       name: "Github",
       icon: <GithubIcon fill={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<GithubIcon fill={"var(${selectedColor})"} />`
@@ -210,6 +219,11 @@ const FullIconContainer = () => {
       iconCopy: `<ManageAssetIcon fill={"var(${selectedColor})"} />`
     },
     {
+      name: "Multisig",
+      icon: <MultisigIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<MultisigIcon fill={"var(${selectedColor})"} />`
+    },
+    {
       name: "MultisigWallet",
       icon: <MultisigWalletIcon fill={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<MultisigWalletIcon fill={"var(${selectedColor})"} />`
@@ -263,6 +277,16 @@ const FullIconContainer = () => {
       name:"SmallCircleCheck",
       icon: <SmallCircleCheckIcon fill={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<SmallCircleCheckIcon fill={"var(${selectedColor})"} />`
+    },
+    {
+      name: "Station",
+      icon: <StationIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<StationIcon fill={"var(${selectedColor})"} />`
+    },
+    {
+      name: "StationLight",
+      icon: <StationIconLight fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<StationIconLight fill={"var(${selectedColor})"} />`
     },
     {
       name: "Stake",
