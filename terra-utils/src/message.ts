@@ -81,16 +81,22 @@ export const getCanonicalMsg = (
       case "/ibc.applications.transfer.v1.MsgTransfer":
         const {
           token: { denom: ibcDenom, amount: ibcAmount },
-          receiver,
+          receiver: ibcReceiver,
+          memo: ibcMemo,
         } = msg as any
 
         const trueIBCDenom = getTrueDenom(ibcDenom)
         const transferAsset = `${ibcAmount}${trueIBCDenom}`
 
+        const ibcMemoInfo = JSON.parse(ibcMemo)
+        const trueIBCReceiver = ibcMemoInfo?.forward?.receiver
+          ? ibcMemoInfo.forward.receiver
+          : ibcReceiver
+
         returnMsgs.push({
           msgType: "Send",
           canonicalMsg: [
-            `Initiated IBC transfer of ${transferAsset} to ${receiver}`,
+            `Initiated IBC transfer of ${transferAsset} to ${trueIBCReceiver}`,
           ],
           outAssets: [transferAsset],
         })
@@ -219,7 +225,7 @@ export const getCanonicalMsg = (
           }
         } else if ((msg as any)?.msg?.claim_rewards) {
           const claimedRewards = getEventInfo(msgEvents, "claim_rewards")
-          
+
           if (claimedRewards?.[0]?.rewardAsset) {
             /* ---------------------- Withdraw Alliance Rewards --------------------- */
 
