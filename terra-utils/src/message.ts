@@ -94,24 +94,27 @@ export const getCanonicalMsg = (
       /* -------------------------------- Transfer -------------------------------- */
 
       case "/ibc.applications.transfer.v1.MsgTransfer":
-        extractMsgFn = (msg: any) => {
-          const {
-            token: { denom: ibcDenom, amount: ibcAmount },
-            receiver,
-          } = msg as any
+        const {
+          token: { denom: ibcDenom, amount: ibcAmount },
+          receiver: ibcReceiver,
+          memo: ibcMemo,
+        } = msg as any
 
           const trueIBCDenom = getTrueDenom(ibcDenom)
           const transferAsset = `${ibcAmount}${trueIBCDenom}`
 
-          returnMsgs.push({
-            msgType: "Send",
-            canonicalMsg: [
-              `Initiated IBC transfer of ${transferAsset} to ${receiver}`,
-            ],
-            outAssets: [transferAsset],
-          })
-        }
-        extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
+        const ibcMemoInfo = JSON.parse(ibcMemo)
+        const trueIBCReceiver = ibcMemoInfo?.forward?.receiver
+          ? ibcMemoInfo.forward.receiver
+          : ibcReceiver
+
+        returnMsgs.push({
+          msgType: "Send",
+          canonicalMsg: [
+            `Initiated IBC transfer of ${transferAsset} to ${trueIBCReceiver}`,
+          ],
+          outAssets: [transferAsset],
+        })
         break
 
       /* ------------------------------- Undelegate ------------------------------- */
