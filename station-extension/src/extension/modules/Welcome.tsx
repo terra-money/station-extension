@@ -1,22 +1,22 @@
-import { useTranslation } from "react-i18next"
-import { useThemeFavicon } from "data/settings/Theme"
-import styles from "./Welcome.module.scss"
-import ExtensionPage from "extension/components/ExtensionPage"
-import { Button, WalletList } from "@terra-money/station-ui"
-import { useAuth } from "auth"
-import { openURL } from "extension/storage"
-import { addressFromWords } from "utils/bech32"
-import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
-import { ReactComponent as UsbIcon } from "styles/images/icons/Usb.svg"
-import { ReactComponent as WalletIcon } from "styles/images/icons/Wallet.svg"
 import {
   getStoredLegacyWallets,
   isMigrationCompleted,
 } from "auth/scripts/keystore"
+import { ReactComponent as WalletIcon } from "styles/images/icons/Wallet.svg"
+import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
+import { Button, StationIcon, WalletList } from "@terra-money/station-ui"
+import { ReactComponent as UsbIcon } from "styles/images/icons/Usb.svg"
+import ExtensionPage from "extension/components/ExtensionPage"
+// import { useThemeFavicon } from "data/settings/Theme"
+import { addressFromWords } from "utils/bech32"
+import { useTranslation } from "react-i18next"
+import { openURL } from "extension/storage"
+import styles from "./Welcome.module.scss"
+import { useAuth } from "auth"
 
 const Welcome = () => {
   const { t } = useTranslation()
-  const icon = useThemeFavicon()
+  // const icon = useThemeFavicon()
   const { wallets, connect } = useAuth()
   const existsWallets = wallets.length > 0
   const existsLegacyWallets = getStoredLegacyWallets().length > 0
@@ -38,7 +38,7 @@ const Welcome = () => {
           />
         ) : (
           <section className={styles.welcome}>
-            <img src={icon} alt="Station" width={60} />
+            <StationIcon width={57} height={57} />
             <h1 className={styles.title}>{t("Welcome!")}</h1>
             <p className={styles.content}>
               {t(
@@ -78,21 +78,21 @@ const Welcome = () => {
             <>
               <Button
                 onClick={() => openURL("/auth/recover")}
-                variant="white-filled"
+                variant="primary"
                 block
                 icon={<WalletIcon />}
                 label={t("Import existing wallet")}
               />
               <Button
                 onClick={() => openURL("/auth/new")}
-                variant="outlined"
+                variant="primary"
                 block
                 icon={<AddIcon />}
                 label={t("Create new wallet")}
               />
               <Button
                 onClick={() => openURL("/auth/ledger")}
-                variant="outlined"
+                variant="primary"
                 block
                 icon={<UsbIcon />}
                 label={t("Connect Ledger wallet")}
