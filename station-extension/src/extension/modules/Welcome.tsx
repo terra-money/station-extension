@@ -4,7 +4,7 @@ import {
 } from "auth/scripts/keystore"
 import { ReactComponent as WalletIcon } from "styles/images/icons/Wallet.svg"
 import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
-import { Button, StationIcon, WalletList } from "@terra-money/station-ui"
+import { Button, FlexColumn, Grid, StationIcon, WalletList, CornerBackgroundLogo } from "@terra-money/station-ui"
 import { ReactComponent as UsbIcon } from "styles/images/icons/Usb.svg"
 import ExtensionPage from "extension/components/ExtensionPage"
 // import { useThemeFavicon } from "data/settings/Theme"
@@ -25,6 +25,7 @@ const Welcome = () => {
   return (
     <ExtensionPage fullHeight>
       <main className={styles.welcome__container}>
+        <CornerBackgroundLogo className={styles.logo__background} />
         {existsWallets ? (
           <WalletList
             otherWallets={wallets.map((w) => ({
@@ -37,8 +38,8 @@ const Welcome = () => {
             }))}
           />
         ) : (
-          <section className={styles.welcome}>
-            <StationIcon width={57} height={57} />
+          <FlexColumn align={"center"} className={styles.welcome} gap={16}>
+            <StationIcon width={57} height={54} />
             <h1 className={styles.title}>{t("Welcome!")}</h1>
             <p className={styles.content}>
               {t(
@@ -47,9 +48,9 @@ const Welcome = () => {
                   : "Station Wallet is the gateway to the interchain and beyond! Please choose how to get started below."
               )}
             </p>
-          </section>
+          </FlexColumn>
         )}
-        <section className={styles.connect__options}>
+        <Grid gap={16}>
           {!existsWallets && existsLegacyWallets && !migrationCompleted ? (
             <>
               <Button
@@ -108,7 +109,7 @@ const Welcome = () => {
               )}
             </>
           )}
-        </section>
+        </Grid>
       </main>
     </ExtensionPage>
   )

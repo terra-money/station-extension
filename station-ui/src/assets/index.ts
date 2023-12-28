@@ -53,6 +53,8 @@ import { ReactComponent as TwitterIconSVG } from "./icon/Twitter.svg"
 import { ReactComponent as WalletIconSVG } from "./icon/Wallet.svg"
 import { ReactComponent as WalletConnectIconSVG } from "./icon/WalletConnect.svg"
 
+import { ReactComponent as CornerBackgroundLogoSVG } from "./icon/CornerBackgroundLogo.svg"
+
 export const AddressBookIcon = AddressBookIconSVG
 export const AlertIcon = AlertIconSVG
 export const BackArrowIcon = BackArrowIconSVG
@@ -107,3 +109,5 @@ export const TrendUpIcon = TrendUpIconSVG
 export const TwitterIcon = TwitterIconSVG
 export const WalletIcon = WalletIconSVG
 export const WalletConnectIcon = WalletConnectIconSVG
+
+export const CornerBackgroundLogo = CornerBackgroundLogoSVG
