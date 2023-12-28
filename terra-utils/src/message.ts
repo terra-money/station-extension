@@ -94,27 +94,30 @@ export const getCanonicalMsg = (
       /* -------------------------------- Transfer -------------------------------- */
 
       case "/ibc.applications.transfer.v1.MsgTransfer":
-        const {
-          token: { denom: ibcDenom, amount: ibcAmount },
-          receiver: ibcReceiver,
-          memo: ibcMemo,
-        } = msg as any
+        extractMsgFn = (msg: any) => {
+          const {
+            token: { denom: ibcDenom, amount: ibcAmount },
+            receiver: ibcReceiver,
+            memo: ibcMemo,
+          } = msg as any
 
-          const trueIBCDenom = getTrueDenom(ibcDenom)
-          const transferAsset = `${ibcAmount}${trueIBCDenom}`
+            const trueIBCDenom = getTrueDenom(ibcDenom)
+            const transferAsset = `${ibcAmount}${trueIBCDenom}`
 
-        const ibcMemoInfo = JSON.parse(ibcMemo)
-        const trueIBCReceiver = ibcMemoInfo?.forward?.receiver
-          ? ibcMemoInfo.forward.receiver
-          : ibcReceiver
+          const ibcMemoInfo = JSON.parse(ibcMemo)
+          const trueIBCReceiver = ibcMemoInfo?.forward?.receiver
+            ? ibcMemoInfo.forward.receiver
+            : ibcReceiver
 
-        returnMsgs.push({
-          msgType: "Send",
-          canonicalMsg: [
-            `Initiated IBC transfer of ${transferAsset} to ${trueIBCReceiver}`,
-          ],
-          outAssets: [transferAsset],
-        })
+          returnMsgs.push({
+            msgType: "Send",
+            canonicalMsg: [
+              `Initiated IBC transfer of ${transferAsset} to ${trueIBCReceiver}`,
+            ],
+            outAssets: [transferAsset],
+          })
+        }
+        extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
         break
 
       /* ------------------------------- Undelegate ------------------------------- */
@@ -334,20 +337,27 @@ export const getCanonicalMsg = (
 
       case "/ibc.core.channel.v1.MsgRecvPacket":
         extractMsgFn = (msg: any) => {
-          const { amount, denom, sender } = JSON.parse(
+          const {
+            amount,
+            denom,
+            sender,
+            receiver: packetReceiver,
+          } = JSON.parse(
             Buffer.from((msg as any).packet.data, "base64").toString()
           )
-
-          const trueDenom = getTrueDenom(denom)
-          const receiveIBCAmount = `${amount}${trueDenom}`
-
-          returnMsgs.push({
-            msgType: "Send",
-            canonicalMsg: [
-              `Received ${receiveIBCAmount} from ${sender} via IBC`,
-            ],
-            inAssets: [receiveIBCAmount],
-          })
+  
+          if (userAddresses.includes(packetReceiver)) {
+            const trueDenom = getTrueDenom(denom)
+            const receiveIBCAmount = `${amount}${trueDenom}`
+  
+            returnMsgs.push({
+              msgType: "Send",
+              canonicalMsg: [
+                `Received ${receiveIBCAmount} from ${sender} via IBC`,
+              ],
+              inAssets: [receiveIBCAmount],
+            })
+          }
         }
         extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
         break
