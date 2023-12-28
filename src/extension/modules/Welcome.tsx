@@ -2,10 +2,16 @@ import {
   getStoredLegacyWallets,
   isMigrationCompleted,
 } from "auth/scripts/keystore"
-import { ReactComponent as WalletIcon } from "styles/images/icons/Wallet.svg"
-import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
-import { Button, FlexColumn, Grid, StationIcon, WalletList, CornerBackgroundLogo } from "@terra-money/station-ui"
-import { ReactComponent as UsbIcon } from "styles/images/icons/Usb.svg"
+import {
+  Button,
+  FlexColumn,
+  Grid,
+  WalletList,
+  StationIcon,
+  WalletIcon,
+  BuyIcon,
+  LedgerIcon,
+  CornerBackgroundLogo } from "@terra-money/station-ui"
 import ExtensionPage from "extension/components/ExtensionPage"
 // import { useThemeFavicon } from "data/settings/Theme"
 import { addressFromWords } from "utils/bech32"
@@ -57,21 +63,21 @@ const Welcome = () => {
                 onClick={() => openURL("/auth/migration")}
                 variant="white-filled"
                 block
-                icon={<WalletIcon />}
+                icon={<WalletIcon fill="var(--token-light-white)" />}
                 label={t("Upgrade wallets")}
               />
               <Button
                 onClick={() => openURL("/auth/new")}
                 variant="outlined"
                 block
-                icon={<AddIcon />}
+                icon={<BuyIcon fill="var(--token-light-white)" />}
                 label={t("Create new wallet")}
               />
               <Button
                 onClick={() => openURL("/auth/ledger")}
                 variant="outlined"
                 block
-                icon={<UsbIcon />}
+                icon={<LedgerIcon fill="var(--token-light-white)" />}
                 label={t("Connect Ledger wallet")}
               />
             </>
@@ -81,21 +87,21 @@ const Welcome = () => {
                 onClick={() => openURL("/auth/recover")}
                 variant="primary"
                 block
-                icon={<WalletIcon />}
+                icon={<WalletIcon fill="var(--token-light-white)" />}
                 label={t("Import existing wallet")}
               />
               <Button
                 onClick={() => openURL("/auth/new")}
                 variant="primary"
                 block
-                icon={<AddIcon />}
+                icon={<BuyIcon fill="var(--token-light-white)" />}
                 label={t("Create new wallet")}
               />
               <Button
                 onClick={() => openURL("/auth/ledger")}
                 variant="primary"
                 block
-                icon={<UsbIcon />}
+                icon={<LedgerIcon fill="var(--token-light-white)" />}
                 label={t("Connect Ledger wallet")}
               />
               {existsLegacyWallets && (
@@ -103,7 +109,7 @@ const Welcome = () => {
                   onClick={() => openURL("/auth/migration")}
                   variant="outlined"
                   block
-                  icon={<WalletIcon />}
+                  icon={<WalletIcon fill="var(--token-light-white)" />}
                   label={t("Finish wallets migration")}
                 />
               )}
