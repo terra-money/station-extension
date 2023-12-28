@@ -1,15 +1,3 @@
-import { useTranslation } from "react-i18next"
-import { useThemeFavicon } from "data/settings/Theme"
-import styles from "./Login.module.scss"
-import ExtensionPage from "extension/components/ExtensionPage"
-import {
-  Checkbox,
-  Input,
-  InputWrapper,
-  SubmitButton,
-} from "@terra-money/station-ui"
-import { atom, useRecoilState } from "recoil"
-import { useEffect, useMemo, useRef, useState } from "react"
 import {
   isLoginNeeded,
   lockWallet,
@@ -18,6 +6,19 @@ import {
   storePassword,
   unlockWallets,
 } from "auth/scripts/keystore"
+import {
+  Checkbox,
+  Input,
+  InputWrapper,
+  StationIcon,
+  SubmitButton,
+} from "@terra-money/station-ui"
+import ExtensionPage from "extension/components/ExtensionPage"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { useThemeFavicon } from "data/settings/Theme"
+import { useTranslation } from "react-i18next"
+import { atom, useRecoilState } from "recoil"
+import styles from "./Login.module.scss"
 
 const LOGIN_ATOM = atom<{ isLoggedIn: boolean; isLoading: boolean }>({
   key: "login-state",
@@ -120,7 +121,7 @@ const Login = () => {
     <ExtensionPage fullHeight>
       <main className={styles.login__container}>
         <section className={styles.login}>
-          <img src={icon} alt="Station" width={60} />
+          <StationIcon width={57} height={57} />
           <h1 className={styles.title}>{t(greeting)}</h1>
           <p className={styles.content}>
             {t(
