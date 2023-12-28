@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from '@storybook/react';
 import AssetSelectorFrom, { AssetSelectorFromProps } from './AssetSelectorFrom';
 import AssetSelectorTo from './AssetSelectorTo';
@@ -27,7 +28,7 @@ const StorybookExample = () => {
   const [assetModalOpen, setAssetModalOpen] = useState(false);
   const [direction, setDirection] = useState('');
 
-  const { register, handleSubmit, watch } = useForm();
+  const { register, handleSubmit, watch, setValue } = useForm();
   const onSubmit = handleSubmit(data => console.log(data));
   const toAmount = parseFloat(watch("fromAmount")) * tokenPrices[fromSymbol] / tokenPrices[toSymbol];
 
@@ -104,14 +105,10 @@ const StorybookExample = () => {
       </Modal>
       <form onSubmit={onSubmit}>
         <AssetSelectorFrom
-          extra={
-            <>
-              <WalletIcon width={12} height={12} fill='var(--token-dark-900)' />
-              <p>
-                {`${walletBalance[fromSymbol] || 0} ${fromSymbol}`}
-              </p>
-            </>
-          }
+          walletAmount={walletBalance[fromSymbol]}
+          handleMaxClick={() => {
+            setValue("fromAmount", walletBalance[fromSymbol])
+          }}
           symbol={fromSymbol}
           tokenIcon={tokensBySymbol[fromSymbol].tokenIcon}
           onSymbolClick={() => handleFromSymbolClick('from')}
@@ -157,14 +154,8 @@ export const From: StoryObj<AssetSelectorFromProps> = {
 
     return (
       <AssetSelectorFrom
-        extra={
-          <>
-            <WalletIcon width={12} height={12} fill='var(--token-dark-900)' />
-            <p>
-              {`${walletBalance?.LUNA} LUNA`}
-            </p>
-          </>
-        }
+        walletAmount={walletBalance?.LUNA}
+        handleMaxClick={() => {}}
         symbol='LUNA'
         tokenIcon={tokensBySymbol.LUNA.tokenIcon}
         onSymbolClick={() => {}}
@@ -199,6 +190,99 @@ export const To: StoryObj<AssetSelectorFromProps> = {
         amount={`${(parseFloat(fromAmount) * tokenPrices.LUNA / tokenPrices.axlUSDC).toFixed(6)}`}
         currencyAmount={`$${(parseFloat(fromAmount) * tokenPrices.LUNA).toFixed(6)}`}
       />
+    )
+  },
+};
+
+export const SendExample: StoryObj<AssetSelectorFromProps> = {
+  render: () => {
+    const [fromSymbol, setFromSymbol] = useState('LUNA');
+    const [assetModalOpen, setAssetModalOpen] = useState(false);
+
+    const { register, handleSubmit, watch, setValue } = useForm();
+    const onSubmit = handleSubmit(data => console.log(data));
+
+    const maxClick = () => {
+      setValue("fromAmount", walletBalance[fromSymbol]);
+    }
+
+    const handleFromSymbolClick = () => {
+      setAssetModalOpen(!assetModalOpen);
+    }
+
+    const options = [
+      { value: "terra", label: "Terra" },
+      { value: "axelar", label: "Axelar" },
+      { value: "carbon", label: "Carbon" },
+      { value: "cosmos", label: "Cosmos" },
+      { value: "crescent", label: "Crescent" },
+      { value: "juno", label: "Juno" },
+      { value: "mars", label: "Mars" },
+    ];
+
+    const handleTokenSelection = (token: string) => {
+      setFromSymbol(token);
+      setAssetModalOpen(!assetModalOpen);
+    }
+
+    return (
+      <>
+        <Modal
+          isOpen={assetModalOpen}
+          onRequestClose={() => setAssetModalOpen(false)}
+          title='Select Asset'
+        >
+          <FlexColumn gap={24} style={{ width: '100%' }}>
+            <InputWrapper label="Chains">
+              <StandardDropdown
+                options={options}
+                onChange={() => {}}
+                value="terra"
+              />
+            </InputWrapper>
+
+            <SectionHeader
+              title="Tokens"
+              withLine
+            />
+
+            <InputWrapper label="Search Tokens">
+              <Input
+                placeholder="Search Tokens"
+                onChange={() => {}}
+              />
+            </InputWrapper>
+
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              {Object.keys(tokensBySymbol).map((token, index) => (
+                <TokenSingleChainListItem
+                  key={index}
+                  priceNode={<span>$ {tokenPrices[token]}</span>}
+                  tokenImg={tokensBySymbol[token].tokenIcon}
+                  symbol={tokensBySymbol[token].symbol}
+                  amountNode={<span>{walletBalance[token]}</span>}
+                  chain={{ icon: tokensBySymbol[token].chainIcon, label: tokensBySymbol[token].chainName }}
+                  onClick={() => handleTokenSelection(token)}
+                />
+              ))}
+            </div>
+
+          </FlexColumn>
+        </Modal>
+        <form onSubmit={onSubmit}>
+          <AssetSelectorFrom
+            walletAmount={walletBalance[fromSymbol]}
+            handleMaxClick={maxClick}
+            symbol={fromSymbol}
+            onSymbolClick={handleFromSymbolClick}
+            tokenIcon={tokensBySymbol[fromSymbol].tokenIcon}
+            chainIcon={tokensBySymbol[fromSymbol].chainIcon}
+            chainName={tokensBySymbol[fromSymbol].chainName}
+            amountInputAttrs={{...register("fromAmount", { required: true, valueAsNumber: true })}}
+            currencyAmount={`$${(parseFloat(watch("fromAmount")) * tokenPrices[fromSymbol]).toFixed(6)}`}
+          />
+        </form>
+      </>
     )
   },
 };
