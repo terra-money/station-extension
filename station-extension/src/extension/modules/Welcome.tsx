@@ -62,21 +62,21 @@ const Welcome = () => {
             <>
               <Button
                 onClick={() => openURL("/auth/migration")}
-                variant="white-filled"
+                variant="primary"
                 block
                 icon={<WalletIcon fill="var(--token-light-white)" />}
                 label={t("Upgrade wallets")}
               />
               <Button
                 onClick={() => openURL("/auth/new")}
-                variant="outlined"
+                variant="secondary"
                 block
                 icon={<BuyIcon fill="var(--token-light-white)" />}
                 label={t("Create new wallet")}
               />
               <Button
                 onClick={() => openURL("/auth/ledger")}
-                variant="outlined"
+                variant="secondary"
                 block
                 icon={<LedgerIcon fill="var(--token-light-white)" />}
                 label={t("Connect Ledger wallet")}
