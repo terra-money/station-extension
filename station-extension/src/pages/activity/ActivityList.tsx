@@ -4,7 +4,7 @@ import {
   SectionHeader,
   SubmitButton,
 } from "@terra-money/station-ui"
-import { useTxActivity, useTxInfo } from "data/queries/activity"
+import { useTxActivity } from "data/queries/activity"
 import styles from "./ActivityList.module.scss"
 import ActivityItem from "./ActivityItem"
 import { Page } from "components/layout"
@@ -17,6 +17,8 @@ interface IbcActivityItemProps {
   txhash: string
   state: IbcTxState
   index: number
+  timestamp: any
+  msgs: Object[]
 }
 
 const IbcActivityItem = ({
@@ -24,19 +26,21 @@ const IbcActivityItem = ({
   chainID,
   state,
   index,
+  timestamp,
+  msgs,
 }: IbcActivityItemProps) => {
-  const { data } = useTxInfo(txhash, chainID)
+  const data = { tx: { body: { messages: msgs } }, txhash, code: 0 }
   const { t } = useTranslation()
-  return data ? (
+  return (
+    // @ts-expect-error
     <ActivityItem
       {...data}
+      timestamp={timestamp}
       chain={chainID}
       dateHeader={index === 0 ? <SectionHeader title={t("Pending")} /> : null}
       variant={state}
       showProgress
     />
-  ) : (
-    <></>
   )
 }
 

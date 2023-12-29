@@ -12,7 +12,6 @@ import { useLocation } from "react-router-dom"
 
 const WalletMain = () => {
   const { hash } = useLocation()
-  console.log({ hash })
   const [tab, setTab] = useState(hash === "#1" ? 1 : 0)
   const { ibcTxs, clearCompletedTxs } = useIbcTxs()
   const { t } = useTranslation()
@@ -21,7 +20,8 @@ const WalletMain = () => {
     ({ state }) => state === IbcTxState.SUCCESS
   ).length
   const pendingCount = ibcTxs.filter(
-    ({ state }) => state === IbcTxState.PENDING
+    ({ state }) =>
+      state === IbcTxState.PENDING || state === IbcTxState.BROADCASTING
   ).length
   const failedCount = ibcTxs.filter(
     ({ state }) => state === IbcTxState.ERROR

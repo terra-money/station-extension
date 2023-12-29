@@ -27,20 +27,16 @@ const ActivityItem = ({
 }: AccountHistoryItem & {
   chain: string
   dateHeader: JSX.Element | null
-  variant?: "success" | "failed" | "loading"
+  variant?: "success" | "failed" | "loading" | "broadcasting"
   showProgress?: boolean
 }) => {
-  const {
-    code,
-    tx: {
-      auth_info: {
-        fee: { amount: fee },
-      },
-    },
-  } = props
+  const { code, tx } = props
   const success = code === 0
   const activityVariant = variant || (success ? "success" : "failed")
-  const timer = useTimer(new Date(timestamp).getTime(), variant === "loading")
+  const timer = useTimer(
+    new Date(timestamp).getTime(),
+    variant === "loading" || variant === "broadcasting"
+  )
   const { t } = useTranslation()
   const network = useNetwork()
   const addresses = useInterchainAddresses() || {}
@@ -60,15 +56,7 @@ const ActivityItem = ({
     if (index === 0 && msg?.msgType) {
       msgType = last(msg?.msgType.split("/")) ?? ""
     }
-    return (
-      msg && (
-        <ActivityMessage
-          chainID={network[chain].chainID}
-          msg={msg}
-          key={index}
-        />
-      )
-    )
+    return msg && <ActivityMessage chainID={chain} msg={msg} key={index} />
   })
 
   const activityType = msgType.charAt(0).toUpperCase() + msgType.substring(1)
@@ -82,7 +70,9 @@ const ActivityItem = ({
           <div className={styles.activityitem}>
             <ActivityListItem
               onClick={open}
-              variant={activityVariant}
+              variant={
+                activityVariant === "broadcasting" ? "loading" : activityVariant
+              }
               chain={{
                 icon: network[chain].icon,
                 label: network[chain].name,
@@ -96,8 +86,11 @@ const ActivityItem = ({
               <div className={styles.transaction__progress}>
                 <TransactionTracker
                   steps={[
-                    "completed",
-                    activityVariant === "loading"
+                    activityVariant === "broadcasting"
+                      ? "inProgress"
+                      : "completed",
+                    activityVariant === "loading" ||
+                    activityVariant === "broadcasting"
                       ? "incomplete"
                       : activityVariant === "success"
                       ? "completed"
@@ -106,7 +99,8 @@ const ActivityItem = ({
                   stepLabels={["Tx Initiated", "Tx Completed"]}
                 />
                 <p className={styles.transaction__timer}>
-                  {variant === "loading"
+                  {activityVariant === "loading" ||
+                  activityVariant === "broadcasting"
                     ? timer
                     : activityVariant === "success"
                     ? t("Done!")
@@ -125,7 +119,7 @@ const ActivityItem = ({
           time={timestamp}
           timelineMessages={activityMessages.slice(1)}
           txHash={txhash}
-          fee={fee}
+          fee={tx?.auth_info?.fee?.amount ?? []}
         />
       </ModalButton>
     </div>

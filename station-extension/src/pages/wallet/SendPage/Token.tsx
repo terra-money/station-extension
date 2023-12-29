@@ -100,8 +100,6 @@ const Token = () => {
     getIBCChannel,
   ])
 
-  // console.log("tokens", tokens)
-
   const onClick = (asset: AssetType) => {
     setValue("asset", asset.denom)
     setValue("chain", asset.tokenChain)
