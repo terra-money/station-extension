@@ -230,9 +230,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
 
   const warning = {
     post: "",
-    sign: t(
-      "The Transaction signing is requested. Confirm if it is from a verified origin."
-    ),
+    sign: "",
     signBytes: t("Signing of an arbitrary data is requested"),
   }[props.requestType]
 
