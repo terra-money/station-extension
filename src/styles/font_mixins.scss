@@ -1,0 +1,76 @@
+@mixin XX-Large {
+  font-family: var(--token-font-family-default);
+  font-size: var(--token-font-size-xx-lg);
+  line-height: var(--token-line-height-xx-lg-default);
+  font-weight: var(--token-font-weight-bold);
+}
+
+@mixin X-Large {
+  font-family: var(--token-font-family-default);
+  font-size: var(--token-font-size-x-lg);
+  line-height: var(--token-line-height-x-lg-default);
+  font-weight: var(--token-font-weight-bold);
+}
+
+@mixin Large {
+  font-family: var(--token-font-family-default);
+  font-size: var(--token-font-size-lg);
+  line-height: var(--token-line-height-lg-default);
+  font-weight: var(--token-font-weight-bold);
+}
+
+@mixin Medium-Large {
+  font-family: var(--token-font-family-default);
+  font-size: var(--token-font-size-mdlg);
+  line-height: var(--token-line-height-mdlg-default);
+  font-weight: var(--token-font-weight-bold);
+}
+
+@mixin Medium {
+  font-family: var(--token-font-family-default);
+  font-size: var(--token-font-size-md);
+  line-height: var(--token-line-height-md-default);
+  font-weight: var(--token-font-weight-medium);
+}
+
+@mixin MediumLH {
+  font-family: var(--token-font-family-default);
+  font-size: var(--token-font-size-md);
+  line-height: var(--token-line-height-md-larger);
+  font-weight: var(--token-font-weight-medium);
+}
+
+@mixin Small {
+  font-family: var(--token-font-family-default);
+  font-size: var(--token-font-size-sm);
+  line-height: var(--token-line-height-sm-default);
+  font-weight: var(--token-font-weight-medium);
+}
+
+@mixin SmallLH {
+  font-family: var(--token-font-family-default);
+  font-size: var(--token-font-size-sm);
+  line-height: var(--token-line-height-sm-larger);
+  font-weight: var(--token-font-weight-medium);
+}
+
+@mixin X-Small {
+  font-family: var(--token-font-family-default);
+  font-size: var(--token-font-size-x-sm);
+  line-height: var(--token-line-height-x-sm-default);
+  font-weight: var(--token-font-weight-medium);
+}
+
+@mixin X-SmallLH {
+  font-family: var(--token-font-family-default);
+  font-size: var(--token-font-size-x-sm);
+  line-height: var(--token-line-height-x-sm-larger);
+  font-weight: var(--token-font-weight-medium);
+}
+
+@mixin XX-Small {
+  font-family: var(--token-font-family-default);
+  font-size: var(--token-font-size-xx-sm);
+  line-height: var(--token-line-height-xx-sm-default);
+  font-weight: var(--token-font-weight-medium);
+}

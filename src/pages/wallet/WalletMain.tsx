@@ -33,34 +33,33 @@ const WalletMain = () => {
         <div className={styles.main__container}>
           <UpdateNotification />
           <NetWorth />
-          <div className={styles.tabs__container}>
-            <PageTabs
-              activeTab={tab}
-              onClick={(i) => {
-                //navigate(`#${tab}`)
-                // when user closes the Activity tab clear completed IBC txs
-                if (tab === 1 && i !== tab) {
-                  clearCompletedTxs()
-                }
-                setTab(i)
-              }}
-              tabs={[
-                t("Assets"),
-                <Flex gap={6}>
-                  {t("Activity")}
-                  {!!successCount && (
-                    <Pill variant="success" text={`${successCount}`} />
-                  )}
-                  {!!pendingCount && (
-                    <Pill variant="warning" text={`${pendingCount}`} />
-                  )}
-                  {!!failedCount && (
-                    <Pill variant="danger" text={`${failedCount}`} />
-                  )}
-                </Flex>,
-              ]}
-            />
-          </div>
+        </div>
+        <div className={styles.tabs__container}>
+          <PageTabs
+            activeTab={tab}
+            onClick={(i) => {
+              // when user closes the Activity tab clear completed IBC txs
+              if (tab === 1 && i !== tab) {
+                clearCompletedTxs()
+              }
+              setTab(i)
+            }}
+            tabs={[
+              t("Assets"),
+              <Flex gap={6}>
+                {t("Activity")}
+                {!!successCount && (
+                  <Pill variant="success" text={`${successCount}`} />
+                )}
+                {!!pendingCount && (
+                  <Pill variant="warning" text={`${pendingCount}`} />
+                )}
+                {!!failedCount && (
+                  <Pill variant="danger" text={`${failedCount}`} />
+                )}
+              </Flex>,
+            ]}
+          />
         </div>
         <div className={styles.list__container}>
           {tab === 0 ? <AssetList /> : <ActivityList />}

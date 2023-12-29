@@ -4,7 +4,7 @@
   @include flex(space-between);
   background: var(--token-dark-500);
   color: var(--text);
-  border-bottom: var(--border-width) solid var(--card-border);
+  border-bottom: 1px solid var(--token-dark-100);
   padding: 12px;
   height: var(--header-height);
   position: sticky;
