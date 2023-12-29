@@ -55,6 +55,7 @@ import {
   TwitterIcon,
   WalletIcon,
   WalletConnectIcon,
+  CornerBackgroundLogo,
 } from "components"
 import ColorDropdown from "./ColorDropdown.tsx"
 
@@ -332,6 +333,11 @@ const FullIconContainer = () => {
       name: "WalletConnect",
       icon: <WalletConnectIcon fill={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<WalletConnectIcon fill={"var(${selectedColor})"} />`
+    },
+    {
+      name: "CornerBackgroundLogo",
+      icon: <CornerBackgroundLogo />,
+      iconCopy: `<CornerBackgroundLogo />`
     },
   ]
 
