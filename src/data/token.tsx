@@ -334,6 +334,7 @@ export interface AssetItem {
   icon?: string
   symbol: string
   price: number
+  value: number
   change: number
   tokenChainInfo: ChainTokenItem[]
   nativeChain: string
@@ -360,12 +361,7 @@ export const useParsedAssetList = () => {
           )
 
         const tokenID = `${token}*${chainID}`
-
         const nativeChain = chainID ?? chain
-
-        if (symbol === "SWTH") {
-          console.log(tokenID, { denom, amount, chain })
-        }
 
         let tokenIcon = icon,
           tokenPrice,
@@ -387,7 +383,7 @@ export const useParsedAssetList = () => {
           )
         }
 
-        const { name: chainName, icon: chainIcon } = networks[chain] || {}
+        const { name: chainName, icon: chainIcon } = networks[chain] ?? {}
         const chainTokenItem = {
           denom,
           id: tokenID,
@@ -402,9 +398,8 @@ export const useParsedAssetList = () => {
           acc[tokenID].totalBalance = `${
             parseInt(acc[tokenID].totalBalance) + parseInt(amount)
           }`
-          acc[tokenID].totalValue = acc[tokenID].totalValue += (toInput(amount, decimals) * tokenPrice)
+          acc[tokenID].value = acc[tokenID].value += (toInput(amount, decimals) * tokenPrice)
           acc[tokenID].tokenChainInfo.push(chainTokenItem)
-
           return acc
         } else {
           const result: Record<string, AssetItem> = {
@@ -414,7 +409,7 @@ export const useParsedAssetList = () => {
               denom: token,
               decimals: decimals,
               totalBalance: amount,
-              totalValue: tokenPrice * toInput(amount, decimals),
+              value: tokenPrice * toInput(amount, decimals),
               icon: tokenIcon,
               symbol: symbol,
               price: tokenPrice,
