@@ -27,3 +27,10 @@
 .networth__buttons__labels {
   @include X-Small;
 }
+
+.button__text {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+  margin-top: 8px;
+}
