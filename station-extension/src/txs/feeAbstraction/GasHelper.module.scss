@@ -3,17 +3,6 @@
   gap: 24px;
 }
 
-.loading__container {
-  margin-top: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.banner__container {
-  margin-top: 16px;
-}
-
 .card {
   padding: 24px;
   border-radius: 8px;
@@ -34,5 +23,33 @@
     font-weight: 500;
     line-height: 18px;
     padding-bottom: 24px;
+  }
+
+  .loader__container {
+    margin-top: 16px;
+  }
+
+  .amount__container {
+    margin-top: 16px;
+
+    p {
+      color: var(--token-dark-900);
+      font-size: 14px;
+      line-height: 14px;
+      font-weight: 500;
+    }
+
+    .amount__error,
+    .amount__error > *,
+    .amount,
+    .amount > * {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 14px;
+    }
+
+    .amount__error {
+      color: var(--token-error-500);
+    }
   }
 }
