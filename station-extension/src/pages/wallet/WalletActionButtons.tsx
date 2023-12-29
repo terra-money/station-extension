@@ -8,11 +8,10 @@ import {
   ReceiveIcon,
   RoundedButton,
   SendArrowIcon,
-  SwapArrowsIcon
+  SwapArrowsIcon,
 } from "@terra-money/station-ui"
 import { useNetworkName, useNetwork, useChainID } from "data/wallet"
 import { useIsWalletEmpty } from "data/queries/bank"
-import { useNativeDenoms } from "data/token"
 import { useKado } from "pages/wallet/Buy"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useNativeDenoms } from "data/token"
