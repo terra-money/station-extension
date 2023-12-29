@@ -17,13 +17,13 @@ const WalletMain = () => {
         <div className={styles.main__container}>
           <UpdateNotification />
           <NetWorth />
-          <div className={styles.tabs__container}>
-            <PageTabs
-              activeTab={tab}
-              onClick={setTab}
-              tabs={[t("Assets"), t("Activity")]}
-            />
-          </div>
+        </div>
+        <div className={styles.tabs__container}>
+          <PageTabs
+            activeTab={tab}
+            onClick={setTab}
+            tabs={[t("Assets"), t("Activity")]}
+          />
         </div>
         <div className={styles.list__container}>
           {tab === 0 ? <AssetList /> : <ActivityList />}

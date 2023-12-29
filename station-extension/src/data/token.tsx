@@ -308,6 +308,7 @@ export const useUnknownIBCDenoms = () => {
   )
   return unknownIBCDenoms
 }
+
 export const useParsedAssetList = () => {
   const unknownIBCDenoms = useUnknownIBCDenoms()
   const { data: prices } = useExchangeRates()
@@ -319,9 +320,15 @@ export const useParsedAssetList = () => {
     return (
       coins.reduce((acc, { denom, amount, chain }) => {
         const { chainID, symbol, decimals, token, icon, isNonWhitelisted } =
-          readNativeDenom(denom, chain)
+          readNativeDenom(
+            unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom ?? denom,
+            unknownIBCDenoms[[denom, chain].join("*")]?.chainID ?? chain
+          )
 
-        const nativeChain = chainID ?? chain
+        const nativeChain =
+          chainID ??
+          unknownIBCDenoms[[denom, chain].join("*")]?.chainID ??
+          chain
 
         let tokenIcon, tokenPrice, tokenChange, tokenWhitelisted
         if (symbol === "LUNC") {
@@ -341,39 +348,53 @@ export const useParsedAssetList = () => {
           )
         }
 
+        const supported = chain
+          ? !(
+              unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom === token &&
+              unknownIBCDenoms[[denom, chain].join("*")]?.chainID ===
+                nativeChain
+            )
+          : unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom === token
+
         const { name: chainName, icon: chainIcon } = networks[chain] || {}
         const tokenID = `${denom}*${chain}`
         const chainTokenItem = {
           denom,
           id: tokenID,
           balance: parseInt(amount),
-          decimals: decimals,
+          decimals,
           tokenPrice,
           chainID: chain,
           chainName,
           chainIcon,
           tokenIcon,
+          supported,
         }
 
         if (acc[symbol]) {
-          acc[symbol].totalBalance = `${
-            parseInt(acc[symbol].totalBalance) + parseInt(amount)
-          }`
-          acc[symbol].totalValue = acc[symbol].totalValue +=
-            toInput(amount, decimals) * tokenPrice
+          if (chainTokenItem.supported) {
+            acc[symbol].totalBalance = `${
+              parseInt(acc[symbol].totalBalance) + parseInt(amount)
+            }`
+            acc[symbol].totalValue = acc[symbol].totalValue +=
+              toInput(amount, decimals) * tokenPrice
+          }
           acc[symbol].tokenChainInfo.push(chainTokenItem)
           return acc
         } else {
+          const totalBalance = supported ? amount : "0"
+          const totalValue = supported
+            ? tokenPrice * toInput(amount, decimals)
+            : 0
           return {
             ...acc,
             [symbol]: {
-              balance: amount,
               denom: token,
-              decimals: decimals,
-              totalBalance: amount,
-              totalValue: tokenPrice * toInput(amount, decimals),
+              decimals,
+              totalBalance,
+              totalValue,
               icon: tokenIcon,
-              symbol: symbol,
+              symbol,
               price: tokenPrice,
               change: tokenChange,
               tokenChainInfo: [chainTokenItem],

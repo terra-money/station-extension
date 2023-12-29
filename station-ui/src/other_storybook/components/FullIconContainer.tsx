@@ -21,6 +21,7 @@ import {
   FavoriteIcon,
   FilterIcon,
   FlipArrowsIcon,
+  GasIcon,
   GithubIcon,
   GovernanceIcon,
   ImportSeedIcon,
@@ -32,6 +33,7 @@ import {
   LoadingIcon,
   LockIcon,
   ManageAssetIcon,
+  MultisigIcon,
   MultisigWalletIcon,
   NoInternetIcon,
   PuzzlePieceIcon,
@@ -42,6 +44,8 @@ import {
   SearchIcon,
   SendArrowIcon,
   SmallCircleCheckIcon,
+  StationIcon,
+  StationIconLight,
   StakeIcon,
   SwapArrowsIcon,
   TelegramIcon,
@@ -51,6 +55,7 @@ import {
   TwitterIcon,
   WalletIcon,
   WalletConnectIcon,
+  CornerBackgroundLogo,
 } from "components"
 import ColorDropdown from "./ColorDropdown.tsx"
 
@@ -155,6 +160,11 @@ const FullIconContainer = () => {
       iconCopy: `<FlipArrowsIcon fill={"var(${selectedColor})"} />`
     },
     {
+      name: "Gas",
+      icon: <GasIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<GasIcon fill={"var(${selectedColor})"} />`
+    },
+    {
       name: "Github",
       icon: <GithubIcon fill={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<GithubIcon fill={"var(${selectedColor})"} />`
@@ -208,6 +218,11 @@ const FullIconContainer = () => {
       name: "ManageAsset",
       icon: <ManageAssetIcon fill={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<ManageAssetIcon fill={"var(${selectedColor})"} />`
+    },
+    {
+      name: "Multisig",
+      icon: <MultisigIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<MultisigIcon fill={"var(${selectedColor})"} />`
     },
     {
       name: "MultisigWallet",
@@ -265,6 +280,16 @@ const FullIconContainer = () => {
       iconCopy: `<SmallCircleCheckIcon fill={"var(${selectedColor})"} />`
     },
     {
+      name: "Station",
+      icon: <StationIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<StationIcon fill={"var(${selectedColor})"} />`
+    },
+    {
+      name: "StationLight",
+      icon: <StationIconLight fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<StationIconLight fill={"var(${selectedColor})"} />`
+    },
+    {
       name: "Stake",
       icon: <StakeIcon fill={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<StakeIcon fill={"var(${selectedColor})"} />`
@@ -308,6 +333,11 @@ const FullIconContainer = () => {
       name: "WalletConnect",
       icon: <WalletConnectIcon fill={`var(${selectedColor})`} width={size} height={size} />,
       iconCopy: `<WalletConnectIcon fill={"var(${selectedColor})"} />`
+    },
+    {
+      name: "CornerBackgroundLogo",
+      icon: <CornerBackgroundLogo />,
+      iconCopy: `<CornerBackgroundLogo />`
     },
   ]
 

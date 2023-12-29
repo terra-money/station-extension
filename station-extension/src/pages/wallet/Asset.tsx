@@ -16,6 +16,7 @@ export interface Props extends TokenItem, QueryState {
   tokenChainInfo: AssetInfo[]
   symbol: string
   id: string
+  supported: boolean
   onClick?: () => void
 }
 
@@ -24,6 +25,7 @@ interface AssetInfo {
   chainID: string
   chainName: string
   chainIcon: string
+  supported: boolean
 }
 
 interface TokenChainData {
@@ -31,6 +33,7 @@ interface TokenChainData {
   chain: string
   name: string
   icon: string
+  supported: boolean
 }
 
 const Asset = (props: Props) => {
@@ -43,6 +46,7 @@ const Asset = (props: Props) => {
     onClick,
     price,
     change,
+    supported,
     ...state
   } = props
   const { t } = useTranslation()
@@ -51,14 +55,13 @@ const Asset = (props: Props) => {
     return props.tokenChainInfo.reduce((acc, chain) => {
       const bal = Math.pow(10, -decimals) * parseInt(chain.balance)
 
-      // console.log("chain", chain)
-
       if (!isNaN(bal)) {
         acc.push({
           name: chain.chainName,
           chain: chain.chainID,
           icon: chain.chainIcon,
           balance: bal.toLocaleString(),
+          supported: chain.supported,
         })
       }
 
@@ -112,7 +115,7 @@ const Asset = (props: Props) => {
   return (
     <div className={styles.asset}>
       <TokenListItem
-        chains={chains}
+        chains={chains.filter((chain) => chain.supported)}
         onClick={onClick}
         amountNode={<AmountNode />}
         priceNode={<PriceNode />}
