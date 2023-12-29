@@ -7,7 +7,6 @@ import {
   ButtonInlineWrapper,
   Form,
   SubmitButton,
-  Banner
 } from "@terra-money/station-ui"
 import { useSwap } from "./SwapContext"
 import { useForm } from "react-hook-form"
