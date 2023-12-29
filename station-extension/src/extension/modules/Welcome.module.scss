@@ -13,11 +13,10 @@
     position: absolute;
     top: -20px;
     left: -20px;
-    z-index: 1;
+    z-index: 0;
   }
 
   .welcome {
-    z-index: 2;
     margin-top: 4rem;
 
     .title {
@@ -31,6 +30,12 @@
       text-align: center;
       color: var(--token-light-100);
     }
+  }
+
+  .top__content__wrapper {
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
   }
 
   .connect__options {
