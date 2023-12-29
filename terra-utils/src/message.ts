@@ -726,7 +726,7 @@ const getTrueDenom = (denom: string) => {
 
   // Ensure extracted denom is valid before returning.
   const prefixIncluded = ["u", "n"].includes(extractedDenom[0])
-  const noPrefixToken = ["aarch", "inj"].includes(extractedDenom)
+  const noPrefixToken = ["aarch", "inj", "swth"].includes(extractedDenom)
   const strideStakeToken = extractedDenom.startsWith("stu")
   const nonSplitAddress = extractedDenom.match(/[/:]+/)
   const extractedDenomValid =
