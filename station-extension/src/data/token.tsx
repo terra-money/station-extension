@@ -372,21 +372,27 @@ export const useParsedAssetList = () => {
         }
 
         if (acc[symbol]) {
-          acc[symbol].totalBalance = `${
-            parseInt(acc[symbol].totalBalance) + parseInt(amount)
-          }`
-          acc[symbol].totalValue = acc[symbol].totalValue +=
-            toInput(amount, decimals) * tokenPrice
+          if (chainTokenItem.supported) {
+            acc[symbol].totalBalance = `${
+              parseInt(acc[symbol].totalBalance) + parseInt(amount)
+            }`
+            acc[symbol].totalValue = acc[symbol].totalValue +=
+              toInput(amount, decimals) * tokenPrice
+          }
           acc[symbol].tokenChainInfo.push(chainTokenItem)
           return acc
         } else {
+          const totalBalance = supported ? amount : "0"
+          const totalValue = supported
+            ? tokenPrice * toInput(amount, decimals)
+            : 0
           return {
             ...acc,
             [symbol]: {
               denom: token,
               decimals,
-              totalBalance: amount,
-              totalValue: tokenPrice * toInput(amount, decimals),
+              totalBalance,
+              totalValue,
               icon: tokenIcon,
               symbol,
               price: tokenPrice,
