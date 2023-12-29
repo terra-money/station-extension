@@ -3,13 +3,14 @@ import { CoinBalance, useBankBalance } from "data/queries/bank"
 import { useNavigate, useParams } from "react-router-dom"
 import { useExchangeRates } from "data/queries/coingecko"
 import WalletActionButtons from "./WalletActionButtons"
+import { SectionHeader } from "@terra-money/station-ui"
 import { Read, TokenIcon } from "components/token"
 import { useTranslation } from "react-i18next"
 import styles from "./AssetPage.module.scss"
-import { SectionHeader } from "@terra-money/station-ui"
+import { decode, encode } from "js-base64"
+import { useChainID } from "data/wallet"
 import VestingCard from "./VestingCard"
 import AssetChain from "./AssetChain"
-import { decode } from "js-base64"
 import { useMemo } from "react"
 
 const AssetPage = () => {
@@ -100,32 +101,44 @@ const AssetPage = () => {
 
     return (
       <section className={styles.details}>
-        <span className={styles.token}>
-          <TokenIcon token={token} icon={icon} size={15} />
-          <Read decimals={decimals} amount={totalBalance} fixed={2} />
-          {symbol}
-        </span>
-        <h1>
-          {price ? (
-            <Read
-              decimals={decimals}
-              currency
-              amount={totalBalance * price}
-              fixed={2}
-            />
-          ) : (
-            <span>—</span>
-          )}
-        </h1>
+        <div className={styles.cost__container}>
+          <span className={styles.token}>
+            <span className={styles.icon}>
+              <TokenIcon token={token} icon={icon} size={12} />
+            </span>
+            <span className={styles.token__amount}>
+              <Read
+                decimals={decimals}
+                amount={totalBalance}
+                fixed={2}
+                denom={symbol}
+              />
+            </span>
+          </span>
+          <h1>
+            {price ? (
+              <Read
+                decimals={decimals}
+                currency
+                amount={totalBalance * price}
+                fixed={2}
+                decimalColorSecondary
+              />
+            ) : (
+              <span>—</span>
+            )}
+          </h1>
+        </div>
         <WalletActionButtons denom={token} />
       </section>
     )
   }
 
   const VestingSection = () => {
+    const chainID = useChainID()
     if (token === "uluna" && symbol !== "LUNC") {
       return (
-        <>
+        <div className={styles.chainlist}>
           <SectionHeader
             className={styles.chainlist__title}
             withLine
@@ -133,11 +146,13 @@ const AssetPage = () => {
           />
           <div
             className={styles.vesting}
-            onClick={() => navigate(`/asset/${token}/vesting`)}
+            onClick={() =>
+              navigate(`/asset/${chainID}/${encode(token)}/vesting`)
+            }
           >
             <VestingCard />
           </div>
-        </>
+        </div>
       )
     }
     return null

@@ -78,6 +78,13 @@ export const useNetwork = (): IInterchainNetworks => {
   return filterEnabledNetworks(withCustomLCDs(networks[network as NetworkName]))
 }
 
+export const useAllNetworks = (): IInterchainNetworks => {
+  const { networks } = useNetworks()
+  const [network] = useNetworkState()
+
+  return networks[network]
+}
+
 export const useNetworkName = () => {
   const network = useRecoilValue(networkState)
   return network
