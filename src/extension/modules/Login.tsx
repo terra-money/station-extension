@@ -155,11 +155,13 @@ const Login = () => {
               onChange={(e) => setRememberPassword(e.target.checked)}
             />
           </InputWrapper>
-          <SubmitButton
-            variant="primary"
-            label={t("Login")}
-            disabled={!isValid}
-          />
+          <InputWrapper>
+            <SubmitButton
+              variant="primary"
+              label={t("Login")}
+              disabled={!isValid}
+            />
+          </InputWrapper>
         </form>
       </main>
     </ExtensionPage>
