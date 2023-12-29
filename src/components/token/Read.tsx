@@ -23,17 +23,26 @@ interface Props extends Partial<FormatConfig> {
   approx?: boolean
   block?: boolean
   className?: string
+  decimalColorSecondary?: boolean
 }
 
 const Read = forwardRef(
   (
-    { amount, denom, approx, block, comma = false, ...props }: Props,
+    {
+      amount,
+      denom,
+      approx,
+      block,
+      comma = false,
+      decimalColorSecondary,
+      ...props
+    }: Props,
     ref: ForwardedRef<HTMLSpanElement>
   ) => {
     const currency = useCurrency()
 
     const amountBN = new BigNumber(amount ?? "")
-    if (!amount || amountBN.isNaN()) return null
+    if (amountBN.isNaN()) return null
     const tenToThePowerOf = (exp: number) => new BigNumber(10).pow(exp)
     const decimals = props.decimals ?? 6
 
@@ -47,7 +56,7 @@ const Read = forwardRef(
 
     const lessThanFloor = fixed ? tenToThePowerOf(-fixed) : 0
     const lessThanFixed =
-      amountBN.isPositive() &&
+      amountBN.isGreaterThan(0) &&
       amountBN.times(tenToThePowerOf(-decimals)).lt(lessThanFloor)
 
     const config = { ...props, comma, fixed }
@@ -55,11 +64,15 @@ const Read = forwardRef(
     const formattedInteger = Number(integer).toLocaleString("en-US")
 
     const renderDecimal = () => {
+      const decimalValue = lessThanFixed
+        ? `.${lessThanFloor.toString().split(".")[1]}`
+        : `.${decimal ?? (0).toFixed(fixed || 2).split(".")[1]}`
+
+      const formattedDecimalValue =
+        decimalValue.match(/^(\.\d{2,}?)0*?$/)?.[1] || decimalValue
       return (
-        <span className={cx({ small: !props?.prefix })}>
-          {lessThanFixed
-            ? `.${lessThanFloor.toString().split(".")[1]}`
-            : `.${decimal ?? (0).toFixed(fixed || 2).split(".")[1]}`}
+        <span className={cx({ [styles.grey__decimal]: decimalColorSecondary })}>
+          {formattedDecimalValue}
         </span>
       )
     }
@@ -69,7 +82,7 @@ const Read = forwardRef(
       if (!token) return null
 
       return (
-        <span className={styles.small}>
+        <span className={styles.symbol}>
           {" "}
           <WithTokenItem token={token}>
             {({ symbol }) =>

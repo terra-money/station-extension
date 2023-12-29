@@ -51,20 +51,33 @@ const ActivityList = () => {
     />
   ) : null
 
-  const render = () => {
-    if (addresses && !activity) return null
-
-    return !activity?.length ? (
+  let loader: JSX.Element | null
+  if (!activity?.length && state.isLoading) {
+    loader = (
       <div className={styles.loader}>
         <LoadingCircular size={40} />
       </div>
-    ) : (
+    )
+  } else if (activity?.length && state.isLoading) {
+    loader = (
+      <span className={styles.loadingtext}>
+        Gathering activity across all chains...
+      </span>
+    )
+  } else if (!activity?.length && !state.isLoading) {
+    loader = (
+      <span className={styles.loadingtext}>This wallet has no activity</span>
+    )
+  } else {
+    loader = null
+  }
+
+  const render = () => {
+    if (addresses && !activity) return null
+
+    return (
       <div className={styles.activitylist}>
-        {state.isLoading ? (
-          <span className={styles.loadingtext}>
-            Gathering activity across all chains...
-          </span>
-        ) : null}
+        {loader}
         {visibleActivityItems}
         {loadMoreButton}
       </div>

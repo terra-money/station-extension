@@ -15,8 +15,10 @@ export default function ExtensionFooter() {
         {version && ` v${version}`}
       </section>
       <section className={styles.links}>
-        <ExternalLink href="https://terra.sc/discord">Discord</ExternalLink>
-        <ExternalLink href="https://twitter.com/terra_money">X</ExternalLink>
+        <ExternalLink href="https://terra.sc/stationdiscord">
+          Discord
+        </ExternalLink>
+        <ExternalLink href="https://twitter.com/StationWallet">X</ExternalLink>
         <ExternalLink href="https://medium.com/terra-money">
           Medium
         </ExternalLink>
