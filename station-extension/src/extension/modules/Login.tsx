@@ -8,6 +8,8 @@ import {
 } from "auth/scripts/keystore"
 import {
   Checkbox,
+  CornerBackgroundLogo,
+  FlexColumn,
   Input,
   InputWrapper,
   StationIcon,
@@ -15,7 +17,7 @@ import {
 } from "@terra-money/station-ui"
 import ExtensionPage from "extension/components/ExtensionPage"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { useThemeFavicon } from "data/settings/Theme"
+// import { useThemeFavicon } from "data/settings/Theme"
 import { useTranslation } from "react-i18next"
 import { atom, useRecoilState } from "recoil"
 import styles from "./Login.module.scss"
@@ -88,7 +90,7 @@ function getRandomGreetings() {
 
 const Login = () => {
   const { t } = useTranslation()
-  const icon = useThemeFavicon()
+  // const icon = useThemeFavicon()
 
   const { login } = useLogin()
   const password = useRef<HTMLInputElement>(null)
@@ -120,17 +122,17 @@ const Login = () => {
   return (
     <ExtensionPage fullHeight>
       <main className={styles.login__container}>
-        <section className={styles.login}>
-          <StationIcon width={57} height={57} />
+        <CornerBackgroundLogo className={styles.logo__background} />
+        <FlexColumn align={"center"} className={styles.login} gap={16}>
+          <StationIcon width={57} height={54} />
           <h1 className={styles.title}>{t(greeting)}</h1>
           <p className={styles.content}>
             {t(
               "You have been logged out, please enter your password to unlock Station."
             )}
           </p>
-        </section>
+        </FlexColumn>
         <form
-          className={styles.password__container}
           onSubmit={(e) => {
             e.preventDefault()
             submit()
