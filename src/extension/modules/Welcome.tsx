@@ -108,7 +108,7 @@ const Welcome = () => {
               {existsLegacyWallets && (
                 <Button
                   onClick={() => openURL("/auth/migration")}
-                  variant="outlined"
+                  variant="secondary"
                   block
                   icon={<WalletIcon fill="var(--token-light-white)" />}
                   label={t("Finish wallets migration")}
