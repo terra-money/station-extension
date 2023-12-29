@@ -112,6 +112,7 @@ export default function useIbcTxs() {
           if (
             [
               "STATE_COMPLETED_SUCCESS",
+              "STATE_RECEIVED",
               "STATE_COMPLETED_ERROR",
               "STATE_ABANDONED",
             ].includes(data?.state)
@@ -130,6 +131,7 @@ export default function useIbcTxs() {
         data &&
         [
           "STATE_COMPLETED_SUCCESS",
+          "STATE_RECEIVED",
           "STATE_COMPLETED_ERROR",
           "STATE_ABANDONED",
         ].includes(data.state)
@@ -138,10 +140,11 @@ export default function useIbcTxs() {
           ...s.filter(({ txhash }) => txhash !== data.txhash),
           {
             ...data,
-            state:
-              data.state === "STATE_COMPLETED_SUCCESS"
-                ? IbcTxState.SUCCESS
-                : IbcTxState.ERROR,
+            state: ["STATE_COMPLETED_SUCCESS", "STATE_RECEIVED"].includes(
+              data.state
+            )
+              ? IbcTxState.SUCCESS
+              : IbcTxState.ERROR,
           },
         ])
       }
