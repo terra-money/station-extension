@@ -138,30 +138,31 @@ const Login = () => {
             submit()
           }}
         >
-          <InputWrapper label={t("Password")} error={error}>
-            <Input
-              type="password"
-              ref={password}
-              onChange={(e) => {
-                setIsValid(!!e.target.value)
-                setError(undefined)
-              }}
-            />
-          </InputWrapper>
-          <InputWrapper>
-            <Checkbox
-              label={t("Save password")}
-              checked={rememberPassword}
-              onChange={(e) => setRememberPassword(e.target.checked)}
-            />
-          </InputWrapper>
-          <InputWrapper>
+          <FlexColumn gap={24}>
+            <FlexColumn gap={8} align="flex-start">
+              <InputWrapper label={t("Password")} error={error}>
+                <Input
+                  type="password"
+                  ref={password}
+                  onChange={(e) => {
+                    setIsValid(!!e.target.value)
+                    setError(undefined)
+                  }}
+                />
+              </InputWrapper>
+              <Checkbox
+                label={t("Save password")}
+                checked={rememberPassword}
+                onChange={(e) => setRememberPassword(e.target.checked)}
+                className={styles.checkbox__override}
+              />
+            </FlexColumn>
             <SubmitButton
               variant="primary"
               label={t("Login")}
               disabled={!isValid}
             />
-          </InputWrapper>
+          </FlexColumn>
         </form>
       </main>
     </ExtensionPage>
