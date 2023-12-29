@@ -23,17 +23,26 @@ interface Props extends Partial<FormatConfig> {
   approx?: boolean
   block?: boolean
   className?: string
+  decimalColorSecondary?: boolean
 }
 
 const Read = forwardRef(
   (
-    { amount, denom, approx, block, comma = false, ...props }: Props,
+    {
+      amount,
+      denom,
+      approx,
+      block,
+      comma = false,
+      decimalColorSecondary,
+      ...props
+    }: Props,
     ref: ForwardedRef<HTMLSpanElement>
   ) => {
     const currency = useCurrency()
 
     const amountBN = new BigNumber(amount ?? "")
-    if (!amount || amountBN.isNaN()) return null
+    if (amountBN.isNaN()) return null
     const tenToThePowerOf = (exp: number) => new BigNumber(10).pow(exp)
     const decimals = props.decimals ?? 6
 
@@ -62,7 +71,7 @@ const Read = forwardRef(
       const formattedDecimalValue =
         decimalValue.match(/^(\.\d{2,}?)0*?$/)?.[1] || decimalValue
       return (
-        <span className={cx({ small: !props?.prefix })}>
+        <span className={cx({ [styles.grey__decimal]: decimalColorSecondary })}>
           {formattedDecimalValue}
         </span>
       )
@@ -73,7 +82,7 @@ const Read = forwardRef(
       if (!token) return null
 
       return (
-        <span className={styles.small}>
+        <span className={styles.symbol}>
           {" "}
           <WithTokenItem token={token}>
             {({ symbol }) =>
