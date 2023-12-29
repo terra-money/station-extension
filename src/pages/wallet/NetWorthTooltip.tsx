@@ -9,7 +9,6 @@ const NetWorthTooltip = () => {
         {t(
           "Portfolio value is the total value of your assets minus staked and unstaking tokens."
         )}
-        .
       </p>
     </article>
   )
