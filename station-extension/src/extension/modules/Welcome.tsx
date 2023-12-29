@@ -1,17 +1,18 @@
 import {
+  Button,
+  BuyIcon,
+  CornerBackgroundLogo,
+  FlexColumn,
+  Grid,
+  LedgerIcon,
+  StationIcon,
+  WalletIcon,
+  WalletList,
+} from "@terra-money/station-ui"
+import {
   getStoredLegacyWallets,
   isMigrationCompleted,
 } from "auth/scripts/keystore"
-import {
-  Button,
-  FlexColumn,
-  Grid,
-  WalletList,
-  StationIcon,
-  WalletIcon,
-  BuyIcon,
-  LedgerIcon,
-  CornerBackgroundLogo } from "@terra-money/station-ui"
 import ExtensionPage from "extension/components/ExtensionPage"
 // import { useThemeFavicon } from "data/settings/Theme"
 import { addressFromWords } from "utils/bech32"
