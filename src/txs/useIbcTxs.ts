@@ -10,6 +10,7 @@ type WalletName = string
 type TxHash = string
 
 export enum IbcTxState {
+  BROADCASTING = "broadcasting",
   PENDING = "loading",
   //RECEIVED = "received",
   SUCCESS = "success",
@@ -21,6 +22,7 @@ type IbcTx = {
   txhash: TxHash
   chainID: ChainID
   timestamp: number
+  msgs: Object[]
 }
 
 type StoredIbcTxs = Record<WalletName, IbcTx[]>
@@ -47,16 +49,64 @@ export default function useIbcTxs() {
     localStorage.setItem(LOCALSTORAGE_IBC_TXS_KEY, JSON.stringify(newState))
   }
 
+  // query broadcasting txs
+  useQueries(
+    txs
+      .filter(({ state }) => state === IbcTxState.BROADCASTING)
+      .map(({ chainID, txhash, ...txData }) => ({
+        queryKey: [queryKey.ibc.transactionStatus, chainID, txhash],
+        queryFn: async () => {
+          const { data } = await axios.post(
+            "https://api.skip.money/v2/tx/track",
+            {
+              tx_hash: txhash,
+              chain_id: chainID,
+            }
+          )
+          return data
+        },
+        // ping the Skip API every 5 sec
+        retryDelay: 5_000,
+        // if after 5 minutes the transaction has not been broadcasted yet set the status to failed
+        retry: (failureCount: number) => {
+          if (failureCount > 60) {
+            setIbcTxs((s) => [
+              ...s.filter((d) => txhash !== d.txhash),
+              {
+                ...txData,
+                chainID,
+                txhash,
+                state: IbcTxState.ERROR,
+              },
+            ])
+            return false
+          }
+          return true
+        },
+        onSuccess: () => {
+          setIbcTxs((s) => [
+            ...s.filter((d) => txhash !== d.txhash),
+            {
+              ...txData,
+              chainID,
+              txhash,
+              state: IbcTxState.PENDING,
+            },
+          ])
+        },
+      }))
+  )
+
   const result = useQueries(
     txs
       .filter(({ state }) => state === IbcTxState.PENDING)
-      .map(({ chainID, txhash, timestamp }) => ({
+      .map(({ chainID, txhash, ...txData }) => ({
         queryKey: [queryKey.ibc.transactionStatus, chainID, txhash],
         queryFn: async () => {
           const { data } = await axios.get(
             `https://api.skip.money/v2/tx/status?tx_hash=${txhash}&chain_id=${chainID}`
           )
-          return { state: data.state as string, txhash, chainID, timestamp }
+          return { ...txData, state: data.state as string, txhash, chainID }
         },
         refetchInterval: (data: any) => {
           if (
@@ -99,19 +149,24 @@ export default function useIbcTxs() {
   }, [result]) // eslint-disable-line
 
   return {
-    trackIbcTx: (txhash: TxHash, chainID: ChainID) => {
-      const timestamp = Date.now()
-      axios.post("https://api.skip.money/v2/tx/track", {
-        tx_hash: txhash,
-        chain_id: chainID,
-      })
+    trackIbcTx: (txhash: TxHash, chainID: ChainID, msgs: Object[]) => {
       setIbcTxs((s) => [
-        { txhash, chainID, state: IbcTxState.PENDING, timestamp },
+        {
+          txhash,
+          chainID,
+          state: IbcTxState.BROADCASTING,
+          timestamp: Date.now(),
+          msgs,
+        },
         ...s,
       ])
     },
     clearCompletedTxs: () => {
-      setIbcTxs((s) => s.filter(({ state }) => state === IbcTxState.PENDING))
+      setIbcTxs((s) =>
+        s.filter(({ state }) =>
+          [IbcTxState.PENDING, IbcTxState.BROADCASTING].includes(state)
+        )
+      )
     },
     ibcTxs: [...txs].sort((a, b) => b.timestamp - a.timestamp),
   }

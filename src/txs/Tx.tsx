@@ -304,24 +304,30 @@ function Tx<TxValues>(props: Props<TxValues>) {
         openURL([pathname, search].join("?"))
         return
       } else if (wallet) {
-        const result = await auth.post({ ...tx, fee }, password)
+        const result = await auth.post(
+          { ...tx, fee },
+          password,
+          undefined,
+          // use broadcast mode = "block" if we are not showing the broadcast loader
+          isIbc || hideLoader
+        )
 
-        !hideLoader &&
+        if (!hideLoader && !isIbc) {
           setLatestTx({
             txhash: result.txhash,
             queryKeys,
-            onSuccess: isIbc
-              ? () => {
-                  navigate("/#1")
-                  trackIbcTx(result.txhash, tx.chainID)
-                  onSuccess?.()
-                }
-              : onSuccess,
-            redirectAfterTx: isIbc
-              ? { label: t("Done!"), path: "/#1" }
-              : redirectAfterTx,
+            onSuccess: onSuccess,
+            redirectAfterTx: redirectAfterTx,
             chainID: chain,
           })
+        } else if (isIbc) {
+          trackIbcTx(
+            result.txhash,
+            tx.chainID,
+            tx.msgs.map((m) => m.toData())
+          )
+          navigate("/#1")
+        }
       }
 
       onPost?.()
@@ -426,6 +432,10 @@ function Tx<TxValues>(props: Props<TxValues>) {
             </>
           )}
 
+          {error && (isIbc || hideLoader) && (
+            <Banner variant="error" title={error.message} />
+          )}
+
           <SubmitButton
             variant="primary"
             className={styles.submit}
@@ -441,18 +451,19 @@ function Tx<TxValues>(props: Props<TxValues>) {
     </>
   )
 
-  const modal = !error
-    ? undefined
-    : {
-        title: error?.toString().includes("UserDenied")
-          ? t("Transaction was denied by user")
-          : t("Error"),
-        children: error?.toString().includes("UserDenied") ? null : (
-          <Pre height={120} normal break>
-            {error.message}
-          </Pre>
-        ),
-      }
+  const modal =
+    !error || isIbc || hideLoader
+      ? undefined
+      : {
+          title: error?.toString().includes("UserDenied")
+            ? t("Transaction was denied by user")
+            : t("Error"),
+          children: error?.toString().includes("UserDenied") ? null : (
+            <Pre height={120} normal break>
+              {error.message}
+            </Pre>
+          ),
+        }
 
   return (
     <>

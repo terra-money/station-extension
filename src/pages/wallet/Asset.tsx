@@ -51,8 +51,6 @@ const Asset = (props: Props) => {
     return props.tokenChainInfo.reduce((acc, chain) => {
       const bal = Math.pow(10, -decimals) * parseInt(chain.balance)
 
-      // console.log("chain", chain)
-
       if (!isNaN(bal)) {
         acc.push({
           name: chain.chainName,

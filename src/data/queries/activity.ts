@@ -60,7 +60,6 @@ export const useTxActivity = () => {
           const hashArray: string[] = []
 
           if (!networks?.[chainID]?.lcd) {
-            console.log({ chainID })
             return result
           }
 
