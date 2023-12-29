@@ -27,7 +27,7 @@ import "scss/storybookoverrides.scss";
 - **`hasTimeline`** - `boolean` - Just to display the dotted line.
 - **`onClick`** - `() => void` - Function that is called when the activity item is clicked.
 -
-- **`progressTracker`** - `boolean` - Display a `<ProgressTracker />` in the activity item.
+- **`progressTracker`** - `boolean` - Display a `<TransactionTracker />` in the activity item.
 
 
 ## Import
@@ -45,6 +45,25 @@ Activity with a green check icon on the chain icon.
     <ActivityListItem
   variant={"success"}
   chain={{ icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" }}
+  msg={
+    <div>
+      Sent <span>420.00 LUNA</span> to <span>terra1...20k38v</span>
+    </div>
+  }
+  type={"Execute Contract"}
+  msgCount={1}
+/>
+  `} />
+</div>
+
+## Successful Chain Image Fallback
+Activity with a green check icon on the chain icon but, the chain image failed to load so we use a fallback svg.
+<div className="story_with_source_below">
+  <Canvas of={ActivityListItemStories.SuccessfulNoImage} />
+  <Source code={`
+    <ActivityListItem
+  variant={"success"}
+  chain={{ icon: "https://station-assets.terra.dev/img/chains/T.svg", label: "Terra" }}
   msg={
     <div>
       Sent <span>420.00 LUNA</span> to <span>terra1...20k38v</span>
@@ -132,10 +151,10 @@ Displays a secondary pill in line with the "type" pill.
   `} />
 </div>
 
-## With ProgressTracker
-Displays a `<ProgressTracker />` in the activity item.
+## With TransactionTracker
+Displays a `<TransactionTracker />` in the activity item.
 <div className="story_with_source_below">
-  <Canvas of={ActivityListItemStories.WithProgressTracker} />
+  <Canvas of={ActivityListItemStories.WithTransactionTracker} />
   <Source code={`
     <ActivityListItem
   variant={"loading"}
@@ -149,7 +168,7 @@ Displays a `<ProgressTracker />` in the activity item.
   msgCount={1}
   secondaryPill={<Pill variant={"warning"} text={"Pending"} />}
   progressTracker={
-    <ProgressTracker
+    <TransactionTracker
       steps={["completed", "incomplete", "incomplete"]}
       stepLabels={["Terra", "Osmosis", "Something"]}
     />

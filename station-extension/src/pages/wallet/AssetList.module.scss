@@ -5,28 +5,36 @@
   grid-template-areas: "title" "list";
   grid-template-rows: min-content auto;
   overflow-y: hidden;
+  row-gap: 16px;
 }
 
 .assetlist__title {
   @include flex(space-between);
-  margin: 25px 10px 0px 10px;
+  padding: 10px 10px 0px 10px;
   grid-area: title;
 }
 
 .assetlist__list {
   grid-area: list;
-  padding-bottom: 1.6rem;
+  padding-bottom: 8px;
+
+  .asset__section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 }
 
 .filter__input {
-  margin-top: 16px;
-  margin-bottom: 24px;
+  margin: 0px 10px 10px 10px;
 }
 
 .filter {
   cursor: pointer;
-  &.inactive {
-    color: var(--token-light-100);
+  min-width: 16px;
+  transition: all 0.1s ease-in-out;
+  &.active {
+    fill: var(--token-light-white);
   }
 }
 

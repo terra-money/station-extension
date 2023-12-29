@@ -1,7 +1,7 @@
 import WalletSelectableListItem from "components/displays/list-items/selectable/wallet/WalletSelectableListItem"
 import SectionHeader from "components/headers/section/SectionHeader"
-import styles from "./WalletList.module.scss"
 import { truncate } from "utils/format"
+import styles from "./WalletList.module.scss"
 
 export interface WalletListProps {
   activeWallet?: {
@@ -30,11 +30,10 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
           />
           <WalletSelectableListItem
             label={activeWallet.name}
-            walletName="Big Money"
+            walletName={activeWallet.name}
             copyValue={activeWallet.address}
             subLabel={truncate(activeWallet.address)}
             active
-            onClick={() => {}}
             settingsOnClick={activeWallet.settingsOnClick}
           />
         </div>
@@ -43,14 +42,15 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
       {!!otherWallets.length && (
         <div className={styles.other__wallets}>
           {activeWallet && <SectionHeader title="Other Wallets" indented />}
-          {otherWallets.map((wallet) => (
+          {otherWallets.map((wallet, i) => (
             <WalletSelectableListItem
               label={wallet.name}
-              walletName="Money"
+              walletName={wallet.name}
               copyValue={wallet.address}
               subLabel={truncate(wallet.address)}
               onClick={wallet.onClick}
               settingsOnClick={wallet.settingsOnClick}
+              key={i}
             />
           ))}
         </div>

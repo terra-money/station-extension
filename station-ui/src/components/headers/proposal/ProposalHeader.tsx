@@ -1,4 +1,5 @@
 import { FlexColumn } from 'components';
+import { ChainImage } from 'components/displays/list-items/token/utils';
 import styles from './ProposalHeader.module.scss';
 
 export interface ProposalHeaderProps {
@@ -17,7 +18,12 @@ const ProposalHeader = ({
   return (
     <FlexColumn className={styles.proposal__header__container} gap={16} align={"flex-start"}>
       <div className={styles.meta__container}>
-        <img src={metaImage} alt="Proposal Meta" />
+        <ChainImage
+          chainImg={metaImage}
+          chainName={metaText}
+          className={styles.meta__icon}
+          small
+        />
         <h6 className={styles.meta__text}>{metaText}</h6>
       </div>
       <h3 className={styles.title}>{title}</h3>

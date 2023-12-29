@@ -2,7 +2,6 @@ import { ButtonItem, LinkItem } from "extension/components/ExtensionList"
 import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined"
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
-import LogoutIcon from "@mui/icons-material/Logout"
 import QrCodeIcon from "@mui/icons-material/QrCode"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
@@ -13,7 +12,7 @@ import is from "../../scripts/is"
 export const useManageWallet = (walletName: string) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { wallets, disconnect, lock, connectedWallet } = useAuth()
+  const { wallets, lock, connectedWallet } = useAuth()
 
   const wallet = wallets.find((w) => w.name === walletName)
 
@@ -41,15 +40,6 @@ export const useManageWallet = (walletName: string) => {
     icon: <FactCheckOutlinedIcon />,
   }
 
-  const disconnectWallet = connectedWallet?.name === walletName && {
-    onClick: () => {
-      disconnect()
-      navigate("/", { replace: true })
-    },
-    children: t("Disconnect"),
-    icon: <LogoutIcon />,
-  }
-
   // TODO: move into extension settings
   // eslint-disable-next-line
   const lockWallet = {
@@ -66,9 +56,9 @@ export const useManageWallet = (walletName: string) => {
 
   return (
     is.multisig(wallet)
-      ? [toPostMultisig, toDelete, disconnectWallet]
+      ? [toPostMultisig, toDelete]
       : is.ledger(wallet)
-      ? [toSignMultisig, toDelete, disconnectWallet]
-      : [toExport, toDelete, toSignMultisig, disconnectWallet]
+      ? [toSignMultisig, toDelete]
+      : [toExport, toDelete, toSignMultisig]
   ).filter((opt) => !!opt) as (LinkItem | ButtonItem)[]
 }

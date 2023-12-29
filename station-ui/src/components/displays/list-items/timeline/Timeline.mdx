@@ -127,6 +127,13 @@ This is an example of a timeline with a start item overridden and a show more bu
   `} />
 </div>
 
+## StartItem Overridden W/Show More No Image
+This is an example of a timeline with a start item overridden and a show more button without a Chain image.
+<div className="story_with_source_below">
+  <Canvas of={TimelineStories.StartItemOverriddenWithShowMoreNOIMAGE} />
+  <Source code={`Same as above`} />
+</div>
+
 ## Transaction Page Example
 This is an example of a Swap transaction detail page with a timeline.
 <div className="story_with_source_below">
@@ -293,6 +300,21 @@ The first item of the timeline.
   `} />
 </div>
 
+## Start Item No Image
+The first item of the timeline with no image.
+<div className="story_with_source_below">
+  <Canvas of={TimelineStories.StartItemNOIMG} />
+  <Source code={`
+    <Timeline
+  startItem={{
+    chain: { icon: "", label: "Axelar" },
+    coin: {icon: "", label: "axlUSDC" },
+    msg: "1,500 axlUSDC",
+  }}
+/>
+  `} />
+</div>
+
 ## Middle Item Default
 The default middle item of the timeline.
 <div className="story_with_source_below">
@@ -434,6 +456,21 @@ The end item of the timeline.
   endItem={{
     chain: { icon: "https://station-assets.terra.dev/img/chains/Terra.svg", label: "Terra" },
     coin: {icon: "https://station-assets.terra.dev/img/coins/Luna.svg", label: "LUNA" },
+    msg: "3,422.65 LUNA",
+  }}
+/>
+  `} />
+</div>
+
+## End Item No Image
+The end item of the timeline with no image.
+<div className="story_with_source_below">
+  <Canvas of={TimelineStories.EndItemNOIMG} />
+  <Source code={`
+    <Timeline
+  endItem={{
+    chain: { icon: "", label: "Terra" },
+    coin: {icon: "", label: "LUNA" },
     msg: "3,422.65 LUNA",
   }}
 />

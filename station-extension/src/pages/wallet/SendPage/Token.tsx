@@ -144,7 +144,7 @@ const Token = () => {
               {filtered.length === 0 && <Empty />}
               {filtered.map((asset: AssetType, i: number) => (
                 <TokenSingleChainListItem
-                  key={i}
+                  key={`asset-${i}-${asset.denom}`}
                   {...asset}
                   onClick={() => onClick(asset)}
                 />

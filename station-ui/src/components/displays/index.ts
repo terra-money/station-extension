@@ -13,8 +13,8 @@ export * from './radio-lists';
 export { default as SwapSummary } from './swap-summary/SwapSummary';
 export * from './swap-summary/SwapSummary';
 
-export { default as ProgressTracker } from './progress-tracker/ProgressTracker';
-export * from './progress-tracker/ProgressTracker';
+export { default as TransactionTracker } from './transaction-tracker/TransactionTracker';
+export * from './transaction-tracker/TransactionTracker';
 
 export { default as VotingSummary } from './voting-summary/VotingSummary';
 export * from './voting-summary/VotingSummary';

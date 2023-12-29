@@ -32,4 +32,7 @@ if (
   window.interchainWallets = [STATION_INFO]
 }
 
-window.station = new Station()
+Object.defineProperty(window, 'station', {
+  value: new Station(),
+  writable: false
+});

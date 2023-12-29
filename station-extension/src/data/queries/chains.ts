@@ -1,5 +1,5 @@
 import { AccAddress } from "@terra-money/feather.js"
-import { useNetwork } from "data/wallet"
+import { useAllNetworks } from "data/wallet"
 import { InterchainNetwork } from "types/network"
 import createContext from "utils/createContext"
 
@@ -69,7 +69,8 @@ export function getChainIdFromAddress(
 }
 
 export function useIBCChannels() {
-  const networks = useNetwork()
+  // the destination netowrk does not need to be enabled in order to send tokens to it
+  const networks = useAllNetworks()
 
   function getICS20(to: string, from: string, token: AccAddress) {
     const channels = networks[from]?.ics20Channels?.[to]

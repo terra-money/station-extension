@@ -58,7 +58,7 @@ const Asset = (props: Props) => {
           name: chain.chainName,
           chain: chain.chainID,
           icon: chain.chainIcon,
-          balance: bal.toFixed(2),
+          balance: bal.toLocaleString(),
         })
       }
 

@@ -1,33 +1,38 @@
-import { useTranslation } from "react-i18next"
-import { useThemeFavicon } from "data/settings/Theme"
-import styles from "./Welcome.module.scss"
-import ExtensionPage from "extension/components/ExtensionPage"
-import { Button, WalletList } from "@terra-money/station-ui"
-import { useAuth } from "auth"
-import { openURL } from "extension/storage"
-import { addressFromWords } from "utils/bech32"
-import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
-import { ReactComponent as UsbIcon } from "styles/images/icons/Usb.svg"
-import { ReactComponent as WalletIcon } from "styles/images/icons/Wallet.svg"
+import {
+  Button,
+  BuyIcon,
+  CornerBackgroundLogo,
+  FlexColumn,
+  Grid,
+  LedgerIcon,
+  StationIcon,
+  WalletIcon,
+  WalletList,
+} from "@terra-money/station-ui"
 import {
   getStoredLegacyWallets,
   isMigrationCompleted,
 } from "auth/scripts/keystore"
+import ExtensionPage from "extension/components/ExtensionPage"
+// import { useThemeFavicon } from "data/settings/Theme"
+import { addressFromWords } from "utils/bech32"
+import { useTranslation } from "react-i18next"
+import { openURL } from "extension/storage"
+import styles from "./Welcome.module.scss"
+import { useAuth } from "auth"
 
 const Welcome = () => {
   const { t } = useTranslation()
-  const icon = useThemeFavicon()
+  // const icon = useThemeFavicon()
   const { wallets, connect } = useAuth()
   const existsWallets = wallets.length > 0
   const existsLegacyWallets = getStoredLegacyWallets().length > 0
   const migrationCompleted = isMigrationCompleted()
 
   return (
-    <ExtensionPage
-      backgroundColor={existsWallets ? undefined : "main"}
-      fullHeight
-    >
+    <ExtensionPage fullHeight>
       <main className={styles.welcome__container}>
+        <CornerBackgroundLogo className={styles.logo__background} />
         {existsWallets ? (
           <WalletList
             otherWallets={wallets.map((w) => ({
@@ -40,8 +45,8 @@ const Welcome = () => {
             }))}
           />
         ) : (
-          <section className={styles.welcome}>
-            <img src={icon} alt="Station" width={60} />
+          <FlexColumn align={"center"} className={styles.welcome} gap={16}>
+            <StationIcon width={57} height={54} />
             <h1 className={styles.title}>{t("Welcome!")}</h1>
             <p className={styles.content}>
               {t(
@@ -50,30 +55,30 @@ const Welcome = () => {
                   : "Station Wallet is the gateway to the interchain and beyond! Please choose how to get started below."
               )}
             </p>
-          </section>
+          </FlexColumn>
         )}
-        <section className={styles.connect__options}>
+        <Grid gap={16}>
           {!existsWallets && existsLegacyWallets && !migrationCompleted ? (
             <>
               <Button
                 onClick={() => openURL("/auth/migration")}
-                variant="white-filled"
+                variant="primary"
                 block
-                icon={<WalletIcon />}
+                icon={<WalletIcon fill="var(--token-light-white)" />}
                 label={t("Upgrade wallets")}
               />
               <Button
                 onClick={() => openURL("/auth/new")}
-                variant="outlined"
+                variant="secondary"
                 block
-                icon={<AddIcon />}
+                icon={<BuyIcon fill="var(--token-light-white)" />}
                 label={t("Create new wallet")}
               />
               <Button
                 onClick={() => openURL("/auth/ledger")}
-                variant="outlined"
+                variant="secondary"
                 block
-                icon={<UsbIcon />}
+                icon={<LedgerIcon fill="var(--token-light-white)" />}
                 label={t("Connect Ledger wallet")}
               />
             </>
@@ -81,24 +86,23 @@ const Welcome = () => {
             <>
               <Button
                 onClick={() => openURL("/auth/recover")}
-                variant="white-filled"
+                variant="primary"
                 block
-                icon={<WalletIcon />}
+                icon={<WalletIcon fill="var(--token-light-white)" />}
                 label={t("Import existing wallet")}
-                style={existsWallets ? { color: "var(--token-dark-200)" } : {}}
               />
               <Button
                 onClick={() => openURL("/auth/new")}
-                variant="outlined"
+                variant="primary"
                 block
-                icon={<AddIcon />}
+                icon={<BuyIcon fill="var(--token-light-white)" />}
                 label={t("Create new wallet")}
               />
               <Button
                 onClick={() => openURL("/auth/ledger")}
-                variant="outlined"
+                variant="primary"
                 block
-                icon={<UsbIcon />}
+                icon={<LedgerIcon fill="var(--token-light-white)" />}
                 label={t("Connect Ledger wallet")}
               />
               {existsLegacyWallets && (
@@ -106,13 +110,13 @@ const Welcome = () => {
                   onClick={() => openURL("/auth/migration")}
                   variant="outlined"
                   block
-                  icon={<WalletIcon />}
+                  icon={<WalletIcon fill="var(--token-light-white)" />}
                   label={t("Finish wallets migration")}
                 />
               )}
             </>
           )}
-        </section>
+        </Grid>
       </main>
     </ExtensionPage>
   )
