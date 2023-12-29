@@ -61,7 +61,7 @@ export const getCanonicalMsg = (
       /* ----------------------- Withdraw Delegation Reward ----------------------- */
 
       case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward":
-        extractMsgFn = (msg: any) => {
+        extractMsgFn = (_: any) => {
           const rewardsMsgsData = getRewardMsgs(msgEvents)
           returnMsgs.push(...rewardsMsgsData)
         }
