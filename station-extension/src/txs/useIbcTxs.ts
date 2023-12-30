@@ -162,6 +162,64 @@ export const useIbcTxStatus = (
   )
 }
 
+export const useIbcPrevHop = (details?: IbcTxDetails) => {
+  const src_chain_id = useIbcChannelInfo(
+    details
+      ? [
+          {
+            ...details,
+            src_channel: details.dst_channel,
+            src_port: details.dst_port,
+            dst_channel: details.src_channel,
+            dst_port: details.src_port,
+          },
+        ]
+      : []
+  )[0]?.data
+  const networks = useNetwork()
+
+  const lcd = networks[src_chain_id ?? ""]?.lcd
+
+  return useQuery(
+    [
+      queryKey.ibc.sendPacket,
+      details?.sequence,
+      details?.dst_channel,
+      details?.src_channel,
+      lcd,
+    ],
+    async (): Promise<ActivityItem | undefined> => {
+      const { data } = await axios.get(
+        `/cosmos/tx/v1beta1/txs?events=send_packet.packet_sequence%3D${
+          details!.sequence
+        }&events=send_packet.packet_src_channel%3D%27${
+          details!.src_channel
+        }%27&events=send_packet.packet_dst_channel%3D%27${
+          details!.dst_channel
+        }%27`,
+        { baseURL: lcd }
+      )
+
+      return {
+        ...(data.tx_responses as ActivityItem[])[0],
+        chain: src_chain_id,
+      } as ActivityItem
+    },
+    {
+      staleTime: Infinity,
+      enabled: !!details && !!lcd,
+      refetchInterval: (data?: ActivityItem) => {
+        if (data) {
+          return false
+        }
+        return (details?.timeout_timestamp ?? 0) + 60_000 < new Date().getTime()
+          ? 25_000
+          : false
+      },
+    }
+  )
+}
+
 export const useIbcNextHop = (details?: IbcTxDetails) => {
   const dst_chain_id = useIbcChannelInfo(details ? [details] : [])[0]?.data
   const networks = useNetwork()
@@ -177,7 +235,6 @@ export const useIbcNextHop = (details?: IbcTxDetails) => {
       lcd,
     ],
     async (): Promise<ActivityItem | undefined> => {
-      // /cosmos/tx/v1beta1/txs?events=recv_packet.packet_sequence%3D31445&events=recv_packet.packet_src_channel%3D%27channel-251%27
       const { data } = await axios.get(
         `/cosmos/tx/v1beta1/txs?events=recv_packet.packet_sequence%3D${
           details!.sequence
@@ -189,21 +246,8 @@ export const useIbcNextHop = (details?: IbcTxDetails) => {
         { baseURL: lcd }
       )
 
-      const result = (data.tx_responses as ActivityItem[]).find(
-        (tx: ActivityItem) => {
-          const recvDetails = getRecvIbcTxDetails(tx)
-          return (
-            recvDetails &&
-            details!.src_port === recvDetails.src_port &&
-            details!.dst_port === recvDetails.dst_port
-          )
-        }
-      )
-
-      if (!result) return undefined
-
       return {
-        ...result,
+        ...(data.tx_responses as ActivityItem[])[0],
         chain: dst_chain_id,
       } as ActivityItem
     },

@@ -18,7 +18,13 @@ import { useAllInterchainAddresses } from "auth/hooks/useAddress"
 import { getCanonicalMsg } from "@terra-money/terra-utils"
 import { last } from "ramda"
 import ActivityMessage from "./ActivityMessage"
-import { IbcTxDetails, getIbcTxDetails, useIbcNextHop } from "txs/useIbcTxs"
+import {
+  IbcTxDetails,
+  getIbcTxDetails,
+  getRecvIbcTxDetails,
+  useIbcNextHop,
+  useIbcPrevHop,
+} from "txs/useIbcTxs"
 
 interface Props {
   variant: "success" | "failed" | "loading"
@@ -51,6 +57,48 @@ export const useParseMessages = () => {
 
     return { activityMessages, activityType }
   }
+}
+
+const PrevHopActivity = (ibcDetails: IbcTxDetails) => {
+  const { data: tx } = useIbcPrevHop(ibcDetails)
+  const network = useNetwork()
+  const { t } = useTranslation()
+  const parseMsgs = useParseMessages()
+
+  // create a loader
+  if (!tx)
+    return (
+      <ActivityListItem
+        variant={"loading"}
+        // @ts-expect-error
+        chain={{}}
+        msg={t("Loading IBC activity...")}
+        type={t("Loading")}
+        //time={t(toNow(new Date(tx.timestamp)))}
+        hasTimeline
+      />
+    )
+
+  const { activityMessages, activityType } = parseMsgs(tx)
+
+  const prevIbcDetails = getRecvIbcTxDetails(tx)
+
+  return (
+    <>
+      {!!prevIbcDetails && <PrevHopActivity {...prevIbcDetails} />}
+      <ActivityListItem
+        variant={tx.code === 0 ? "success" : "failed"}
+        chain={{
+          icon: network[tx.chain].icon,
+          label: network[tx.chain].name,
+        }}
+        msg={activityMessages[0]}
+        type={t(activityType)}
+        time={t(toNow(new Date(tx.timestamp)))}
+        hasTimeline
+      />
+    </>
+  )
 }
 
 const NextHopActivity = (ibcDetails: IbcTxDetails) => {
@@ -112,6 +160,7 @@ const ActivityDetailsPage = ({
   const explorer = networks[chain ?? ""]?.explorer
   const externalLink = explorer?.tx?.replace("{}", txHash)
   const ibcDetails = getIbcTxDetails({ logs, chain })
+  const prevIbcDetails = getRecvIbcTxDetails({ logs, chain })
 
   const timelineDisplayMessages = timelineMessages.map(
     (message: ReactElement) => {
@@ -136,6 +185,7 @@ const ActivityDetailsPage = ({
   return (
     <div className={styles.txcontainer}>
       <div className={styles.activityitem}>
+        {!!prevIbcDetails && <PrevHopActivity {...prevIbcDetails} />}
         <Timeline
           startOverride={
             <ActivityListItem
