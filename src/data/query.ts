@@ -63,6 +63,7 @@ export const queryKey = mirror({
     channelInfo: "",
     packetStatus: "",
     receivePacket: "",
+    sendPacket: "",
   },
   market: { params: "" },
   coingecko: {
