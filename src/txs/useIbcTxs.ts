@@ -200,6 +200,8 @@ export const useIbcPrevHop = (details?: IbcTxDetails) => {
         { baseURL: lcd }
       )
 
+      if (!data.tx_responses.length) return undefined
+
       return {
         ...(data.tx_responses as ActivityItem[])[0],
         chain: src_chain_id,
@@ -245,6 +247,8 @@ export const useIbcNextHop = (details?: IbcTxDetails) => {
         }%27`,
         { baseURL: lcd }
       )
+
+      if (!data.tx_responses.length) return undefined
 
       return {
         ...(data.tx_responses as ActivityItem[])[0],
