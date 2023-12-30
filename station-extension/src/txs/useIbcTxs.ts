@@ -172,18 +172,20 @@ export const useIbcNextHop = (details?: IbcTxDetails) => {
     [
       queryKey.ibc.receivePacket,
       details?.sequence,
-      details?.timeout_timestamp,
       details?.dst_channel,
       details?.src_channel,
       lcd,
     ],
     async (): Promise<ActivityItem | undefined> => {
+      // /cosmos/tx/v1beta1/txs?events=recv_packet.packet_sequence%3D31445&events=recv_packet.packet_src_channel%3D%27channel-251%27
       const { data } = await axios.get(
         `/cosmos/tx/v1beta1/txs?events=recv_packet.packet_sequence%3D${
           details!.sequence
-        }&recv_packet.packet_timeout_timestamp%3D${
-          details!.timeout_timestamp * 1_000_000
-        }`,
+        }&events=recv_packet.packet_src_channel%3D%27${
+          details!.src_channel
+        }%27&events=recv_packet.packet_dst_channel%3D%27${
+          details!.dst_channel
+        }%27`,
         { baseURL: lcd }
       )
 
@@ -192,8 +194,6 @@ export const useIbcNextHop = (details?: IbcTxDetails) => {
           const recvDetails = getRecvIbcTxDetails(tx)
           return (
             recvDetails &&
-            details!.dst_channel === recvDetails.dst_channel &&
-            details!.src_channel === recvDetails.src_channel &&
             details!.src_port === recvDetails.src_port &&
             details!.dst_port === recvDetails.dst_port
           )
