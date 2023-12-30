@@ -62,6 +62,7 @@ export const queryKey = mirror({
     trackTx: "",
     channelInfo: "",
     packetStatus: "",
+    receivePacket: "",
   },
   market: { params: "" },
   coingecko: {

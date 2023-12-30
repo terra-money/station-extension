@@ -47,7 +47,7 @@ import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
 import { openURL } from "extension/storage"
 import DisplayFees from "./feeAbstraction/DisplayFees"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
-//import useIbcTxs from "./useIbcTxs"
+import { usePendingIbcTx } from "./useIbcTxs"
 import { useNavigate } from "react-router-dom"
 
 const cx = classNames.bind(styles)
@@ -117,7 +117,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const setLatestTx = useSetRecoilState(latestTxState)
   const isBroadcasting = useRecoilValue(isBroadcastingState)
   const { data: carbonFees } = useCarbonFees()
-  //const { trackIbcTx } = useIbcTxs()
+  const { addTx: trackIbcTx } = usePendingIbcTx()
 
   /* taxes */
   const isClassic = networks[chain]?.isClassic
@@ -321,11 +321,8 @@ function Tx<TxValues>(props: Props<TxValues>) {
             chainID: chain,
           })
         } else if (isIbc) {
-          /*trackIbcTx(
-            result.txhash,
-            tx.chainID,
-            tx.msgs.map((m) => m.toData())
-          )*/
+          console.log(result)
+          trackIbcTx({ ...(result as any), chain } as ActivityItem)
           navigate("/#1")
         }
       }
