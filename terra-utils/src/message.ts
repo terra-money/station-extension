@@ -101,10 +101,16 @@ export const getCanonicalMsg = (
             memo: ibcMemo,
           } = msg as any
 
-            const trueIBCDenom = getTrueDenom(ibcDenom)
-            const transferAsset = `${ibcAmount}${trueIBCDenom}`
+          const trueIBCDenom = getTrueDenom(ibcDenom)
+          const transferAsset = `${ibcAmount}${trueIBCDenom}`
 
-          const ibcMemoInfo = JSON.parse(ibcMemo)
+          let ibcMemoInfo
+          try {
+            ibcMemoInfo = JSON.parse(ibcMemo)
+          } catch (error) {
+            // Memo is not parsable as JSON.
+            ibcMemoInfo = undefined
+          }
           const trueIBCReceiver = ibcMemoInfo?.forward?.receiver
             ? ibcMemoInfo.forward.receiver
             : ibcReceiver
@@ -345,11 +351,11 @@ export const getCanonicalMsg = (
           } = JSON.parse(
             Buffer.from((msg as any).packet.data, "base64").toString()
           )
-  
+
           if (userAddresses.includes(packetReceiver)) {
             const trueDenom = getTrueDenom(denom)
             const receiveIBCAmount = `${amount}${trueDenom}`
-  
+
             returnMsgs.push({
               msgType: "Send",
               canonicalMsg: [
@@ -408,6 +414,7 @@ const extractMsg = (
 Failed to parse message:
 Type: ${msgType}
 Hash: ${txHash}
+Error: ${error}
     `)
   }
 }
