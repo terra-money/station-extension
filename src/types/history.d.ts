@@ -84,7 +84,6 @@ interface TxLogEvent {
 
 type ActivityItem = AccountHistoryItem & {
   chain: string
-  relatedTxs?: ActivityItem[]
 }
 
 interface TxMessage {

@@ -1,43 +1,18 @@
-import { useAllInterchainAddresses } from "auth/hooks/useAddress"
 import {
   ActivityListItem,
   ModalButton,
   StepStatus,
   TransactionTracker,
 } from "@terra-money/station-ui"
-import ActivityDetailsPage from "./ActivityDetailsPage"
-import { getCanonicalMsg } from "@terra-money/terra-utils"
-import ActivityMessage from "./ActivityMessage"
+import ActivityDetailsPage, { useParseMessages } from "./ActivityDetailsPage"
 import styles from "./ActivityItem.module.scss"
 import { useTranslation } from "react-i18next"
 import { useNetwork } from "data/wallet"
 import { toNow } from "utils/date"
-import { last } from "ramda"
 import { useState } from "react"
 import useInterval from "utils/hooks/useInterval"
 import { intervalToDuration } from "date-fns"
-import { getIbcTxDetails, useIbcTxStatus } from "txs/useIbcTxs"
-
-const useParseMessages = () => {
-  const addresses = useAllInterchainAddresses() ?? {}
-
-  return (tx: ActivityItem) => {
-    const canonicalMessages = getCanonicalMsg(tx as any, addresses)
-
-    let msgType = ""
-
-    const activityMessages = canonicalMessages?.map((msg, index) => {
-      if (index === 0 && msg?.msgType) {
-        msgType = last(msg?.msgType.split("/")) ?? ""
-      }
-      return msg && <ActivityMessage chainID={tx.chain} msg={msg} key={index} />
-    })
-
-    const activityType = msgType.charAt(0).toUpperCase() + msgType.substring(1)
-
-    return { activityMessages, activityType }
-  }
-}
+import { getIbcTxDetails, useIbcTxStatus, usePendingIbcTx } from "txs/useIbcTxs"
 
 const ActivityItem = ({
   txhash,
@@ -51,13 +26,15 @@ const ActivityItem = ({
   const { code, tx } = props
   const success = code === 0
   const ibcDetails = getIbcTxDetails({
-    txhash,
-    timestamp,
     chain,
     ...props,
   })
+
+  const { showStatusTxHashes } = usePendingIbcTx()
   const isIbc = !!ibcDetails
-  const { data: ibcStatus } = useIbcTxStatus(ibcDetails)
+  const showStatusBar = isIbc && showStatusTxHashes.includes(txhash)
+  const ibcStatus = useIbcTxStatus(ibcDetails ? [ibcDetails] : [])[0]?.data
+
   const activityVariant = isIbc
     ? ibcStatus || "loading"
     : success
@@ -121,10 +98,10 @@ const ActivityItem = ({
               }}
               msg={activityMessages[0]}
               type={t(activityType)}
-              time={isIbc ? undefined : t(toNow(new Date(timestamp)))}
+              time={showStatusBar ? undefined : t(toNow(new Date(timestamp)))}
               msgCount={activityMessages.slice(1).length}
             />
-            {isIbc && (
+            {showStatusBar && (
               <div className={styles.transaction__progress}>
                 <TransactionTracker
                   steps={ibcSteps()}
@@ -147,20 +124,7 @@ const ActivityItem = ({
           timelineMessages={activityMessages.slice(1)}
           txHash={txhash}
           fee={tx?.auth_info?.fee?.amount ?? []}
-          relatedTxs={(props.relatedTxs || []).map((tx, i) => (
-            <ActivityListItem
-              variant={tx.code === 0 ? "success" : "failed"}
-              chain={{
-                icon: network[tx.chain].icon,
-                label: network[tx.chain].name,
-              }}
-              msg={parseMsgs(tx).activityMessages[0]}
-              type={t(parseMsgs(tx).activityType)}
-              time={t(toNow(new Date(timestamp)))}
-              msgCount={parseMsgs(tx).activityMessages.slice(1).length}
-              hasTimeline={i + 1 !== props.relatedTxs?.length}
-            />
-          ))}
+          logs={props.logs}
         />
       </ModalButton>
     </div>

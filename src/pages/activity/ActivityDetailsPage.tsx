@@ -14,6 +14,11 @@ import { useNetwork } from "data/wallet"
 import { toNow } from "utils/date"
 import moment from "moment"
 import { ReactElement } from "react"
+import { useAllInterchainAddresses } from "auth/hooks/useAddress"
+import { getCanonicalMsg } from "@terra-money/terra-utils"
+import { last } from "ramda"
+import ActivityMessage from "./ActivityMessage"
+import { IbcTxDetails, getIbcTxDetails, useIbcNextHop } from "txs/useIbcTxs"
 
 interface Props {
   variant: "success" | "failed" | "loading"
@@ -24,7 +29,70 @@ interface Props {
   timelineMessages: ReactElement[]
   txHash: string
   fee: CoinData[]
-  relatedTxs: ReactElement[]
+  logs: TxLog[]
+}
+
+export const useParseMessages = () => {
+  const addresses = useAllInterchainAddresses() ?? {}
+
+  return (tx: ActivityItem) => {
+    const canonicalMessages = getCanonicalMsg(tx as any, addresses)
+
+    let msgType = ""
+
+    const activityMessages = canonicalMessages?.map((msg, index) => {
+      if (index === 0 && msg?.msgType) {
+        msgType = last(msg?.msgType.split("/")) ?? ""
+      }
+      return msg && <ActivityMessage chainID={tx.chain} msg={msg} key={index} />
+    })
+
+    const activityType = msgType.charAt(0).toUpperCase() + msgType.substring(1)
+
+    return { activityMessages, activityType }
+  }
+}
+
+const NextHopActivity = (ibcDetails: IbcTxDetails) => {
+  const { data: tx } = useIbcNextHop(ibcDetails)
+  const network = useNetwork()
+  const { t } = useTranslation()
+  const parseMsgs = useParseMessages()
+
+  // create a loader
+  if (!tx)
+    return (
+      <ActivityListItem
+        variant={"loading"}
+        // @ts-expect-error
+        chain={{}}
+        msg={t("Loading IBC activity...")}
+        type={t("Loading")}
+        //time={t(toNow(new Date(tx.timestamp)))}
+        hasTimeline={false}
+      />
+    )
+
+  const { activityMessages, activityType } = parseMsgs(tx)
+
+  const nextIbcDetails = getIbcTxDetails(tx)
+
+  return (
+    <>
+      <ActivityListItem
+        variant={tx.code === 0 ? "success" : "failed"}
+        chain={{
+          icon: network[tx.chain].icon,
+          label: network[tx.chain].name,
+        }}
+        msg={activityMessages[0]}
+        type={t(activityType)}
+        time={t(toNow(new Date(tx.timestamp)))}
+        hasTimeline={!!nextIbcDetails}
+      />
+      {!!nextIbcDetails && <NextHopActivity {...nextIbcDetails} />}
+    </>
+  )
 }
 
 const ActivityDetailsPage = ({
@@ -36,13 +104,14 @@ const ActivityDetailsPage = ({
   timelineMessages,
   txHash,
   fee,
-  relatedTxs,
+  logs,
 }: Props) => {
   const { t } = useTranslation()
 
   const networks = useNetwork()
   const explorer = networks[chain ?? ""]?.explorer
   const externalLink = explorer?.tx?.replace("{}", txHash)
+  const ibcDetails = getIbcTxDetails({ logs, chain })
 
   const timelineDisplayMessages = timelineMessages.map(
     (message: ReactElement) => {
@@ -80,13 +149,16 @@ const ActivityDetailsPage = ({
               time={toNow(new Date(time))}
               msgCount={timelineDisplayMessages.length}
               hasTimeline={
-                !!timelineDisplayMessages.length || !!relatedTxs.length
+                !!timelineDisplayMessages.length ||
+                (!!ibcDetails && variant === "success")
               }
             />
           }
           middleItems={timelineDisplayMessages}
         />
-        {relatedTxs}
+        {!!ibcDetails && variant === "success" && (
+          <NextHopActivity {...ibcDetails} />
+        )}
       </div>
 
       <SectionHeader title={t("Details")} withLine />

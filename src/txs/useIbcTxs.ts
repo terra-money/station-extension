@@ -1,42 +1,32 @@
+import { useAuth } from "auth"
 import axios from "axios"
 import { RefetchOptions, queryKey } from "data/query"
 import { useNetwork } from "data/wallet"
-import { useQuery } from "react-query"
-/*
-import { useAuth } from "auth"
-import { useEffect } from "react"
 import { useQueries, useQuery } from "react-query"
 import { atom, useRecoilState } from "recoil"
-import { ChainID } from "types/network"
+
+const LOCALSTORAGE_IBC_TXS_KEY = "pendingIbcTxs"
 
 type WalletName = string
-type TxHash = string
-
-export enum IbcTxState {
-  BROADCASTING = "broadcasting",
-  PENDING = "loading",
-  //RECEIVED = "received",
-  SUCCESS = "success",
-  ERROR = "failed",
-}
-
-type IbcTx = {
-  state: IbcTxState
-  txhash: TxHash
-  chainID: ChainID
-  timestamp: number
-  msgs: Object[]
-}
-
 type StoredIbcTxs = Record<WalletName, IbcTx[]>
-const LOCALSTORAGE_IBC_TXS_KEY = "ibcTxs"
 
 const ibcTxsState = atom<StoredIbcTxs>({
-  key: "ibc-txs",
+  key: "pending-ibc-txs",
   default: JSON.parse(localStorage.getItem(LOCALSTORAGE_IBC_TXS_KEY) ?? "{}"),
 })
 
-export default function useIbcTxs() {
+export enum IbcTxStatus {
+  LOADING = "loading",
+  SUCCESS = "success",
+  FAILED = "failed",
+}
+
+type IbcTx = {
+  state: IbcTxStatus
+  txhash: string
+} & IbcTxDetails
+
+export const usePendingIbcTx = () => {
   const { wallet } = useAuth()
   const walletName = wallet?.name
   const [_ibcTxs, _setIbcTxsState] = useRecoilState(ibcTxsState)
@@ -51,134 +41,39 @@ export default function useIbcTxs() {
     localStorage.setItem(LOCALSTORAGE_IBC_TXS_KEY, JSON.stringify(newState))
   }
 
-  // query broadcasting txs
-  useQueries(
-    txs
-      .filter(({ state }) => state === IbcTxState.BROADCASTING)
-      .map(({ chainID, txhash, ...txData }) => ({
-        queryKey: [queryKey.ibc.transactionStatus, chainID, txhash],
-        queryFn: async () => {
-          const { data } = await axios.post(
-            "https://api.skip.money/v2/tx/track",
-            {
-              tx_hash: txhash,
-              chain_id: chainID,
-            }
-          )
-          return data
-        },
-        // ping the Skip API every 5 sec
-        retryDelay: 5_000,
-        // if after 5 minutes the transaction has not been broadcasted yet set the status to failed
-        retry: (failureCount: number) => {
-          if (failureCount > 60) {
-            setIbcTxs((s) => [
-              ...s.filter((d) => txhash !== d.txhash),
-              {
-                ...txData,
-                chainID,
-                txhash,
-                state: IbcTxState.ERROR,
-              },
-            ])
-            return false
-          }
-          return true
-        },
-        onSuccess: () => {
-          setIbcTxs((s) => [
-            ...s.filter((d) => txhash !== d.txhash),
-            {
-              ...txData,
-              chainID,
-              txhash,
-              state: IbcTxState.PENDING,
-            },
-          ])
-        },
-      }))
+  useIbcTxStatus(
+    txs.filter(({ state }) => state === IbcTxStatus.LOADING),
+    (hash, state) =>
+      state !== IbcTxStatus.LOADING &&
+      setIbcTxs((txs) =>
+        txs.map((tx) => (tx.txhash === hash ? { ...tx, state } : tx))
+      )
   )
-
-  const result = useQueries(
-    txs
-      .filter(({ state }) => state === IbcTxState.PENDING)
-      .map(({ chainID, txhash, ...txData }) => ({
-        queryKey: [queryKey.ibc.transactionStatus, chainID, txhash],
-        queryFn: async () => {
-          const { data } = await axios.get(
-            `https://api.skip.money/v2/tx/status?tx_hash=${txhash}&chain_id=${chainID}`
-          )
-          return { ...txData, state: data.state as string, txhash, chainID }
-        },
-        refetchInterval: (data: any) => {
-          if (
-            [
-              "STATE_COMPLETED_SUCCESS",
-              "STATE_RECEIVED",
-              "STATE_COMPLETED_ERROR",
-              "STATE_ABANDONED",
-            ].includes(data?.state)
-          ) {
-            return false
-          }
-          return 10_000
-        },
-        ...RefetchOptions.INFINITY,
-      }))
-  )
-
-  useEffect(() => {
-    result.forEach(({ data }) => {
-      if (
-        data &&
-        [
-          "STATE_COMPLETED_SUCCESS",
-          "STATE_RECEIVED",
-          "STATE_COMPLETED_ERROR",
-          "STATE_ABANDONED",
-        ].includes(data.state)
-      ) {
-        setIbcTxs((s) => [
-          ...s.filter(({ txhash }) => txhash !== data.txhash),
-          {
-            ...data,
-            state: ["STATE_COMPLETED_SUCCESS", "STATE_RECEIVED"].includes(
-              data.state
-            )
-              ? IbcTxState.SUCCESS
-              : IbcTxState.ERROR,
-          },
-        ])
-      }
-    })
-  }, [result]) // eslint-disable-line
 
   return {
-    trackIbcTx: (txhash: TxHash, chainID: ChainID, msgs: Object[]) => {
-      setIbcTxs((s) => [
-        {
-          txhash,
-          chainID,
-          state: IbcTxState.BROADCASTING,
-          timestamp: Date.now(),
-          msgs,
-        },
-        ...s,
-      ])
+    totalPending: txs.filter(({ state }) => state === IbcTxStatus.LOADING)
+      .length,
+    totalSuccess: txs.filter(({ state }) => state === IbcTxStatus.SUCCESS)
+      .length,
+    totalFailed: txs.filter(({ state }) => state === IbcTxStatus.FAILED).length,
+    clearCompletedTxs: () =>
+      setIbcTxs((txs) =>
+        txs.filter(({ state }) => state === IbcTxStatus.LOADING)
+      ),
+    showStatusTxHashes: txs.map(({ txhash }) => txhash),
+    addTx: (tx: ActivityItem) => {
+      const ibcDetails = getIbcTxDetails(tx)
+      if (ibcDetails) {
+        setIbcTxs((txs) => [
+          ...txs,
+          { ...ibcDetails, txhash: tx.txhash, state: IbcTxStatus.LOADING },
+        ])
+      }
     },
-    clearCompletedTxs: () => {
-      setIbcTxs((s) =>
-        s.filter(({ state }) =>
-          [IbcTxState.PENDING, IbcTxState.BROADCASTING].includes(state)
-        )
-      )
-    },
-    ibcTxs: [...txs].sort((a, b) => b.timestamp - a.timestamp),
   }
 }
-*/
 
-interface IbcTxDetails {
+export interface IbcTxDetails {
   src_chain_id: string
   sequence: string
   src_port: string
@@ -188,7 +83,150 @@ interface IbcTxDetails {
   timeout_timestamp: number
 }
 
-export const getIbcTxDetails = (tx: ActivityItem): IbcTxDetails | undefined => {
+const useIbcChannelInfo = (details: IbcTxDetails[]) => {
+  const networks = useNetwork()
+
+  return useQueries(
+    details.map((detail) => ({
+      queryKey: [
+        queryKey.ibc.channelInfo,
+        detail.src_channel,
+        detail.src_port,
+        networks[detail.src_chain_id]?.lcd,
+      ],
+      queryFn: async () => {
+        const { data } = await axios.get(
+          `/ibc/core/channel/v1/channels/${detail!.src_channel}/ports/${
+            detail!.src_port
+          }/client_state`,
+          { baseURL: networks[detail.src_chain_id]?.lcd }
+        )
+
+        return data.identified_client_state.client_state.chain_id as string
+      },
+      ...RefetchOptions.INFINITY,
+      enabled: !!networks[detail.src_chain_id]?.lcd,
+    }))
+  )
+}
+
+export const useIbcTxStatus = (
+  details: (IbcTxDetails & { txhash?: string })[],
+  onSuccess?: (hash: string | undefined, state: IbcTxStatus) => any
+) => {
+  const networks = useNetwork()
+  const channelInfoData = useIbcChannelInfo(details)
+
+  return useQueries(
+    details.map((detail, i) => {
+      const { data: dst_chain_id } = channelInfoData[i]
+      const lcd = networks[dst_chain_id ?? ""]?.lcd
+
+      return {
+        queryKey: [
+          queryKey.ibc.packetStatus,
+          detail.sequence,
+          detail.dst_channel,
+          detail.dst_port,
+          lcd,
+        ],
+        queryFn: async (): Promise<IbcTxStatus> => {
+          try {
+            const { data } = await axios.get<{ received: boolean }>(
+              `/ibc/core/channel/v1/channels/${detail.dst_channel}/ports/${detail.dst_port}/packet_receipts/${detail.sequence}`,
+              { baseURL: lcd }
+            )
+
+            if (data.received) {
+              return IbcTxStatus.SUCCESS
+            }
+          } catch (e) {}
+
+          return new Date().getTime() < detail.timeout_timestamp
+            ? IbcTxStatus.LOADING
+            : IbcTxStatus.FAILED
+        },
+        ...RefetchOptions.INFINITY,
+        enabled: !!lcd,
+        refetchInterval: (data?: IbcTxStatus) => {
+          if (data === IbcTxStatus.FAILED || data === IbcTxStatus.SUCCESS) {
+            return false
+          }
+          return 10_000
+        },
+        onSuccess: (data: IbcTxStatus) => {
+          onSuccess && onSuccess(detail.txhash, data)
+        },
+      }
+    })
+  )
+}
+
+export const useIbcNextHop = (details?: IbcTxDetails) => {
+  const dst_chain_id = useIbcChannelInfo(details ? [details] : [])[0]?.data
+  const networks = useNetwork()
+
+  const lcd = networks[dst_chain_id ?? ""]?.lcd
+
+  return useQuery(
+    [
+      queryKey.ibc.receivePacket,
+      details?.sequence,
+      details?.timeout_timestamp,
+      details?.dst_channel,
+      details?.src_channel,
+      lcd,
+    ],
+    async (): Promise<ActivityItem | undefined> => {
+      const { data } = await axios.get(
+        `/cosmos/tx/v1beta1/txs?events=recv_packet.packet_sequence%3D${
+          details!.sequence
+        }&recv_packet.packet_timeout_timestamp%3D${
+          details!.timeout_timestamp * 1_000_000
+        }`,
+        { baseURL: lcd }
+      )
+
+      const result = (data.tx_responses as ActivityItem[]).find(
+        (tx: ActivityItem) => {
+          const recvDetails = getRecvIbcTxDetails(tx)
+          return (
+            recvDetails &&
+            details!.dst_channel === recvDetails.dst_channel &&
+            details!.src_channel === recvDetails.src_channel &&
+            details!.src_port === recvDetails.src_port &&
+            details!.dst_port === recvDetails.dst_port
+          )
+        }
+      )
+
+      if (!result) return undefined
+
+      return {
+        ...result,
+        chain: dst_chain_id,
+      } as ActivityItem
+    },
+    {
+      staleTime: Infinity,
+      enabled: !!details && !!lcd,
+      refetchInterval: (data?: ActivityItem) => {
+        if (data) {
+          return false
+        }
+        return (details?.timeout_timestamp ?? 0) + 60_000 < new Date().getTime()
+          ? 25_000
+          : false
+      },
+    }
+  )
+}
+
+// helpers
+export const getIbcTxDetails = (tx: {
+  logs: ActivityItem["logs"]
+  chain: string
+}): IbcTxDetails | undefined => {
   for (const log of tx.logs) {
     const ibcEvent = log.events.find((e) => e.type === "send_packet")
 
@@ -226,9 +264,10 @@ export const getIbcTxDetails = (tx: ActivityItem): IbcTxDetails | undefined => {
   return undefined
 }
 
-export const getRecvIbcTxDetails = (
-  tx: ActivityItem
-): IbcTxDetails | undefined => {
+export const getRecvIbcTxDetails = (tx: {
+  logs: ActivityItem["logs"]
+  chain: string
+}): (IbcTxDetails & { next_hop?: IbcTxDetails }) | undefined => {
   for (const log of tx.logs) {
     const ibcEvent = log.events.find((e) => e.type === "recv_packet")
 
@@ -257,6 +296,7 @@ export const getRecvIbcTxDetails = (
                 ({ key }) => key === "packet_timeout_timestamp"
               )!.value
             ) / 1_000_000,
+          next_hop: getIbcTxDetails({ logs: [log], chain: tx.chain }),
         }
       } catch (e) {}
     }
@@ -264,79 +304,4 @@ export const getRecvIbcTxDetails = (
 
   // this is not an ibc tx
   return undefined
-}
-
-export const useIbcChannelInfo = (details?: IbcTxDetails) => {
-  const networks = useNetwork()
-  const lcd = networks[details?.src_chain_id ?? ""]?.lcd
-
-  return useQuery(
-    [queryKey.ibc.channelInfo, details?.src_channel, details?.src_port, lcd],
-    async () => {
-      const { data } = await axios.get(
-        `/ibc/core/channel/v1/channels/${details!.src_channel}/ports/${
-          details!.src_port
-        }/client_state`,
-        { baseURL: lcd }
-      )
-
-      return data.identified_client_state.client_state.chain_id as string
-    },
-    {
-      ...RefetchOptions.INFINITY,
-      enabled: !!details && !!lcd,
-    }
-  )
-}
-
-export enum IbcTxStatus {
-  LOADING = "loading",
-  SUCCESS = "success",
-  FAILED = "failed",
-}
-
-export const useIbcTxStatus = (details?: IbcTxDetails) => {
-  const { data: dst_chain_id } = useIbcChannelInfo(details)
-  const networks = useNetwork()
-
-  const lcd = networks[dst_chain_id ?? ""]?.lcd
-
-  return useQuery(
-    [
-      queryKey.ibc.packetStatus,
-      details?.sequence,
-      details?.dst_channel,
-      details?.dst_port,
-      lcd,
-    ],
-    async (): Promise<IbcTxStatus> => {
-      try {
-        const { data } = await axios.get<{ received: boolean }>(
-          `/ibc/core/channel/v1/channels/${details!.dst_channel}/ports/${
-            details!.dst_port
-          }/packet_receipts/${details!.sequence}`,
-          { baseURL: lcd }
-        )
-
-        if (data.received) {
-          return IbcTxStatus.SUCCESS
-        }
-      } catch (e) {}
-
-      return new Date().getTime() < details!.timeout_timestamp
-        ? IbcTxStatus.LOADING
-        : IbcTxStatus.FAILED
-    },
-    {
-      ...RefetchOptions.INFINITY,
-      enabled: !!details && !!lcd,
-      refetchInterval: (data?: IbcTxStatus) => {
-        if (data === IbcTxStatus.FAILED || data === IbcTxStatus.SUCCESS) {
-          return false
-        }
-
-        return 10_000
-      },
-    }
-  )
 }

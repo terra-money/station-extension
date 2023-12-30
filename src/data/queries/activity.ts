@@ -124,8 +124,10 @@ export const useTxActivity = () => {
 
     const senderDetails = getIbcTxDetails(tx)
 
-    const relatedTxs = !!senderDetails
-      ? result.slice(i + 1, result.length).filter((tx) => {
+    !!senderDetails &&
+      result
+        .slice(i + 1, result.length)
+        .filter((tx) => {
           const receiverDetails = getRecvIbcTxDetails(tx)
 
           if (!receiverDetails) return false
@@ -137,13 +139,9 @@ export const useTxActivity = () => {
             receiverDetails.src_channel === senderDetails.src_channel
           )
         })
-      : undefined
+        .forEach((tx) => discarededTxsHashes.push(tx.txhash))
 
-    if (relatedTxs) {
-      relatedTxs.forEach((tx) => discarededTxsHashes.push(tx.txhash))
-    }
-
-    activitySorted.push({ ...tx, relatedTxs })
+    activitySorted.push(tx)
   })
 
   return { activitySorted: activitySorted.reverse().slice(0, LIMIT), state }
