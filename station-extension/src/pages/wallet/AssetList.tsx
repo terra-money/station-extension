@@ -58,7 +58,7 @@ const AssetList = () => {
 
     const visible = filtered
       .filter(
-        (a) => a.totalValue >= 0.1 || a.totalBalance / 10 ** a.decimals > 1
+        (a) => a.totalValue >= 0.1 || a.totalBalance / 10 ** a.decimals > 0.01
       )
       .sort((a, b) => {
         if (a.totalValue && b.totalValue) {

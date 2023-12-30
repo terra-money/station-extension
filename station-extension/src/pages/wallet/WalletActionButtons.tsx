@@ -12,9 +12,11 @@ import {
 } from "@terra-money/station-ui"
 import { useNetworkName, useNetwork, useChainID } from "data/wallet"
 import { useIsWalletEmpty } from "data/queries/bank"
-import { useNativeDenoms } from "data/token"
 import { useKado } from "pages/wallet/Buy"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { useNativeDenoms } from "data/token"
+import { openURL } from "extension/storage"
+import { useIsLedger } from "utils/ledger"
 import styles from "./NetWorth.module.scss"
 
 interface WalletActionButton {
@@ -39,6 +41,7 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
   const readNativeDenom = useNativeDenoms()
   const token = readNativeDenom(denom ?? "")
   const addresses = useInterchainAddresses()
+  const isLedger = useIsLedger()
 
   const address = useMemo(() => {
     if (!addresses) return ""
@@ -60,7 +63,11 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
       size: "default",
       primary: true,
       label: t("Send"),
-      onClick: () => navigate(`/send/1`, { state: { denom } }),
+      onClick: () =>
+        (isLedger ? openURL : navigate)(
+          `/send/1`,
+          denom ? { denom } : undefined
+        ),
       disabled: sendButtonDisabled,
     },
     {
@@ -73,7 +80,8 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
       ),
       size: "default",
       label: t("Swap"),
-      onClick: () => navigate(`/swap`, { state: { denom } }),
+      onClick: () =>
+        (isLedger ? openURL : navigate)(`/swap`, denom ? { denom } : undefined),
       hide: networkName !== "mainnet",
     },
     {
