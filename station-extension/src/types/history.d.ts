@@ -50,6 +50,7 @@ interface AccountHistoryItem {
   txhash: string
   timestamp: any
   code: number
+  height: string
   // collapsed?: number // WHAT IS THIS?
   tx: {
     body: {
@@ -64,6 +65,26 @@ interface AccountHistoryItem {
     }
   }
   raw_log?: string
+  logs: TxLog[]
+}
+
+interface TxLog {
+  msg_index: number
+  log: string
+  events: TxLogEvent[]
+}
+
+interface TxLogEvent {
+  type: string
+  attributes: {
+    key: string
+    value: string
+  }[]
+}
+
+type ActivityItem = AccountHistoryItem & {
+  chain: string
+  relatedTxs?: ActivityItem[]
 }
 
 interface TxMessage {

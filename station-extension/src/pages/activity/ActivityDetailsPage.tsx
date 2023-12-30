@@ -13,27 +13,54 @@ import { useTranslation } from "react-i18next"
 import { useNetwork } from "data/wallet"
 import { toNow } from "utils/date"
 import moment from "moment"
-import React from "react"
+import { ReactElement } from "react"
 
-const ActivityDetailsPage = ({ ...props }) => {
+interface Props {
+  variant: "success" | "failed" | "loading"
+  chain: string
+  msg: ReactElement
+  type: string
+  time: any
+  timelineMessages: ReactElement[]
+  txHash: string
+  fee: CoinData[]
+  relatedTxs: ReactElement[]
+}
+
+const ActivityDetailsPage = ({
+  variant,
+  chain,
+  msg,
+  type,
+  time,
+  timelineMessages,
+  txHash,
+  fee,
+  relatedTxs,
+}: Props) => {
   const { t } = useTranslation()
-  const { variant, chain, msg, type, time, timelineMessages, txHash, fee } =
-    props
 
   const networks = useNetwork()
-  const explorer = networks[chain.chainID ?? ""]?.explorer
+  const explorer = networks[chain ?? ""]?.explorer
   const externalLink = explorer?.tx?.replace("{}", txHash)
 
-  const timelineDisplayMessages = timelineMessages.map((message: string[]) => {
-    return { variant: variant, msg: message }
-  })
+  const timelineDisplayMessages = timelineMessages.map(
+    (message: ReactElement) => {
+      return {
+        variant: (variant === "success" ? "success" : "warning") as
+          | "success"
+          | "warning",
+        msg: message,
+      }
+    }
+  )
 
   const detailRows = [
     {
       label: "Timestamp (UTC)",
       value: moment(time).utc().format("DD/MM/YY, H:mm:ss"),
     },
-    { label: "Chain", value: `${chain.name} (${chain.chainID})` },
+    { label: "Chain", value: `${networks[chain]?.name} (${chain})` },
     { label: "Fee", value: <ReadMultiple list={fee} /> },
   ]
 
@@ -45,18 +72,21 @@ const ActivityDetailsPage = ({ ...props }) => {
             <ActivityListItem
               variant={variant}
               chain={{
-                icon: chain.icon,
-                label: chain.name,
+                icon: networks[chain]?.icon,
+                label: networks[chain]?.name,
               }}
               msg={msg}
               type={type}
               time={toNow(new Date(time))}
               msgCount={timelineDisplayMessages.length}
-              hasTimeline={timelineDisplayMessages.length ? true : false}
+              hasTimeline={
+                !!timelineDisplayMessages.length || !!relatedTxs.length
+              }
             />
           }
           middleItems={timelineDisplayMessages}
         />
+        {relatedTxs}
       </div>
 
       <SectionHeader title={t("Details")} withLine />
