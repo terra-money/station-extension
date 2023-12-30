@@ -10,6 +10,7 @@ import { useSwap } from "./SwapContext"
 import { queryKey } from "data/query"
 import Errors from "./components/ConfirmErrors"
 import { Coins } from "@terra-money/feather.js"
+import { useIsLedger } from "utils/ledger"
 
 export const validateAssets = (
   assets: Partial<SwapState>
@@ -29,6 +30,7 @@ const Confirm = () => {
   const { offerAsset, offerInput, msgs: swapMsgs } = watch()
   const amount = toAmount(offerInput, { decimals: offerAsset.decimals })
   const estimationTxValues = useMemo(() => getValues(), [getValues])
+  const isLedger = useIsLedger()
 
   if (!swapMsgs) {
     navigate("/swap")
@@ -69,7 +71,10 @@ const Confirm = () => {
     balance: offerAsset.balance,
     estimationTxValues,
     createTx,
-    onSuccess: () => navigate("/#1"),
+    onSuccess: () => {
+      isLedger && window.close()
+      navigate("/#1")
+    },
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     chain: offerAsset.chainId,
     memo: "Swapped via Station Extension",

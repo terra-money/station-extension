@@ -9,13 +9,13 @@ import { truncate } from "@terra-money/terra-utils"
 import { useWhitelist } from "data/queries/chains"
 import { useTranslation } from "react-i18next"
 import { useNetworkName } from "data/wallet"
+import { useNativeDenoms } from "data/token"
 import { Empty } from "components/feedback"
 import { useSend } from "./SendContext"
 import { Read } from "components/token"
 import { AssetType } from "./types"
 import { useMemo } from "react"
 import { has } from "utils/num"
-import { useNativeDenoms } from "data/token"
 
 const Token = () => {
   const { form, goToStep, getWalletName, assetList, getIBCChannel, networks } =
@@ -41,12 +41,13 @@ const Token = () => {
           chainID: chain,
           chainName: name,
           tokenIcon: icon,
+          supported,
         } = tokenChainData
 
         if (acc.some((asset: AssetType) => asset.id === id)) {
           return acc
         }
-        if (!has(a.balance)) {
+        if (!has(tokenChainData.balance)) {
           return acc
         }
         const isNative = chain === destination
@@ -58,17 +59,17 @@ const Token = () => {
             ibcDenoms[networkName][`${destination}:${denom}`]?.icsChannel,
         })
 
-        if (isNative || channel) {
+        if ((isNative || channel) && supported) {
           const balVal = balance * price
           const senderAddress = addresses?.[chain]
           const item = {
             ...a,
             id,
-            denom: denom,
+            denom,
             tokenImg: icon,
             balVal,
             senderAddress,
-            balance: balance,
+            balance,
             channel,
             tokenChain: chain,
             amountNode: <Read amount={balance} fixed={2} decimals={decimals} />,
