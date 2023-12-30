@@ -9,9 +9,9 @@ import styles from "./ActivityList.module.scss"
 import ActivityItem from "./ActivityItem"
 import { Page } from "components/layout"
 import moment from "moment"
-import useIbcTxs, { IbcTxState } from "txs/useIbcTxs"
-import { useTranslation } from "react-i18next"
-
+//import useIbcTxs, { IbcTxState } from "txs/useIbcTxs"
+//import { useTranslation } from "react-i18next"
+/*
 interface IbcActivityItemProps {
   chainID: string
   txhash: string
@@ -32,7 +32,6 @@ const IbcActivityItem = ({
   const data = { tx: { body: { messages: msgs } }, txhash, code: 0 }
   const { t } = useTranslation()
   return (
-    // @ts-expect-error
     <ActivityItem
       {...data}
       timestamp={timestamp}
@@ -43,9 +42,9 @@ const IbcActivityItem = ({
     />
   )
 }
-
+*/
 const ActivityList = () => {
-  const { ibcTxs } = useIbcTxs()
+  //const { ibcTxs } = useIbcTxs()
   const { activitySorted: activity, state } = useTxActivity()
 
   const activityItemsPerPage = 20
@@ -58,10 +57,10 @@ const ActivityList = () => {
   let priorDisplayDate = ""
   const visibleActivityItems = activity
     // do not show pending txs in the main activity page
-    .filter(
+    /*.filter(
       ({ txhash }) =>
         !ibcTxs.find(({ txhash: ibcTxhash }) => ibcTxhash === txhash)
-    )
+    )*/
     .slice(0, visibleActivity)
     .map((activityItem: AccountHistoryItem & { chain: string }) => {
       const activityItemDate = new Date(activityItem.timestamp)
@@ -116,9 +115,6 @@ const ActivityList = () => {
     return (
       <div className={styles.activitylist}>
         {loader}
-        {ibcTxs.map((data, i) => (
-          <IbcActivityItem {...data} key={data.txhash} index={i} />
-        ))}
         {visibleActivityItems}
         {loadMoreButton}
       </div>

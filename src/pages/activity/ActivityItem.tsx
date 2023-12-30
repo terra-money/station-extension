@@ -1,7 +1,8 @@
-import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { useAllInterchainAddresses } from "auth/hooks/useAddress"
 import {
   ActivityListItem,
   ModalButton,
+  StepStatus,
   TransactionTracker,
 } from "@terra-money/station-ui"
 import ActivityDetailsPage from "./ActivityDetailsPage"
@@ -15,51 +16,94 @@ import { last } from "ramda"
 import { useState } from "react"
 import useInterval from "utils/hooks/useInterval"
 import { intervalToDuration } from "date-fns"
+import { getIbcTxDetails, useIbcTxStatus } from "txs/useIbcTxs"
+
+const useParseMessages = () => {
+  const addresses = useAllInterchainAddresses() ?? {}
+
+  return (tx: ActivityItem) => {
+    const canonicalMessages = getCanonicalMsg(tx as any, addresses)
+
+    let msgType = ""
+
+    const activityMessages = canonicalMessages?.map((msg, index) => {
+      if (index === 0 && msg?.msgType) {
+        msgType = last(msg?.msgType.split("/")) ?? ""
+      }
+      return msg && <ActivityMessage chainID={tx.chain} msg={msg} key={index} />
+    })
+
+    const activityType = msgType.charAt(0).toUpperCase() + msgType.substring(1)
+
+    return { activityMessages, activityType }
+  }
+}
 
 const ActivityItem = ({
   txhash,
   timestamp,
   chain,
   dateHeader,
-  variant,
-  showProgress,
   ...props
-}: AccountHistoryItem & {
-  chain: string
+}: ActivityItem & {
   dateHeader: JSX.Element | null
-  variant?: "success" | "failed" | "loading" | "broadcasting"
-  showProgress?: boolean
 }) => {
   const { code, tx } = props
   const success = code === 0
-  const activityVariant = variant || (success ? "success" : "failed")
-  const timer = useTimer(
-    new Date(timestamp).getTime(),
-    variant === "loading" || variant === "broadcasting"
-  )
+  const ibcDetails = getIbcTxDetails({
+    txhash,
+    timestamp,
+    chain,
+    ...props,
+  })
+  const isIbc = !!ibcDetails
+  const { data: ibcStatus } = useIbcTxStatus(ibcDetails)
+  const activityVariant = isIbc
+    ? ibcStatus || "loading"
+    : success
+    ? "success"
+    : "failed"
+  const timer = useTimer(new Date(timestamp).getTime(), ibcStatus === "loading")
   const { t } = useTranslation()
   const network = useNetwork()
-  const addresses = useInterchainAddresses() || {}
+  const parseMsgs = useParseMessages()
 
-  const canonicalMessages = getCanonicalMsg(
-    {
-      txhash,
-      timestamp,
-      ...props,
-    } as any,
-    addresses
-  )
-
-  let msgType = ""
-
-  const activityMessages = canonicalMessages?.map((msg, index) => {
-    if (index === 0 && msg?.msgType) {
-      msgType = last(msg?.msgType.split("/")) ?? ""
-    }
-    return msg && <ActivityMessage chainID={chain} msg={msg} key={index} />
+  const { activityMessages, activityType } = parseMsgs({
+    txhash,
+    timestamp,
+    chain,
+    ...props,
   })
 
-  const activityType = msgType.charAt(0).toUpperCase() + msgType.substring(1)
+  function renderIbcStatusText() {
+    if (!ibcDetails) {
+      return t("Loading")
+    }
+
+    switch (activityVariant) {
+      case "loading":
+        return timer
+      case "success":
+        return t("Done!")
+      default:
+        return t("Error")
+    }
+  }
+
+  function ibcSteps(): StepStatus[] {
+    if (!ibcDetails) {
+      return ["incomplete", "incomplete"]
+    }
+
+    switch (activityVariant) {
+      case "loading":
+        return ["completed", "inProgress"]
+      case "success":
+        return ["completed", "completed"]
+      default:
+        return ["completed", "failed"]
+    }
+  }
 
   return activityMessages.length ? (
     <div className={styles.activityitems}>
@@ -70,41 +114,24 @@ const ActivityItem = ({
           <div className={styles.activityitem}>
             <ActivityListItem
               onClick={open}
-              variant={
-                activityVariant === "broadcasting" ? "loading" : activityVariant
-              }
+              variant={activityVariant}
               chain={{
                 icon: network[chain].icon,
                 label: network[chain].name,
               }}
               msg={activityMessages[0]}
               type={t(activityType)}
-              time={showProgress ? undefined : t(toNow(new Date(timestamp)))}
+              time={isIbc ? undefined : t(toNow(new Date(timestamp)))}
               msgCount={activityMessages.slice(1).length}
             />
-            {showProgress && (
+            {isIbc && (
               <div className={styles.transaction__progress}>
                 <TransactionTracker
-                  steps={[
-                    activityVariant === "broadcasting"
-                      ? "inProgress"
-                      : "completed",
-                    activityVariant === "loading" ||
-                    activityVariant === "broadcasting"
-                      ? "incomplete"
-                      : activityVariant === "success"
-                      ? "completed"
-                      : activityVariant,
-                  ]}
+                  steps={ibcSteps()}
                   stepLabels={["Tx Initiated", "Tx Completed"]}
                 />
                 <p className={styles.transaction__timer}>
-                  {activityVariant === "loading" ||
-                  activityVariant === "broadcasting"
-                    ? timer
-                    : activityVariant === "success"
-                    ? t("Done!")
-                    : t("Error")}
+                  {renderIbcStatusText()}
                 </p>
               </div>
             )}
@@ -113,13 +140,27 @@ const ActivityItem = ({
       >
         <ActivityDetailsPage
           variant={activityVariant}
-          chain={network[chain]}
+          chain={chain}
           msg={activityMessages[0]}
           type={activityType}
           time={timestamp}
           timelineMessages={activityMessages.slice(1)}
           txHash={txhash}
           fee={tx?.auth_info?.fee?.amount ?? []}
+          relatedTxs={(props.relatedTxs || []).map((tx, i) => (
+            <ActivityListItem
+              variant={tx.code === 0 ? "success" : "failed"}
+              chain={{
+                icon: network[tx.chain].icon,
+                label: network[tx.chain].name,
+              }}
+              msg={parseMsgs(tx).activityMessages[0]}
+              type={t(parseMsgs(tx).activityType)}
+              time={t(toNow(new Date(timestamp)))}
+              msgCount={parseMsgs(tx).activityMessages.slice(1).length}
+              hasTimeline={i + 1 !== props.relatedTxs?.length}
+            />
+          ))}
         />
       </ModalButton>
     </div>

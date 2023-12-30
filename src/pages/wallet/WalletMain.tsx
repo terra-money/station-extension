@@ -1,22 +1,22 @@
 import NetWorth from "./NetWorth"
 import AssetList from "./AssetList"
 import { useState } from "react"
-import { Flex, PageTabs, Pill } from "@terra-money/station-ui"
+import { Flex, PageTabs } from "@terra-money/station-ui"
 import { useTranslation } from "react-i18next"
 import ActivityList from "../activity/ActivityList"
 import styles from "./WalletMain.module.scss"
 import ExtensionFooter from "extension/components/ExtensionFooter"
 import UpdateNotification from "extension/update/UpdateNotification"
-import useIbcTxs, { IbcTxState } from "txs/useIbcTxs"
+//import useIbcTxs, { IbcTxState } from "txs/useIbcTxs"
 import { useLocation } from "react-router-dom"
 
 const WalletMain = () => {
   const { hash } = useLocation()
   const [tab, setTab] = useState(hash === "#1" ? 1 : 0)
-  const { ibcTxs, clearCompletedTxs } = useIbcTxs()
+  //const { ibcTxs, clearCompletedTxs } = useIbcTxs()
   const { t } = useTranslation()
 
-  const successCount = ibcTxs.filter(
+  /*const successCount = ibcTxs.filter(
     ({ state }) => state === IbcTxState.SUCCESS
   ).length
   const pendingCount = ibcTxs.filter(
@@ -25,7 +25,7 @@ const WalletMain = () => {
   ).length
   const failedCount = ibcTxs.filter(
     ({ state }) => state === IbcTxState.ERROR
-  ).length
+  ).length*/
 
   return (
     <>
@@ -40,7 +40,7 @@ const WalletMain = () => {
             onClick={(i) => {
               // when user closes the Activity tab clear completed IBC txs
               if (tab === 1 && i !== tab) {
-                clearCompletedTxs()
+                //clearCompletedTxs()
               }
               setTab(i)
             }}
@@ -48,7 +48,7 @@ const WalletMain = () => {
               t("Assets"),
               <Flex gap={6}>
                 {t("Activity")}
-                {!!successCount && (
+                {/*!!successCount && (
                   <Pill variant="success" text={`${successCount}`} />
                 )}
                 {!!pendingCount && (
@@ -56,7 +56,7 @@ const WalletMain = () => {
                 )}
                 {!!failedCount && (
                   <Pill variant="danger" text={`${failedCount}`} />
-                )}
+                )*/}
               </Flex>,
             ]}
           />

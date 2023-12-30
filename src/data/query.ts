@@ -56,7 +56,13 @@ export const queryKey = mirror({
     votes: "",
     tally: "",
   },
-  ibc: { denomTrace: "", transactionStatus: "", trackTx: "" },
+  ibc: {
+    denomTrace: "",
+    transactionStatus: "",
+    trackTx: "",
+    channelInfo: "",
+    packetStatus: "",
+  },
   market: { params: "" },
   coingecko: {
     activeDenoms: "",

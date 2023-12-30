@@ -1,9 +1,10 @@
 import { RefetchOptions, combineState, queryKey } from "data/query"
 import { isTerraChain } from "utils/chain"
 import { useNetwork } from "data/wallet"
-import { useQueries, useQuery } from "react-query"
+import { useQueries } from "react-query"
 import axios from "axios"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { getIbcTxDetails, getRecvIbcTxDetails } from "txs/useIbcTxs"
 
 interface PaginationKeys {
   limit: string
@@ -55,12 +56,12 @@ export const useTxActivity = () => {
 
       return {
         queryKey: [queryKey.History, networks?.[chainID]?.lcd, address],
-        queryFn: async () => {
-          const result: any[] = []
+        queryFn: async (): Promise<ActivityItem[]> => {
+          const result: AccountHistoryItem[] = []
           const hashArray: string[] = []
 
           if (!networks?.[chainID]?.lcd) {
-            return result
+            return []
           }
 
           const requests = (
@@ -105,31 +106,45 @@ export const useTxActivity = () => {
 
   const state = combineState(...activityData)
 
-  const activitySorted = activityData
-    .reduce((acc, { data }) => (data ? [...acc, ...data] : acc), [] as any[])
+  const activitySorted: ActivityItem[] = []
+  const discarededTxsHashes: string[] = []
+
+  const result = activityData
+    .reduce(
+      (acc, { data }) => (data ? [...acc, ...data] : acc),
+      [] as ActivityItem[]
+    )
     .sort(
       (a, b) =>
-        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     )
-    .slice(0, LIMIT)
-  return { activitySorted, state }
-}
 
-export const useTxInfo = (txhash: string, chainID: string) => {
-  const networks = useNetwork()
+  result.forEach((tx, i) => {
+    if (discarededTxsHashes.includes(tx.txhash)) return
 
-  return useQuery(
-    [queryKey.tx.txInfo, txhash, chainID],
-    async () => {
-      const { data } = await axios.get(`/cosmos/tx/v1beta1/txs/${txhash}`, {
-        baseURL: networks[chainID]?.lcd,
-      })
+    const senderDetails = getIbcTxDetails(tx)
 
-      return data.tx_response as AccountHistoryItem
-    },
-    {
-      ...RefetchOptions.INFINITY,
-      enabled: !!networks[chainID]?.lcd,
+    const relatedTxs = !!senderDetails
+      ? result.slice(i + 1, result.length).filter((tx) => {
+          const receiverDetails = getRecvIbcTxDetails(tx)
+
+          if (!receiverDetails) return false
+          return (
+            receiverDetails.sequence === senderDetails.sequence &&
+            receiverDetails.timeout_timestamp ===
+              senderDetails.timeout_timestamp &&
+            receiverDetails.dst_channel === senderDetails.dst_channel &&
+            receiverDetails.src_channel === senderDetails.src_channel
+          )
+        })
+      : undefined
+
+    if (relatedTxs) {
+      relatedTxs.forEach((tx) => discarededTxsHashes.push(tx.txhash))
     }
-  )
+
+    activitySorted.push({ ...tx, relatedTxs })
+  })
+
+  return { activitySorted: activitySorted.reverse().slice(0, LIMIT), state }
 }
