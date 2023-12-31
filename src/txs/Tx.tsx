@@ -321,7 +321,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
             chainID: chain,
           })
         } else if (isIbc) {
-          console.log(result)
           trackIbcTx({ ...(result as any), chain } as ActivityItem)
           navigate("/#1")
         }

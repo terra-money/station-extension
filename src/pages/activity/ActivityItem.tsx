@@ -40,7 +40,10 @@ const ActivityItem = ({
     : success
     ? "success"
     : "failed"
-  const timer = useTimer(new Date(timestamp).getTime(), ibcStatus === "loading")
+  const timer = useTimer(
+    new Date(timestamp).getTime(),
+    isIbc && activityVariant === "loading"
+  )
   const { t } = useTranslation()
   const network = useNetwork()
   const parseMsgs = useParseMessages()

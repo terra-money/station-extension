@@ -91,29 +91,29 @@ export interface IbcTxDetails {
   next_hop_memo?: NextHopMemo
 }
 
-const useIbcChannelInfo = (details: IbcTxDetails[]) => {
+const useIbcChannelInfo = (details: (IbcTxDetails | undefined)[]) => {
   const networks = useNetwork()
 
   return useQueries(
     details.map((detail) => ({
       queryKey: [
         queryKey.ibc.channelInfo,
-        detail.src_channel,
-        detail.src_port,
-        networks[detail.src_chain_id]?.lcd,
+        detail?.src_channel,
+        detail?.src_port,
+        networks[detail?.src_chain_id ?? ""]?.lcd,
       ],
       queryFn: async () => {
         const { data } = await axios.get(
           `/ibc/core/channel/v1/channels/${detail!.src_channel}/ports/${
             detail!.src_port
           }/client_state`,
-          { baseURL: networks[detail.src_chain_id]?.lcd }
+          { baseURL: networks[detail!.src_chain_id]?.lcd }
         )
 
         return data.identified_client_state.client_state.chain_id as string
       },
       ...RefetchOptions.INFINITY,
-      enabled: !!networks[detail.src_chain_id]?.lcd,
+      enabled: !!detail && !!networks[detail.src_chain_id]?.lcd,
     }))
   )
 }
@@ -123,11 +123,26 @@ export const useIbcTxStatus = (
   onSuccess?: (hash: string | undefined, state: IbcTxStatus) => any
 ) => {
   const networks = useNetwork()
-  const channelInfoData = useIbcChannelInfo(details)
 
-  return useQueries(
-    details.map((detail, i) => {
-      const { data: dst_chain_id } = channelInfoData[i]
+  const oneHopDetails = details.filter(
+    (detail) => !detail.next_hop_memo?.receiver
+  )
+  const oneHopChannelInfoData = useIbcChannelInfo(oneHopDetails)
+
+  const multiHopTxs = details.filter(
+    (detail) => !!detail.next_hop_memo?.receiver
+  )
+  const multiHopTxsNextTx = useIbcNextHops(multiHopTxs)
+  const multiHopDetails = multiHopTxsNextTx.map(
+    ({ data, isLoading }) => data && { data: getIbcTxDetails(data), isLoading }
+  )
+  const multiHopChannelInfoData = useIbcChannelInfo(
+    multiHopDetails.map((dt) => dt?.data)
+  )
+
+  return useQueries([
+    ...oneHopDetails.map((detail, i) => {
+      const { data: dst_chain_id } = oneHopChannelInfoData[i]
       const lcd = networks[dst_chain_id ?? ""]?.lcd
 
       return {
@@ -166,8 +181,57 @@ export const useIbcTxStatus = (
           onSuccess && onSuccess(detail.txhash, data)
         },
       }
-    })
-  )
+    }),
+    ...multiHopDetails.map((details, i) => {
+      const { data: dst_chain_id } = multiHopChannelInfoData[i]
+      const lcd = networks[dst_chain_id ?? ""]?.lcd
+      const detail = details?.data
+      const isLoading = !!details?.isLoading
+
+      return {
+        queryKey: [
+          queryKey.ibc.packetStatus,
+          detail?.sequence,
+          detail?.dst_channel,
+          detail?.dst_port,
+          lcd,
+        ],
+        queryFn: async (): Promise<IbcTxStatus> => {
+          if (!detail)
+            return isLoading ||
+              new Date().getTime() < multiHopTxs[i].timeout_timestamp
+              ? IbcTxStatus.LOADING
+              : IbcTxStatus.FAILED
+
+          try {
+            const { data } = await axios.get<{ received: boolean }>(
+              `/ibc/core/channel/v1/channels/${detail.dst_channel}/ports/${detail.dst_port}/packet_receipts/${detail.sequence}`,
+              { baseURL: lcd }
+            )
+
+            if (data.received) {
+              return IbcTxStatus.SUCCESS
+            }
+          } catch (e) {}
+
+          return new Date().getTime() < detail.timeout_timestamp
+            ? IbcTxStatus.LOADING
+            : IbcTxStatus.FAILED
+        },
+        ...RefetchOptions.INFINITY,
+        enabled: !!lcd,
+        refetchInterval: (data?: IbcTxStatus) => {
+          if (data === IbcTxStatus.FAILED || data === IbcTxStatus.SUCCESS) {
+            return false
+          }
+          return 10_000
+        },
+        onSuccess: (data: IbcTxStatus) => {
+          onSuccess && onSuccess(multiHopTxs[i].txhash, data)
+        },
+      }
+    }),
+  ])
 }
 
 export const useIbcPrevHop = (details?: IbcTxDetails) => {
@@ -231,50 +295,54 @@ export const useIbcPrevHop = (details?: IbcTxDetails) => {
 }
 
 export const useIbcNextHop = (details?: IbcTxDetails) => {
-  const dst_chain_id = useIbcChannelInfo(details ? [details] : [])[0]?.data
+  const result = useIbcNextHops(details ? [details] : [])[0]
+
+  return {
+    ...result,
+    data: result?.data,
+  }
+}
+
+const useIbcNextHops = (details: IbcTxDetails[]) => {
+  const dst_chain_ids = useIbcChannelInfo(details)
   const networks = useNetwork()
 
-  const lcd = networks[dst_chain_id ?? ""]?.lcd
+  const lcds = dst_chain_ids.map(({ data: id }) => networks[id ?? ""]?.lcd)
 
-  return useQuery(
-    [
-      queryKey.ibc.receivePacket,
-      details?.sequence,
-      details?.dst_channel,
-      details?.src_channel,
-      lcd,
-    ],
-    async (): Promise<ActivityItem | undefined> => {
-      const { data } = await axios.get(
-        `/cosmos/tx/v1beta1/txs?events=recv_packet.packet_sequence%3D${
-          details!.sequence
-        }&events=recv_packet.packet_src_channel%3D%27${
-          details!.src_channel
-        }%27&events=recv_packet.packet_dst_channel%3D%27${
-          details!.dst_channel
-        }%27`,
-        { baseURL: lcd }
-      )
+  return useQueries(
+    details.map((detail, i) => ({
+      queryKey: [
+        queryKey.ibc.receivePacket,
+        detail.sequence,
+        detail.dst_channel,
+        detail.src_channel,
+        lcds[i],
+      ],
+      queryFn: async (): Promise<ActivityItem | undefined> => {
+        const { data } = await axios.get(
+          `/cosmos/tx/v1beta1/txs?events=recv_packet.packet_sequence%3D${detail.sequence}&events=recv_packet.packet_src_channel%3D%27${detail.src_channel}%27&events=recv_packet.packet_dst_channel%3D%27${detail.dst_channel}%27`,
+          { baseURL: lcds[i] }
+        )
 
-      if (!data.tx_responses.length) return undefined
+        if (!data.tx_responses.length) return undefined
 
-      return {
-        ...(data.tx_responses as ActivityItem[])[0],
-        chain: dst_chain_id,
-      } as ActivityItem
-    },
-    {
+        return {
+          ...(data.tx_responses as ActivityItem[])[0],
+          chain: dst_chain_ids[i].data,
+        } as ActivityItem
+      },
+
       staleTime: Infinity,
-      enabled: !!details && !!lcd,
+      enabled: !!details && !!lcds[i],
       refetchInterval: (data?: ActivityItem) => {
         if (data) {
           return false
         }
-        return (details?.timeout_timestamp ?? 0) + 60_000 < new Date().getTime()
+        return (detail.timeout_timestamp ?? 0) + 60_000 < new Date().getTime()
           ? 25_000
           : false
       },
-    }
+    }))
   )
 }
 
