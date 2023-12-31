@@ -73,6 +73,12 @@ export const usePendingIbcTx = () => {
   }
 }
 
+interface NextHopMemo {
+  timeout_timestamp: number
+  receiver?: string
+  src_channel?: string
+}
+
 export interface IbcTxDetails {
   src_chain_id: string
   sequence: string
@@ -81,6 +87,8 @@ export interface IbcTxDetails {
   dst_port: string
   dst_channel: string
   timeout_timestamp: number
+
+  next_hop_memo?: NextHopMemo
 }
 
 const useIbcChannelInfo = (details: IbcTxDetails[]) => {
@@ -271,6 +279,38 @@ export const useIbcNextHop = (details?: IbcTxDetails) => {
 }
 
 // helpers
+function parsePacketData(pktData: string): NextHopMemo | undefined {
+  function findAttribute(
+    obj: Record<string, any>,
+    attribute: string
+  ): string | number | undefined {
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        if (key === attribute) {
+          return obj[key]
+        } else if (typeof obj[key] === "object") {
+          const result = findAttribute(obj[key], attribute)
+          if (!!result) {
+            return result
+          }
+        }
+      }
+    }
+  }
+
+  try {
+    const data = JSON.parse(pktData)
+    const memo = JSON.parse(data.memo)
+
+    return {
+      timeout_timestamp:
+        Number(findAttribute(memo, "timeout_timestamp")) / 1_000_000,
+      receiver: findAttribute(memo, "receiver") as string,
+      src_channel: findAttribute(memo, "source_channel") as string,
+    }
+  } catch (e) {}
+}
+
 export const getIbcTxDetails = (tx: {
   logs: ActivityItem["logs"]
   chain: string
@@ -303,6 +343,9 @@ export const getIbcTxDetails = (tx: {
                 ({ key }) => key === "packet_timeout_timestamp"
               )!.value
             ) / 1_000_000,
+          next_hop_memo: parsePacketData(
+            ibcEvent.attributes.find(({ key }) => key === "packet_data")!.value
+          ),
         }
       } catch (e) {}
     }
