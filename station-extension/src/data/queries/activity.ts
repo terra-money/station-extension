@@ -127,16 +127,32 @@ export const useTxActivity = () => {
     !!senderDetails &&
       result
         .slice(i + 1, result.length)
-        .filter((tx) => {
-          const receiverDetails = getRecvIbcTxDetails(tx)
+        .filter((tx2) => {
+          const receiverDetails = getRecvIbcTxDetails(tx2)
+
+          if (
+            tx.txhash ===
+              "3CE59B1079BAF33AEC2D090671DE4FDEEAC5A02B228BC84AF4E128E6952B3072" &&
+            tx2.txhash ===
+              "E497CA2EB46B4FE90912A2D29D378E893D8059A13B316B412C3C9A02B33F3A53"
+          ) {
+            console.log(senderDetails.next_hop_memo)
+            console.log(receiverDetails)
+          }
 
           if (!receiverDetails) return false
           return (
-            receiverDetails.sequence === senderDetails.sequence &&
-            receiverDetails.timeout_timestamp ===
-              senderDetails.timeout_timestamp &&
-            receiverDetails.dst_channel === senderDetails.dst_channel &&
-            receiverDetails.src_channel === senderDetails.src_channel
+            (receiverDetails.sequence === senderDetails.sequence &&
+              receiverDetails.timeout_timestamp ===
+                senderDetails.timeout_timestamp &&
+              receiverDetails.dst_channel === senderDetails.dst_channel &&
+              receiverDetails.src_channel === senderDetails.src_channel) ||
+            (senderDetails.next_hop_memo &&
+              receiverDetails.src_channel ===
+                senderDetails.next_hop_memo.src_channel &&
+              Math.round(receiverDetails.timeout_timestamp) ===
+                Math.round(senderDetails.next_hop_memo.timeout_timestamp) &&
+              senderDetails.next_hop_memo.receiver === addresses?.[tx2.chain])
           )
         })
         .forEach((tx) => discarededTxsHashes.push(tx.txhash))
