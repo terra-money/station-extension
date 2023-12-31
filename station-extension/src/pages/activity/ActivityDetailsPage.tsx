@@ -200,13 +200,13 @@ const ActivityDetailsPage = ({
               msgCount={timelineDisplayMessages.length}
               hasTimeline={
                 !!timelineDisplayMessages.length ||
-                (!!ibcDetails && variant === "success")
+                (!!ibcDetails && variant !== "failed")
               }
             />
           }
           middleItems={timelineDisplayMessages}
         />
-        {!!ibcDetails && variant === "success" && (
+        {!!ibcDetails && variant !== "failed" && (
           <NextHopActivity {...ibcDetails} />
         )}
       </div>
