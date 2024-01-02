@@ -334,7 +334,8 @@ function Tx<TxValues>(props: Props<TxValues>) {
     setSubmitting(false)
   }
 
-  const submittingLabel = isWallet.ledger(wallet) ? t("Confirm in ledger") : ""
+  const submittingLabel =
+    hideLoader || isIbc ? t("Broadcasting") : t("Submitting")
 
   const availableGasDenoms = useMemo(() => {
     return Object.keys(networks[chain]?.gasPrices ?? {})
