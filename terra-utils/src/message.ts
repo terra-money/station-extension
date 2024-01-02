@@ -414,7 +414,7 @@ const extractMsg = (
   try {
     extractMsgFn(msg)
   } catch (error) {
-    console.log(`
+    console.error(`
 Failed to parse message:
 Type: ${msgType}
 Hash: ${txHash}
