@@ -49,6 +49,7 @@ export default function DisplayFees({
     }
   }, [availableGasDenoms]) // eslint-disable-line
 
+
   if (!gas || !gasDenom)
     return (
       <section className={styles.loading__card}>
