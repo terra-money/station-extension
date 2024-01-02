@@ -1,11 +1,12 @@
+@import "mixins";
 @import "font_mixins";
 
 .component {
   white-space: pre;
 }
 
-.grey__decimal {
-  color: var(--token-light-100);
+.small__decimal {
+  @include Medium-Large;
 }
 
 .symbol {
