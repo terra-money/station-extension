@@ -178,7 +178,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
       enabled: !isBroadcasting,
     }
   )
-  console.log('estimatedGas', estimatedGas)
 
   const getGasAmount = useCallback(
     (denom: CoinDenom) => {
