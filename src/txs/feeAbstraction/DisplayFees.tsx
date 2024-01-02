@@ -111,7 +111,13 @@ export default function DisplayFees({
               )}
             </>
           ),
-          value: <Read amount={feeAmount} denom={gasDenom} />,
+          value: (
+            <Read
+              amount={feeAmount}
+              denom={gasDenom}
+              decimals={readNativeDenom(gasDenom, chainID).decimals}
+            />
+          ),
         },
       ]}
     />

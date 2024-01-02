@@ -1,7 +1,8 @@
 import { QueryKey, useQuery, useQueryClient } from "react-query"
 import { useInterchainLCDClient } from "./lcdClient"
 import { atom, useSetRecoilState } from "recoil"
-import { CARBON_API } from "config/constants"
+import { CARBON_API, OSMOSIS_GAS_ENDPOINT } from "config/constants"
+import { useNetworks } from "app/InitNetworks"
 import { RefetchOptions } from "../query"
 import { queryKey } from "../query"
 import axios from "axios"
@@ -12,6 +13,10 @@ interface LatestTx {
   redirectAfterTx?: { label: string; path: string }
   queryKeys?: QueryKey[]
   onSuccess?: () => void
+}
+
+interface OsmosisGasResponse {
+  base_fee: string
 }
 
 export const latestTxState = atom<LatestTx>({
@@ -46,6 +51,31 @@ export const useTxInfo = ({ txhash, queryKeys, chainID }: LatestTx) => {
         queryClient.invalidateQueries(queryKey.bank.balance)
         queryClient.invalidateQueries(queryKey.tx.create)
       },
+    }
+  )
+}
+
+export const useOsmosisGas = () => {
+  const { networks } = useNetworks()
+
+  return useQuery(
+    [queryKey.tx.osmosisGas],
+    async () => {
+      try {
+        const { data } = await axios.get<OsmosisGasResponse>(
+          OSMOSIS_GAS_ENDPOINT,
+          {
+            baseURL: networks["mainnet"]["osmosis-1"].lcd, // hard set for now.
+          }
+        )
+        return Number(data.base_fee)
+      } catch (e) {
+        return 0.0025
+      }
+    },
+    {
+      ...RefetchOptions.INFINITY,
+      staleTime: 60 * 1000, // cache data for 1 min
     }
   )
 }
