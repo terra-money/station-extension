@@ -79,6 +79,9 @@ const PrevHopActivity = (ibcDetails: IbcTxDetails) => {
       />
     )
 
+  const explorer = network[tx.chain]?.explorer
+  const externalLink = explorer?.tx?.replace("{}", tx.txhash)
+
   const { activityMessages, activityType } = parseMsgs(tx)
 
   const prevIbcDetails = getRecvIbcTxDetails(tx)
@@ -96,6 +99,14 @@ const PrevHopActivity = (ibcDetails: IbcTxDetails) => {
         type={t(activityType)}
         time={t(toNow(new Date(tx.timestamp)))}
         hasTimeline
+        extra={
+          <ExternalLink
+            href={externalLink}
+            className={styles.tx__details__link}
+          >
+            {t("Details")} <ExternalLinkIcon fill="currentColor" />
+          </ExternalLink>
+        }
       />
     </>
   )
@@ -121,6 +132,9 @@ const NextHopActivity = (ibcDetails: IbcTxDetails) => {
       />
     )
 
+  const explorer = network[tx.chain]?.explorer
+  const externalLink = explorer?.tx?.replace("{}", tx.txhash)
+
   const { activityMessages, activityType } = parseMsgs(tx)
 
   const nextIbcDetails = getIbcTxDetails(tx)
@@ -137,6 +151,14 @@ const NextHopActivity = (ibcDetails: IbcTxDetails) => {
         type={t(activityType)}
         time={t(toNow(new Date(tx.timestamp)))}
         hasTimeline={!!nextIbcDetails}
+        extra={
+          <ExternalLink
+            href={externalLink}
+            className={styles.tx__details__link}
+          >
+            {t("Details")} <ExternalLinkIcon fill="currentColor" />
+          </ExternalLink>
+        }
       />
       {!!nextIbcDetails && <NextHopActivity {...nextIbcDetails} />}
     </>
@@ -202,9 +224,18 @@ const ActivityDetailsPage = ({
                 !!timelineDisplayMessages.length ||
                 (!!ibcDetails && variant !== "failed")
               }
+              extra={
+                <ExternalLink
+                  href={externalLink}
+                  className={styles.tx__details__link}
+                >
+                  {t("Details")} <ExternalLinkIcon fill="currentColor" />
+                </ExternalLink>
+              }
             />
           }
           middleItems={timelineDisplayMessages}
+          hasNextElement={!!ibcDetails && variant !== "failed"}
         />
         {!!ibcDetails && variant !== "failed" && (
           <NextHopActivity {...ibcDetails} />

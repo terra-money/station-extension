@@ -226,11 +226,12 @@ const Confirm = () => {
     onSuccess: () => {
       addRecipient({ recipient, name: getWalletName(recipient ?? "") })
       isLedger && window.close()
-      navigate(destination !== chain ? "/#1" : "/")
+      navigate("/#1")
     },
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     gasAdjustment: destination !== chain ? 2 : 1,
     isIbc: destination !== chain,
+    hideLoader: destination === chain,
   }
 
   return (
