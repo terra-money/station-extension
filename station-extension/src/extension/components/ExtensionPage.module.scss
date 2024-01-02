@@ -43,11 +43,19 @@
 
 .modal__close__icon {
   color: var(--token-light-100) !important;
+
+  &:hover {
+    cursor: pointer !important;
+  }
 }
 
 .back__icon {
   color: var(--token-light-100) !important;
   margin-top: 5px;
+
+  &:hover {
+    cursor: pointer !important;
+  }
 }
 
 .modal {
@@ -109,12 +117,6 @@
 
   .header > & {
     padding-bottom: 16px;
-  }
-
-  svg {
-    &:hover {
-      cursor: pointer;
-    }
   }
 }
 
