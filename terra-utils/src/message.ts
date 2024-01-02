@@ -102,7 +102,6 @@ export const getCanonicalMsg = (
           } = msg as any
 
           const trueIBCDenom = getTrueDenom(ibcDenom)
-          console.log({ ibcDenom, trueIBCDenom })
           const transferAsset = `${ibcAmount}${trueIBCDenom}`
 
           let ibcMemoInfo
@@ -360,7 +359,6 @@ export const getCanonicalMsg = (
           if (userAddresses.includes(packetReceiver)) {
             const trueDenom = getTrueDenom(denom)
             const receiveIBCAmount = `${amount}${trueDenom}`
-            console.log({ trueDenom, denom })
 
             returnMsgs.push({
               msgType: "Send",
