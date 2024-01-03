@@ -32,6 +32,7 @@ export const LEDGER_TRANSPORT_TIMEOUT = 180000
 
 /* tx */
 export const DEFAULT_GAS_ADJUSTMENT = 1
+export const OSMOSIS_GAS_ENDPOINT = "osmosis/txfees/v1beta1/cur_eip_base_fee"
 
 /* swap */
 export const TERRASWAP_COMMISSION_RATE = 0.003

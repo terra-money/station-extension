@@ -4,8 +4,8 @@
   white-space: pre;
 }
 
-.grey__decimal {
-  color: var(--token-light-100);
+.small__decimal {
+  @include Large;
 }
 
 .symbol {
