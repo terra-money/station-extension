@@ -49,8 +49,15 @@ export const useParseSwapTokens = (tokens: SwapAssetBase[]) => {
         balances.find(
           ({ denom, chain }) => denom === token.denom && token.chainId === chain
         )?.amount ?? "0"
-      const price = prices?.[token.denom]?.price ?? 0
-      const change = prices?.[token.denom]?.change ?? 0
+      let price, change
+      if (token.symbol === "LUNC") {
+        // Price and change currently not available for LUNC.
+        price = prices?.["uluna:classic"]?.price ?? 0
+        change = prices?.["uluna:classic"]?.change ?? 0
+      } else {
+        price = prices?.[token.originDenom]?.price ?? 0
+        change = prices?.[token.originDenom]?.change ?? 0
+      }
       const value = Number(balance) * price * Math.pow(10, -token.decimals)
       const { icon: chainIcon, name: chainName } = network[token.chainId]
       const ibcDenom = unknownIBCDenoms[[token.denom, token.chainId].join("*")]

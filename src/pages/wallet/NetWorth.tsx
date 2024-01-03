@@ -1,12 +1,13 @@
+import { useTranslation } from "react-i18next"
+import { capitalize } from "@mui/material"
 import WalletActionButtons from "pages/wallet/WalletActionButtons"
 import { useCurrency } from "data/settings/Currency"
 import { TooltipIcon } from "components/display"
-import NetWorthTooltip from "./NetWorthTooltip"
-import { useTranslation } from "react-i18next"
-import styles from "./NetWorth.module.scss"
-import { capitalize } from "@mui/material"
 import { Read } from "components/token"
 import { usePortfolioValue } from "data/token"
+import { FlexColumn } from "@terra-money/station-ui"
+import NetWorthTooltip from "./NetWorthTooltip"
+import styles from "./NetWorth.module.scss"
 
 const NetWorth = () => {
   const { t } = useTranslation()
@@ -23,16 +24,19 @@ const NetWorth = () => {
         fixed={2}
         denom=""
         token=""
+        decimalSizeSecondary
       />
     </h1>
   )
 
   return (
     <article className={styles.networth}>
-      <TooltipIcon content={<NetWorthTooltip />} placement="bottom">
-        <p>{capitalize(t("portfolio"))}</p>
-      </TooltipIcon>
-      <NetWorth />
+      <FlexColumn justify="center" gap={8}>
+        <TooltipIcon content={<NetWorthTooltip />} placement="bottom">
+          <p>{capitalize(t("portfolio"))}</p>
+        </TooltipIcon>
+        <NetWorth />
+      </FlexColumn>
       <div className={styles.networth__buttons}>
         <WalletActionButtons />
       </div>
