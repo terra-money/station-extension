@@ -96,7 +96,7 @@ export default function DisplayFees({
         },*/
         {
           label: (
-            <>
+            <div className={styles.gas}>
               {t("Fee")}{" "}
               {availableGasDenoms.length > 1 && (
                 <Select
@@ -112,9 +112,15 @@ export default function DisplayFees({
                   ))}
                 </Select>
               )}
-            </>
+            </div>
           ),
-          value: <Read amount={feeAmount} decimals={readNativeDenom(gasDenom, chainID).decimals}  denom={gasDenom} />,
+          value: (
+            <Read
+              amount={feeAmount}
+              denom={gasDenom}
+              decimals={readNativeDenom(gasDenom, chainID).decimals}
+            />
+          ),
         },
       ]}
     />

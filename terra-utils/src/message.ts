@@ -116,7 +116,7 @@ export const getCanonicalMsg = (
             : ibcReceiver
 
           returnMsgs.push({
-            msgType: "Send",
+            msgType: "Transfer",
             canonicalMsg: [
               `Initiated IBC transfer of ${transferAsset} to ${trueIBCReceiver}`
             ],
@@ -351,22 +351,45 @@ export const getCanonicalMsg = (
             amount,
             denom,
             sender,
-            receiver: packetReceiver
+            receiver: packetReceiver,
+            memo
           } = JSON.parse(
             Buffer.from((msg as any).packet.data, "base64").toString()
           )
 
-          if (userAddresses.includes(packetReceiver)) {
-            const trueDenom = getTrueDenom(denom)
-            const receiveIBCAmount = `${amount}${trueDenom}`
+          const trueDenom = getTrueDenom(denom)
+          const receiveIBCAmount = `${amount}${trueDenom}`
 
+          if (userAddresses.includes(packetReceiver)) {
             returnMsgs.push({
-              msgType: "Send",
+              msgType: "Transfer",
               canonicalMsg: [
                 `Received ${receiveIBCAmount} from ${sender} via IBC`
               ],
               inAssets: [receiveIBCAmount]
             })
+          } else if (memo) {
+            const data = JSON.parse(memo)
+            if (
+              data?.wasm?.msg &&
+              Object.keys(data?.wasm?.msg).find(k => k.includes("swap"))
+            ) {
+              const swapMessage = Object.keys(data?.wasm?.msg).find(k =>
+                k.includes("swap")
+              ) as string
+              const outAsset =
+                data.wasm.msg[swapMessage].min_asset?.native?.denom
+
+              returnMsgs.push({
+                msgType: "Swap",
+                canonicalMsg: [
+                  outAsset
+                    ? `Swapped ${receiveIBCAmount} to ${outAsset}`
+                    : `Swapped ${receiveIBCAmount}`
+                ],
+                inAssets: [receiveIBCAmount]
+              })
+            }
           }
         }
         extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)

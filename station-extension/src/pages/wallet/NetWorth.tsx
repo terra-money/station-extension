@@ -24,7 +24,7 @@ const NetWorth = () => {
         fixed={2}
         denom=""
         token=""
-        decimalColorSecondary
+        decimalSizeSecondary
       />
     </h1>
   )

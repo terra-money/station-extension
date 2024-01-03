@@ -13,3 +13,11 @@
 .activityitem {
   overflow-wrap: anywhere;
 }
+
+.tx__details__link {
+  color: var(--token-light-100);
+  text-decoration: none !important;
+  font-size: 12px;
+  @include flex(flex-end);
+  gap: 6px;
+}
