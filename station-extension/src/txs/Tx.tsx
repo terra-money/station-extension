@@ -323,8 +323,9 @@ function Tx<TxValues>(props: Props<TxValues>) {
             redirectAfterTx: redirectAfterTx,
             chainID: chain,
           })
-        } else if (isIbc) {
-          trackIbcTx({ ...(result as any), chain } as ActivityItem)
+        } else {
+          isIbc && trackIbcTx({ ...(result as any), chain } as ActivityItem)
+          onSuccess?.()
           navigate("/#1")
         }
       }

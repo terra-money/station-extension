@@ -116,7 +116,7 @@ export const getCanonicalMsg = (
             : ibcReceiver
 
           returnMsgs.push({
-            msgType: "IBC Transfer",
+            msgType: "Transfer",
             canonicalMsg: [
               `Initiated IBC transfer of ${transferAsset} to ${trueIBCReceiver}`
             ],
@@ -362,7 +362,7 @@ export const getCanonicalMsg = (
 
           if (userAddresses.includes(packetReceiver)) {
             returnMsgs.push({
-              msgType: "IBC Transfer",
+              msgType: "Transfer",
               canonicalMsg: [
                 `Received ${receiveIBCAmount} from ${sender} via IBC`
               ],
@@ -381,7 +381,7 @@ export const getCanonicalMsg = (
                 data.wasm.msg[swapMessage].min_asset?.native?.denom
 
               returnMsgs.push({
-                msgType: "IBC Swap",
+                msgType: "Swap",
                 canonicalMsg: [
                   outAsset
                     ? `Swapped ${receiveIBCAmount} to ${outAsset}`
