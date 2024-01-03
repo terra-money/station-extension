@@ -116,8 +116,7 @@ export const skipApi = {
         operations: res.data.operations as SwapOperation[],
         timelineMsgs: getTimelineMessages(res.data, swap, network),
       }
-      console.log('transformedRouteInfo', transformedRouteInfo)
-
+      
       return transformedRouteInfo
     } catch (err) {
       console.log("Skip Route Error", err)
