@@ -155,19 +155,3 @@ const ActivityTxMessage = ({
 }
 
 export default ActivityTxMessage
-
-/* helpers */
-const validateTokens = (tokens: any) => {
-  const validate = ({ denom }: Coin) =>
-    isDenom(denom) ||
-    AccAddress.validate(denom) ||
-    denom.startsWith("stu") ||
-    ["inj", "aarch"].includes(denom)
-
-  try {
-    const coins = new Coins(tokens)
-    return coins.toArray().every(validate)
-  } catch {
-    return false
-  }
-}
