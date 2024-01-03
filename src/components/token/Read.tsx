@@ -40,9 +40,6 @@ const Read = forwardRef(
     ref: ForwardedRef<HTMLSpanElement>
   ) => {
     const currency = useCurrency()
-    console.log('amount', amount)
-    console.log('denom', denom)
-    console.log('props.decimals', props.decimals)
 
     const amountBN = new BigNumber(amount ?? "")
     if (amountBN.isNaN()) return null
