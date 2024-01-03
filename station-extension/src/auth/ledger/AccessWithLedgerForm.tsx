@@ -22,6 +22,7 @@ import {
 import CreatedWallet from "auth/modules/create/CreatedWallet"
 import PasswordForm from "extension/auth/PasswordForm"
 import { createNewPassword, passwordExists } from "auth/scripts/keystore"
+import { Pages } from "extension/auth/AccessWithLedgerPage"
 
 interface Values {
   index: number
@@ -30,22 +31,11 @@ interface Values {
   name: string
 }
 
-enum Pages {
-  form = "form",
-  //connect = "connect",
-  //openTerra = "openTerra",
-  askCosmos = "askCosmos",
-  //openCosmos = "openCosmos",
-  choosePasswordForm = "choosePasswordForm",
-  complete = "complete",
-}
-
-const AccessWithLedgerForm = () => {
+const AccessWithLedgerForm = ({ page, setPage } : { page: Pages, setPage: (page: Pages) => void}) => {
   const { t } = useTranslation()
   const { connectLedger } = useAuth()
   const getLedgerKey = useLedgerKey()
   const [error, setError] = useState<Error>()
-  const [page, setPage] = useState(Pages.form)
   const [words, setWords] = useState<{ 330: string; 118?: string }>({ 330: "" })
   const [pubkey, setPubkey] = useState<{ 330: string; 118?: string }>({
     330: "",
