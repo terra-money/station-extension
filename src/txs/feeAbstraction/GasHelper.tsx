@@ -2,10 +2,13 @@ import { useTranslation } from "react-i18next"
 import styles from "./GasHelper.module.scss"
 import { useNativeDenoms } from "data/token"
 import {
+  AssetSelectorFrom,
   Banner,
   Dropdown,
   Flex,
   FlexColumn,
+  GasHelperCard,
+  GasIcon,
   Grid,
   Input,
   InputWrapper,
@@ -136,7 +139,7 @@ export default function GasHelper({
   // gas helper not supported for multisig wallets
   if (isWallet.multisig(wallet)) {
     return (
-      <section className={styles.card}>
+      <GasHelperCard className={styles.card}>
         <h3 className={styles.title}>{t("Not Enough Gas!")}</h3>
         <p className={styles.description}>
           {t(
@@ -144,14 +147,17 @@ export default function GasHelper({
             { token: readNativeDenom(gasDenom, chainID).symbol }
           )}
         </p>
-      </section>
+      </GasHelperCard>
     )
   }
 
   return (
     <div className={styles.hepler__container}>
-      <section className={styles.card}>
-        <h3 className={styles.title}>{t("Not Enough Gas!")}</h3>
+      <GasHelperCard className={styles.card} progressColor="gray">
+        <h3 className={styles.title}>
+          <GasIcon fill="var(--token-warning-500)" width={20} height={20} />{" "}
+          {t("Not Enough Gas!")}
+        </h3>
         <p className={styles.description}>
           {t(
             "You don't have enough {{token}} to complete all the steps in this transaction, but we can fix that for you! Please select an available token below to convert for gas fees.",
@@ -201,7 +207,7 @@ export default function GasHelper({
             <LoadingCircular />
           </Flex>
         )}
-      </section>
+      </GasHelperCard>
 
       {isError ? (
         <Banner
