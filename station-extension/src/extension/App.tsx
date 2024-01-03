@@ -11,7 +11,6 @@ import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
 import {
   clearWalletAddress,
   storeNetwork,
-  storeReplaceKeplr,
   storeTheme,
   storeWalletAddress,
 } from "./storage"
@@ -29,7 +28,6 @@ import { useAuth } from "auth"
 import is from "auth/scripts/is"
 import { useNetworks } from "app/InitNetworks"
 import { useTheme } from "data/settings/Theme"
-import { useReplaceKeplr } from "utils/localStorage"
 import EnableCoinType from "app/sections/EnableCoinType"
 import ChangeLogModal from "./update/ChangeLogModal"
 import Welcome from "./modules/Welcome"
@@ -38,7 +36,6 @@ import { getErrorMessage } from "utils/error"
 import ManageWalletsButton from "./auth/ManageWalletsButton"
 import ManageWalletRouter from "./auth/ManageWalletRouter"
 import PreferencesButton from "app/sections/settings/PreferencesButton"
-import InitActivity from "pages/activity/InitActivity"
 import DashboardButton from "app/sections/DashboardButton"
 
 const App = () => {
@@ -50,7 +47,6 @@ const App = () => {
   const addresses = useAllInterchainAddresses()
   const { name: theme } = useTheme()
   const { wallet } = useAuth()
-  const { replaceKeplr } = useReplaceKeplr()
 
   useEffect(() => {
     storeNetwork({ ...networks[name][chainID], name }, networks[name])
@@ -72,10 +68,6 @@ const App = () => {
   useEffect(() => {
     storeTheme(theme)
   }, [theme])
-
-  useEffect(() => {
-    storeReplaceKeplr(replaceKeplr)
-  }, [replaceKeplr])
 
   const routes = useRoutes([
     { path: "/networks", element: <ManageNetworks /> },
@@ -131,9 +123,7 @@ const App = () => {
   return (
     <ErrorBoundary fallback={fallback}>
       <InitBankBalance>
-        <InitActivity>
-          <RequestContainer>{render()}</RequestContainer>
-        </InitActivity>
+        <RequestContainer>{render()}</RequestContainer>
       </InitBankBalance>
       <ChangeLogModal />
     </ErrorBoundary>

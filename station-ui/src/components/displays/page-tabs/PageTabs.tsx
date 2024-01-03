@@ -1,10 +1,11 @@
 import classNames from 'classnames/bind';
 import styles from './PageTabs.module.scss';
+import { ReactNode } from 'react';
 
 const cx = classNames.bind(styles);
 
 export interface PageTabsProps {
-  tabs: string[];
+  tabs: (string | ReactNode)[];
   activeTab: number;
   onClick: (index: number) => void;
 }

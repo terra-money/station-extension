@@ -10,23 +10,26 @@ const cx = classNames.bind(styles)
 export interface TimelineProps {
   startOverride?: ReactNode
   startItem?: {
-    chain: { icon: string, label: string }
-    coin: { icon: string, label: string }
+    chain: { icon: string; label: string }
+    coin: { icon: string; label: string }
     msg: ReactNode
   }
-  middleItems?: {
-    variant: "default" | "success" | "warning"
-    msg: ReactNode
-    warningPillText?: string
-    transactionButton?: ReactNode
-    disabled?: boolean
-  }[] | undefined
+  middleItems?:
+    | {
+        variant: "default" | "success" | "warning"
+        msg: ReactNode
+        warningPillText?: string
+        transactionButton?: ReactNode
+        disabled?: boolean
+      }[]
+    | undefined
   endItem?: {
-    chain: { icon: string, label: string }
-    coin: { icon: string, label: string }
+    chain: { icon: string; label: string }
+    coin: { icon: string; label: string }
     msg: ReactNode
   }
   forceShowAll?: boolean
+  hasNextElement?: boolean
 }
 
 const Timeline = ({
@@ -35,6 +38,7 @@ const Timeline = ({
   middleItems,
   endItem,
   forceShowAll,
+  hasNextElement,
 }: TimelineProps) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const [middleData, setMiddleData] = useState<any[]>([])
@@ -53,7 +57,11 @@ const Timeline = ({
     middleItems?.forEach((item, i) => {
       if (i === 0) {
         middleDataHolder.push(item)
-      } else if (i > 0 && !item.transactionButton && i !== middleItems.length - 1) {
+      } else if (
+        i > 0 &&
+        !item.transactionButton &&
+        i !== middleItems.length - 1
+      ) {
         middleDataHolder.push("Show More" as never)
       } else if (item.transactionButton && !item.disabled) {
         middleDataHolder.push(item)
@@ -67,14 +75,13 @@ const Timeline = ({
     setMiddleData(middleDataHolder)
   }, [middleItems])
 
-  const middleDataToUse = isExpanded || forceShowAll ? middleItems : middleData || []
+  const middleDataToUse =
+    isExpanded || forceShowAll ? middleItems : middleData || []
 
   return (
     <div className={styles.timeline__container}>
       {startOverride ? (
-        <div className={styles.start__item}>
-          {startOverride}
-        </div>
+        <div className={styles.start__item}>{startOverride}</div>
       ) : startItem ? (
         <div className={styles.start__item}>
           <div className={styles.img__wrapper}>
@@ -93,9 +100,7 @@ const Timeline = ({
                 chainName={startItem.chain.label}
                 small
               />
-              <h6 className={styles.details__msg}>
-                {startItem.chain.label}
-              </h6>
+              <h6 className={styles.details__msg}>{startItem.chain.label}</h6>
             </div>
           </div>
         </div>
@@ -104,9 +109,15 @@ const Timeline = ({
       {middleData && (
         <div className={styles.middle__items__container}>
           {middleDataToUse?.map((item, i) => {
-            if (item === "Show More" && i === middleDataToUse.indexOf("Show More")) {
+            if (
+              item === "Show More" &&
+              i === middleDataToUse.indexOf("Show More")
+            ) {
               return (
-                <div className={cx(styles.middle__item, styles.show__more)} onClick={() => setIsExpanded(true)}>
+                <div
+                  className={cx(styles.middle__item, styles.show__more)}
+                  onClick={() => setIsExpanded(true)}
+                >
                   <div className={styles.middle__info}>
                     <div className={styles.img__wrapper}>
                       <div className={styles.show__icon__wrapper}>
@@ -125,23 +136,41 @@ const Timeline = ({
             }
 
             return (
-              <div className={cx(styles.middle__item, { disabled: item?.disabled })} key={i}>
+              <div
+                className={cx(styles.middle__item, {
+                  disabled: item?.disabled,
+                })}
+                key={i}
+              >
                 <div className={styles.middle__info}>
                   <div className={styles.img__wrapper}>
                     {item?.variant === "success" ? (
                       <SmallCircleCheckIcon fill="var(--token-success-500)" />
+                    ) : item.variant === "warning" ? (
+                      <AlertIcon
+                        fill={
+                          item?.disabled
+                            ? "var(--token-dark-900)"
+                            : "var(--token-warning-500)"
+                        }
+                      />
                     ) : (
-                      item.variant === "warning" ? (
-                        <AlertIcon fill={item?.disabled ? "var(--token-dark-900)" : "var(--token-warning-500)"} />
-                      ) : (
-                        <span className={styles.grey__circle} />
-                      )
+                      <span className={styles.grey__circle} />
                     )}
-                    {!(!endItem && !item.transactionButton && i === middleData.length - 1) && (
+                    {(!(
+                      !endItem &&
+                      !item.transactionButton &&
+                      i === middleData.length - 1
+                    ) ||
+                      hasNextElement) && (
                       <span className={styles.dashed__line} />
                     )}
                   </div>
-                  <div className={cx(styles.details__wrapper, { hasPill: item.warningPillText } )}>
+                  <div
+                    className={cx(styles.details__wrapper, {
+                      hasPill: item.warningPillText,
+                    })}
+                  >
                     {item.warningPillText && (
                       <Pill
                         variant={item?.disabled ? "disabled" : "warning"}
@@ -166,6 +195,7 @@ const Timeline = ({
               tokenName={endItem.coin.label}
               className={styles.item__coin}
             />
+            {hasNextElement && <span className={styles.dashed__line} />}
           </div>
           <div className={styles.details__wrapper}>
             <h3>{endItem.msg}</h3>
@@ -176,9 +206,7 @@ const Timeline = ({
                 className={styles.chain__icon}
                 small
               />
-              <h6 className={styles.details__msg}>
-                {endItem.chain.label}
-              </h6>
+              <h6 className={styles.details__msg}>{endItem.chain.label}</h6>
             </div>
           </div>
         </div>

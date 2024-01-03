@@ -210,6 +210,13 @@ export function useIsBalanceEnough() {
 
       return b && Number(b.amount) >= requiredAmount
     },
+    getBalanceAmount: (denom: string, chainID: string) => {
+      const b = balances?.find(
+        ({ chain, denom: d }) => chain === chainID && d === denom
+      )
+
+      return (b && Number(b.amount)) ?? 0
+    },
   }
 }
 

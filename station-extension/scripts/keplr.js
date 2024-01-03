@@ -1,16 +1,34 @@
 import Station from "@terra-money/station-connector"
 
 function injectKeplr() {
-  window.station = new Station()
+  const station = new Station()
 
-  window.getOfflineSigner = window.station.getOfflineSigner
+  try {
+    Object.defineProperty(window, "getOfflineSigner", {
+      value: station.getOfflineSigner,
+      writable: false,
+    })
 
-  window.getOfflineSignerOnlyAmino = window.station.getOfflineSigner
+    Object.defineProperty(window, "getOfflineSignerOnlyAmino", {
+      value: station.getOfflineSigner,
+      writable: false,
+    })
 
-  window.getOfflineSignerAuto = async (chainID) =>
-    window.station.getOfflineSigner(chainID)
+    Object.defineProperty(window, "getOfflineSignerAuto", {
+      value: async (chainID) => station.getOfflineSigner(chainID),
+      writable: false,
+    })
 
-  window.keplr = window.station.keplr
+    Object.defineProperty(window, "keplr", {
+      value: station.keplr,
+      writable: false,
+    })
+  } catch (e) {
+    // another wallet has already set one of the previous proprety as read-only
+    console.error(
+      "🛰️ STATION: Unable to set Station Extension as the default wallet."
+    )
+  }
 }
 
 injectKeplr()

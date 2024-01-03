@@ -17,13 +17,6 @@ export const storeTheme = (theme: string) => {
   })
 }
 
-/* replace keplr */
-export const storeReplaceKeplr = (replaceKeplr: boolean) => {
-  browser.storage?.local.set({
-    replaceKeplr,
-  })
-}
-
 /* wallet */
 export const storeWalletAddress = (wallet: {
   address: AccAddress
@@ -52,6 +45,7 @@ export const getOpenURL = (url = "") => {
     window.open(browser.runtime.getURL(["index.html", url].join("#")))
 }
 
-export const openURL = (url = "") => {
-  getOpenURL(url)()
+export const openURL = (url = "", params?: Record<string, string>) => {
+  const urlParams = params ? "?" + new URLSearchParams(params).toString() : ""
+  getOpenURL(url + urlParams)()
 }
