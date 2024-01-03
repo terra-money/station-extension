@@ -1,13 +1,13 @@
-import { AccAddress, Coin, Coins, ValAddress } from "@terra-money/feather.js"
 import { useCW20Contracts, useCW20Whitelist } from "data/Terra/TerraAssets"
+import { AccAddress, Coins, ValAddress } from "@terra-money/feather.js"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { isDenom, truncate } from "@terra-money/terra-utils"
+import { WithTokenItem, useNativeDenoms } from "data/token"
 import { Fragment, ReactNode, useMemo } from "react"
 import { useAddress, useNetwork } from "data/wallet"
 import { getChainIDFromAddress } from "utils/bech32"
 import { useValidators } from "data/queries/staking"
+import { truncate } from "@terra-money/terra-utils"
 import { useProposal } from "data/queries/gov"
-import { WithTokenItem, useNativeDenoms } from "data/token"
 import { Read } from "components/token"
 
 const ValidatorAddress = ({ children: address }: { children: string }) => {
@@ -157,15 +157,9 @@ export default ActivityTxMessage
 
 /* helpers */
 const validateTokens = (tokens: any) => {
-  const validate = ({ denom }: Coin) =>
-    isDenom(denom) ||
-    AccAddress.validate(denom) ||
-    denom.startsWith("stu") ||
-    ["inj", "aarch"].includes(denom)
-
   try {
     const coins = new Coins(tokens)
-    return coins.toArray().every(validate)
+    return !!coins.toArray().length
   } catch {
     return false
   }
