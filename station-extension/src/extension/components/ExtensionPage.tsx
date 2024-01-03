@@ -68,7 +68,8 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                 className={cx(
                   styles.container,
                   styles.main,
-                  fullHeight && styles.full__height__body
+                  fullHeight && styles.full__height__body,
+                  modal && backButtonPath && styles.no__padding
                 )}
               >
                 {title && (
@@ -76,7 +77,8 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                     className={cx(
                       styles.container,
                       styles.close__container,
-                      modal && !backButtonPath && styles.container__with__icon
+                      modal && !backButtonPath && styles.container__with__icon,
+                      modal && backButtonPath && styles.no__margin
                     )}
                   >
                     <header className={styles.header}>
