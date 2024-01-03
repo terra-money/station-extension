@@ -112,7 +112,8 @@ const ActivityTxMessage = ({
 
     const voteTypes = ["Yes", "No", "No With Veto", "Abstain"]
 
-    return validateTokens(word) ? (
+    const tokenAmountRegex = new RegExp(/^\d+[a-zA-Z]+[/\da-zA-Z]+$/)
+    return word.match(tokenAmountRegex) ? (
       <Tokens>{word}</Tokens>
     ) : /^proposal:(\d+)/.exec(word)?.[1] ? (
       <Proposal
