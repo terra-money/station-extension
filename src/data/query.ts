@@ -74,7 +74,7 @@ export const queryKey = mirror({
     unbondings: "",
     pool: "",
   },
-  tx: { txInfo: "", create: "", fees: "" },
+  tx: { txInfo: "", create: "", fees: "", osmosisGas: "" },
   wasm: { contractInfo: "", contractQuery: "" },
   interchain: {
     staking: {
