@@ -1,13 +1,13 @@
-import { AccAddress, Coin, Coins, ValAddress } from "@terra-money/feather.js"
 import { useCW20Contracts, useCW20Whitelist } from "data/Terra/TerraAssets"
+import { AccAddress, Coins, ValAddress } from "@terra-money/feather.js"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { isDenom, truncate } from "@terra-money/terra-utils"
+import { WithTokenItem, useNativeDenoms } from "data/token"
 import { Fragment, ReactNode, useMemo } from "react"
 import { useAddress, useNetwork } from "data/wallet"
 import { getChainIDFromAddress } from "utils/bech32"
 import { useValidators } from "data/queries/staking"
+import { truncate } from "@terra-money/terra-utils"
 import { useProposal } from "data/queries/gov"
-import { WithTokenItem, useNativeDenoms } from "data/token"
 import { Read } from "components/token"
 
 const ValidatorAddress = ({ children: address }: { children: string }) => {
@@ -112,8 +112,7 @@ const ActivityTxMessage = ({
 
     const voteTypes = ["Yes", "No", "No With Veto", "Abstain"]
 
-    const tokenAmountRegex = new RegExp(/^\d+[a-zA-Z]+[/\da-zA-Z]+$/)
-    return word.match(tokenAmountRegex) ? (
+    return validateTokens(word) ? (
       <Tokens>{word}</Tokens>
     ) : /^proposal:(\d+)/.exec(word)?.[1] ? (
       <Proposal
@@ -155,3 +154,13 @@ const ActivityTxMessage = ({
 }
 
 export default ActivityTxMessage
+
+/* helpers */
+const validateTokens = (tokens: any) => {
+  try {
+    const coins = new Coins(tokens)
+    return !!coins.toArray().length
+  } catch {
+    return false
+  }
+}
