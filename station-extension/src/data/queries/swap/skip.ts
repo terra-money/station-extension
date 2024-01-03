@@ -13,6 +13,7 @@ import {
 } from "./types"
 import { InterchainAddresses } from "types/network"
 import { IInterchainNetworks } from "data/wallet"
+import { isTerraChain } from "utils/chain"
 
 export const skipApi = {
   queryTokens: async () => {
@@ -81,17 +82,24 @@ export const skipApi = {
   queryRoute: async (swap: SwapState, network: IInterchainNetworks) => {
     try {
       const { askAsset, offerInput, offerAsset } = swap
+      
+      const payload: {[key: string]: any} = {
+        amount_in: offerInput,
+        source_asset_denom: offerAsset.denom,
+        source_asset_chain_id: offerAsset.chainId,
+        dest_asset_denom: askAsset.denom,
+        dest_asset_chain_id: askAsset.chainId,
+        cumulative_affiliate_fee_bps: "0",
+      }
+      const swapOnTerra = [offerAsset.chainId, askAsset.chainId].every(isTerraChain)
+      
+      if (swapOnTerra) {
+        payload.swap_venue = { name: SwapVenue.ASTROPORT, chain_id: offerAsset.chainId };
+      }
+      
       const res = await axios.post(
         SKIP_SWAP_API.routes.route,
-        {
-          amount_in: offerInput,
-          source_asset_denom: offerAsset.denom,
-          source_asset_chain_id: offerAsset.chainId,
-          dest_asset_denom: askAsset.denom,
-          dest_asset_chain_id: askAsset.chainId,
-          cumulative_affiliate_fee_bps: "0",
-          
-        },
+        payload,
         {
           baseURL: SKIP_SWAP_API.baseUrl,
           headers: {
@@ -100,7 +108,7 @@ export const skipApi = {
         }
       )
       if (!res?.data) throw new Error("No data returned from Skip API")
-      if (res?.data.txs_required > 1)
+      if (res.data.txs_required > 1)
         throw new Error(
           `Swap not supported, ${res.data.txs_required} txs required`
         )
