@@ -7,7 +7,7 @@ import { useAddress, useNetwork } from "data/wallet"
 import { getChainIDFromAddress } from "utils/bech32"
 import { useValidators } from "data/queries/staking"
 import { useProposal } from "data/queries/gov"
-import { WithTokenItem } from "data/token"
+import { WithTokenItem, useNativeDenoms } from "data/token"
 import { Read } from "components/token"
 
 const ValidatorAddress = ({ children: address }: { children: string }) => {
@@ -103,6 +103,7 @@ const ActivityTxMessage = ({
   chainID,
 }: Props) => {
   const address = useAddress()
+  const readNativeDenom = useNativeDenoms()
   if (!sentence) return null
 
   const parse = (word: string, index: number): ReactNode => {
@@ -127,6 +128,8 @@ const ActivityTxMessage = ({
       index === 1 ||
       ["IBC", "transfer", "Coinhall", "TFM", "Astroport"].includes(word) ? (
       <span>{word}</span>
+    ) : /^ibc\/[0-9A-F]{64}$/g.test(word) ? (
+      <span>{readNativeDenom(word).symbol}</span>
     ) : (
       word
     )

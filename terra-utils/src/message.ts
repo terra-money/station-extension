@@ -116,7 +116,7 @@ export const getCanonicalMsg = (
             : ibcReceiver
 
           returnMsgs.push({
-            msgType: "Send",
+            msgType: "IBC Transfer",
             canonicalMsg: [
               `Initiated IBC transfer of ${transferAsset} to ${trueIBCReceiver}`
             ],
@@ -352,18 +352,17 @@ export const getCanonicalMsg = (
             denom,
             sender,
             receiver: packetReceiver,
-            memo,
+            memo
           } = JSON.parse(
             Buffer.from((msg as any).packet.data, "base64").toString()
           )
 
           const trueDenom = getTrueDenom(denom)
           const receiveIBCAmount = `${amount}${trueDenom}`
-  
-          if (userAddresses.includes(packetReceiver)) {
 
+          if (userAddresses.includes(packetReceiver)) {
             returnMsgs.push({
-              msgType: "Send",
+              msgType: "IBC Transfer",
               canonicalMsg: [
                 `Received ${receiveIBCAmount} from ${sender} via IBC`
               ],
