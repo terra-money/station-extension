@@ -38,7 +38,6 @@ export default function DisplayFees({
   const network = useNetwork()
   const { data: carbonFees} = useCarbonFees()
   const gasPrices = chainID.startsWith('carbon-') ? carbonFees?.prices : network[chainID]?.gasPrices ?? {}
-  const feeAmount =  Math.ceil(gasPrices[gasDenom ?? ""] * (gas ?? 0))
   const isBalanceLoading = useIsBalanceLoading(chainID)
   const queryClient = useQueryClient()
   const { symbol, decimals } = readNativeDenom(gasDenom ?? "", chainID)
@@ -84,7 +83,7 @@ export default function DisplayFees({
         }}
       />
     )
-
+  const feeAmount =  Math.ceil(gasPrices[gasDenom] * (gas ?? 0))
   onReady() // if we are at this point fees are ready
 
   return (
