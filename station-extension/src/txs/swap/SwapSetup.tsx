@@ -85,9 +85,8 @@ const SwapForm = () => {
 
     const fetchRouteAndMsgs = async () => {
       try {
-        const state = getValues()
-        setValue("route", await getBestRoute(state))
-        setValue("msgs", await getMsgs(state))
+        setValue("route", await getBestRoute(getValues()))
+        setValue("msgs", await getMsgs(getValues()))
       } catch (err: any) {
         setError(err?.message ?? "Unknown error")
       }
