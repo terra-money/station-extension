@@ -118,7 +118,7 @@ const AssetPage = () => {
                 currency
                 amount={totalBalance * price}
                 fixed={2}
-                decimalColorSecondary
+                decimalSizeSecondary
               />
             ) : (
               <span>—</span>

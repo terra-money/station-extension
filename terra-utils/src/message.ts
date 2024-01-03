@@ -1,4 +1,4 @@
-import { AccAddress, TxInfo, Event } from "@terra-money/feather.js"
+import { TxInfo, Event } from "@terra-money/feather.js"
 
 /* -------------------------------------------------------------------------- */
 /*                             Transaction Reader                             */
@@ -26,7 +26,7 @@ export const getCanonicalMsg = (
       "terra18plp90j0zd596zt3zdsf0w9vvk5ukwlwzwkksxv9mdu8rscat9sqndk5qz",
     Coinhall:
       "terra1e3nqr8vwu32pzgasraud9avpwdd8phmqgre5kpwlytgedj2emkkq3l67hy",
-    TFM: "terra19hz374h6ruwtzrnm8ytkae782uv79h9yt9tuytgvt94t26c4793qnfg7vn",
+    TFM: "terra19hz374h6ruwtzrnm8ytkae782uv79h9yt9tuytgvt94t26c4793qnfg7vn"
   }
   const userAddresses = Object.values(addresses)
 
@@ -61,7 +61,7 @@ export const getCanonicalMsg = (
       /* ----------------------- Withdraw Delegation Reward ----------------------- */
 
       case "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward":
-        extractMsgFn = (msg: any) => {
+        extractMsgFn = (_: any) => {
           const rewardsMsgsData = getRewardMsgs(msgEvents)
           returnMsgs.push(...rewardsMsgsData)
         }
@@ -74,7 +74,7 @@ export const getCanonicalMsg = (
         extractMsgFn = (msg: any) => {
           const {
             amount: { denom: delegatedDenom, amount: delegatedAmount },
-            validator_address: delegateValidator,
+            validator_address: delegateValidator
           } = msg as any
 
           const trueDelegatedDenom = getTrueDenom(delegatedDenom)
@@ -83,9 +83,9 @@ export const getCanonicalMsg = (
           returnMsgs.push({
             msgType: "Delegate",
             canonicalMsg: [
-              `Delegated ${delegatedAsset} to ${delegateValidator}`,
+              `Delegated ${delegatedAsset} to ${delegateValidator}`
             ],
-            outAssets: [delegatedAsset],
+            outAssets: [delegatedAsset]
           })
         }
         extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
@@ -98,13 +98,19 @@ export const getCanonicalMsg = (
           const {
             token: { denom: ibcDenom, amount: ibcAmount },
             receiver: ibcReceiver,
-            memo: ibcMemo,
+            memo: ibcMemo
           } = msg as any
 
-            const trueIBCDenom = getTrueDenom(ibcDenom)
-            const transferAsset = `${ibcAmount}${trueIBCDenom}`
+          const trueIBCDenom = getTrueDenom(ibcDenom)
+          const transferAsset = `${ibcAmount}${trueIBCDenom}`
 
-          const ibcMemoInfo = JSON.parse(ibcMemo)
+          let ibcMemoInfo
+          try {
+            ibcMemoInfo = JSON.parse(ibcMemo)
+          } catch (error) {
+            // Memo is not parsable as JSON.
+            ibcMemoInfo = undefined
+          }
           const trueIBCReceiver = ibcMemoInfo?.forward?.receiver
             ? ibcMemoInfo.forward.receiver
             : ibcReceiver
@@ -112,9 +118,9 @@ export const getCanonicalMsg = (
           returnMsgs.push({
             msgType: "Send",
             canonicalMsg: [
-              `Initiated IBC transfer of ${transferAsset} to ${trueIBCReceiver}`,
+              `Initiated IBC transfer of ${transferAsset} to ${trueIBCReceiver}`
             ],
-            outAssets: [transferAsset],
+            outAssets: [transferAsset]
           })
         }
         extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
@@ -126,7 +132,7 @@ export const getCanonicalMsg = (
         extractMsgFn = (msg: any) => {
           const {
             amount: { denom: undelegateDenom, amount: undelegateAmount },
-            validator_address: undelegateValidator,
+            validator_address: undelegateValidator
           } = msg as any
 
           const trueUndelegateDenom = getTrueDenom(undelegateDenom)
@@ -135,9 +141,9 @@ export const getCanonicalMsg = (
           returnMsgs.push({
             msgType: "Undelegate",
             canonicalMsg: [
-              `Undelegated ${undelegatedAsset} from ${undelegateValidator}`,
+              `Undelegated ${undelegatedAsset} from ${undelegateValidator}`
             ],
-            inAssets: [undelegatedAsset],
+            inAssets: [undelegatedAsset]
           })
 
           // Get any related rewards messages associated with undelegation.
@@ -154,7 +160,7 @@ export const getCanonicalMsg = (
           const {
             amount: { denom: redelegateDenom, amount: redelegateAmount },
             validator_src_address: sourceVal,
-            validator_dst_address: destVal,
+            validator_dst_address: destVal
           } = msg as any
 
           const trueRedelegateDenom = getTrueDenom(redelegateDenom)
@@ -162,8 +168,8 @@ export const getCanonicalMsg = (
           returnMsgs.push({
             msgType: "Redelegate",
             canonicalMsg: [
-              `Redelegated ${redelegateAmount}${trueRedelegateDenom} from ${sourceVal} to ${destVal}`,
-            ],
+              `Redelegated ${redelegateAmount}${trueRedelegateDenom} from ${sourceVal} to ${destVal}`
+            ]
           })
 
           // Get any related rewards messages associated with redelegation.
@@ -183,7 +189,7 @@ export const getCanonicalMsg = (
             VOTE_OPTION_YES: "Yes",
             VOTE_OPTION_ABSTAIN: "Abstain",
             VOTE_OPTION_NO: "No",
-            VOTE_OPTION_NO_WITH_VETO: "No With Veto",
+            VOTE_OPTION_NO_WITH_VETO: "No With Veto"
           }
 
           const { option, proposal_id } = msg as any
@@ -191,8 +197,8 @@ export const getCanonicalMsg = (
           returnMsgs.push({
             msgType: "Vote",
             canonicalMsg: [
-              `Voted ${voteOptions[option]} on proposal:${proposal_id}`,
-            ],
+              `Voted ${voteOptions[option]} on proposal:${proposal_id}`
+            ]
           })
         }
         extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
@@ -223,9 +229,9 @@ export const getCanonicalMsg = (
               returnMsgs.push({
                 msgType: "Provide Liquidity",
                 canonicalMsg: [
-                  `Provided ${providedAssetsText} of liquidity to ${contractAddress}`,
+                  `Provided ${providedAssetsText} of liquidity to ${contractAddress}`
                 ],
-                outAssets: providedAssetsText.split(/[,\s]+(?:and\s)?/),
+                outAssets: providedAssetsText.split(/[,\s]+(?:and\s)?/)
               })
             }
           } else if (
@@ -248,7 +254,7 @@ export const getCanonicalMsg = (
             if (unstakeLPMsg) {
               returnMsgs.push({
                 msgType: "Undelegate",
-                canonicalMsg: [unstakeLPMsg],
+                canonicalMsg: [unstakeLPMsg]
               })
             }
           } else if ((msg as any)?.msg?.claim_rewards) {
@@ -258,8 +264,11 @@ export const getCanonicalMsg = (
               /* ---------------------- Withdraw Alliance Rewards --------------------- */
 
               for (const claimedReward of claimedRewards) {
-                const { rewardAmount, rewardAsset, withdrawFromAddress } =
-                  claimedReward
+                const {
+                  rewardAmount,
+                  rewardAsset,
+                  withdrawFromAddress
+                } = claimedReward
 
                 const splitAsset = rewardAsset.split(":")
                 const trueRewardAsset = splitAsset[splitAsset.length - 1]
@@ -268,9 +277,9 @@ export const getCanonicalMsg = (
                 returnMsgs.push({
                   msgType: "Reward Withdrawal",
                   canonicalMsg: [
-                    `Withdrew ${allianceRewardAsset} staking rewards from ${withdrawFromAddress}`,
+                    `Withdrew ${allianceRewardAsset} staking rewards from ${withdrawFromAddress}`
                   ],
-                  inAssets: [allianceRewardAsset],
+                  inAssets: [allianceRewardAsset]
                 })
               }
             }
@@ -284,17 +293,18 @@ export const getCanonicalMsg = (
             if (submitMsgData.deposit) {
               /* -------------------------- Stake LP Token -------------------------- */
 
-              const { amount: LPTokenAmount, contract: stakingContract } = (
-                msg as any
-              )?.msg?.send
+              const {
+                amount: LPTokenAmount,
+                contract: stakingContract
+              } = (msg as any)?.msg?.send
 
               const LPTokenContract = contractName
 
               returnMsgs.push({
                 msgType: "Deposit",
                 canonicalMsg: [
-                  `Deposited ${LPTokenAmount}${LPTokenContract} to ${stakingContract}`,
-                ],
+                  `Deposited ${LPTokenAmount}${LPTokenContract} to ${stakingContract}`
+                ]
               })
             } else if (submitMsgData.withdraw_liquidity) {
               /* ------------------------ Withdraw Liquidity ------------------------ */
@@ -312,9 +322,9 @@ export const getCanonicalMsg = (
                 returnMsgs.push({
                   msgType: "Withdraw Liquidity",
                   canonicalMsg: [
-                    `Withdrew ${withdrawnAssetsText} of liquidity from ${contractName}`,
+                    `Withdrew ${withdrawnAssetsText} of liquidity from ${contractName}`
                   ],
-                  outAssets: withdrawnAssetsText.split(/[,\s]+(?:and\s)?/),
+                  outAssets: withdrawnAssetsText.split(/[,\s]+(?:and\s)?/)
                 })
               }
             }
@@ -325,7 +335,7 @@ export const getCanonicalMsg = (
               if (!["increase_allowance"].includes(executable))
                 returnMsgs.push({
                   msgType: "Execute",
-                  canonicalMsg: [`Executed ${executable} on ${contractName}`],
+                  canonicalMsg: [`Executed ${executable} on ${contractName}`]
                 })
             }
           }
@@ -352,13 +362,12 @@ export const getCanonicalMsg = (
   
           if (userAddresses.includes(packetReceiver)) {
 
-  
             returnMsgs.push({
               msgType: "Send",
               canonicalMsg: [
-                `Received ${receiveIBCAmount} from ${sender} via IBC`,
+                `Received ${receiveIBCAmount} from ${sender} via IBC`
               ],
-              inAssets: [receiveIBCAmount],
+              inAssets: [receiveIBCAmount]
             })
           } else if (memo) {
             const data = JSON.parse(memo)
@@ -398,7 +407,7 @@ export const getCanonicalMsg = (
       default:
         returnMsgs.push({
           msgType: "Unknown",
-          canonicalMsg: [msgType],
+          canonicalMsg: [msgType]
         })
         break
     }
@@ -429,10 +438,11 @@ const extractMsg = (
   try {
     extractMsgFn(msg)
   } catch (error) {
-    console.log(`
+    console.error(`
 Failed to parse message:
 Type: ${msgType}
 Hash: ${txHash}
+Error: ${error}
     `)
   }
 }
@@ -452,7 +462,7 @@ const getEventInfo = (msgEvents: Event[], eventName: string) => {
     "transfer",
     "withdraw",
     "claim",
-    "swap",
+    "swap"
   ].includes(eventName)
     ? "wasm"
     : eventName
@@ -474,7 +484,7 @@ const getEventInfo = (msgEvents: Event[], eventName: string) => {
       case "withdraw_rewards":
         amounts.push({
           amount: eventInfo.amount,
-          validator: eventInfo.validator,
+          validator: eventInfo.validator
         })
         break
       case "wasm":
@@ -483,7 +493,7 @@ const getEventInfo = (msgEvents: Event[], eventName: string) => {
             offerAmount: eventInfo.offer_amount,
             offerAsset: eventInfo.offer_asset,
             receiveAmount: eventInfo.return_amount,
-            receiveAsset: eventInfo.ask_asset,
+            receiveAsset: eventInfo.ask_asset
           })
         } else if (
           eventInfo.action === "provide_liquidity" &&
@@ -492,7 +502,7 @@ const getEventInfo = (msgEvents: Event[], eventName: string) => {
           if (eventInfo.assets) {
             amounts.push({
               assets: eventInfo.assets,
-              contractAddress: eventInfo._contract_address,
+              contractAddress: eventInfo._contract_address
             })
           }
         } else if (
@@ -501,7 +511,7 @@ const getEventInfo = (msgEvents: Event[], eventName: string) => {
         ) {
           amounts.push({
             withdrawAmount: eventInfo.amount,
-            withdrawSenderAddress: eventInfo._contract_address,
+            withdrawSenderAddress: eventInfo._contract_address
           })
         } else if (
           eventInfo.action === "transfer" &&
@@ -511,12 +521,12 @@ const getEventInfo = (msgEvents: Event[], eventName: string) => {
             transferAmount: eventInfo.amount,
             transferTokenAddress: eventInfo._contract_address,
             transferFrom: eventInfo.from,
-            transferTo: eventInfo.to,
+            transferTo: eventInfo.to
           })
         } else if (eventInfo.action === "claim" && eventName === "claim") {
           amounts.push({
             claimAmount: eventInfo.claimed_amount,
-            claimSenderAddress: eventInfo._contract_address,
+            claimSenderAddress: eventInfo._contract_address
           })
         } else if (
           eventInfo.action === "claim_rewards" &&
@@ -525,7 +535,7 @@ const getEventInfo = (msgEvents: Event[], eventName: string) => {
           amounts.push({
             rewardAmount: eventInfo.reward_amount,
             rewardAsset: eventInfo.asset,
-            withdrawFromAddress: eventInfo._contract_address,
+            withdrawFromAddress: eventInfo._contract_address
           })
         } else if (
           eventInfo.action === "withdraw_liquidity" &&
@@ -533,7 +543,7 @@ const getEventInfo = (msgEvents: Event[], eventName: string) => {
         ) {
           if (eventInfo.refund_assets) {
             amounts.push({
-              refundAssets: eventInfo.refund_assets,
+              refundAssets: eventInfo.refund_assets
             })
           }
         }
@@ -561,9 +571,9 @@ const getRewardMsgs = (msgEvents: Event[]) => {
     rewardsMsgs.push({
       msgType: "Reward Withdrawal",
       canonicalMsg: [
-        `Withdrew ${rewardAssets} staking rewards from ${validatorAddress}`,
+        `Withdrew ${rewardAssets} staking rewards from ${validatorAddress}`
       ],
-      inAssets: rewardAssets.split(","),
+      inAssets: rewardAssets.split(",")
     })
   }
 
@@ -602,7 +612,7 @@ const getSwapMessage = (swapsInfo: any[], swapPlatform: string) => {
     msgType: "Swap",
     canonicalMsg: [`Swapped ${outAsset} for ${inAsset} on ${swapPlatform}`],
     inAssets: [inAsset],
-    outAssets: [outAsset],
+    outAssets: [outAsset]
   }
 }
 
@@ -621,16 +631,16 @@ const getContractName = (
   const contractAddress = (msg as any).contract
 
   const contractName = Object.keys(swapContractAddresses).find(
-    (key) => swapContractAddresses[key] === contractAddress
+    key => swapContractAddresses[key] === contractAddress
   )
     ? Object.keys(swapContractAddresses).find(
-        (key) => swapContractAddresses[key] === contractAddress
+        key => swapContractAddresses[key] === contractAddress
       )
     : Object.keys(swapContractAddresses).find(
-        (key) => swapContractAddresses[key] === (msg as any).msg?.send?.contract
+        key => swapContractAddresses[key] === (msg as any).msg?.send?.contract
       )
     ? Object.keys(swapContractAddresses).find(
-        (key) => swapContractAddresses[key] === (msg as any).msg?.send?.contract
+        key => swapContractAddresses[key] === (msg as any).msg?.send?.contract
       )
     : (msg as any).msg?.send?.contract
     ? (msg as any).msg.send.contract
@@ -650,7 +660,7 @@ const getSendMessage = (msg: any, userAddresses: string[]) => {
   const {
     from_address: fromAddress,
     to_address: toAddress,
-    amount: [{ denom: sentDenom, amount: sentAmount }],
+    amount: [{ denom: sentDenom, amount: sentAmount }]
   } = msg
 
   const trueSentDenom = getTrueDenom(sentDenom)
@@ -671,7 +681,7 @@ const getSendMessage = (msg: any, userAddresses: string[]) => {
     msgType: "Send",
     canonicalMsg: [sendMsg],
     inAssets: inAsset ? [inAsset] : undefined,
-    outAssets: outAsset ? [outAsset] : undefined,
+    outAssets: outAsset ? [outAsset] : undefined
   }
 }
 
@@ -694,8 +704,12 @@ const generateUnstakeLPMsg = (
   for (const unstakeLPTx of unstakeLPInfo) {
     const { withdrawAmount, withdrawSenderAddress } = unstakeLPTx
     for (const transferTx of transferInfo) {
-      const { transferAmount, transferTokenAddress, transferFrom, transferTo } =
-        transferTx
+      const {
+        transferAmount,
+        transferTokenAddress,
+        transferFrom,
+        transferTo
+      } = transferTx
 
       if (
         withdrawAmount === transferAmount &&
@@ -712,8 +726,12 @@ const generateUnstakeLPMsg = (
   for (const rewardsUnstakeLPTx of rewardsUnstakeLPInfo) {
     const { claimAmount, claimSenderAddress } = rewardsUnstakeLPTx
     for (const transferTx of transferInfo) {
-      const { transferAmount, transferTokenAddress, transferFrom, transferTo } =
-        transferTx
+      const {
+        transferAmount,
+        transferTokenAddress,
+        transferFrom,
+        transferTo
+      } = transferTx
 
       if (
         claimAmount === transferAmount &&
@@ -735,34 +753,30 @@ const generateUnstakeLPMsg = (
  *
  * @param {string} denom String corresponding to asset which may need formatting.
  * @return {string} String of true denom for effective message parsing.
+ *
+ * Example of expected input/outputs:
+ * - uluna -> uluna
+ * - transfer/channel-42/ujuno -> ujuno
+ * - transfer/channel-42/transfer/channel-34/uatom -> uatom
+ * - transfer/channel-42/cw20:terra1....
  */
-const getTrueDenom = (denom: string) => {
-  // If transfer or cw20 path, take last element of path as denom.
-  const denomPath = denom.split(/[/:]+/)
-  const extractedDenom = ["transfer", "cw20"].includes(denomPath[0])
-    ? denomPath[denomPath.length - 1]
-    : denom
-
-  // If extracted denom is an address, assume CW20 and return.
-  const isCW20Token = AccAddress.validate(extractedDenom)
-  if (isCW20Token) {
-    return extractedDenom
+const getTrueDenom = (denom: string): string => {
+  if (denom.startsWith("cw20:")) {
+    return denom.replace("cw20:", "")
   }
 
-  // Ensure extracted denom is valid before returning.
-  const prefixIncluded = ["u", "n"].includes(extractedDenom[0])
-  const noPrefixToken = ["aarch", "inj", "swth"].includes(extractedDenom)
-  const strideStakeToken = extractedDenom.startsWith("stu")
-  const nonSplitAddress = extractedDenom.match(/[/:]+/)
-  const extractedDenomValid =
-    prefixIncluded || noPrefixToken || strideStakeToken || nonSplitAddress
-  const trueDenom = extractedDenomValid
-    ? extractedDenom
-    : extractedDenom === "cheq"
-    ? `n${extractedDenom}`
-    : `u${extractedDenom}`
+  if (denom.split("/").length >= 3) {
+    const [port, channel, ...extra] = denom.split("/")
 
-  return trueDenom
+    // if port is "transfer" and channel matches "channel-{NUMBER}"
+    if (port === "transfer" && /^channel-\d+$/g.test(channel)) {
+      // recursive, there might be another channel or a "cw20:"" prefix
+      return getTrueDenom(extra.join("/"))
+    }
+  }
+
+  // denom is fine as it is
+  return denom
 }
 
 /**

@@ -33,7 +33,7 @@ import styles from "./Tx.module.scss"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { getShouldTax, useTaxCap, useTaxRate } from "data/queries/treasury"
-import { useCarbonFees } from "data/queries/tx"
+import { useCarbonFees, useOsmosisGas } from "data/queries/tx"
 import {
   Banner,
   Button,
@@ -118,6 +118,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const isBroadcasting = useRecoilValue(isBroadcastingState)
   const { data: carbonFees } = useCarbonFees()
   const { addTx: trackIbcTx } = usePendingIbcTx()
+  const { data: osmosisGas } = useOsmosisGas()
 
   /* taxes */
   const isClassic = networks[chain]?.isClassic
@@ -186,6 +187,8 @@ function Tx<TxValues>(props: Props<TxValues>) {
     (denom: CoinDenom) => {
       const gasPrice = chain?.startsWith("carbon-")
         ? carbonFees?.prices[denom]
+        : chain?.startsWith("osmosis")
+        ? (osmosisGas || 0.0025) * 10
         : networks[chain]?.gasPrices[denom]
       if (isNil(estimatedGas) || !gasPrice) return "0"
       return new BigNumber(estimatedGas)
@@ -193,7 +196,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
         .integerValue(BigNumber.ROUND_CEIL)
         .toString()
     },
-    [estimatedGas, chain, networks, carbonFees]
+    [chain, carbonFees?.prices, osmosisGas, networks, estimatedGas]
   )
 
   const gasAmount = getGasAmount(gasDenom)
