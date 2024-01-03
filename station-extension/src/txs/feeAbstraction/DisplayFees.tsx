@@ -41,6 +41,7 @@ export default function DisplayFees({
   const feeAmount =  Math.ceil(gasPrices[gasDenom ?? ""] * (gas ?? 0))
   const isBalanceLoading = useIsBalanceLoading(chainID)
   const queryClient = useQueryClient()
+  const { symbol, decimals } = readNativeDenom(gasDenom ?? "", chainID)
 
   useEffect(() => {
     if (
@@ -90,13 +91,9 @@ export default function DisplayFees({
     <SummaryTable
       rows={[
         ...(descriptions ?? []),
-        /*{
-          label: t("Gas"),
-          value: gas,
-        },*/
         {
           label: (
-            <div className={styles.gas}>
+            <>
               {t("Fee")}{" "}
               {availableGasDenoms.length > 1 && (
                 <Select
@@ -107,20 +104,14 @@ export default function DisplayFees({
                 >
                   {availableGasDenoms.map((denom, i) => (
                     <option value={denom} key={i}>
-                      {readNativeDenom(denom, chainID).symbol}
+                      {symbol}
                     </option>
                   ))}
                 </Select>
               )}
-            </div>
+            </>
           ),
-          value: (
-            <Read
-              amount={feeAmount}
-              denom={gasDenom}
-              decimals={readNativeDenom(gasDenom, chainID).decimals}
-            />
-          ),
+          value: <Read amount={feeAmount} decimals={decimals}  denom={gasDenom} />,
         },
       ]}
     />
