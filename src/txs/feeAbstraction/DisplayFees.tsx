@@ -14,6 +14,7 @@ import {
 import GasHelper from "./GasHelper"
 import { useQueryClient } from "react-query"
 import { queryKey } from "data/query"
+import { useCarbonFees } from "data/queries/tx"
 
 export default function DisplayFees({
   chainID,
@@ -35,8 +36,9 @@ export default function DisplayFees({
   const { t } = useTranslation()
   const readNativeDenom = useNativeDenoms()
   const network = useNetwork()
-  const gasPrices = network[chainID]?.gasPrices ?? {}
-  const feeAmount = Math.ceil(gasPrices[gasDenom ?? ""] * (gas ?? 0))
+  const { data: carbonFees} = useCarbonFees()
+  const gasPrices = chainID.startsWith('carbon-') ? carbonFees?.prices : network[chainID]?.gasPrices ?? {}
+  const feeAmount =  Math.ceil(gasPrices[gasDenom ?? ""] * (gas ?? 0))
   const isBalanceLoading = useIsBalanceLoading(chainID)
   const queryClient = useQueryClient()
 
@@ -112,7 +114,7 @@ export default function DisplayFees({
               )}
             </>
           ),
-          value: <Read amount={feeAmount} denom={gasDenom} />,
+          value: <Read amount={feeAmount} decimals={readNativeDenom(gasDenom, chainID).decimals}  denom={gasDenom} />,
         },
       ]}
     />
