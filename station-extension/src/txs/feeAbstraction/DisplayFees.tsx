@@ -14,6 +14,7 @@ import {
 import GasHelper from "./GasHelper"
 import { useQueryClient } from "react-query"
 import { queryKey } from "data/query"
+import { useCarbonFees } from "data/queries/tx"
 
 export default function DisplayFees({
   chainID,
@@ -35,10 +36,11 @@ export default function DisplayFees({
   const { t } = useTranslation()
   const readNativeDenom = useNativeDenoms()
   const network = useNetwork()
-  const gasPrices = network[chainID]?.gasPrices ?? {}
-  const feeAmount = Math.ceil(gasPrices[gasDenom ?? ""] * (gas ?? 0))
+  const { data: carbonFees} = useCarbonFees()
+  const gasPrices = chainID.startsWith('carbon-') ? carbonFees?.prices : network[chainID]?.gasPrices ?? {}
   const isBalanceLoading = useIsBalanceLoading(chainID)
   const queryClient = useQueryClient()
+  const { symbol, decimals } = readNativeDenom(gasDenom ?? "", chainID)
 
   useEffect(() => {
     if (
@@ -48,6 +50,7 @@ export default function DisplayFees({
       setGasDenom(availableGasDenoms[0])
     }
   }, [availableGasDenoms]) // eslint-disable-line
+
 
   if (!gas || !gasDenom)
     return (
@@ -80,17 +83,13 @@ export default function DisplayFees({
         }}
       />
     )
-
+  const feeAmount =  Math.ceil(gasPrices[gasDenom] * (gas ?? 0))
   onReady() // if we are at this point fees are ready
 
   return (
     <SummaryTable
       rows={[
         ...(descriptions ?? []),
-        /*{
-          label: t("Gas"),
-          value: gas,
-        },*/
         {
           label: (
             <div className={styles.gas}>
@@ -104,20 +103,14 @@ export default function DisplayFees({
                 >
                   {availableGasDenoms.map((denom, i) => (
                     <option value={denom} key={i}>
-                      {readNativeDenom(denom, chainID).symbol}
+                      {symbol}
                     </option>
                   ))}
                 </Select>
               )}
             </div>
           ),
-          value: (
-            <Read
-              amount={feeAmount}
-              denom={gasDenom}
-              decimals={readNativeDenom(gasDenom, chainID).decimals}
-            />
-          ),
+          value: <Read amount={feeAmount} decimals={decimals} denom={gasDenom} />,
         },
       ]}
     />
