@@ -27,7 +27,6 @@ import { Coin } from "@terra-money/feather.js"
 import { queryKey } from "data/query"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { CoinInput } from "txs/utils"
-import { useNavigate } from "react-router-dom"
 import style from "./Send.module.scss"
 import { useIsLedger } from "utils/ledger"
 
@@ -55,7 +54,6 @@ const Confirm = () => {
   const currency = useCurrency()
   const { handleSubmit, setValue } = form
   const { addRecipient } = useRecentRecipients()
-  const navigate = useNavigate()
   const addresses = useInterchainAddresses()
   const [error, setError] = useState<string | null>(null)
   const { input, assetInfo, destination, recipient, chain, memo } = form.watch()
@@ -226,7 +224,6 @@ const Confirm = () => {
     onSuccess: () => {
       addRecipient({ recipient, name: getWalletName(recipient ?? "") })
       isLedger && window.close()
-      navigate("/#1")
     },
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     gasAdjustment: destination !== chain ? 2 : 1,
