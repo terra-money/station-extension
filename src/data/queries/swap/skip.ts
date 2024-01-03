@@ -48,7 +48,7 @@ export const skipApi = {
     try {
       const { askAsset, offerInput, offerAsset, route, slippageTolerance } =
       swap
-      if (!route || !addresses) return null
+      if (!route || !addresses) return
       const params = {
         amount_in: offerInput,
         amount_out: route.amountOut,
@@ -99,6 +99,7 @@ export const skipApi = {
           },
         }
       )
+      console.log('res', res)
       if (!res?.data) throw new Error("No data returned from Skip API")
       if (res?.data.txs_required > 1)
         throw new Error(
@@ -115,6 +116,7 @@ export const skipApi = {
         operations: res.data.operations as SwapOperation[],
         timelineMsgs: getTimelineMessages(res.data, swap, network),
       }
+      console.log('transformedRouteInfo', transformedRouteInfo)
 
       return transformedRouteInfo
     } catch (err) {
