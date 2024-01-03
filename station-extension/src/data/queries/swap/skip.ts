@@ -99,7 +99,6 @@ export const skipApi = {
           },
         }
       )
-      console.log('res', res)
       if (!res?.data) throw new Error("No data returned from Skip API")
       if (res?.data.txs_required > 1)
         throw new Error(
@@ -116,7 +115,7 @@ export const skipApi = {
         operations: res.data.operations as SwapOperation[],
         timelineMsgs: getTimelineMessages(res.data, swap, network),
       }
-      
+
       return transformedRouteInfo
     } catch (err) {
       console.log("Skip Route Error", err)
