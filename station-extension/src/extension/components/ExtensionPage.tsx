@@ -68,17 +68,14 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                 className={cx(
                   styles.container,
                   styles.main,
-                  fullHeight && styles.full__height__body,
-                  modal && backButtonPath && styles.no__padding
+                  fullHeight && styles.full__height__body
                 )}
               >
                 {title && (
-                  <Container
+                  <div
                     className={cx(
-                      styles.container,
                       styles.close__container,
-                      modal && !backButtonPath && styles.container__with__icon,
-                      modal && backButtonPath && styles.no__margin
+                      modal && !backButtonPath && styles.container__with__icon
                     )}
                   >
                     <header className={styles.header}>
@@ -140,7 +137,7 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                         fill="currentColor"
                       />
                     )}
-                  </Container>
+                  </div>
                 )}
                 {wrong ? (
                   <Card>{wrong}</Card>
