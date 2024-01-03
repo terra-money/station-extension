@@ -47,6 +47,8 @@ import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
 import { openURL } from "extension/storage"
 import DisplayFees from "./feeAbstraction/DisplayFees"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
+import { usePendingIbcTx } from "./useIbcTxs"
+import { useNavigate } from "react-router-dom"
 
 const cx = classNames.bind(styles)
 
@@ -73,6 +75,7 @@ interface Props<TxValues> {
   onChangeMax?: (input: number) => void
 
   /* on tx success */
+  isIbc?: boolean
   onPost?: () => void
   hideLoader?: boolean
   onSuccess?: () => void
@@ -99,7 +102,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
     props
   const { estimationTxValues, createTx, gasAdjustment: txGasAdjustment } = props
   const { children, onChangeMax } = props
-  const { onPost, redirectAfterTx, queryKeys, onSuccess } = props
+  const { onPost, redirectAfterTx, queryKeys, onSuccess, isIbc } = props
 
   const [isMax, setIsMax] = useState(false)
   const [gasDenom, setGasDenom] = useState<string>("")
@@ -114,6 +117,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const setLatestTx = useSetRecoilState(latestTxState)
   const isBroadcasting = useRecoilValue(isBroadcastingState)
   const { data: carbonFees } = useCarbonFees()
+  const { addTx: trackIbcTx } = usePendingIbcTx()
   const { data: osmosisGas } = useOsmosisGas()
 
   /* taxes */
@@ -248,6 +252,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const [showPasswordInput, setShowPasswordInput] = useState(false)
   const [incorrect, setIncorrect] = useState<string>()
   const [feesReady, setFeesReady] = useState(false)
+  const navigate = useNavigate()
 
   // autofill stored password if exists
   useEffect(() => {
@@ -302,15 +307,27 @@ function Tx<TxValues>(props: Props<TxValues>) {
         openURL([pathname, search].join("?"))
         return
       } else if (wallet) {
-        const result = await auth.post({ ...tx, fee }, password)
-        !hideLoader &&
+        const result = await auth.post(
+          { ...tx, fee },
+          password,
+          undefined,
+          // use broadcast mode = "block" if we are not showing the broadcast loader
+          isIbc || hideLoader
+        )
+
+        if (!hideLoader && !isIbc) {
           setLatestTx({
             txhash: result.txhash,
             queryKeys,
-            onSuccess,
-            redirectAfterTx,
+            onSuccess: onSuccess,
+            redirectAfterTx: redirectAfterTx,
             chainID: chain,
           })
+        } else {
+          isIbc && trackIbcTx({ ...(result as any), chain } as ActivityItem)
+          onSuccess?.()
+          navigate("/#1")
+        }
       }
 
       onPost?.()
@@ -321,7 +338,8 @@ function Tx<TxValues>(props: Props<TxValues>) {
     setSubmitting(false)
   }
 
-  const submittingLabel = isWallet.ledger(wallet) ? t("Confirm in ledger") : ""
+  const submittingLabel =
+    hideLoader || isIbc ? t("Broadcasting") : t("Submitting")
 
   const availableGasDenoms = useMemo(() => {
     return Object.keys(networks[chain]?.gasPrices ?? {})
@@ -415,6 +433,10 @@ function Tx<TxValues>(props: Props<TxValues>) {
             </>
           )}
 
+          {error && (isIbc || hideLoader) && (
+            <Banner variant="error" title={error.message} />
+          )}
+
           <SubmitButton
             variant="primary"
             className={styles.submit}
@@ -430,18 +452,19 @@ function Tx<TxValues>(props: Props<TxValues>) {
     </>
   )
 
-  const modal = !error
-    ? undefined
-    : {
-        title: error?.toString().includes("UserDenied")
-          ? t("Transaction was denied by user")
-          : t("Error"),
-        children: error?.toString().includes("UserDenied") ? null : (
-          <Pre height={120} normal break>
-            {error.message}
-          </Pre>
-        ),
-      }
+  const modal =
+    !error || isIbc || hideLoader
+      ? undefined
+      : {
+          title: error?.toString().includes("UserDenied")
+            ? t("Transaction was denied by user")
+            : t("Error"),
+          children: error?.toString().includes("UserDenied") ? null : (
+            <Pre height={120} normal break>
+              {error.message}
+            </Pre>
+          ),
+        }
 
   return (
     <>

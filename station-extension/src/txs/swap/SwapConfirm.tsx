@@ -73,11 +73,12 @@ const Confirm = () => {
     createTx,
     onSuccess: () => {
       isLedger && window.close()
-      navigate("/")
+      navigate("/#1")
     },
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     chain: offerAsset.chainId,
     memo: "Swapped via Station Extension",
+    isIbc: true,
   }
 
   return (

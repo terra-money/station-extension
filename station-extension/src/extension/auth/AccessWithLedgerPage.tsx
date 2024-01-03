@@ -14,7 +14,7 @@ const AccessWithLedgerPage = () => {
   const { t } = useTranslation()
   const [page, setPage] = useState(Pages.form)
 
-  let title, subtitle;
+  let title, subtitle
 
   switch (page) {
     case Pages.form:
@@ -22,20 +22,17 @@ const AccessWithLedgerPage = () => {
       subtitle = "Enter your preferred wallet name and mode of connection"
       break
     case Pages.choosePasswordForm:
-      title ="Set a password"
-      subtitle = 'Set a global password for your wallet on this device. Choose a strong password with more than 10 characters.'
+      title = "Set a password"
+      subtitle =
+        "Set a global password for your wallet on this device. Choose a strong password with more than 10 characters."
       break
     default:
-      title =''
-      subtitle = ''
+      title = ""
+      subtitle = ""
   }
 
   return (
-    <ExtensionPage
-      title={t(title)}
-      subtitle={t(subtitle)}
-      fullHeight
-    >
+    <ExtensionPage title={t(title)} subtitle={t(subtitle)} fullHeight>
       <AccessWithLedgerForm page={page} setPage={setPage} />
     </ExtensionPage>
   )

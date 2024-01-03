@@ -11,30 +11,28 @@ const RecoverWallet = () => {
   const steps = [
     {
       title: "Import Wallet",
-      subtitle: "Enter your preferred wallet name and the wallet's seed phrase or seed key."
+      subtitle:
+        "Enter your preferred wallet name and the wallet's seed phrase or seed key.",
     },
     {
       title: "Select wallet",
-      subtitle: "Select the wallet derivation path you would like to use."
+      subtitle: "Select the wallet derivation path you would like to use.",
     },
     {
       title: "Set Password",
-      subtitle: "Set a global password for your wallet on this device. Choose a strong password with more than 10 characters."
+      subtitle:
+        "Set a global password for your wallet on this device. Choose a strong password with more than 10 characters.",
     },
     {
       title: "Import Wallet Success.",
-      subtitle: ''
-    }
+      subtitle: "",
+    },
   ]
 
-  const { title, subtitle } = steps[step - 1] || { title: '', subtitle: '' };
+  const { title, subtitle } = steps[step - 1] || { title: "", subtitle: "" }
 
   return (
-    <ExtensionPage
-      title={t(title)}
-      subtitle={t(subtitle)}
-      fullHeight
-    >
+    <ExtensionPage title={t(title)} subtitle={t(subtitle)} fullHeight>
       <RecoverWalletForm />
     </ExtensionPage>
   )

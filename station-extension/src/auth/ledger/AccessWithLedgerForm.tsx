@@ -31,7 +31,13 @@ interface Values {
   name: string
 }
 
-const AccessWithLedgerForm = ({ page, setPage } : { page: Pages, setPage: (page: Pages) => void}) => {
+const AccessWithLedgerForm = ({
+  page,
+  setPage,
+}: {
+  page: Pages
+  setPage: (page: Pages) => void
+}) => {
   const { t } = useTranslation()
   const { connectLedger } = useAuth()
   const getLedgerKey = useLedgerKey()

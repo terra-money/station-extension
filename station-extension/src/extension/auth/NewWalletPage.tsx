@@ -11,30 +11,29 @@ const NewWallet = () => {
   const steps = [
     {
       title: "New Wallet",
-      subtitle: "Enter your preferred wallet name and then write down your new seed phrase"
+      subtitle:
+        "Enter your preferred wallet name and then write down your new seed phrase",
     },
     {
       title: "Verify seed phrase",
-      subtitle: "Match the words below with your seed phrase to confirm wallet creation"
+      subtitle:
+        "Match the words below with your seed phrase to confirm wallet creation",
     },
     {
       title: "Set Password",
-      subtitle: "Set a global password for your wallet on this device. Choose a strong password with more than 10 characters."
+      subtitle:
+        "Set a global password for your wallet on this device. Choose a strong password with more than 10 characters.",
     },
     {
       title: "Wallet Creation Success",
-      subtitle: ''
-    }
+      subtitle: "",
+    },
   ]
 
-  const { title, subtitle } = steps[step - 1] || { title: '', subtitle: '' };
-  
+  const { title, subtitle } = steps[step - 1] || { title: "", subtitle: "" }
+
   return (
-    <ExtensionPage
-      title={t(title)}
-      subtitle={t(subtitle)}
-      fullHeight
-    >
+    <ExtensionPage title={t(title)} subtitle={t(subtitle)} fullHeight>
       <NewWalletForm />
     </ExtensionPage>
   )
