@@ -89,7 +89,6 @@ const SwapForm = () => {
         setValue("route", await getBestRoute(state))
         setValue("msgs", await getMsgs(state))
       } catch (err: any) {
-        console.log('err', err)
         setError(err?.message ?? "Unknown error")
       }
     }
