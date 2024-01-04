@@ -136,6 +136,7 @@ export const useIbcTxStatus = (
   const multiHopDetails = multiHopTxsNextTx.map(
     ({ data, isLoading }) => data && { data: getIbcTxDetails(data), isLoading }
   )
+
   const multiHopChannelInfoData = useIbcChannelInfo(
     multiHopDetails.map((dt) => dt?.data)
   )
@@ -326,10 +327,12 @@ const useIbcNextHops = (details: IbcTxDetails[]) => {
 
         if (!data.tx_responses.length) return undefined
 
-        return {
+        const result = {
           ...(data.tx_responses as ActivityItem[])[0],
           chain: dst_chain_ids[i].data,
         } as ActivityItem
+
+        return result
       },
 
       staleTime: Infinity,
@@ -338,7 +341,8 @@ const useIbcNextHops = (details: IbcTxDetails[]) => {
         if (data) {
           return false
         }
-        return (detail.timeout_timestamp ?? 0) + 60_000 < new Date().getTime()
+
+        return (detail.timeout_timestamp ?? 0) + 60_000 > new Date().getTime()
           ? 25_000
           : false
       },
