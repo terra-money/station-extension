@@ -23,6 +23,7 @@ import AssetFormExtra from "./components/AssetFormExtra"
 import { toAmount } from "@terra-money/terra-utils"
 import { validateAssets } from "./SwapConfirm"
 import Footer from "./components/Footer"
+import { AccAddress } from "@terra-money/feather.js"
 
 enum SwapAssetType {
   ASK = "askAsset",
@@ -96,13 +97,14 @@ const SwapForm = () => {
 
   // Handlers
   const handleOpenModal = (type: SwapAssetType) => {
-    setDisplayTokens(
-      type === SwapAssetType.OFFER ? getTokensWithBal(tokens) : tokens
-    )
+    const toDisplay = type === SwapAssetType.OFFER ?  getTokensWithBal(tokens) : tokens
+    setDisplayTokens(toDisplay)
     setAssetModal(type)
   }
   const tokenOnClick = (token: SwapAssetExtra) => {
-    if (assetModal) setValue(assetModal as keyof SwapState, token)
+    // add prefix to align with Skips expected formatting
+    const parsed = AccAddress.validate(token.denom) ? { ...token, denom: `cw20:${token.denom}` } : token
+    if (assetModal) setValue(assetModal as keyof SwapState, parsed)
     setAssetModal(undefined) // close modal
   }
 
@@ -121,15 +123,16 @@ const SwapForm = () => {
 
   // Values
   const currencyAmount = useMemo(() => {
-    const offer = `${currency.symbol} ${(
-      offerAsset.price * Number(offerInput)
-    ).toFixed(2)}`
+    const offer =  offerAsset.price ? `${currency.symbol} ${(
+      Number(offerInput) * offerAsset.price
+    ).toFixed(2)}` : "—"
 
-    const ask = `${currency.symbol} ${toInput(
+    const ask = askAsset.price ? `${currency.symbol} ${toInput(
       Number(route?.amountOut) * askAsset.price,
       askAsset.decimals
-    ).toFixed(2)}`
-    return { offer: offer ?? "—", ask: ask ?? "—" }
+    ).toFixed(2)}`: "—"
+
+    return { offer, ask }
   }, [offerAsset, offerInput, askAsset, route, currency])
 
   const sameAssets = !validateAssets({ offerAsset, askAsset })
