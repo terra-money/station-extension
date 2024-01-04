@@ -112,12 +112,11 @@ const App = () => {
               <LatestTx />
               <EnableCoinType />
               <NetworkStatus />
-              <Tooltip content={t("Settings")} children={ <PreferencesButton />} />
-              <Tooltip content={t("Dashboard")} children={ <DashboardButton />} />
+              <Tooltip content={t("Settings")} children={<PreferencesButton />} />
+              <Tooltip content={t("Dashboard")} children={<DashboardButton />} />
             </Flex>
           </Header>
         )}
-
         <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
       </>
     )
