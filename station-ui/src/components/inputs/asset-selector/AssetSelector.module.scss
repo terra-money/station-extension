@@ -15,8 +15,11 @@
 
   .header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+
+    &.from {
+      justify-content: space-between;
+    }
 
     .left {
       display: flex;
@@ -90,17 +93,21 @@
       flex-direction: column;
       align-items: flex-end;
       gap: 8px;
+      width: 100%;
 
       .input__amount {
         display: flex;
         align-items: center;
+        justify-content: flex-end;
         gap: 8px;
         position: relative;
+        @include Large;
+        color: var(--token-light-white);
 
         .amount__token {
+          text-align: end;
           @include Large;
           color: var(--token-light-white);
-          text-align: end;
 
           /* Chrome, Safari, Edge, Opera */
           &::-webkit-outer-spin-button,
@@ -118,6 +125,32 @@
           &.amount__empty {
             color: var(--token-dark-900);
           }
+        }
+
+        .mirror__span {
+          text-align: end;
+          @include Large;
+          visibility: hidden;
+          white-space: pre;
+          position: absolute;
+          pointer-events: none;
+          font-feature-settings: normal;
+          max-width: 190px;
+
+          &.mirror__span__currency {
+            margin-left: 23px;
+          }
+        }
+      }
+
+      .amount__currency {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        .bottom__value {
+          @include X-Small;
+          color: var(--token-light-100);
         }
       }
     }
