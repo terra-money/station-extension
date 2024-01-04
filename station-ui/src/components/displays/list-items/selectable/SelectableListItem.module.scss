@@ -44,9 +44,10 @@
         color: var(--token-light-300);
       }
 
-      .selectable__address {
+      .selectable__address, svg {
         @include X-Small;
         color: var(--token-light-300);
+        fill: var(--token-light-300);
       }
     }
 
@@ -65,8 +66,9 @@
 
   &.active {
     .selectable__details__container {
-      .selectable__name {
+      .selectable__name, svg {
         color: var(--token-light-white);
+        fill: var(--token-light-white);
       }
 
       .selectable__address {
