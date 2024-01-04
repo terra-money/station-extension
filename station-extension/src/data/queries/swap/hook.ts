@@ -65,7 +65,6 @@ export const useParseSwapTokens = (tokens: SwapAssetBase[]) => {
         ibcDenom?.baseDenom ?? token.denom,
         ibcDenom?.chainIDs?.[0] ?? token.chainId
       )
-
       return {
         ...token,
         symbol: isNonWhitelisted ? token.symbol : symbol,
