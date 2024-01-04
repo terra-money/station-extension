@@ -1,5 +1,5 @@
 import classNames from "classnames/bind"
-import { Flex, Grid, SettingsIcon } from "components"
+import { Flex, SettingsIcon } from "components"
 import { WalletEmoji } from "components"
 import Copy from "components/general/copy/Copy"
 import styles from "../SelectableListItem.module.scss"
@@ -44,7 +44,7 @@ const WalletSelectableListItem = ({
           <Flex gap={8} start align="flex-end">
             <h2 className={styles.selectable__name}>{label}</h2>
             {isLedger && <LedgerIcon height={16} width={16} />}
-            {isMultisig && <MultisigIcon height={16}  width={16} />}
+            {isMultisig && <MultisigIcon height={16} width={16} />}
           </Flex>
           <h5 className={styles.selectable__address}>{subLabel}</h5>
         </div>
