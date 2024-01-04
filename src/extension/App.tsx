@@ -37,6 +37,8 @@ import ManageWalletsButton from "./auth/ManageWalletsButton"
 import ManageWalletRouter from "./auth/ManageWalletRouter"
 import PreferencesButton from "app/sections/settings/PreferencesButton"
 import DashboardButton from "app/sections/DashboardButton"
+import { Tooltip } from "@terra-money/station-ui"
+import { useTranslation } from "react-i18next"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -47,6 +49,7 @@ const App = () => {
   const addresses = useAllInterchainAddresses()
   const { name: theme } = useTheme()
   const { wallet } = useAuth()
+  const { t } = useTranslation()
 
   useEffect(() => {
     storeNetwork({ ...networks[name][chainID], name }, networks[name])
@@ -102,15 +105,15 @@ const App = () => {
         {!hideHeader && (
           <Header>
             <Flex>
-              <ManageWalletsButton />
+              <Tooltip content={t("Manage Wallets")} children={<ManageWalletsButton />} />
               <NetworkHeader />
             </Flex>
             <Flex>
               <LatestTx />
               <EnableCoinType />
               <NetworkStatus />
-              <PreferencesButton />
-              <DashboardButton />
+              <Tooltip content={t("Settings")} children={ <PreferencesButton />} />
+              <Tooltip content={t("Dashboard")} children={ <DashboardButton />} />
             </Flex>
           </Header>
         )}
