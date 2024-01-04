@@ -28,7 +28,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
+  margin-bottom: 20px;
 
   .header {
     width: 100%;
@@ -172,12 +172,4 @@
   font-size: 12px;
   font-weight: 500;
   line-height: 12px;
-}
-
-.no__padding {
-  padding: 0;
-}
-
-.no__margin {
-  margin: 0;
 }

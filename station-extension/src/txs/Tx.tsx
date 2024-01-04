@@ -149,19 +149,20 @@ function Tx<TxValues>(props: Props<TxValues>) {
     msgs: simulationTx?.msgs.map((msg) => msg.toData(isClassic)["@type"]),
   }
 
+  const carbonFee = useMemo(() => {
+    const fee =
+      carbonFees?.costs[key.msgs?.[0] ?? ""] ?? carbonFees?.costs["default_fee"]
+    return Number(fee)
+  }, [carbonFees, key.msgs])
+
   const { data: estimatedGas, ...estimatedGasState } = useQuery(
-    [queryKey.tx.create, key, isWalletEmpty],
+    [queryKey.tx.create, key, isWalletEmpty, carbonFee],
     async () => {
       if (!key.address || isWalletEmpty) return 0
       if (!wallet) return 0
       if (!simulationTx || !simulationTx.msgs.length) return 0
       try {
-        if (chain.startsWith("carbon-")) {
-          return Number(
-            carbonFees?.costs[key.msgs?.[0] ?? ""] ??
-              carbonFees?.costs["default_fee"]
-          )
-        }
+        if (chain.startsWith("carbon-")) return carbonFee
         const unsignedTx = await lcd.tx.create([{ address: key.address }], {
           ...simulationTx,
           feeDenoms: [gasDenom],
@@ -437,16 +438,18 @@ function Tx<TxValues>(props: Props<TxValues>) {
             <Banner variant="error" title={error.message} />
           )}
 
-          <SubmitButton
-            variant="primary"
-            className={styles.submit}
-            icon={<CheckCircleIcon />}
-            disabled={
-              !estimatedGas || !!disabled || !!walletError || !feesReady
-            }
-            loading={submitting}
-            label={(submitting ? submittingLabel : disabled) || t("Submit")}
-          />
+          {feesReady && (
+            <SubmitButton
+              variant="primary"
+              className={styles.submit}
+              icon={<CheckCircleIcon />}
+              disabled={
+                !estimatedGas || !!disabled || !!walletError || !feesReady
+              }
+              loading={submitting}
+              label={(submitting ? submittingLabel : disabled) || t("Submit")}
+            />
+          )}
         </Grid>
       )}
     </>
