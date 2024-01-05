@@ -1,6 +1,6 @@
 import { useNetwork } from "auth/hooks/useNetwork"
 import { Select } from "components/form"
-import { ReactNode, useEffect } from "react"
+import { ReactNode, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { LoadingCircular, SummaryTable } from "@terra-money/station-ui"
 import styles from "./DisplayFees.module.scss"
@@ -15,6 +15,8 @@ import GasHelper from "./GasHelper"
 import { useQueryClient } from "react-query"
 import { queryKey } from "data/query"
 import { useCarbonFees } from "data/queries/tx"
+import { TxInfo } from "@terra-money/feather.js"
+import GasHelperStatus from "./GasHelperStatus"
 
 export default function DisplayFees({
   chainID,
@@ -29,18 +31,27 @@ export default function DisplayFees({
   gasDenom: string | undefined
   setGasDenom: (gasDenom: string) => void
   descriptions?: { label: ReactNode; value: ReactNode }[]
-  onReady: () => void
+  onReady: (state: boolean) => void
 }) {
   const chainsWithGas = useChainsWithGas()
   const availableGasDenoms = useAvailableGasDenoms(chainID, gas ?? 0)
   const { t } = useTranslation()
   const readNativeDenom = useNativeDenoms()
   const network = useNetwork()
-  const { data: carbonFees} = useCarbonFees()
-  const gasPrices = chainID.startsWith('carbon-') ? carbonFees?.prices : network[chainID]?.gasPrices ?? {}
+  const { data: carbonFees } = useCarbonFees()
+  const gasPrices = chainID.startsWith("carbon-")
+    ? carbonFees?.prices
+    : network[chainID]?.gasPrices ?? {}
   const isBalanceLoading = useIsBalanceLoading(chainID)
   const queryClient = useQueryClient()
   const { symbol, decimals } = readNativeDenom(gasDenom ?? "", chainID)
+  const [lastSubmitTime, setSubmitTime] = useState(0)
+  const [helperState, setHelperState] = useState<{
+    tx?: TxInfo
+    time?: number
+    chainID?: string
+    submitting: boolean
+  }>({ submitting: false })
 
   useEffect(() => {
     if (
@@ -51,6 +62,23 @@ export default function DisplayFees({
     }
   }, [availableGasDenoms]) // eslint-disable-line
 
+  if (helperState.submitting || helperState.tx) {
+    return (
+      <GasHelperStatus
+        tx={helperState.tx}
+        chainID={helperState.chainID ?? ""}
+        timestamp={helperState.time ?? 0}
+        onSuccess={() => {
+          // refetch balances
+          queryClient.invalidateQueries(queryKey.bank.balance)
+          onReady(true)
+          setSubmitTime(new Date().getTime())
+          setHelperState({ submitting: false })
+        }}
+        gasDenom={gasDenom ?? ""}
+      />
+    )
+  }
 
   if (!gas || !gasDenom)
     return (
@@ -68,7 +96,11 @@ export default function DisplayFees({
       </section>
     )
 
-  if (!chainsWithGas.includes(chainID) || !availableGasDenoms.length)
+  if (
+    lastSubmitTime + 30_000 < new Date().getTime() &&
+    (!chainsWithGas.includes(chainID) || !availableGasDenoms.length)
+  ) {
+    onReady(false)
     return (
       <GasHelper
         {...{
@@ -76,15 +108,15 @@ export default function DisplayFees({
           gasDenom,
           chainID,
           gasPrice: gasPrices[gasDenom],
-          onSuccess: () => {
-            // refetch balances
-            queryClient.invalidateQueries(queryKey.bank.balance)
-          },
+          setState: setHelperState,
         }}
       />
     )
-  const feeAmount =  Math.ceil(gasPrices[gasDenom] * (gas ?? 0))
-  onReady() // if we are at this point fees are ready
+  }
+
+  const feeAmount = Math.ceil(gasPrices[gasDenom] * (gas ?? 0))
+  if (chainsWithGas.includes(chainID) && availableGasDenoms.length)
+    onReady(true)
 
   return (
     <SummaryTable
@@ -110,7 +142,9 @@ export default function DisplayFees({
               )}
             </div>
           ),
-          value: <Read amount={feeAmount} decimals={decimals} denom={gasDenom} />,
+          value: (
+            <Read amount={feeAmount} decimals={decimals} denom={gasDenom} />
+          ),
         },
       ]}
     />
