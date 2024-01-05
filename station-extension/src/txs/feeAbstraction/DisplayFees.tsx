@@ -44,7 +44,7 @@ export default function DisplayFees({
     : network[chainID]?.gasPrices ?? {}
   const isBalanceLoading = useIsBalanceLoading(chainID)
   const queryClient = useQueryClient()
-  const { symbol, decimals } = readNativeDenom(gasDenom ?? "", chainID)
+  const { decimals } = readNativeDenom(gasDenom ?? "", chainID)
   const [lastSubmitTime, setSubmitTime] = useState(0)
   const [helperState, setHelperState] = useState<{
     tx?: TxInfo
@@ -135,7 +135,7 @@ export default function DisplayFees({
                 >
                   {availableGasDenoms.map((denom, i) => (
                     <option value={denom} key={i}>
-                      {symbol}
+                      {readNativeDenom(denom, chainID).symbol}
                     </option>
                   ))}
                 </Select>

@@ -45,6 +45,7 @@ export const useParseSwapTokens = (tokens: SwapAssetBase[]) => {
   const parsedtoken = tokens
     .filter(({ chainId }) => Object.keys(network).includes(chainId))
     .map((token) => {
+      token.denom = token.denom.replace("cw20:", "") // remove cw20: prefix
       const balance =
         balances.find(
           ({ denom, chain }) => denom === token.denom && token.chainId === chain
@@ -65,7 +66,6 @@ export const useParseSwapTokens = (tokens: SwapAssetBase[]) => {
         ibcDenom?.baseDenom ?? token.denom,
         ibcDenom?.chainIDs?.[0] ?? token.chainId
       )
-
       return {
         ...token,
         symbol: isNonWhitelisted ? token.symbol : symbol,

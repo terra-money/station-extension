@@ -19,6 +19,9 @@ export const skipApi = {
   queryTokens: async () => {
     try {
       const result = await axios.get(SKIP_SWAP_API.routes.tokens, {
+        params: {
+          include_cw20_assets: true,
+        },
         baseURL: SKIP_SWAP_API.baseUrl,
         headers: {
           accept: "application/json",
