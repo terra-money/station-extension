@@ -1,7 +1,6 @@
 import {
   InputInLine,
-  SendAmount,
-  TokenSingleChainListItem,
+  AssetSelectorFrom,
   Button,
   InputWrapper,
   Input,
@@ -31,13 +30,13 @@ const Submit = () => {
 
   const showIBCWarning = useMemo(() => {
     return originChain &&
-    assetInfo?.denom.startsWith("ibc/") && 
+    assetInfo?.denom.startsWith("ibc/") &&
     assetInfo.tokenChain !== destination &&
     destination !== originChain
   }, [assetInfo, originChain, destination])
 
   useEffect(() => {
-    setValue('ibcWarning', false);
+    setValue('ibcWarning', false)
   }, [setValue])
 
   useEffect(() => {
@@ -73,31 +72,26 @@ const Submit = () => {
         extra={truncate(recipient)}
         value={getWalletName(recipient)}
       />
-      <SendAmount
+      <AssetSelectorFrom
         setValue={setValue}
-        tokenInputAttr={{
+        walletAmount={toInput(balance, decimals)}
+        handleMaxClick={handleMax}
+        symbol={symbol}
+        onSymbolClick={() => goToStep(2)}
+        tokenIcon={tokenImg}
+        chainIcon={assetInfo.chain.icon}
+        chainName={assetInfo.chain.label}
+        amountInputAttrs={{
           ...register("input", {
             required: true,
             valueAsNumber: true,
             validate: validate.input(toInput(balance, decimals), decimals),
           }),
         }}
-        tokenAmount={input ?? 0}
-        currencyInputAttrs={{
-          ...register("currencyAmount", {
-            valueAsNumber: true,
-            required: true,
-            deps: ["input"],
-          }),
-        }}
+        amount={input ?? 0}
         currencyAmount={currencyAmount ?? 0}
-        tokenIcon={tokenImg}
-        symbol={symbol}
         currencySymbol={currency.symbol}
-        price={price}
-        formState={formState}
       />
-      <TokenSingleChainListItem {...assetInfo} onClick={handleMax} />
       <InputWrapper
         label={`${t("Memo")} (${t("optional")})`}
         error={errors.memo?.message}
@@ -136,4 +130,5 @@ const Submit = () => {
     </>
   )
 }
+
 export default Submit
