@@ -173,7 +173,7 @@ const SwapForm = () => {
             chainName={askAsset?.chain?.name}
             tokenIcon={askAsset?.icon ?? ""}
             onSymbolClick={() => handleOpenModal(SwapAssetType.ASK)}
-            amount={Number(askAssetAmount).toFixed(2)}
+            amount={askAssetAmount}
             currencyAmount={currencyAmount.ask}
           />
         </Grid>
