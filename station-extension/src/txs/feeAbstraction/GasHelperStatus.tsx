@@ -1,11 +1,11 @@
 import { TxInfo } from "@terra-money/feather.js"
 import {
   AlertIcon,
+  Button,
   GasHelperCard,
   Grid,
   SmallCircleCheckIcon,
   StepStatus,
-  SubmitButton,
   TransactionTracker,
 } from "@terra-money/station-ui"
 import { intervalToDuration } from "date-fns"
@@ -131,7 +131,11 @@ const GasHelperStatus = ({
         </Grid>
       </GasHelperCard>
       {ibcStatus === IbcTxStatus.SUCCESS && (
-        <SubmitButton label={t("Continue")} onClick={() => onSuccess()} />
+        <Button
+          variant="primary"
+          label={t("Continue")}
+          onClick={() => onSuccess()}
+        />
       )}
     </div>
   )

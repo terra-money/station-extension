@@ -31,7 +31,7 @@ export default function DisplayFees({
   gasDenom: string | undefined
   setGasDenom: (gasDenom: string) => void
   descriptions?: { label: ReactNode; value: ReactNode }[]
-  onReady: () => void
+  onReady: (state: boolean) => void
 }) {
   const chainsWithGas = useChainsWithGas()
   const availableGasDenoms = useAvailableGasDenoms(chainID, gas ?? 0)
@@ -45,8 +45,7 @@ export default function DisplayFees({
   const isBalanceLoading = useIsBalanceLoading(chainID)
   const queryClient = useQueryClient()
   const { symbol, decimals } = readNativeDenom(gasDenom ?? "", chainID)
-  const [showGasHelper, setShowGasHelper] = useState(false)
-  const [opCompleted, setGasCompleted] = useState(false)
+  const [lastSubmitTime, setSubmitTime] = useState(0)
   const [helperState, setHelperState] = useState<{
     tx?: TxInfo
     time?: number
@@ -63,16 +62,6 @@ export default function DisplayFees({
     }
   }, [availableGasDenoms]) // eslint-disable-line
 
-  useEffect(() => {
-    if (
-      !opCompleted &&
-      (!chainsWithGas.includes(chainID) || !availableGasDenoms.length)
-    ) {
-      setGasCompleted(false)
-      setShowGasHelper(true)
-    }
-  }, [chainID, chainsWithGas, availableGasDenoms, gas]) // eslint-disable-line
-
   if (helperState.submitting || helperState.tx) {
     return (
       <GasHelperStatus
@@ -81,10 +70,10 @@ export default function DisplayFees({
         timestamp={helperState.time ?? 0}
         onSuccess={() => {
           // refetch balances
-          onReady()
-          setGasCompleted(true)
-          setShowGasHelper(false)
           queryClient.invalidateQueries(queryKey.bank.balance)
+          onReady(true)
+          setSubmitTime(new Date().getTime())
+          setHelperState({ submitting: false })
         }}
       />
     )
@@ -98,7 +87,19 @@ export default function DisplayFees({
       </section>
     )
 
-  if (showGasHelper) {
+  if (isBalanceLoading)
+    return (
+      <section className={styles.loading__card}>
+        <LoadingCircular />
+        <p>{t("Loading balances...")}</p>
+      </section>
+    )
+
+  if (
+    lastSubmitTime + 30_000 < new Date().getTime() &&
+    (!chainsWithGas.includes(chainID) || !availableGasDenoms.length)
+  ) {
+    onReady(false)
     return (
       <GasHelper
         {...{
@@ -112,19 +113,9 @@ export default function DisplayFees({
     )
   }
 
-  if (isBalanceLoading)
-    return (
-      <section className={styles.loading__card}>
-        <LoadingCircular />
-        <p>{t("Loading balances...")}</p>
-      </section>
-    )
-
-  if (chainsWithGas.includes(chainID) && availableGasDenoms.length) {
-    onReady()
-  }
-
   const feeAmount = Math.ceil(gasPrices[gasDenom] * (gas ?? 0))
+  if (chainsWithGas.includes(chainID) && availableGasDenoms.length)
+    onReady(true)
 
   return (
     <SummaryTable

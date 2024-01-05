@@ -13,7 +13,7 @@ import { useNetwork } from "auth/hooks/useNetwork"
 import axios from "axios"
 import { useBalances } from "data/queries/bank"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
-import { useCarbonFees } from "data/queries/tx"
+import { useCarbonFees, useOsmosisGas } from "data/queries/tx"
 import { RefetchOptions, queryKey } from "data/query"
 import { useQuery } from "react-query"
 
@@ -110,6 +110,8 @@ export function useSwapRoute(
   const { data: carbonFees } = useCarbonFees()
   const lcd = useInterchainLCDClient()
   const networks = useNetwork()
+  const isOsmosis = fromChain?.startsWith("osmosis-")
+  const { data: osmosisGas } = useOsmosisGas(!isOsmosis)
 
   async function estimateGas(chainID: string, msg: Msg) {
     try {
@@ -130,7 +132,9 @@ export function useSwapRoute(
 
       return Math.ceil(
         unsignedTx.auth_info.fee.gas_limit *
-          (networks[chainID]?.gasAdjustment ?? 1)
+          (isOsmosis
+            ? (osmosisGas || 0.0025) * 10
+            : networks[chainID]?.gasAdjustment ?? 1)
       )
     } catch (error) {
       console.error(error)
