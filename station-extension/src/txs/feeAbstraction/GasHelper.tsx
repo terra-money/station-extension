@@ -4,6 +4,7 @@ import { useNativeDenoms } from "data/token"
 import {
   Banner,
   Dropdown,
+  Flex,
   FlexColumn,
   Grid,
   Input,
@@ -60,7 +61,7 @@ export default function GasHelper({
     fromChain: swapDenom.split(SEPARATOR)[1],
     finalAmount: Math.ceil(gasPrice * gas * 1.2),
   })
-  const { isBalanceEnough } = useIsBalanceEnough()
+  const { isBalanceEnough, getBalanceAmount } = useIsBalanceEnough()
   const submitTx = useSubmitTx()
   const [passwordState, setPasswordState] = useState<{
     password: string
@@ -111,38 +112,6 @@ export default function GasHelper({
     swapDenom.split(SEPARATOR)[1],
     Number(swapData?.amount) + Number(swapData?.gasAmount)
   )
-
-  const ErrorBanners = () => {
-    const insufficientTokens =  
-    swapDenom.includes(SEPARATOR) &&
-    !isLoading &&
-    insufficientBalance
-
-    return  (
-      <div className={styles.banner__container}> 
-      {isError && (
-        <Banner
-          variant="error"
-          title={t("The selected asset cannot be swapped")}
-        />
-      )}
-      {insufficientTokens && !isError && (
-        <Banner
-          variant="error"
-          title={t(
-            "You don't have enough {{token}} to complete this operation, please select another token.",
-            {
-              token: readNativeDenom(
-                swapDenom.split(SEPARATOR)[0],
-                swapDenom.split(SEPARATOR)[1]
-              ).symbol,
-            }
-          )}
-        />
-      )}
-      </div>
-    )
-  }
 
   if (submitting || txhash) {
     return (
@@ -209,24 +178,71 @@ export default function GasHelper({
         </InputWrapper>
 
         {swapData && (
-          <Read
-            denom={swapDenom.split(SEPARATOR)[0]}
-            amount={swapData.amount + swapData.gasAmount}
-            decimals={
-              readNativeDenom(
-                swapDenom.split(SEPARATOR)[0],
-                swapDenom.split(SEPARATOR)[1]
-              ).decimals
-            }
-          />
+          <Flex justify="space-between" className={styles.amount__container}>
+            <p>{t("Required")}</p>
+            <Read
+              className={
+                insufficientBalance ? styles.amount__error : styles.amount
+              }
+              denom={swapDenom.split(SEPARATOR)[0]}
+              amount={swapData.amount + swapData.gasAmount}
+              decimals={
+                readNativeDenom(
+                  swapDenom.split(SEPARATOR)[0],
+                  swapDenom.split(SEPARATOR)[1]
+                ).decimals
+              }
+            />
+          </Flex>
         )}
-        {isLoading && ( 
-          <div className={styles.loading__container}>
-              <LoadingCircular /> 
-          </div>
+
+        {isLoading && (
+          <Flex className={styles.loader__container}>
+            <LoadingCircular />
+          </Flex>
         )}
-        <ErrorBanners />
       </section>
+
+      {isError ? (
+        <Banner
+          variant="error"
+          title={t("The selected asset cannot be swapped")}
+        />
+      ) : (
+        swapDenom.includes(SEPARATOR) &&
+        !isLoading &&
+        insufficientBalance && (
+          <Banner
+            variant="error"
+            title={t(
+              "You need at least {{required_amount}} {{token}} to convert for gas fees, but you only have {{balance}} {{token}} in your wallet",
+              {
+                required_amount:
+                  ((swapData?.amount ?? 0) + (swapData?.gasAmount ?? 0)) /
+                  10 **
+                    readNativeDenom(
+                      swapDenom.split(SEPARATOR)[0],
+                      swapDenom.split(SEPARATOR)[1]
+                    ).decimals,
+                token: readNativeDenom(
+                  swapDenom.split(SEPARATOR)[0],
+                  swapDenom.split(SEPARATOR)[1]
+                ).symbol,
+                balance:
+                  getBalanceAmount(
+                    swapDenom.split(SEPARATOR)[0],
+                    swapDenom.split(SEPARATOR)[1]
+                  ) /
+                  10 **
+                    readNativeDenom(
+                      swapDenom.split(SEPARATOR)[0],
+                      swapDenom.split(SEPARATOR)[1]
+                    ).decimals,
+              }
+            )}
+          />
+        )
+      )}
       {swapData && !isError && !insufficientBalance && (
         <Grid gap={14}>
           {error && <Banner variant="error" title={error} />}

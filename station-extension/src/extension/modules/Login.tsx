@@ -1,15 +1,3 @@
-import { useTranslation } from "react-i18next"
-import { useThemeFavicon } from "data/settings/Theme"
-import styles from "./Login.module.scss"
-import ExtensionPage from "extension/components/ExtensionPage"
-import {
-  Checkbox,
-  Input,
-  InputWrapper,
-  SubmitButton,
-} from "@terra-money/station-ui"
-import { atom, useRecoilState } from "recoil"
-import { useEffect, useMemo, useRef, useState } from "react"
 import {
   isLoginNeeded,
   lockWallet,
@@ -18,6 +6,21 @@ import {
   storePassword,
   unlockWallets,
 } from "auth/scripts/keystore"
+import {
+  Checkbox,
+  CornerBackgroundLogo,
+  FlexColumn,
+  Input,
+  InputWrapper,
+  StationIcon,
+  SubmitButton,
+} from "@terra-money/station-ui"
+import ExtensionPage from "extension/components/ExtensionPage"
+import { useEffect, useMemo, useRef, useState } from "react"
+// import { useThemeFavicon } from "data/settings/Theme"
+import { useTranslation } from "react-i18next"
+import { atom, useRecoilState } from "recoil"
+import styles from "./Login.module.scss"
 
 const LOGIN_ATOM = atom<{ isLoggedIn: boolean; isLoading: boolean }>({
   key: "login-state",
@@ -87,7 +90,7 @@ function getRandomGreetings() {
 
 const Login = () => {
   const { t } = useTranslation()
-  const icon = useThemeFavicon()
+  // const icon = useThemeFavicon()
 
   const { login } = useLogin()
   const password = useRef<HTMLInputElement>(null)
@@ -119,44 +122,47 @@ const Login = () => {
   return (
     <ExtensionPage fullHeight>
       <main className={styles.login__container}>
-        <section className={styles.login}>
-          <img src={icon} alt="Station" width={60} />
+        <CornerBackgroundLogo className={styles.logo__background} />
+        <FlexColumn align={"center"} className={styles.login} gap={16}>
+          <StationIcon width={57} height={54} />
           <h1 className={styles.title}>{t(greeting)}</h1>
           <p className={styles.content}>
             {t(
               "You have been logged out, please enter your password to unlock Station."
             )}
           </p>
-        </section>
+        </FlexColumn>
         <form
-          className={styles.password__container}
           onSubmit={(e) => {
             e.preventDefault()
             submit()
           }}
         >
-          <InputWrapper label={t("Password")} error={error}>
-            <Input
-              type="password"
-              ref={password}
-              onChange={(e) => {
-                setIsValid(!!e.target.value)
-                setError(undefined)
-              }}
+          <FlexColumn gap={24}>
+            <FlexColumn gap={8} align="flex-start">
+              <InputWrapper label={t("Password")} error={error}>
+                <Input
+                  type="password"
+                  ref={password}
+                  onChange={(e) => {
+                    setIsValid(!!e.target.value)
+                    setError(undefined)
+                  }}
+                />
+              </InputWrapper>
+              <Checkbox
+                label={t("Save password")}
+                checked={rememberPassword}
+                onChange={(e) => setRememberPassword(e.target.checked)}
+                className={styles.checkbox__override}
+              />
+            </FlexColumn>
+            <SubmitButton
+              variant="primary"
+              label={t("Login")}
+              disabled={!isValid}
             />
-          </InputWrapper>
-          <InputWrapper>
-            <Checkbox
-              label={t("Save password")}
-              checked={rememberPassword}
-              onChange={(e) => setRememberPassword(e.target.checked)}
-            />
-          </InputWrapper>
-          <SubmitButton
-            variant="primary"
-            label={t("Login")}
-            disabled={!isValid}
-          />
+          </FlexColumn>
         </form>
       </main>
     </ExtensionPage>

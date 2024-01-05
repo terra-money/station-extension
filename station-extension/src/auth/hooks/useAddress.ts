@@ -1,11 +1,10 @@
 import { useNetworks } from "app/InitNetworks"
-import { addressFromWords } from "utils/bech32"
+import { addressFromWords, wordsFromAddress } from "utils/bech32"
 import useAuth from "./useAuth"
 import { useNetworkName } from "./useNetwork"
 import { useNetwork } from "data/wallet"
 import { useAddressBook } from "data/settings/AddressBook"
 import { AccAddress } from "@terra-money/feather.js"
-import { convertAddress } from "utils/chain"
 import { truncate } from "@terra-money/terra-utils"
 
 /* auth | walle-provider */
@@ -58,10 +57,9 @@ export const usePubkey = () => {
 
 export const useGetLocalWalletName = () => {
   const { wallets } = useAuth()
-  return (address: AccAddress) => {
-    const terraAddress = convertAddress(address, "terra")
+  return (words: string) => {
     const wallet = wallets.find((w) =>
-      "words" in w ? addressFromWords(w.words["330"]) === terraAddress : null
+      "words" in w ? Object.values(w.words).find((w) => w === words) : null
     )
     return wallet?.name
   }
@@ -71,14 +69,11 @@ export const useGetWalletName = () => {
   const getLocalWalletName = useGetLocalWalletName()
 
   return (address: AccAddress) => {
-    const terraAddress = convertAddress(address, "terra")
-    const localWalletName = getLocalWalletName(address)
+    const words = wordsFromAddress(address)
+    const localWalletName = getLocalWalletName(words)
 
-    const entry = list.find(
-      (l) => convertAddress(l.recipient, "terra") === terraAddress
-    )
-    const name = entry?.name ?? localWalletName ?? truncate(address, [11, 6])
-    return name
+    const entry = list.find((l) => wordsFromAddress(l.recipient) === words)
+    return entry?.name ?? localWalletName ?? truncate(address, [11, 6])
   }
 }
 

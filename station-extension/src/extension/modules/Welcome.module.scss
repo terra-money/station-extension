@@ -1,29 +1,41 @@
+@import "mixins";
+@import "font_mixins";
+
 .welcome__container {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  padding-bottom: 12px;
+
+  .logo__background {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    z-index: 0;
+  }
 
   .welcome {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     margin-top: 4rem;
-    gap: 6px;
-    height: 100%;
 
     .title {
-      font-size: 24pt;
-      font-weight: 800;
-      margin-top: 0.8rem;
+      @include Large;
+      color: var(--token-light-white);
+      margin-top: 8px;
     }
 
     .content {
-      font-size: 16px;
-      font-weight: var(--bold);
+      @include SmallLH;
       text-align: center;
-      padding: 0 1rem;
+      color: var(--token-light-100);
     }
+  }
+
+  .top__content__wrapper {
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
   }
 
   .connect__options {

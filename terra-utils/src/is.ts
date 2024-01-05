@@ -7,7 +7,7 @@ import currencies from "./currencies.json"
 // denomination instead of the standard "u" prefix.
 const isDenomCheq = (string = "") => string === "ncheq"
 const isDenomStride = (string = "") => string.startsWith("stu")
-const isNoPrefixToken = (string = "") => ["aarch", "inj"].includes(string)
+const isNoPrefixToken = (string = "") => ["aarch", "adydx", "inj", "swth"].includes(string)
 
 export const isCW20Token = (string = "") => AccAddress.validate(string)
 export const isDenomFactory = (string = "") => string.startsWith("factory/")
