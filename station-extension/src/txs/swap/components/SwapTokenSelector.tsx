@@ -14,6 +14,8 @@ import { useState } from "react"
 import { useNetwork } from "data/wallet"
 import { ChainID } from "types/network"
 import { Read } from "components/token"
+import style from './SwapTokenSelector.module.scss'
+
 
 interface Props {
   tokenOnClick: (token: SwapAssetExtra) => void
@@ -49,7 +51,7 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
       <SectionHeader title={t("Tokens")} withLine />
       <WithSearchInput gap={16} small label={t("Search tokens...")}>
         {(input) => (
-          <Grid gap={20}>
+          <Grid gap={20} className={style.token__container}>
             {tokens
               .filter(
                 (t) =>
