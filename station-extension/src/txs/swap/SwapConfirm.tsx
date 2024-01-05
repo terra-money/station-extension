@@ -38,7 +38,7 @@ const Confirm = () => {
   }
 
   const createTx = ({ offerAsset }: SwapState) => {
-    const msg = JSON.parse(swapMsgs?.[0].msg)
+    const msg = JSON.parse(swapMsgs?.[0]?.msg)
     let msgs
 
     if (msg.source_channel) {
