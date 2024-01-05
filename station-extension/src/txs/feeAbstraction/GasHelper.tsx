@@ -405,7 +405,8 @@ export default function GasHelper({
                   "You need to swap at least {{required_amount}} {{token}} to pay for gas fees.",
                   {
                     required_amount:
-                      (swapAmount ?? 0) / 10 ** readSwapDenom.decimals,
+                      (minimumSwapData?.amount_in ?? 0) /
+                      10 ** readSwapDenom.decimals,
                     token: readSwapDenom.symbol,
                   }
                 )}
