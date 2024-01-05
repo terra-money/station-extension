@@ -1,6 +1,9 @@
 export { default as DelegationCard } from "./delegation/DelegationCard";
 export * from "./delegation/DelegationCard";
 
+export { default as GasHelperCard } from "./gas-helper/GasHelperCard";
+export * from "./gas-helper/GasHelperCard";
+
 export { default as ProposalCard } from "./proposal/ProposalCard";
 export * from "./proposal/ProposalCard";
 
