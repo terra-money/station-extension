@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import type { Meta, StoryObj } from "@storybook/react"
-import AssetSelectorFromV2, { AssetSelectorFromV2Props } from "./AssetSelectorFromV2"
+// import AssetSelectorFromV2, { AssetSelectorFromV2Props } from "./AssetSelectorFromV2"
 import AssetSelectorFrom, { AssetSelectorFromProps } from "./AssetSelectorFrom"
 import AssetSelectorTo from "./AssetSelectorTo"
 import AssetSelectorSkeleton from "./skeleton/AssetSelectorSkeleton"
@@ -151,14 +151,15 @@ export const Example: StoryObj<AssetSelectorFromProps> = {
 
 export const From: StoryObj<AssetSelectorFromProps> = {
   render: () => {
-    const [fromSymbol, setFromSymbol] = useState("LUNA")
-    const [toSymbol, setToSymbol] = useState("axlUSDC")
+    const [fromSymbol] = useState("LUNA")
+    // const [toSymbol, setToSymbol] = useState("axlUSDC")
     const [assetModalOpen, setAssetModalOpen] = useState(false)
     const [direction, setDirection] = useState("")
+    console.log("🚀 ~ file: AssetSelector.stories.tsx:158 ~ direction:", direction)
 
     const { register, handleSubmit, watch, setValue } = useForm()
     const onSubmit = handleSubmit(data => console.log(data))
-    const toAmount = parseFloat(watch("fromAmount")) * tokenPrices[fromSymbol] / tokenPrices[toSymbol]
+    // const toAmount = parseFloat(watch("fromAmount")) * tokenPrices[fromSymbol] / tokenPrices[toSymbol]
 
     const handleFromSymbolClick = (direction: string) => {
       setAssetModalOpen(!assetModalOpen)
@@ -349,6 +350,7 @@ export const SendExample: StoryObj<AssetSelectorFromProps> = {
     const [assetModalOpen, setAssetModalOpen] = useState(false)
 
     const { register, handleSubmit, watch, setValue, formState } = useForm({mode: "onChange"})
+    console.log("🚀 ~ file: AssetSelector.stories.tsx:352 ~ formState:", formState)
     const onSubmit = handleSubmit(data => console.log(data))
 
     const maxClick = () => {

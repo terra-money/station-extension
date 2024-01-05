@@ -31,7 +31,6 @@ const AssetSelectorTo = ({
   const amountDisplayRef = useRef<HTMLSpanElement>(null)
   const [fontSize, setFontSize] = useState(24)
   const [maxWidth, setMaxWidth] = useState(0)
-  const [price, setPrice] = useState(0)
 
   const formatValue = (value: string, decimalLimit: number) => {
     const parts = value.split(".")
@@ -40,10 +39,6 @@ const AssetSelectorTo = ({
     }
     return value
   }
-
-  useEffect(() => {
-    setPrice(currencyAmount * amount)
-  }, [currencyAmount, amount])
 
   useEffect(() => {
     if (amountDisplayRef.current && maxWidth === 0) {
@@ -116,7 +111,7 @@ const AssetSelectorTo = ({
             </span>
           </div>
           <div className={styles.amount__currency}>
-            {currencySymbol}{formatValue(price.toString(), 2)}
+            {currencySymbol}{formatValue(currencyAmount.toString(), 2)}
           </div>
         </div>
       </div>

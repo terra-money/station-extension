@@ -121,11 +121,11 @@ const SwapForm = () => {
 
   // Values
   const currencyAmount = useMemo(() => {
-    const offer = `${currency.symbol} ${(
+    const offer = `${(
       offerAsset.price * Number(offerInput)
     ).toFixed(2)}`
 
-    const ask = `${currency.symbol} ${toInput(
+    const ask = `${toInput(
       Number(route?.amountOut) * askAsset.price,
       askAsset.decimals
     ).toFixed(2)}`
@@ -136,6 +136,15 @@ const SwapForm = () => {
   const disabled = !(offerInput && !error && route)
   const loading = !!(has(offerInput) && !error && !route)
 
+  const handleMaxClick = () => {
+    setValue(
+      "offerInput",
+      toInput(offerAsset.balance, offerAsset.decimals).toString()
+      )
+    }
+
+  console.log("🚀 ~ file: SwapSetup.tsx:134 ~ currencyAmount ~ currencyAmount:", currencyAmount)
+  console.log("parseFloat(currencyAmount.offer): ", parseFloat(currencyAmount.offer))
   return (
     <div className={styles.container}>
       <Modal
@@ -148,30 +157,30 @@ const SwapForm = () => {
       <Grid gap={24}>
         <Grid gap={4}>
           <AssetSelectorFrom
-            extra={
-              <AssetFormExtra
-                asset={offerAsset}
-                onClick={onOfferBalanceClick}
-              />
-            }
+            setValue={setValue}
+            handleMaxClick={handleMaxClick}
+            walletAmount={toInput(offerAsset.balance, offerAsset.decimals)}
             symbol={offerAsset.symbol}
             chainIcon={offerAsset.chain?.icon}
             chainName={offerAsset.chain?.name}
             tokenIcon={offerAsset.icon ?? ""}
             onSymbolClick={() => handleOpenModal(SwapAssetType.OFFER)}
-            currencyAmount={currencyAmount.offer}
             amountInputAttrs={{ ...register("offerInput") }}
+            amount={parseFloat(offerInput)}
+            currencyAmount={parseFloat(currencyAmount.offer)}
+            currencySymbol={currency.symbol}
           />
           <FlipButton className={styles.swapper} onClick={swapAssetsOnClick} />
           <AssetSelectorTo
-            extra={<AssetFormExtra asset={askAsset} />}
+            walletAmount={toInput(offerAsset.balance, offerAsset.decimals)}
             symbol={askAsset?.symbol}
             chainIcon={askAsset?.chain?.icon}
             chainName={askAsset?.chain?.name}
             tokenIcon={askAsset?.icon ?? ""}
             onSymbolClick={() => handleOpenModal(SwapAssetType.ASK)}
-            amount={Number(askAssetAmount).toFixed(2)}
-            currencyAmount={currencyAmount.ask}
+            amount={parseFloat(askAssetAmount)}
+            currencyAmount={parseFloat(currencyAmount.ask)}
+            currencySymbol={currency.symbol}
           />
         </Grid>
         <Footer />
