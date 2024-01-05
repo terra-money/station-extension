@@ -5,6 +5,30 @@ import { useQueries } from "react-query"
 import axios from "axios"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { getIbcTxDetails, getRecvIbcTxDetails } from "txs/useIbcTxs"
+import { atom, useRecoilValue, useSetRecoilState } from "recoil"
+import { useAuth } from "auth"
+
+const cachedTxHistoryState = atom({
+  key: "cached-txs",
+  default: [] as (ActivityItem & { walletName: string })[],
+})
+
+export function useAddCachedTx() {
+  const { wallet } = useAuth()
+  const walletName: string = wallet.name
+  const setCachedTxs = useSetRecoilState(cachedTxHistoryState)
+
+  return (tx: ActivityItem) =>
+    setCachedTxs((txs) => [{ ...tx, walletName }, ...txs])
+}
+
+export function useCachedTx() {
+  const { wallet } = useAuth()
+  const name: string = wallet.name
+  const cache = useRecoilValue(cachedTxHistoryState)
+
+  return cache.filter(({ walletName }) => name === walletName)
+}
 
 interface PaginationKeys {
   limit: string
@@ -37,8 +61,9 @@ function getPaginationKeys(isTerra: boolean): PaginationKeys {
 export const useTxActivity = () => {
   const networks = useNetwork()
   const addresses = useInterchainAddresses()
+  const cachedTxs = useCachedTx()
 
-  const LIMIT = 100
+  const LIMIT = 60
   const EVENTS = [
     // any tx signed by the user
     "message.sender",
@@ -109,15 +134,18 @@ export const useTxActivity = () => {
   const activitySorted: ActivityItem[] = []
   const discarededTxsHashes: string[] = []
 
-  const result = activityData
-    .reduce(
-      (acc, { data }) => (data ? [...acc, ...data] : acc),
-      [] as ActivityItem[]
-    )
-    .sort(
-      (a, b) =>
-        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-    )
+  const fetchedHistory = activityData.reduce(
+    (acc, { data }) => (data ? [...acc, ...data] : acc),
+    [] as ActivityItem[]
+  )
+
+  const fixedHistoryCache = cachedTxs.filter(
+    ({ txhash }) => !fetchedHistory.find((tx) => tx.txhash === txhash)
+  )
+
+  const result = [...fetchedHistory, ...fixedHistoryCache].sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+  )
 
   result.forEach((tx, i) => {
     if (discarededTxsHashes.includes(tx.txhash)) return
