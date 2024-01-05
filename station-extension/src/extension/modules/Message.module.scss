@@ -27,8 +27,16 @@
 .icon__container {
   @include flex(flex-start);
   gap: 16px;
+  max-width: 92%;
+
   .icon {
     color: var(--token-light-100);
+    min-width: 18px;
+  }
+
+  p {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
