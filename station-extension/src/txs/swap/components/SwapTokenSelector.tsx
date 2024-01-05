@@ -32,7 +32,6 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
     ...Object.values(network).map((chain) => ({
       label: chain.name,
       value: chain.chainID,
-      image: chain.icon,
     })),
   ]
 
@@ -40,7 +39,6 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
     <Grid gap={24}>
       <InputWrapper label={t("Chains")}>
         <Dropdown
-          withSearch
           options={dropdownOptions}
           onChange={(value) => setChainFilter(value)}
           value={chainFilter}
@@ -94,7 +92,7 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
                 .sort((a, b) => b.value - a.value)
                 .map((token, i) => (
                   <TokenSingleChainListItem
-                    key={`search-chain-${i}`}
+                    key={`search-token-${token.denom}-${i}`}
                     amountNode={toInput(token.balance, token.decimals)}
                     priceNode={
                       token.price === 0 ? (
