@@ -1,4 +1,4 @@
-import { RefetchOptions } from "data/query"
+import { RefetchOptions, queryKey } from "data/query"
 import { useQuery } from "react-query"
 import browser from "webextension-polyfill"
 import styles from "./UpdateNotification.module.scss"
@@ -8,10 +8,14 @@ import { Flex } from "@terra-money/station-ui"
 
 const useIsUpdateAvailable = () => {
   return useQuery(
-    [],
+    [queryKey.extension.checkUpdate],
     async () => {
-      const updateStatus = await browser?.runtime?.requestUpdateCheck()
-      if (updateStatus) return updateStatus[0] === "update_available"
+      try {
+        const updateStatus = await browser?.runtime?.requestUpdateCheck()
+        if (updateStatus) return updateStatus[0] === "update_available"
+      } catch (e) {
+        return false
+      }
     },
     { ...RefetchOptions.DEFAULT }
   )
@@ -20,7 +24,6 @@ const useIsUpdateAvailable = () => {
 export default function UpdateNotification() {
   const { t } = useTranslation()
   const { data } = useIsUpdateAvailable()
-
   // no update available or request still in progress
   // (comment out next line to test)
   if (!data) return null

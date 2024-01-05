@@ -6,8 +6,7 @@
   @include flex(center);
   flex-direction: column;
   width: 100%;
-  padding: 24px 24px 16px 24px;
-  padding-top: 0px;
+  padding-bottom: 16px;
   height: fit-content;
   grid-area: details;
 
@@ -36,7 +35,7 @@
   }
 
   h1 {
-    @include X-Large;
+    @include XX-Large;
     color: var(--token-light-white);
     margin-bottom: 24px;
   }
@@ -49,7 +48,7 @@
 }
 
 .chainlist__container {
-  padding: 24px 14px;
+  padding: 24px 0;
 }
 
 .chainlist {

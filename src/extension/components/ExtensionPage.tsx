@@ -72,9 +72,8 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                 )}
               >
                 {title && (
-                  <Container
+                  <div
                     className={cx(
-                      styles.container,
                       styles.close__container,
                       modal && !backButtonPath && styles.container__with__icon
                     )}
@@ -138,7 +137,7 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                         fill="currentColor"
                       />
                     )}
-                  </Container>
+                  </div>
                 )}
                 {wrong ? (
                   <Card>{wrong}</Card>

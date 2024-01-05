@@ -23,7 +23,7 @@ interface Props extends Partial<FormatConfig> {
   approx?: boolean
   block?: boolean
   className?: string
-  decimalColorSecondary?: boolean
+  decimalSizeSecondary?: boolean
 }
 
 const Read = forwardRef(
@@ -34,7 +34,7 @@ const Read = forwardRef(
       approx,
       block,
       comma = false,
-      decimalColorSecondary,
+      decimalSizeSecondary,
       ...props
     }: Props,
     ref: ForwardedRef<HTMLSpanElement>
@@ -71,7 +71,7 @@ const Read = forwardRef(
       const formattedDecimalValue =
         decimalValue.match(/^(\.\d{2,}?)0*?$/)?.[1] || decimalValue
       return (
-        <span className={cx({ [styles.grey__decimal]: decimalColorSecondary })}>
+        <span className={cx({ [styles.small__decimal]: decimalSizeSecondary })}>
           {formattedDecimalValue}
         </span>
       )

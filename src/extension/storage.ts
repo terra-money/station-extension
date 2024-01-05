@@ -45,6 +45,7 @@ export const getOpenURL = (url = "") => {
     window.open(browser.runtime.getURL(["index.html", url].join("#")))
 }
 
-export const openURL = (url = "") => {
-  getOpenURL(url)()
+export const openURL = (url = "", params?: Record<string, string>) => {
+  const urlParams = params ? "?" + new URLSearchParams(params).toString() : ""
+  getOpenURL(url + urlParams)()
 }

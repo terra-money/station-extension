@@ -1,10 +1,10 @@
 import { RefetchOptions, combineState, queryKey } from "data/query"
-import { Account } from "@terra-money/feather.js"
-import createContext from "utils/createContext"
 import { isTerraChain } from "utils/chain"
 import { useNetwork } from "data/wallet"
 import { useQueries } from "react-query"
 import axios from "axios"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { getIbcTxDetails, getRecvIbcTxDetails } from "txs/useIbcTxs"
 
 interface PaginationKeys {
   limit: string
@@ -34,17 +34,11 @@ function getPaginationKeys(isTerra: boolean): PaginationKeys {
   }
 }
 
-export type InterchainAccountInfo = Record<string, Account>
-
-export const [useInterchainAccountInfo, AccountInfoProvider] =
-  createContext<InterchainAccountInfo[]>("useAccountInfo")
-
-export const useInitialAccountInfo = (
-  addresses: Record<string, string> | undefined
-) => {
+export const useTxActivity = () => {
   const networks = useNetwork()
+  const addresses = useInterchainAddresses()
 
-  // const LIMIT = 100
+  const LIMIT = 100
   const EVENTS = [
     // any tx signed by the user
     "message.sender",
@@ -62,12 +56,12 @@ export const useInitialAccountInfo = (
 
       return {
         queryKey: [queryKey.History, networks?.[chainID]?.lcd, address],
-        queryFn: async () => {
-          const result: any[] = []
+        queryFn: async (): Promise<ActivityItem[]> => {
+          const result: AccountHistoryItem[] = []
           const hashArray: string[] = []
 
           if (!networks?.[chainID]?.lcd) {
-            return result
+            return []
           }
 
           const requests = (
@@ -81,7 +75,7 @@ export const useInitialAccountInfo = (
                       //order_by: "ORDER_BY_DESC",
                       [paginationKeys.offset]: 0 || undefined,
                       [paginationKeys.reverse]: isTerra ? 2 : true,
-                      // [paginationKeys.limit]: LIMIT,
+                      [paginationKeys.limit]: LIMIT,
                     },
                   })
                 } catch (e) {
@@ -100,28 +94,61 @@ export const useInitialAccountInfo = (
             })
           }
 
-          return (
-            result
-              .sort((a, b) => Number(b.height) - Number(a.height))
-              // .slice(0, LIMIT)
-              .map((tx) => ({ ...tx, chain: chainID }))
-          )
+          return result
+            .sort((a, b) => Number(b.height) - Number(a.height))
+            .slice(0, LIMIT)
+            .map((tx) => ({ ...tx, chain: chainID }))
         },
-        // Data will never become stale and always stay in cache
-        ...RefetchOptions.INFINITY,
+        ...RefetchOptions.DEFAULT,
       }
     })
   )
 
   const state = combineState(...activityData)
 
-  const activitySorted = activityData
-    .reduce((acc, { data }) => (data ? [...acc, ...data] : acc), [] as any[])
+  const activitySorted: ActivityItem[] = []
+  const discarededTxsHashes: string[] = []
+
+  const result = activityData
+    .reduce(
+      (acc, { data }) => (data ? [...acc, ...data] : acc),
+      [] as ActivityItem[]
+    )
     .sort(
       (a, b) =>
-        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
     )
-  // .slice(0, LIMIT)
 
-  return { activitySorted, state }
+  result.forEach((tx, i) => {
+    if (discarededTxsHashes.includes(tx.txhash)) return
+
+    const senderDetails = getIbcTxDetails(tx)
+
+    !!senderDetails &&
+      result
+        .slice(i + 1, result.length)
+        .filter((tx2) => {
+          const receiverDetails = getRecvIbcTxDetails(tx2)
+
+          if (!receiverDetails) return false
+          return (
+            (receiverDetails.sequence === senderDetails.sequence &&
+              receiverDetails.timeout_timestamp ===
+                senderDetails.timeout_timestamp &&
+              receiverDetails.dst_channel === senderDetails.dst_channel &&
+              receiverDetails.src_channel === senderDetails.src_channel) ||
+            (senderDetails.next_hop_memo &&
+              receiverDetails.src_channel ===
+                senderDetails.next_hop_memo.src_channel &&
+              Math.round(receiverDetails.timeout_timestamp) ===
+                Math.round(senderDetails.next_hop_memo.timeout_timestamp) &&
+              senderDetails.next_hop_memo.receiver === addresses?.[tx2.chain])
+          )
+        })
+        .forEach((tx) => discarededTxsHashes.push(tx.txhash))
+
+    activitySorted.push(tx)
+  })
+
+  return { activitySorted: activitySorted.reverse().slice(0, LIMIT), state }
 }
