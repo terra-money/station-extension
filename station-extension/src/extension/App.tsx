@@ -105,14 +105,14 @@ const App = () => {
         {!hideHeader && (
           <Header>
             <Flex>
-              <Tooltip content={t("Manage Wallets")} children={<ManageWalletsButton />} />
+              <ManageWalletsButton />
               <NetworkHeader />
             </Flex>
             <Flex>
               <LatestTx />
               <EnableCoinType />
               <NetworkStatus />
-              <Tooltip content={t("Settings")} children={<PreferencesButton />} />
+              <PreferencesButton />
               <Tooltip content={t("Dashboard")} children={<DashboardButton />} />
             </Flex>
           </Header>
