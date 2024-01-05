@@ -17,7 +17,6 @@ import useInterval from "utils/hooks/useInterval"
 import styles from "./GasHelper.module.scss"
 import { useThemeAnimation } from "data/settings/Theme"
 import { useNativeDenoms } from "data/token"
-import { useNetwork } from "data/wallet"
 
 const GasHelperStatus = ({
   tx,
@@ -33,7 +32,6 @@ const GasHelperStatus = ({
   gasDenom: string
 }) => {
   const loadingAnimation = useThemeAnimation()
-  const networks = useNetwork()
   const ibcDetails =
     tx?.logs &&
     getIbcTxDetails({
@@ -98,10 +96,7 @@ const GasHelperStatus = ({
               {t("Topup Complete!")}
             </h3>
             <p className={styles.description}>
-              {t(
-                "You now have enough gas to complete your transaction on {{chain}}.",
-                { chain: networks[chainID]?.name ?? chainID }
-              )}
+              {t("You now have enough gas to complete your transaction.")}
             </p>
           </>
         )
