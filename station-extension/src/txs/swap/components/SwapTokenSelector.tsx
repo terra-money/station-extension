@@ -94,7 +94,7 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
                 .sort((a, b) => b.value - a.value)
                 .map((token, i) => (
                   <TokenSingleChainListItem
-                    key={`search-chain-${i}`}
+                    key={`search-token-${token.denom}-${i}`}
                     amountNode={toInput(token.balance, token.decimals)}
                     priceNode={
                       token.price === 0 ? (
