@@ -11,7 +11,7 @@ export type GasHelperCardProps = PropsWithChildren<{
   className?: string
 }>
 
-const ProposalCard = ({
+const GasHelperCard = ({
   className,
   progressColor,
   children,
@@ -23,4 +23,4 @@ const ProposalCard = ({
   )
 }
 
-export default ProposalCard
+export default GasHelperCard
