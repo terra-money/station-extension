@@ -296,7 +296,12 @@ export default function GasHelper({
                     .split(".")
                   setSwapAmount(
                     Number(integer || 0).toFixed(0) +
-                      (!decimal.length ? "" : `.${decimal.join("")}`)
+                      (!decimal.length
+                        ? ""
+                        : `.${decimal.join("")}`.substring(
+                            0,
+                            readSwapDenom.decimals + 1
+                          ))
                   )
                 },
               }}
