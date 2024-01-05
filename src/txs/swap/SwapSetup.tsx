@@ -130,6 +130,7 @@ const SwapForm = () => {
       askAsset.decimals
     ).toFixed(2)}`
     return { offer: offer ?? "—", ask: ask ?? "—" }
+    
   }, [offerAsset, offerInput, askAsset, route, currency])
 
   const sameAssets = !validateAssets({ offerAsset, askAsset })
