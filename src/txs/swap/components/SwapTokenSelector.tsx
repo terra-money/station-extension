@@ -32,7 +32,7 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
     ...Object.values(network).map((chain) => ({
       label: chain.name,
       value: chain.chainID,
-      image: chain.icon
+      image: chain.icon,
     })),
   ]
 
