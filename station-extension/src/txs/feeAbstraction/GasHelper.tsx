@@ -76,7 +76,9 @@ export default function GasHelper({
     chainName: networks[swapDenom.chainId]?.name,
     chainIcon: networks[swapDenom.chainId]?.icon,
   }
-  const [swapAmount, setSwapAmount] = useState<number | undefined>()
+  const [rawSwapAmount, setSwapAmount] = useState<string | undefined>()
+  console.log(rawSwapAmount)
+  const swapAmount = Number(rawSwapAmount || 0) * 10 ** readSwapDenom.decimals
   const {
     data: minimumSwapData,
     isLoading: minimumLoading,
@@ -91,7 +93,7 @@ export default function GasHelper({
   })
 
   const isDefaultAmount =
-    minimumLoading || !swapAmount || swapAmount === minimumSwapData?.amount_in
+    minimumLoading || swapAmount === minimumSwapData?.amount_in
 
   const isLessThanMinimum =
     minimumSwapData && (swapAmount ?? 0) < minimumSwapData.amount_in
@@ -128,7 +130,9 @@ export default function GasHelper({
 
   useEffect(() => {
     if (minimumSwapData?.amount_in && !swapAmount)
-      setSwapAmount(minimumSwapData.amount_in)
+      setSwapAmount(
+        `${minimumSwapData.amount_in / 10 ** readSwapDenom.decimals}`
+      )
   }, [minimumSwapData?.amount_in]) // eslint-disable-line
 
   const { isBalanceEnough, getBalanceAmount } = useIsBalanceEnough()
@@ -163,10 +167,13 @@ export default function GasHelper({
   if (isWallet.multisig(wallet)) {
     return (
       <GasHelperCard className={styles.card} progressColor="gray">
-        <h3 className={styles.title}>{t("Not Enough Gas!")}</h3>
+        <h3 className={styles.title}>
+          <GasIcon fill="var(--token-warning-500)" width={20} height={20} />{" "}
+          {t("Not Enough Gas!")}
+        </h3>
         <p className={styles.description}>
           {t(
-            "You don't have enough {{token}} to complete all the steps in this transaction.",
+            "You don't have enough {{token}} to complete all the steps in this transaction, but we can fix that for you! Please select an available token below to convert for gas fees.",
             { token: readNativeDenom(gasDenom, chainID).symbol }
           )}
         </p>
@@ -183,7 +190,7 @@ export default function GasHelper({
       >
         <SwapTokenSelector
           tokenOnClick={(t) => {
-            setSwapAmount(undefined)
+            setSwapAmount("")
             setSwapDenom(t)
             setModalOpen(false)
           }}
@@ -251,7 +258,14 @@ export default function GasHelper({
                   </Flex>
                   {!isDefaultAmount && !!minimumSwapData?.amount_in && (
                     <button
-                      onClick={() => setSwapAmount(minimumSwapData.amount_in)}
+                      onClick={() =>
+                        setSwapAmount(
+                          `${
+                            minimumSwapData.amount_in /
+                            10 ** readSwapDenom.decimals
+                          }`
+                        )
+                      }
                     >
                       {t("RESET")}
                     </button>
@@ -272,18 +286,19 @@ export default function GasHelper({
                 ).toFixed(2)
               }
               amountInputAttrs={{
-                value:
-                  swapAmount === undefined
-                    ? ""
-                    : `${swapAmount / 10 ** readSwapDenom.decimals}`,
-                onChange: (e) =>
+                type: "text",
+                step: "any",
+                value: rawSwapAmount,
+                onChange: (e) => {
+                  const [integer, ...decimal] = e.target.value
+                    .replaceAll(",", ".")
+                    .replaceAll(/[^0-9.]/g, "")
+                    .split(".")
                   setSwapAmount(
-                    e.target.value
-                      ? Math.round(
-                          Number(e.target.value) * 10 ** readSwapDenom.decimals
-                        )
-                      : undefined
-                  ),
+                    Number(integer || 0).toFixed(0) +
+                      (!decimal.length ? "" : `.${decimal.join("")}`)
+                  )
+                },
               }}
             />
           </div>
@@ -313,6 +328,7 @@ export default function GasHelper({
                     balance:
                       getBalanceAmount(swapDenom.denom, swapDenom.chainId) /
                       10 ** readSwapDenom.decimals,
+                    lang: "en-US",
                   }
                 )}
               />
