@@ -2,7 +2,7 @@ import { useAuth } from "auth"
 import axios from "axios"
 import { RefetchOptions, queryKey } from "data/query"
 import { useNetwork } from "data/wallet"
-import { useQueries, useQuery } from "react-query"
+import { useQueries, useQuery, useQueryClient } from "react-query"
 import { atom, useRecoilState } from "recoil"
 
 const LOCALSTORAGE_IBC_TXS_KEY = "pendingIbcTxs"
@@ -30,6 +30,7 @@ export const usePendingIbcTx = () => {
   const { wallet } = useAuth()
   const walletName = wallet?.name
   const [_ibcTxs, _setIbcTxsState] = useRecoilState(ibcTxsState)
+  const queryClient = useQueryClient()
 
   const txs = _ibcTxs[walletName] ?? []
   function setIbcTxs(state: (prev: IbcTx[]) => IbcTx[]) {
@@ -43,11 +44,16 @@ export const usePendingIbcTx = () => {
 
   useIbcTxStatus(
     txs.filter(({ state }) => state === IbcTxStatus.LOADING),
-    (hash, state) =>
-      state !== IbcTxStatus.LOADING &&
-      setIbcTxs((txs) =>
-        txs.map((tx) => (tx.txhash === hash ? { ...tx, state } : tx))
-      )
+    (hash, state) => {
+      if (state !== IbcTxStatus.LOADING) {
+        setIbcTxs((txs) =>
+          txs.map((tx) => (tx.txhash === hash ? { ...tx, state } : tx))
+        )
+        // when ibc tx is successful refetch balances
+        queryClient.invalidateQueries(queryKey.bank.balance)
+        queryClient.invalidateQueries(queryKey.bank.balances)
+      }
+    }
   )
 
   return {
@@ -288,7 +294,7 @@ export const useIbcPrevHop = (details?: IbcTxDetails) => {
           return false
         }
         return (details?.timeout_timestamp ?? 0) + 60_000 < new Date().getTime()
-          ? 25_000
+          ? 15_000
           : false
       },
     }
@@ -343,7 +349,7 @@ const useIbcNextHops = (details: IbcTxDetails[]) => {
         }
 
         return (detail.timeout_timestamp ?? 0) + 60_000 > new Date().getTime()
-          ? 25_000
+          ? 10_000
           : false
       },
     }))

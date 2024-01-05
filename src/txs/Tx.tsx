@@ -118,7 +118,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const isBroadcasting = useRecoilValue(isBroadcastingState)
   const { data: carbonFees } = useCarbonFees()
   const { addTx: trackIbcTx } = usePendingIbcTx()
-  const { data: osmosisGas } = useOsmosisGas()
+  const { data: osmosisGas } = useOsmosisGas(!chain?.startsWith("osmosis-"))
 
   /* taxes */
   const isClassic = networks[chain]?.isClassic
@@ -188,7 +188,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
     (denom: CoinDenom) => {
       const gasPrice = chain?.startsWith("carbon-")
         ? carbonFees?.prices[denom]
-        : chain?.startsWith("osmosis")
+        : chain?.startsWith("osmosis-")
         ? (osmosisGas || 0.0025) * 10
         : networks[chain]?.gasPrices[denom]
       if (isNil(estimatedGas) || !gasPrice) return "0"
@@ -383,7 +383,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
         gasDenom={gasDenom}
         setGasDenom={setGasDenom}
         descriptions={descriptions}
-        onReady={() => setFeesReady(true)}
+        onReady={(state: boolean) => setFeesReady(state)}
       />
     )
   }
