@@ -32,6 +32,7 @@ const AssetList = () => {
   const [search, setSearch] = useState("")
   const [showFilter, setShowFilter] = useState(false)
   const navigate = useNavigate()
+  const showHideText = hideLowBal ? "Show" : "Hide"
 
   const toggleFilter = () => {
     setSearch("")
@@ -126,7 +127,7 @@ const AssetList = () => {
           <>
             <button className={styles.low__bal} onClick={toggleHideLowBal}>
               <SectionHeader
-                title={t(`Show Low Balance Assets ({{count}})`, {
+                title={t(`${showHideText} Low Balance Assets ({{count}})`, {
                   count: assets.lowBal.length,
                 })}
                 withLine
