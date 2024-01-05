@@ -75,6 +75,7 @@ export default function DisplayFees({
           setSubmitTime(new Date().getTime())
           setHelperState({ submitting: false })
         }}
+        gasDenom={gasDenom ?? ""}
       />
     )
   }

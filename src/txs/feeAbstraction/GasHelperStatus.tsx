@@ -3,6 +3,7 @@ import {
   AlertIcon,
   Button,
   GasHelperCard,
+  GasIcon,
   Grid,
   SmallCircleCheckIcon,
   StepStatus,
@@ -15,20 +16,24 @@ import { IbcTxStatus, getIbcTxDetails, useIbcTxStatus } from "txs/useIbcTxs"
 import useInterval from "utils/hooks/useInterval"
 import styles from "./GasHelper.module.scss"
 import { useThemeAnimation } from "data/settings/Theme"
+import { useNativeDenoms } from "data/token"
+import { useNetwork } from "data/wallet"
 
 const GasHelperStatus = ({
   tx,
   timestamp,
   chainID,
   onSuccess,
+  gasDenom,
 }: {
   tx?: TxInfo
   timestamp: number
   chainID: string
   onSuccess: () => void
+  gasDenom: string
 }) => {
   const loadingAnimation = useThemeAnimation()
-
+  const networks = useNetwork()
   const ibcDetails =
     tx?.logs &&
     getIbcTxDetails({
@@ -47,6 +52,7 @@ const GasHelperStatus = ({
     !tx || !ibcStatus || ibcStatus === IbcTxStatus.LOADING
   )
   const { t } = useTranslation()
+  const readNativeDenom = useNativeDenoms()
 
   function renderIbcStatusText() {
     if (!tx || !ibcStatus) {
@@ -78,36 +84,63 @@ const GasHelperStatus = ({
     }
   }
 
-  function renderAnimation() {
+  function renderTitle() {
     switch (ibcStatus) {
       case IbcTxStatus.SUCCESS:
         return (
-          <SmallCircleCheckIcon
-            fill="var(--token-success-500)"
-            width={42}
-            height={42}
-            className={styles.transaction__animation}
-          />
+          <>
+            <h3 className={styles.title}>
+              <SmallCircleCheckIcon
+                fill="var(--token-success-500)"
+                width={16}
+                height={16}
+              />{" "}
+              {t("Topup Complete!")}
+            </h3>
+            <p className={styles.description}>
+              {t(
+                "You now have enough gas to complete your transaction on {{chain}}.",
+                { chain: networks[chainID]?.name ?? chainID }
+              )}
+            </p>
+          </>
         )
       case IbcTxStatus.FAILED:
         return (
-          <AlertIcon
-            fill="var(--token-error-500)"
-            width={42}
-            height={42}
-            className={styles.transaction__animation}
-          />
+          <h3 className={styles.title}>
+            <AlertIcon fill="var(--token-error-500)" width={16} height={16} />{" "}
+            {t("Topup Failed!")}
+          </h3>
         )
       default:
         return (
-          <img
-            width={80}
-            height={80}
-            src={loadingAnimation}
-            alt={t("Loading")}
-            className={styles.transaction__animation}
-          />
+          <>
+            <h3 className={styles.title}>
+              <GasIcon fill="var(--token-warning-500)" width={20} height={20} />{" "}
+              {t("Not Enough Gas!")}
+            </h3>
+            <p className={styles.description}>
+              {t(
+                "You don't have enough {{token}} to complete all the steps in this transaction, but we can fix that for you! Please select an available token below to convert for gas fees.",
+                { token: readNativeDenom(gasDenom, chainID).symbol }
+              )}
+            </p>
+          </>
         )
+    }
+  }
+
+  function renderAnimation() {
+    if (ibcStatus === IbcTxStatus.LOADING || !ibcStatus) {
+      return (
+        <img
+          width={80}
+          height={80}
+          src={loadingAnimation}
+          alt={t("Loading")}
+          className={styles.transaction__animation}
+        />
+      )
     }
   }
 
@@ -119,6 +152,7 @@ const GasHelperStatus = ({
           !ibcStatus || ibcStatus === IbcTxStatus.LOADING ? "yellow" : undefined
         }
       >
+        {renderTitle()}
         <Grid gap={20}>
           {renderAnimation()}
           <div className={styles.transaction__progress}>

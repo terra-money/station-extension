@@ -199,7 +199,7 @@ export function useSwapRoute(
           chainID,
           msg,
           amount_in: Number(data.route.amount_in),
-          amount_out: Number(data.route.amount_in),
+          amount_out: Number(data.route.amount_out),
           gasAmount,
           feeAmount: Math.ceil(
             gasAmount * networks[chainID]?.gasPrices[fromDenom ?? ""] ?? 0
