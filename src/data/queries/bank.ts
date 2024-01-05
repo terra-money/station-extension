@@ -39,6 +39,7 @@ export const useInitialTokenBalance = () => {
           } as CoinBalance
         },
         ...RefetchOptions.DEFAULT,
+        staleTime: 3 * 60 * 1000,
       }
     })
   )
@@ -69,6 +70,7 @@ export const useInitialBankBalance = () => {
         },
         disabled: !address,
         ...RefetchOptions.DEFAULT,
+        staleTime: 3 * 60 * 1000,
       }
     })
   )
@@ -87,7 +89,7 @@ export const useBalances = () => {
   const results = useQueries(
     Object.entries(addresses ?? {}).map(([chainID, address]) => {
       return {
-        queryKey: [queryKey.bank.balance, address],
+        queryKey: [queryKey.bank.balance, address, chainID],
         queryFn: async () => {
           const balance = await lcd.bank.balance(address)
           return balance[0].toArray().map(({ denom, amount }) => {
@@ -99,6 +101,7 @@ export const useBalances = () => {
           })
         },
         ...RefetchOptions.DEFAULT,
+        staleTime: 3 * 60 * 1000,
       }
     })
   )
