@@ -124,7 +124,7 @@ export default function GasHelper({
   const feeAmount = isDefaultAmount
     ? Number(minimumSwapData?.feeAmount)
     : Number(fixedSwapData?.feeAmount) ?? Number(minimumSwapData?.feeAmount)
-  const txsNumber = Math.ceil(
+  const txsNumber = Math.floor(
     (fixedSwapData?.amount_out ?? 0) / Math.ceil(gasPrice * gas * 1.2)
   )
 
@@ -307,91 +307,106 @@ export default function GasHelper({
             <Flex className={styles.loader__container}>
               <LoadingCircular />
             </Flex>
-          ) : isError ? (
-            <div className={styles.error__banner__container}>
-              <Banner
-                variant="error"
-                title={t("The selected asset cannot be swapped")}
-              />
-            </div>
-          ) : !isLoading && insufficientBalance ? (
-            <div className={styles.error__banner__container}>
-              <Banner
-                variant="error"
-                title={t(
-                  "You need at least {{required_amount}} {{token}} to convert for gas fees, but you only have {{balance}} {{token}} in your wallet",
-                  {
-                    required_amount:
-                      ((swapAmount ?? 0) + feeAmount) /
-                      10 ** readSwapDenom.decimals,
-                    token: readSwapDenom.symbol,
-                    balance:
-                      getBalanceAmount(swapDenom.denom, swapDenom.chainId) /
-                      10 ** readSwapDenom.decimals,
-                    lang: "en-US",
-                  }
-                )}
-              />
-            </div>
           ) : (
-            <Grid gap={16} style={{ marginTop: 24 }}>
-              <Flex
-                justify="space-between"
-                className={styles.amount__container}
-              >
-                <p>{t("Minimum Required")}</p>
-                <Read
-                  className={
-                    insufficientBalance
-                      ? styles.amount__error
-                      : isLessThanMinimum
-                      ? styles.amount__warning
-                      : styles.amount
-                  }
-                  denom={swapDenom.denom}
-                  amount={minimumSwapData?.amount_in}
-                  decimals={readSwapDenom.decimals}
-                />
-              </Flex>
-              <Flex
-                justify="space-between"
-                className={styles.amount__container}
-              >
-                <p>{t("Transaction Fee")}</p>
-                <Read
-                  className={
-                    insufficientBalance ? styles.amount__error : styles.amount
-                  }
-                  denom={swapDenom.denom}
-                  amount={feeAmount}
-                  decimals={readSwapDenom.decimals}
-                />
-              </Flex>
-
-              {!isDefaultAmount && !!fixedSwapData && (
+            !isError &&
+            !insufficientBalance && (
+              <Grid gap={16} style={{ marginTop: 24 }}>
                 <Flex
                   justify="space-between"
                   className={styles.amount__container}
                 >
-                  <p>
-                    {fixedSwapData.amount_in / 10 ** readSwapDenom.decimals}{" "}
-                    {readSwapDenom.symbol} ={" "}
-                    {fixedSwapData.amount_out /
-                      10 ** readNativeDenom(gasDenom, chainID).decimals}{" "}
-                    {readNativeDenom(gasDenom, chainID).symbol}
-                  </p>
-                  <p
+                  <p>{t("Minimum Required")}</p>
+                  <Read
                     className={
-                      !txsNumber ? styles.amount__error : styles.amount
+                      insufficientBalance || isLessThanMinimum
+                        ? styles.amount__error
+                        : styles.amount
                     }
-                  >
-                    ~ {txsNumber} Txs
-                  </p>
+                    denom={swapDenom.denom}
+                    amount={minimumSwapData?.amount_in}
+                    decimals={readSwapDenom.decimals}
+                  />
                 </Flex>
-              )}
-            </Grid>
+                <Flex
+                  justify="space-between"
+                  className={styles.amount__container}
+                >
+                  <p>{t("Transaction Fee")}</p>
+                  <Read
+                    className={
+                      insufficientBalance ? styles.amount__error : styles.amount
+                    }
+                    denom={swapDenom.denom}
+                    amount={feeAmount}
+                    decimals={readSwapDenom.decimals}
+                  />
+                </Flex>
+
+                {!isDefaultAmount && !!fixedSwapData && (
+                  <Flex
+                    justify="space-between"
+                    className={styles.amount__container}
+                  >
+                    <p>
+                      {fixedSwapData.amount_in / 10 ** readSwapDenom.decimals}{" "}
+                      {readSwapDenom.symbol} ={" "}
+                      {fixedSwapData.amount_out /
+                        10 ** readNativeDenom(gasDenom, chainID).decimals}{" "}
+                      {readNativeDenom(gasDenom, chainID).symbol}
+                    </p>
+                    <p>
+                      <span
+                        className={
+                          !txsNumber ? styles.amount__error : styles.amount
+                        }
+                      >
+                        ~ {txsNumber} Txs
+                      </span>
+                    </p>
+                  </Flex>
+                )}
+              </Grid>
+            )
           )}
         </GasHelperCard>
+
+        {!isLoading &&
+          (isError ? (
+            <Banner
+              variant="error"
+              title={t("The selected asset cannot be swapped")}
+            />
+          ) : insufficientBalance ? (
+            <Banner
+              variant="error"
+              title={t(
+                "You need at least {{required_amount}} {{token}} to convert for gas fees, but you only have {{balance}} {{token}} in your wallet.",
+                {
+                  required_amount:
+                    ((swapAmount ?? 0) + feeAmount) /
+                    10 ** readSwapDenom.decimals,
+                  token: readSwapDenom.symbol,
+                  balance:
+                    getBalanceAmount(swapDenom.denom, swapDenom.chainId) /
+                    10 ** readSwapDenom.decimals,
+                }
+              )}
+            />
+          ) : (
+            isLessThanMinimum && (
+              <Banner
+                variant="error"
+                title={t(
+                  "You need to swap at least {{required_amount}} {{token}} to pay for gas fees.",
+                  {
+                    required_amount:
+                      (swapAmount ?? 0) / 10 ** readSwapDenom.decimals,
+                    token: readSwapDenom.symbol,
+                  }
+                )}
+              />
+            )
+          ))}
 
         {!isLoading &&
           !isError &&
