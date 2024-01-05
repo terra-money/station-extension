@@ -5,11 +5,13 @@ import styles from "./SelectWallets.module.scss"
 import { useAuth } from "auth"
 import { addressFromWords } from "utils/bech32"
 import { useNavigate } from "react-router-dom"
+import is from "auth/scripts/is"
 
 export default function SelectWalletsPage() {
   const { wallets, connectedWallet, connect } = useAuth()
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const activeWallet = wallets.filter((wallet) => wallet.name === connectedWallet?.name)[0]
   const activeWalletAddress = addressFromWords(
     connectedWallet?.words["330"] ?? "",
     "terra"
@@ -24,13 +26,15 @@ export default function SelectWalletsPage() {
         />
         <WalletList
           activeWallet={{
-            name: connectedWallet?.name ?? "",
+            name: activeWallet?.name ?? "",
             address: activeWalletAddress,
+            isLedger: is.ledger(activeWallet),
+            isMultisig: is.multisig(activeWallet),
             settingsOnClick: () =>
-              navigate(`/manage-wallet/manage/${connectedWallet?.name ?? ""}`),
+              navigate(`/manage-wallet/manage/${activeWallet?.name ?? ""}`),
           }}
           otherWallets={wallets
-            .filter(({ name }) => name !== connectedWallet?.name)
+            .filter(({ name }) => name !== activeWallet?.name)
             .map((wallet) => {
               const address =
                 "address" in wallet
@@ -40,6 +44,8 @@ export default function SelectWalletsPage() {
               return {
                 name: wallet.name,
                 address,
+                isLedger: is.ledger(wallet),
+                isMultisig: is.multisig(wallet),
                 onClick: () => {
                   connect(wallet.name)
                   navigate("/")

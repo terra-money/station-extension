@@ -16,6 +16,7 @@ export const Default: StoryObj = {
         name: 'my-wallet',
         address: 'terra1u28fgu0p99eh9xc4623k6cw6qmfdnl9un23yxs',
         settingsOnClick: () => {},
+        isMultisig: true
       }}
       otherWallets={
         [{
@@ -23,12 +24,14 @@ export const Default: StoryObj = {
           address: 'terra1u28fgu0p99eh9xc4623k6cw6qmfdnl9un23yxs',
           onClick: () => {},
           settingsOnClick: () => {},
+          isMultisig: true
         },
         {
           name: 'other-wallet-2',
           address: 'terra1u28fgu0p99eh9xc4623k6cw6qmfdnl9un23yxs',
           onClick: () => {},
           settingsOnClick: () => {},
+          isLedger: true
         },{
           name: 'other-wallet-3',
           address: 'terra1u28fgu0p99eh9xc4623k6cw6qmfdnl9un23yxs',
