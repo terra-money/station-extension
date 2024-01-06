@@ -2,7 +2,7 @@ import WarningIcon from "@mui/icons-material/Warning"
 import { useNetworks } from "app/InitNetworks"
 import { useNetworkName } from "data/wallet"
 import { useTranslation } from "react-i18next"
-import { Tooltip } from "components/display"
+import { Tooltip } from "@terra-money/station-ui"
 import HeaderIconButton from "app/components/HeaderIconButton"
 
 const NetworkStatus = () => {
