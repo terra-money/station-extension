@@ -114,7 +114,8 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
         decrypt(
           (wallet.encryptedSeed ||
             wallet.encrypted?.["330"] ||
-            wallet.encrypted) as string,
+            wallet.encrypted ||
+            wallet.wallet) as string,
           secret
         )
       } catch (error) {
