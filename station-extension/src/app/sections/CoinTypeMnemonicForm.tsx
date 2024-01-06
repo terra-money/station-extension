@@ -1,17 +1,16 @@
 import { SeedKey } from "@terra-money/feather.js"
+import { useModal } from "@terra-money/station-ui"
 import useAuth from "auth/hooks/useAuth"
 import { addWallet, deleteWallet, getDecryptedKey } from "auth/scripts/keystore"
 import validate from "auth/scripts/validate"
 import { TooltipIcon } from "components/display"
 import {
   Form,
-  FormError,
-  FormHelp,
-  FormItem,
-  FormWarning,
+  Banner,
+  InputWrapper,
   Input,
-  Submit,
-} from "components/form"
+  SubmitButton,
+} from "@terra-money/station-ui"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
@@ -23,10 +22,11 @@ interface Values {
   password: string
 }
 
-const CoinTypeMnemonicForm = ({ close }: { close: () => void }) => {
+const CoinTypeMnemonicForm = () => {
   const { t } = useTranslation()
   const [error, setError] = useState<Error>()
   const { wallet, connect } = useAuth()
+  const { closeModal } = useModal()
 
   const form = useForm<Values>({
     mode: "onChange",
@@ -97,7 +97,7 @@ const CoinTypeMnemonicForm = ({ close }: { close: () => void }) => {
         password
       )
       connect(wallet.name)
-      close()
+      closeModal()
     } catch (error) {
       setError(error as Error)
     }
@@ -105,27 +105,25 @@ const CoinTypeMnemonicForm = ({ close }: { close: () => void }) => {
 
   return (
     <Form onSubmit={handleSubmit(submit)}>
-      <FormItem>
-        <FormHelp>
-          <p>
-            This wallet was created before version 7.2.0. Provide your mnemonic
-            to generate an injective address for this wallet.
-          </p>
-        </FormHelp>
-      </FormItem>
+      <Banner
+        variant="info"
+        title={t(
+          "This wallet was created before version 7.2.0. Provide your mnemonic to generate an injective address for this wallet."
+        )}
+      />
 
-      <FormItem label={t("Password")} error={errors.password?.message}>
+      <InputWrapper label={t("Password")} error={errors.password?.message}>
         <Input {...register("password", { required: true })} type="password" />
-      </FormItem>
+      </InputWrapper>
 
-      <FormItem label={t("Mnemonic seed")} error={errors.mnemonic?.message}>
+      <InputWrapper label={t("Mnemonic seed")} error={errors.mnemonic?.message}>
         <Input
           type="password"
           {...register("mnemonic", { validate: validate.mnemonic })}
         />
-      </FormItem>
+      </InputWrapper>
 
-      <FormItem /* do not translate this */
+      <InputWrapper /* do not translate this */
         label="Index"
         error={errors.index?.message}
         extra={
@@ -140,12 +138,14 @@ const CoinTypeMnemonicForm = ({ close }: { close: () => void }) => {
             validate: validate.index,
           })}
         />
-        {index !== 0 && <FormWarning>{t("Default index is 0")}</FormWarning>}
-      </FormItem>
+        {index !== 0 && (
+          <Banner variant="warning" title={t("Default index is 0")} />
+        )}
+      </InputWrapper>
 
-      {error && <FormError>{error.message}</FormError>}
+      {error && <Banner variant="error" title={error.message} />}
 
-      <Submit disabled={!isValid} />
+      <SubmitButton label={t("Submit")} disabled={!isValid} />
     </Form>
   )
 }
