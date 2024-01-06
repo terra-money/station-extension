@@ -364,15 +364,6 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
               activeTabKey={mode}
               tabs={[
                 {
-                  key: "password",
-                  label: "Password",
-                  onClick: () => {
-                    setValue("secret", "")
-                    setError("secret", { message: "" })
-                    setValue("mode", "password")
-                  },
-                },
-                {
                   key: "mnemonic",
                   label: "Mnemonic Phrase",
                   onClick: () => {
@@ -380,6 +371,15 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
                     setValue("index", wallet.index ?? 0)
                     setError("secret", { message: "" })
                     setValue("mode", "mnemonic")
+                  },
+                },
+                {
+                  key: "password",
+                  label: "Password",
+                  onClick: () => {
+                    setValue("secret", "")
+                    setError("secret", { message: "" })
+                    setValue("mode", "password")
                   },
                 },
               ]}
