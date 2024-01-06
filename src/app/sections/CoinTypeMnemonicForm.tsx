@@ -1,7 +1,12 @@
 import { SeedKey } from "@terra-money/feather.js"
 import { useModal } from "@terra-money/station-ui"
 import useAuth from "auth/hooks/useAuth"
-import { addWallet, deleteWallet, getDecryptedKey } from "auth/scripts/keystore"
+import {
+  addWallet,
+  deleteWallet,
+  getDecryptedKey,
+  getStoredPassword,
+} from "auth/scripts/keystore"
 import validate from "auth/scripts/validate"
 import { TooltipIcon } from "components/display"
 import {
@@ -11,7 +16,7 @@ import {
   Input,
   SubmitButton,
 } from "@terra-money/station-ui"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { wordsFromAddress } from "utils/bech32"
@@ -35,8 +40,21 @@ const CoinTypeMnemonicForm = () => {
   const { register, handleSubmit, formState, watch } = form
   const { errors, isValid } = formState
   const { index } = watch()
+  const [isLoading, setLoading] = useState(true)
+  const [storedPassword, setPassword] = useState<string | undefined>()
 
-  const submit = ({ password, mnemonic, index }: Values) => {
+  // check if there is a stored password
+  useEffect(() => {
+    getStoredPassword().then((password) => {
+      if (password) {
+        setPassword(password)
+      }
+      setLoading(false)
+    })
+  }, []) // eslint-disable-line
+
+  const submit = ({ password: formPassword, mnemonic, index }: Values) => {
+    const password = storedPassword || formPassword
     try {
       if (!wallet) throw new Error("No wallet connected")
 
@@ -112,10 +130,6 @@ const CoinTypeMnemonicForm = () => {
         )}
       />
 
-      <InputWrapper label={t("Password")} error={errors.password?.message}>
-        <Input {...register("password", { required: true })} type="password" />
-      </InputWrapper>
-
       <InputWrapper label={t("Mnemonic seed")} error={errors.mnemonic?.message}>
         <Input
           type="password"
@@ -144,6 +158,17 @@ const CoinTypeMnemonicForm = () => {
       </InputWrapper>
 
       {error && <Banner variant="error" title={error.message} />}
+
+      {!isLoading && !storedPassword && (
+        <InputWrapper label={t("Password")} error={errors.password?.message}>
+          <Input
+            {...register("password", {
+              required: !isLoading && !storedPassword,
+            })}
+            type="password"
+          />
+        </InputWrapper>
+      )}
 
       <SubmitButton label={t("Submit")} disabled={!isValid} />
     </Form>
