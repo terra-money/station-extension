@@ -347,7 +347,7 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
               "Fill out the information about this multisig wallet to import it into Station v3."
             )
           : t(
-              "Enter the password for this wallet to import it into Station v3."
+              "Enter the password or mnemonic phrase for this wallet to import it into Station v3. Migration using mnemonic phrase is recommended to ensure wallet has full cross-chain functionality."
             )
       }
       fullHeight
