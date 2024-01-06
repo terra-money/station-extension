@@ -60,6 +60,7 @@ export type MigratedWalletResult =
 interface Props {
   wallet: {
     name: string
+    wallet?: string
     encrypted?: string
     encryptedSeed?: string
     legacy?: boolean
@@ -128,9 +129,27 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
     // only password for wallets without seeds and using password
     // (not recommended, only Terra available)
     if (mode === "password" && !wallet.encryptedSeed) {
-      console.log(wallet)
+      // super legacy wallets
+      if (typeof wallet.wallet === "string") {
+        const { privateKey: key } = JSON.parse(decrypt(wallet.wallet, secret))
+        const privatekey = Buffer.from(key, "hex")
+        const rawKey = new RawKey(privatekey)
+
+        onComplete({
+          name: wallet.name,
+          privatekey,
+          words: {
+            "330": wordsFromAddress(rawKey.accAddress("terra")),
+          },
+          pubkey: {
+            // @ts-expect-error
+            "330": rawKey.publicKey.key,
+          },
+        })
+        return
+      }
       // wallets created before interchain Station
-      if (typeof wallet.encrypted === "string") {
+      else if (typeof wallet.encrypted === "string") {
         const privatekey = Buffer.from(
           decrypt(wallet.encrypted as string, secret),
           "hex"
