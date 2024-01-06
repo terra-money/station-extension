@@ -90,7 +90,7 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
       secret: "",
       index: wallet.index ?? 0,
       // if we have the encrypted seed, use password as default migration mode, otherwise use mnemonic
-      mode: wallet.encryptedSeed ? "password" : "mnemonic",
+      mode: "mnemonic", // wallet.encryptedSeed ? "password" : "mnemonic",
     },
   })
 
