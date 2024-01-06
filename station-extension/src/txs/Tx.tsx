@@ -49,6 +49,7 @@ import DisplayFees from "./feeAbstraction/DisplayFees"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 import { usePendingIbcTx } from "./useIbcTxs"
 import { useNavigate } from "react-router-dom"
+import { useAddCachedTx } from "data/queries/activity"
 
 const cx = classNames.bind(styles)
 
@@ -106,6 +107,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
   const [isMax, setIsMax] = useState(false)
   const [gasDenom, setGasDenom] = useState<string>("")
+  const addCachedTx = useAddCachedTx()
 
   /* context */
   const { t } = useTranslation()
@@ -326,6 +328,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
           })
         } else {
           isIbc && trackIbcTx({ ...(result as any), chain } as ActivityItem)
+          addCachedTx({ ...(result as any), chain } as ActivityItem)
           onSuccess?.()
           navigate("/#1")
         }
