@@ -182,10 +182,36 @@ const MigrationWizard = () => {
         } else if ("privatekey" in w) {
           return {
             name: fixWalletName(w.name),
-            encrypted: encrypt(w.privatekey.toString("hex"), password),
+            encrypted: {
+              "330": encrypt(w.privatekey.toString("hex"), password),
+            },
             words: w.words,
             pubkey: w.pubkey,
-          } as LegacyStoredWallet
+          } as InterchainStoredWallet
+        } else if ("privatekeys" in w) {
+          return {
+            name: fixWalletName(w.name),
+            encrypted:
+              "118" in w.privatekeys
+                ? {
+                    "330": encrypt(
+                      w.privatekeys["330"].toString("hex"),
+                      password
+                    ),
+                    "118": encrypt(
+                      w.privatekeys["118"].toString("hex"),
+                      password
+                    ),
+                  }
+                : {
+                    "330": encrypt(
+                      w.privatekeys["330"].toString("hex"),
+                      password
+                    ),
+                  },
+            words: w.words,
+            pubkey: w.pubkey,
+          } as InterchainStoredWallet
         } else {
           return w as ResultStoredWallet
         }
