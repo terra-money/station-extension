@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { ModalButton } from "components/feedback"
+import { ModalButton } from "@terra-money/station-ui"
 import { Button } from "components/general"
 import is from "auth/scripts/is"
 import CoinTypePasswordForm from "./CoinTypePasswordForm"
@@ -21,19 +21,14 @@ const EnableCoinType = () => {
 
   return (
     <ModalButton
-      modalKey={modalKey.toString()}
       title={t("Enable Injective")}
       renderButton={(open) => (
         <Button size="small" color="primary" onClick={open}>
-          Enable Injective
+          {t("Enable Injective")}
         </Button>
       )}
     >
-      {is.seed(wallet) ? (
-        <CoinTypePasswordForm close={closeModal} />
-      ) : (
-        <CoinTypeMnemonicForm close={closeModal} />
-      )}
+      {is.seed(wallet) ? <CoinTypePasswordForm /> : <CoinTypeMnemonicForm />}
     </ModalButton>
   )
 }

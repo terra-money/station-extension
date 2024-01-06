@@ -1,4 +1,5 @@
 import { SeedKey } from "@terra-money/feather.js"
+import { useModal } from "@terra-money/station-ui"
 import useAuth from "auth/hooks/useAuth"
 import {
   getDecryptedKey,
@@ -7,12 +8,11 @@ import {
 } from "auth/scripts/keystore"
 import {
   Form,
-  FormError,
-  FormHelp,
-  FormItem,
+  Banner,
+  InputWrapper,
   Input,
-  Submit,
-} from "components/form"
+  SubmitButton,
+} from "@terra-money/station-ui"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
@@ -22,10 +22,11 @@ interface Values {
   password: string
 }
 
-const CoinTypePasswordForm = ({ close }: { close: () => void }) => {
+const CoinTypePasswordForm = () => {
   const { t } = useTranslation()
   const [error, setError] = useState<Error>()
   const { wallet, connect } = useAuth()
+  const { closeModal } = useModal()
 
   const form = useForm<Values>({ mode: "onChange" })
   const { register, handleSubmit, formState } = form
@@ -81,7 +82,7 @@ const CoinTypePasswordForm = ({ close }: { close: () => void }) => {
         )
 
         connect(wallet.name)
-        close()
+        closeModal()
       }
     } catch (error) {
       setError(error as Error)
@@ -90,22 +91,20 @@ const CoinTypePasswordForm = ({ close }: { close: () => void }) => {
 
   return (
     <Form onSubmit={handleSubmit(submit)}>
-      <FormItem>
-        <FormHelp>
-          <p>
-            Provide your password to generate an injective address for this
-            wallet.
-          </p>
-        </FormHelp>
-      </FormItem>
+      <Banner
+        variant="info"
+        title={t(
+          "Provide your password to generate an injective address for this wallet."
+        )}
+      />
 
-      <FormItem label={t("Password")} error={errors.password?.message}>
+      <InputWrapper label={t("Password")} error={errors.password?.message}>
         <Input {...register("password", { required: true })} type="password" />
-      </FormItem>
+      </InputWrapper>
 
-      {error && <FormError>{error.message}</FormError>}
+      {error && <Banner variant="error" title={error.message} />}
 
-      <Submit disabled={!isValid} />
+      <SubmitButton label={t("Submit")} disabled={!isValid} />
     </Form>
   )
 }
