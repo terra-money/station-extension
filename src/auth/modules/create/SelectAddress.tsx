@@ -141,7 +141,7 @@ const SelectAddress = () => {
         <Banner
           variant="warning"
           title={t(
-            "There are two wallets sharing this seed phrase, each with a different token denominator. Please choose which version you want to import."
+            "There are two wallets sharing this recovery phrase, each with a different token denominator. Please choose which version you want to import."
           )}
         />
 

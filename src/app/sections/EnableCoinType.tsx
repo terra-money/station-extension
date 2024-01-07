@@ -16,10 +16,10 @@ const EnableCoinType = () => {
 
   return (
     <ModalButton
-      title={t("Enable Injective")}
+      title={t("Update Wallet")}
       renderButton={(open) => (
         <Button size="small" color="primary" onClick={open}>
-          {t("Enable Injective")}
+          {t("Update Wallet")}
         </Button>
       )}
     >

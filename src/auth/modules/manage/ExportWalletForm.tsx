@@ -74,11 +74,11 @@ const ExportWalletForm = ({ walletName }: Props) => {
         <FlexColumn gap={8}>
           <NavButton
             icon={<ImportSeedIcon fill="white" />}
-            label={t("Mnemonic Phrase")}
+            label={t("Recovery Phrase")}
             onClick={() => setMode(ExportType.MNEMONIC)}
           />
           <p className={styles.text}>
-            {t("Export your 12 or 24-word mnemonic phrase.")}
+            {t("Export your 12 or 24-word recovery phrase.")}
           </p>
         </FlexColumn>
         <FlexColumn gap={8}>
@@ -112,7 +112,7 @@ const ExportWalletForm = ({ walletName }: Props) => {
         />
         <InputWrapper
           label={
-            mode === ExportType.SEED ? t("Seed key") : t("Mnemonic phrase")
+            mode === ExportType.SEED ? t("Seed key") : t("Recovery phrase")
           }
           extra={<Copy copyText={encoded} />}
         >
