@@ -296,7 +296,7 @@ const CreateWalletForm = () => {
 
         <SubmitButton
           disabled={!isValid}
-          variant={generated ? "primary" : "secondary"}
+          variant={"primary"}
           className={styles.submit__button}
         >
           {generated ? t("Create Wallet") : t("Import")}
