@@ -1,6 +1,3 @@
-import { useTranslation } from "react-i18next"
-import ExtensionPage from "../components/ExtensionPage"
-import { useState } from "react"
 import {
   connectWallet,
   getStoredLegacyWallets,
@@ -9,24 +6,26 @@ import {
   setMigrationCompleted,
   storeWallets,
 } from "auth/scripts/keystore"
-import PasswordForm from "./PasswordForm"
 import {
-  SelectableListItem,
+  Banner,
   Button,
   Grid,
-  Banner,
+  SelectableListItem,
   SummaryHeader,
 } from "@terra-money/station-ui"
-import { FlexColumn } from "components/layout"
-
+import MigrateWalletPage, { MigratedWalletResult } from "./MigrateWalletPage"
 import { ReactComponent as CheckIcon } from "styles/images/icons/Check.svg"
 import { ReactComponent as AlertIcon } from "styles/images/icons/Alert.svg"
-import MigrateWalletPage, { MigratedWalletResult } from "./MigrateWalletPage"
+import ExtensionPage from "../components/ExtensionPage"
+import { useThemeFavicon } from "data/settings/Theme"
 import { truncate } from "@terra-money/terra-utils"
 import { addressFromWords } from "utils/bech32"
-import { encrypt } from "auth/scripts/aes"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import { useThemeFavicon } from "data/settings/Theme"
+import { FlexColumn } from "components/layout"
+import { encrypt } from "auth/scripts/aes"
+import PasswordForm from "./PasswordForm"
+import { useState } from "react"
 
 function needsMigration(w: any): boolean {
   // ledger wallets with pubkey do not need migration
@@ -233,10 +232,9 @@ const MigrationWizard = () => {
     setPassword(undefined)
 
     // if legacy active wallet is migrated, connect to it
-    const activeWallet =
-      JSON.parse(localStorage.getItem("user") ?? "{}")?.name ||
-      // otherwise, connect to the first migrated wallet
-      migratedWallets[0]?.name
+    const activeWallet = localStorage.connectedWallet
+      ? localStorage.connectedWallet
+      : migratedWallets[migratedWallets.length - 1]?.name
 
     // if we have a wallet to connect to (we will not if the user has choose to migrate no wallet), connect to it
     activeWallet && connectWallet(activeWallet)
