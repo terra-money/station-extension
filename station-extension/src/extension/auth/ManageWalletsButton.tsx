@@ -1,10 +1,13 @@
-import { DropdownArrowIcon, WalletIcon } from "@terra-money/station-ui"
+import {
+  DropdownArrowIcon,
+  LedgerIcon,
+  WalletIcon,
+} from "@terra-money/station-ui"
 import BluetoothIcon from "@mui/icons-material/Bluetooth"
 import styles from "./ManageWalletsButton.module.scss"
 import { forwardRef, ForwardedRef } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import UsbIcon from "@mui/icons-material/Usb"
 import is from "auth/scripts/is"
 import { bech32 } from "bech32"
 import { useAuth } from "auth"
@@ -35,7 +38,8 @@ const ManageWalletsButton = forwardRef(
           onClick={() => navigate("/")}
           ref={ref}
         >
-          <WalletIcon width={18} height={18} /> {t("Connect wallet")}
+          <WalletIcon width={18} height={18} fill={"var(--token-dark-900)"} />{" "}
+          {t("Connect wallet")}
         </button>
       )
     }
@@ -50,12 +54,14 @@ const ManageWalletsButton = forwardRef(
       >
         {isLedger ? (
           wallet.bluetooth ? (
-            <BluetoothIcon width={18} height={18} />
+            <BluetoothIcon
+              style={{ fontSize: "18px", color: "var(--token-dark-900)" }}
+            />
           ) : (
-            <UsbIcon width={18} height={18} />
+            <LedgerIcon width={18} height={18} fill={"var(--token-dark-900)"} />
           )
         ) : (
-          <WalletIcon fill={"var(--token-dark-900)"} width={18} height={18} />
+          <WalletIcon width={18} height={18} fill={"var(--token-dark-900)"} />
         )}{" "}
         <div className={styles.selector}>
           <span>{wallet && "name" in wallet ? wallet.name : "Ledger"}</span>

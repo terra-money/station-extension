@@ -4,17 +4,17 @@ import {
   storeTheme,
   storeWalletAddress,
 } from "./storage"
-import { DashboardIcon, SettingsIcon, Tooltip } from "@terra-money/station-ui"
 import { useAllInterchainAddresses, usePubkey } from "auth/hooks/useAddress"
-import PreferencesButton from "app/sections/settings/PreferencesButton"
 import PreferencesRouter from "app/sections/settings/PreferencesRouter"
 import { useAddress, useChainID, useNetworkName } from "data/wallet"
 import SignMultisigTxPage from "pages/multisig/SignMultisigTxPage"
 import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
+import SettingsButton from "app/sections/settings/SettingsButton"
 import ManageWalletsButton from "./auth/ManageWalletsButton"
 import NetworkStatus from "components/display/NetworkStatus"
 import { ErrorBoundary, Wrong } from "components/feedback"
 import ManageWalletRouter from "./auth/ManageWalletRouter"
+import DashboardButton from "app/sections/DashboardButton"
 import { useRoutes, useLocation } from "react-router-dom"
 import EnableCoinType from "app/sections/EnableCoinType"
 import NetworkHeader from "app/sections/NetworkHeader"
@@ -29,7 +29,6 @@ import { useNetworks } from "app/InitNetworks"
 import { useTheme } from "data/settings/Theme"
 import { getErrorMessage } from "utils/error"
 import LatestTx from "app/sections/LatestTx"
-import { STATION } from "config/constants"
 import { Flex } from "components/layout"
 import Welcome from "./modules/Welcome"
 import Header from "./layouts/Header"
@@ -112,31 +111,8 @@ const App = () => {
               <LatestTx />
               <EnableCoinType />
               <NetworkStatus />
-              <SettingsIcon
-                style={{
-                  cursor: "pointer",
-                  marginTop: "24px",
-                  marginBottom: "16px",
-                }}
-                fill={"var(--token-dark-900)"}
-                width={18}
-                height={18}
-              />
-              <Tooltip
-                content={t("Dashboard")}
-                children={
-                  <DashboardIcon
-                    onClick={() => window.open(STATION, "_blank")}
-                    style={{
-                      cursor: "pointer",
-                      margin: "24px 12px 16px 16px",
-                    }}
-                    fill={"var(--token-dark-900)"}
-                    width={18}
-                    height={18}
-                  />
-                }
-              />
+              <SettingsButton />
+              <DashboardButton />
             </Flex>
           </Header>
         )}
