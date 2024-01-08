@@ -25,6 +25,7 @@ const Forgot = () => {
     defaultValues: { checked: false },
   });
   const reset = async () => {
+    window.location.reload()
     localStorage.clear();
     sessionStorage.clear();
     navigate("/");
