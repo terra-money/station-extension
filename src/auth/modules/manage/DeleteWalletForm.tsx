@@ -104,7 +104,6 @@ const DeleteWalletForm = ({ walletName }: Props) => {
                 disabled={!isValid}
                 label={t("Remove")}
                 variant="warning"
-
               />
             </Flex>
           </FlexColumn>
