@@ -1,9 +1,13 @@
 import classNames from "classnames/bind"
-import { Flex, SettingsIcon } from "components"
-import { WalletEmoji } from "components"
-import Copy from "components/general/copy/Copy"
+import {
+  Flex,
+  Copy,
+  LedgerIcon,
+  MultisigIcon,
+  SettingsIcon,
+  WalletEmoji
+} from "components"
 import styles from "../SelectableListItem.module.scss"
-import { LedgerIcon, MultisigIcon } from "components"
 
 const cx = classNames.bind(styles)
 
@@ -51,12 +55,12 @@ const WalletSelectableListItem = ({
         <div className={styles.selectable__settings}>
           <Copy
             copyText={copyValue}
-            iconOnlySize={20}
+            iconOnlySize={18}
             fillColor={iconFill}
             iconOnly
           />
           {settingsOnClick && (
-            <SettingsIcon fill={iconFill} onClick={(e) => {
+            <SettingsIcon fill={iconFill} width={18} height={18} onClick={(e) => {
               e.stopPropagation()
               settingsOnClick()
             }} />

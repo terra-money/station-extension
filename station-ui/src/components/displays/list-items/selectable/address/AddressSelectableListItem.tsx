@@ -1,9 +1,9 @@
-import classNames from 'classnames/bind';
-import { ReactComponent as RightArrowIcon } from 'assets/icon/RightArrow.svg';
-import styles from '../SelectableListItem.module.scss';
-import Pill from 'components/general/pill/Pill';
+import classNames from "classnames/bind"
+import { RightArrowIcon } from "assets"
+import Pill from "components/general/pill/Pill"
+import styles from "../SelectableListItem.module.scss"
 
-const cx = classNames.bind(styles);
+const cx = classNames.bind(styles)
 
 export interface AddressSelectableListItemProps {
   label: string
@@ -21,7 +21,11 @@ const AddressSelectableListItem = ({
   onClick,
 }: AddressSelectableListItemProps) => {
   return (
-    <div className={cx(styles.selectable__li, styles.address__li, { active })} onClick={onClick}>
+    <div className={cx(
+      styles.selectable__li,
+      styles.address__li,
+      { active, [styles.with__pill]: active }
+    )} onClick={onClick}>
       {chain && (
         <div className={styles.chain__icon__container}>
           <img
@@ -35,7 +39,7 @@ const AddressSelectableListItem = ({
         <div className={styles.selectable__details}>
           <h2 className={styles.selectable__name}>
             {label}
-            {active && <Pill text="Active" variant='primary' />}
+            {active && <Pill text="Active" variant="primary" />}
           </h2>
           <h5 className={styles.selectable__address}>
             {subLabel}
@@ -45,7 +49,7 @@ const AddressSelectableListItem = ({
         <RightArrowIcon fill="var(--token-light-white)" />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AddressSelectableListItem;
+export default AddressSelectableListItem
