@@ -26,11 +26,12 @@ interface Props {
 }
 
 const DeleteWalletForm = ({ walletName }: Props) => {
-  const { t } = useTranslation()
+  const { wallets, connect, disconnect } = useAuth()
   const navigate = useNavigate()
-  const { disconnect } = useAuth()
+  const { t } = useTranslation()
 
   const [name, setName] = useState<string | undefined>(walletName)
+  const otherWallets = wallets.filter((wallet) => wallet.name !== walletName)
 
   /* form */
   const form = useForm<Values>()
@@ -45,9 +46,15 @@ const DeleteWalletForm = ({ walletName }: Props) => {
       return
     }
 
+    // Remove deleted wallet.
     disconnect()
     deleteWallet(walletName)
     setName(undefined)
+
+    // Connect to most recently connected wallet.
+    if (otherWallets.length) {
+      connect(otherWallets[0].name)
+    }
   }
 
   return (
