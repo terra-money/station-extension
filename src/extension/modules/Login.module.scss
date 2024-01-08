@@ -26,11 +26,6 @@
       margin-top: 8px;
     }
 
-    .content {
-      @include SmallLH;
-      text-align: center;
-      color: var(--token-light-100);
-    }
   }
 
   .checkbox__override {
@@ -43,4 +38,16 @@
     gap: 24px;
     margin-bottom: 12px;
   }
+}
+
+.content {
+  @include SmallLH;
+  text-align: center;
+  color: var(--token-light-100);
+}
+
+.forgot__container {
+  align-items: center;
+  grid-template-rows: repeat(2, 1fr);
+  border: 3px red solid;
 }
