@@ -1,44 +1,44 @@
-import { useEffect } from "react"
-import { useRoutes, useLocation } from "react-router-dom"
-import { useAddress, useChainID, useNetworkName } from "data/wallet"
-import { ErrorBoundary, Wrong } from "components/feedback"
-import InitBankBalance from "app/InitBankBalance"
-import LatestTx from "app/sections/LatestTx"
-import NetworkHeader from "app/sections/NetworkHeader"
-import SwapTx from "txs/swap/SwapTx"
-import SignMultisigTxPage from "pages/multisig/SignMultisigTxPage"
-import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
 import {
   clearWalletAddress,
   storeNetwork,
   storeTheme,
   storeWalletAddress,
 } from "./storage"
-import RequestContainer from "./RequestContainer"
+import { DashboardIcon, SettingsIcon, Tooltip } from "@terra-money/station-ui"
+import { useAllInterchainAddresses, usePubkey } from "auth/hooks/useAddress"
+import PreferencesButton from "app/sections/settings/PreferencesButton"
+import PreferencesRouter from "app/sections/settings/PreferencesRouter"
+import { useAddress, useChainID, useNetworkName } from "data/wallet"
+import SignMultisigTxPage from "pages/multisig/SignMultisigTxPage"
+import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
+import ManageWalletsButton from "./auth/ManageWalletsButton"
+import NetworkStatus from "components/display/NetworkStatus"
+import { ErrorBoundary, Wrong } from "components/feedback"
+import ManageWalletRouter from "./auth/ManageWalletRouter"
+import { useRoutes, useLocation } from "react-router-dom"
+import EnableCoinType from "app/sections/EnableCoinType"
+import NetworkHeader from "app/sections/NetworkHeader"
 import ManageNetworks from "./networks/ManageNetworks"
 import AddNetworkPage from "./networks/AddNetworkPage"
-import Auth from "./auth/Auth"
-import Header from "./layouts/Header"
-import Front from "./modules/Front"
-import { useAllInterchainAddresses, usePubkey } from "auth/hooks/useAddress"
-import { Flex } from "components/layout"
-import NetworkStatus from "components/display/NetworkStatus"
-import PreferencesRouter from "app/sections/settings/PreferencesRouter"
-import { useAuth } from "auth"
-import is from "auth/scripts/is"
+import ExtensionPage from "./components/ExtensionPage"
+import ChangeLogModal from "./update/ChangeLogModal"
+import RequestContainer from "./RequestContainer"
+import InitBankBalance from "app/InitBankBalance"
+import { useTranslation } from "react-i18next"
 import { useNetworks } from "app/InitNetworks"
 import { useTheme } from "data/settings/Theme"
-import EnableCoinType from "app/sections/EnableCoinType"
-import ChangeLogModal from "./update/ChangeLogModal"
-import Welcome from "./modules/Welcome"
-import ExtensionPage from "./components/ExtensionPage"
 import { getErrorMessage } from "utils/error"
-import ManageWalletsButton from "./auth/ManageWalletsButton"
-import ManageWalletRouter from "./auth/ManageWalletRouter"
-import PreferencesButton from "app/sections/settings/PreferencesButton"
-import DashboardButton from "app/sections/DashboardButton"
-import { Tooltip } from "@terra-money/station-ui"
-import { useTranslation } from "react-i18next"
+import LatestTx from "app/sections/LatestTx"
+import { STATION } from "config/constants"
+import { Flex } from "components/layout"
+import Welcome from "./modules/Welcome"
+import Header from "./layouts/Header"
+import SwapTx from "txs/swap/SwapTx"
+import Front from "./modules/Front"
+import { useEffect } from "react"
+import is from "auth/scripts/is"
+import { useAuth } from "auth"
+import Auth from "./auth/Auth"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -112,8 +112,31 @@ const App = () => {
               <LatestTx />
               <EnableCoinType />
               <NetworkStatus />
-              <PreferencesButton />
-              <Tooltip content={t("Dashboard")} children={<DashboardButton />} />
+              <SettingsIcon
+                style={{
+                  cursor: "pointer",
+                  marginTop: "24px",
+                  marginBottom: "16px",
+                }}
+                fill={"var(--token-dark-900)"}
+                width={18}
+                height={18}
+              />
+              <Tooltip
+                content={t("Dashboard")}
+                children={
+                  <DashboardIcon
+                    onClick={() => window.open(STATION, "_blank")}
+                    style={{
+                      cursor: "pointer",
+                      margin: "24px 12px 16px 16px",
+                    }}
+                    fill={"var(--token-dark-900)"}
+                    width={18}
+                    height={18}
+                  />
+                }
+              />
             </Flex>
           </Header>
         )}
