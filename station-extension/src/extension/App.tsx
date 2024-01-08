@@ -39,6 +39,7 @@ import PreferencesButton from "app/sections/settings/PreferencesButton"
 import DashboardButton from "app/sections/DashboardButton"
 import { Tooltip } from "@terra-money/station-ui"
 import { useTranslation } from "react-i18next"
+import Forgot from "./modules/Forgot"
 
 const App = () => {
   const { networks } = useNetworks()
