@@ -69,7 +69,7 @@ const Address = () => {
         <InputInLine
           type="text"
           label="To"
-          placeholder="Wallet Address"
+          placeholder="Recipient Address"
           {...register("recipient", {
             validate: { ...validate.recipient() },
           })}
