@@ -112,14 +112,15 @@ const Token = () => {
     goToStep(1)
     return null
   }
+  const recipientName = getWalletName(recipient) // wallet name or address if none found
 
   return (
     <>
       <InputInLine
-        disabled
         label={"To"}
-        extra={truncate(recipient)}
-        value={getWalletName(recipient)}
+        onClick={() => goToStep(1)}
+        extra={!recipientName.includes("...") && truncate(recipient)}
+        value={recipientName}
       />
       <SectionHeader title={t("My Tokens")} withLine />
       <WithSearchInput

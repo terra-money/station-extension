@@ -129,19 +129,17 @@ const ExportWalletForm = ({ walletName }: Props) => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(submit)} style={{ height: "100%" }}>
+    <Form onSubmit={handleSubmit(submit)} style={{ height: "90%" }}>
       <FlexColumn className={styles.form__container}>
         <InputWrapper label={t("Password")} error={errors.password?.message}>
           <Input {...register("password")} type="password" />
         </InputWrapper>
-
-        <Flex gap={24} className={styles.form__footer}>
-          <SubmitButton
-            disabled={!password || !isValid}
-            variant="secondary"
-            label={t("Submit")}
-          />
-        </Flex>
+        <SubmitButton
+          className={styles.form__footer}
+          disabled={!password || !isValid}
+          variant="secondary"
+          label={t("Submit")}
+        />
       </FlexColumn>
     </Form>
   )

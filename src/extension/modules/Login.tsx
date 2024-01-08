@@ -21,6 +21,8 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { atom, useRecoilState } from "recoil"
 import styles from "./Login.module.scss"
+import { useLocation, useNavigate } from "react-router-dom"
+import Forgot from "./Forgot"
 
 const LOGIN_ATOM = atom<{ isLoggedIn: boolean; isLoading: boolean }>({
   key: "login-state",
@@ -91,6 +93,8 @@ function getRandomGreetings() {
 const Login = () => {
   const { t } = useTranslation()
   // const icon = useThemeFavicon()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const { login } = useLogin()
   const password = useRef<HTMLInputElement>(null)
@@ -102,7 +106,7 @@ const Login = () => {
 
   const greeting = useMemo(() => getRandomGreetings(), [])
 
-  async function submit() {
+  const submit = async () => {
     try {
       if (!password.current?.value) return setError("Password is required")
       login(password.current?.value)
@@ -117,6 +121,21 @@ const Login = () => {
       setError("Invalid password")
       setIsValid(false)
     }
+  }
+
+  const ForgotButton = () => {
+    return (
+      <button
+        className={styles.forgot__button}
+        onClick={() => navigate("/forgot")}
+      >
+        {t("Forgot password?")}
+      </button>
+    )
+  }
+
+  if (location.pathname === "/forgot") {
+    return <Forgot />
   }
 
   return (
@@ -140,7 +159,11 @@ const Login = () => {
         >
           <FlexColumn gap={24}>
             <FlexColumn gap={8} align="flex-start">
-              <InputWrapper label={t("Password")} error={error}>
+              <InputWrapper
+                label={t("Password")}
+                error={error}
+                extra={<ForgotButton />}
+              >
                 <Input
                   type="password"
                   ref={password}
