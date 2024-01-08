@@ -9,13 +9,13 @@
     justify-content: center;
     width: 100%;
     padding: 16px 0px;
-    border-bottom: 2px solid var(--token-dark-100);
+    border-bottom: 1px solid var(--token-dark-100);
 
     @include Small;
     color: var(--token-dark-900);
 
     &.active {
-      border-bottom: 2px solid var(--token-primary-500);
+      border-bottom: 1px solid var(--token-primary-500);
       color: var(--token-light-white);
     }
 
