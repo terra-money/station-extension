@@ -2,7 +2,6 @@ import {
   SectionHeader,
   InputInLine,
   TokenSingleChainListItem,
-  InputWrapper,
 } from "@terra-money/station-ui"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import WithSearchInput from "pages/custom/WithSearchInput"
