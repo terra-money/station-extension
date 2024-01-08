@@ -19,6 +19,7 @@ const navigate = useNavigate()
   })
   const reset = async () => {
     localStorage.clear()
+    sessionStorage.clear()
     navigate('/')
   }
 
