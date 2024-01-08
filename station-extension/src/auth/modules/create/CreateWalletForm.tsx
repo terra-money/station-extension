@@ -128,7 +128,7 @@ const CreateWalletForm = () => {
         return (
           <>
             <InputWrapper
-              label={t("Mnemonic phrase")}
+              label={t("Recovery phrase")}
               error={errors.mnemonic?.message}
               extra={
                 <Paste
@@ -242,7 +242,7 @@ const CreateWalletForm = () => {
         {generated ? (
           <>
             <InputWrapper
-              label={t("Mnemonic phrase")}
+              label={t("Recovery phrase")}
               error={errors.mnemonic?.message}
               extra={generated && <Copy copyText={mnemonic} />}
             >
@@ -253,7 +253,7 @@ const CreateWalletForm = () => {
               <Banner
                 variant="warning"
                 title={t(
-                  "Never share the mnemonic with others or enter it in unverified sites"
+                  "Never share the recovery phrase with others or enter it in unverified sites"
                 )}
               />
             </Grid>
@@ -261,7 +261,7 @@ const CreateWalletForm = () => {
             <Checkbox
               {...register("checked", { required: true })}
               checked={!!checked}
-              label={t("I have written down the mnemonic")}
+              label={t("I have written down the recovery phrase")}
             />
           </>
         ) : (
@@ -272,7 +272,7 @@ const CreateWalletForm = () => {
               tabs={[
                 {
                   key: ImportOptions.MNEMONIC,
-                  label: t("Mnemonic Phrase"),
+                  label: t("Recovery Phrase"),
                   onClick: () => {
                     setValues({ ...formValues, mnemonic: "" })
                     setImportOption(ImportOptions.MNEMONIC)

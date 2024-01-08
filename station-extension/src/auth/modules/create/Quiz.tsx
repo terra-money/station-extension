@@ -69,7 +69,9 @@ const Quiz = () => {
         {incorrect && (
           <Banner
             variant="error"
-            title={t("Write down the mnemonic and choose the correct word")}
+            title={t(
+              "Write down the recovery phrase and choose the correct word"
+            )}
           />
         )}
 

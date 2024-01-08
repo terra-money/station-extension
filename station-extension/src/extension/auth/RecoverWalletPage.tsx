@@ -12,7 +12,7 @@ const RecoverWallet = () => {
     {
       title: "Import Wallet",
       subtitle:
-        "Enter your preferred wallet name and the wallet's seed phrase or seed key.",
+        "Enter your preferred wallet name and the wallet's recovery phrase or seed key.",
     },
     {
       title: "Select wallet",

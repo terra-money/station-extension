@@ -24,9 +24,11 @@ const accordions = [
     content: [
       [
         "Select ",
-        <span className={styles.highlighted}>Import from seed phrase</span>,
+        <span className={styles.highlighted}>
+          Import using recovery phrase
+        </span>,
         ". Or, if you have a private key from a previous Station wallet select ",
-        <span className={styles.highlighted}>Import from private key</span>,
+        <span className={styles.highlighted}>Import using private key</span>,
         ".",
       ],
       [

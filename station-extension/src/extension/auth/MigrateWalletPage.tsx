@@ -290,9 +290,9 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
       setError("secret", {
         message: t(
           typeof wallet.index === "number"
-            ? "You entered the wrong mnemonic"
+            ? "You entered the wrong recovery phrase"
             : // if we gave the user the option to select the index, we also need to tell them that they might have selected the wrong index
-              "You entered the wrong mnemonic or selected the wrong index"
+              "You entered the wrong recovery phrase or selected the wrong index"
         ),
       })
     }
@@ -367,7 +367,7 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
               "Fill out the information about this multisig wallet to import it into Station v3."
             )
           : t(
-              "Enter the password or mnemonic phrase for this wallet to import it into Station v3. Migration using mnemonic phrase is recommended to ensure wallet has full cross-chain functionality."
+              "Enter the password or recovery phrase for this wallet to import it into Station v3. Migration using recovery phrase is recommended to ensure wallet has full cross-chain functionality."
             )
       }
       fullHeight
@@ -385,7 +385,7 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
               tabs={[
                 {
                   key: "mnemonic",
-                  label: "Mnemonic Phrase",
+                  label: "Recovery Phrase",
                   onClick: () => {
                     setValue("secret", "")
                     setValue("index", wallet.index ?? 0)
@@ -422,7 +422,7 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
                   <Banner
                     variant="warning"
                     title={t(
-                      "Importing your wallet using only password means you will experience limited features for this wallet. For best results, import using your seed phrase instead!"
+                      "Importing your wallet using only password means you will experience limited features for this wallet. For best results, import using your recovery phrase instead!"
                     )}
                   />
                 )}
@@ -430,7 +430,7 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
             ) : (
               <>
                 <InputWrapper
-                  label={t("Mnemonic Phrase")}
+                  label={t("Recovery Phrase")}
                   error={errors.secret?.message}
                 >
                   <TextArea

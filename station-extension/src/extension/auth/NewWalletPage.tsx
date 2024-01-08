@@ -12,12 +12,12 @@ const NewWallet = () => {
     {
       title: "New Wallet",
       subtitle:
-        "Enter your preferred wallet name and then write down your new seed phrase",
+        "Enter your preferred wallet name and then write down your new recovery phrase",
     },
     {
-      title: "Verify seed phrase",
+      title: "Verify recovery phrase",
       subtitle:
-        "Match the words below with your seed phrase to confirm wallet creation",
+        "Match the words below with your recovery phrase to confirm wallet creation",
     },
     {
       title: "Set Password",

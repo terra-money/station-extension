@@ -126,11 +126,14 @@ const CoinTypeMnemonicForm = () => {
       <Banner
         variant="info"
         title={t(
-          "This wallet was created before version 7.2.0. Provide your mnemonic to generate an injective address for this wallet."
+          "This wallet was created before version 7.2.0. Provide your recovery phrase to generate an injective address for this wallet."
         )}
       />
 
-      <InputWrapper label={t("Mnemonic seed")} error={errors.mnemonic?.message}>
+      <InputWrapper
+        label={t("Recovery phrase")}
+        error={errors.mnemonic?.message}
+      >
         <Input
           type="password"
           {...register("mnemonic", { validate: validate.mnemonic })}
