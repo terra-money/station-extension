@@ -231,13 +231,12 @@ const MigrationWizard = () => {
     // cleanup sensitive data
     setPassword(undefined)
 
-    // if legacy active wallet is migrated, connect to it
-    const activeWallet = localStorage.connectedWallet
-      ? localStorage.connectedWallet
-      : migratedWallets[migratedWallets.length - 1]?.name
-
-    // if we have a wallet to connect to (we will not if the user has choose to migrate no wallet), connect to it
-    activeWallet && connectWallet(activeWallet)
+    // Connect to last migrated wallet if there is not a wallet already connected.
+    if (!localStorage.connectedWallet) {
+      const lastMigratedWallet =
+        migratedWallets[migratedWallets.length - 1]?.name
+      connectWallet(lastMigratedWallet)
+    }
 
     // redirect to success page
     setCompleted(true)
