@@ -2,6 +2,7 @@ import {
   SectionHeader,
   InputInLine,
   TokenSingleChainListItem,
+  InputWrapper,
 } from "@terra-money/station-ui"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import WithSearchInput from "pages/custom/WithSearchInput"
@@ -117,8 +118,8 @@ const Token = () => {
   return (
     <>
       <InputInLine
-        disabled
         label={"To"}
+        onClick={() => goToStep(1)}
         extra={!recipientName.includes('...') && truncate(recipient)}
         value={recipientName}
       />
