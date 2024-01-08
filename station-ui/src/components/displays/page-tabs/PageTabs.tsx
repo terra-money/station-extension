@@ -1,13 +1,13 @@
-import { ReactNode } from 'react';
-import classNames from 'classnames/bind';
-import styles from './PageTabs.module.scss';
+import { ReactNode } from "react"
+import classNames from "classnames/bind"
+import styles from "./PageTabs.module.scss"
 
-const cx = classNames.bind(styles);
+const cx = classNames.bind(styles)
 
 export interface PageTabsProps {
-  tabs: (string | ReactNode)[];
-  activeTab: number;
-  onClick: (index: number) => void;
+  tabs: (string | ReactNode)[]
+  activeTab: number
+  onClick: (index: number) => void
 }
 
 const PageTabs = ({ tabs, activeTab, onClick }: PageTabsProps) => {
@@ -23,7 +23,7 @@ const PageTabs = ({ tabs, activeTab, onClick }: PageTabsProps) => {
         </div>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default PageTabs;
+export default PageTabs
