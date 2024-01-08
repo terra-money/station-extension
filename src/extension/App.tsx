@@ -24,7 +24,6 @@ import ExtensionPage from "./components/ExtensionPage"
 import ChangeLogModal from "./update/ChangeLogModal"
 import RequestContainer from "./RequestContainer"
 import InitBankBalance from "app/InitBankBalance"
-import { useTranslation } from "react-i18next"
 import { useNetworks } from "app/InitNetworks"
 import { useTheme } from "data/settings/Theme"
 import { getErrorMessage } from "utils/error"
@@ -48,7 +47,6 @@ const App = () => {
   const addresses = useAllInterchainAddresses()
   const { name: theme } = useTheme()
   const { wallet } = useAuth()
-  const { t } = useTranslation()
 
   useEffect(() => {
     storeNetwork({ ...networks[name][chainID], name }, networks[name])

@@ -28,7 +28,6 @@ import Overlay from "app/components/Overlay"
 import decrypt from "auth/scripts/decrypt"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
-import useAuth from "../../auth/hooks/useAuth"
 
 export type MigratedWalletResult =
   | {

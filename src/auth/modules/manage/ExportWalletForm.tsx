@@ -9,7 +9,6 @@ import {
   Input,
   SubmitButton,
   FlexColumn,
-  Flex,
   Copy,
   Banner,
   Button,
