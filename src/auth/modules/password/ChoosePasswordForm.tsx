@@ -51,7 +51,7 @@ const ChoosePasswordForm = () => {
       <Banner
         variant="error"
         title={t(
-          "This action can not be undone. You will need a private key or a recovery phrase to restore this wallet to the app."
+          "This action can not be undone. You will need a private key or a recovery phrase to restore this wallet."
         )}
       />
 
