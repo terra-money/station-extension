@@ -6,7 +6,9 @@
   align-items: center;
   gap: 16px;
 
-  padding: 18px;
+  // padding: 18px; non-extension
+  padding: 16px;
+
   background-color: var(--token-dark-700);
   border-radius: 8px;
 
@@ -19,8 +21,10 @@
 
     .chain__icon {
       border-radius: 50%;
-      height: 32px;
-      width: 32px;
+      // height: 32px; non-extension
+      // width: 32px; non-extension
+      height: 26px;
+      width: 26px;
     }
   }
 
@@ -40,7 +44,8 @@
         align-items: center;
         gap: 8px;
 
-        @include Medium;
+        // @include Medium; non-extension
+        @include Small;
         color: var(--token-light-300);
       }
 
@@ -55,12 +60,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 24px;
-      margin: 6px;
+      gap: 16px;
     }
 
     svg {
-      margin-right: 6px;
+      margin-right: 8px;
     }
   }
 
@@ -73,6 +77,20 @@
 
       .selectable__address {
         color: var(--token-light-100);
+      }
+    }
+  }
+
+  &.with__pill {
+    padding-top: 14px;
+
+    .chain__icon__container {
+      margin-top: 2px;
+    }
+
+    .selectable__details__container {
+      .selectable__details {
+        gap: 6px;
       }
     }
   }
