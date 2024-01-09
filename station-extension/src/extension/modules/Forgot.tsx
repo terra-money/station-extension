@@ -1,4 +1,4 @@
-import ExtensionPage from "extension/components/ExtensionPage";
+import ExtensionPage from "extension/components/ExtensionPage"
 import {
   LockIcon,
   Banner,
@@ -6,33 +6,33 @@ import {
   Button,
   Grid,
   Form,
-} from "@terra-money/station-ui";
-import { useTranslation } from "react-i18next";
-import styles from "./Login.module.scss";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { FlexColumn } from "components/layout";
+} from "@terra-money/station-ui"
+import { useTranslation } from "react-i18next"
+import styles from "./Login.module.scss"
+import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router-dom"
+import { FlexColumn } from "components/layout"
 
 interface Values {
-  checked: boolean;
+  checked: boolean
 }
 
 const Forgot = () => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { t } = useTranslation()
+  const navigate = useNavigate()
   const form = useForm<Values>({
     mode: "onChange",
     defaultValues: { checked: false },
-  });
+  })
   const reset = async () => {
     window.location.reload()
-    localStorage.clear();
-    sessionStorage.clear();
-    navigate("/");
-  };
+    localStorage.clear()
+    sessionStorage.clear()
+    navigate("/")
+  }
 
-  const { register, watch } = form;
-  const { checked } = watch();
+  const { register, watch } = form
+  const { checked } = watch()
 
   return (
     <ExtensionPage title={t("Forgot Password?")} backButtonPath="/" fullHeight>
@@ -71,7 +71,7 @@ const Forgot = () => {
         </Grid>
       </Form>
     </ExtensionPage>
-  );
-};
+  )
+}
 
 export default Forgot
