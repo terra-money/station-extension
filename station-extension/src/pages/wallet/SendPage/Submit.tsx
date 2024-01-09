@@ -95,7 +95,6 @@ const Submit = () => {
         onClick={() => goToStep(1)}
         extra={!recipientName.includes("...") && truncate(recipient)}
         value={recipientName}
-        disabled
       />
       <SendAmount
         setValue={setValue}
