@@ -222,7 +222,7 @@ const CreateWalletForm = () => {
             <Banner
               variant="info"
               title={t(
-                "This is the password you use on the device from where you exported the key."
+                "Only keys exported directly from Station wallet are supported. You will need the key as well as the password used on the previous wallet to complete the import."
               )}
             />
           </>
