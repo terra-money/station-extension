@@ -24,10 +24,14 @@ export function useAddCachedTx() {
 
 export function useCachedTx() {
   const { wallet } = useAuth()
+  const networks = useNetwork()
   const name: string = wallet.name
   const cache = useRecoilValue(cachedTxHistoryState)
 
-  return cache.filter(({ walletName }) => name === walletName)
+  return cache.filter(
+    ({ walletName, chain }) =>
+      name === walletName && Object.keys(networks).includes(chain)
+  )
 }
 
 interface PaginationKeys {

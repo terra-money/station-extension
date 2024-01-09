@@ -1,55 +1,53 @@
 import { ButtonItem, LinkItem } from "extension/components/ExtensionList"
-import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined"
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
-import QrCodeIcon from "@mui/icons-material/QrCode"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
 import { openURL } from "extension/storage"
 import useAuth from "../../hooks/useAuth"
 import is from "../../scripts/is"
+import {
+  AlertIcon,
+  MultisigIcon,
+  QRCodeIcon,
+  TrashIcon,
+} from "@terra-money/station-ui"
 
 export const useManageWallet = (walletName: string) => {
   const { t } = useTranslation()
-  const navigate = useNavigate()
-  const { wallets, lock, connectedWallet } = useAuth()
+  const { wallets, connectedWallet } = useAuth()
 
   const wallet = wallets.find((w) => w.name === walletName)
 
   const toExport = {
     to: `/auth/export/${walletName}`,
     children: t("Export wallet"),
-    icon: <QrCodeIcon />,
+    icon: <QRCodeIcon fill="var(--token-light-white)" width={14} height={14} />,
   }
 
   const toDelete = {
     to: `/auth/delete/${walletName}`,
     children: t("Delete wallet"),
-    icon: <DeleteOutlineIcon />,
+    icon: <TrashIcon fill="var(--token-light-white)" width={14} height={14} />,
   }
 
   const toSignMultisig = connectedWallet?.name === walletName && {
     onClick: () => openURL("/multisig/sign"),
     children: t("Sign Multisig Tx"),
-    icon: <FactCheckOutlinedIcon />,
+    icon: (
+      <MultisigIcon fill="var(--token-light-white)" width={14} height={14} />
+    ),
   }
 
   const toPostMultisig = connectedWallet?.name === walletName && {
     onClick: () => openURL("/multisig/post"),
     children: t("Post a multisig tx"),
-    icon: <FactCheckOutlinedIcon />,
+    icon: (
+      <MultisigIcon fill="var(--token-light-white)" width={14} height={14} />
+    ),
   }
 
-  // TODO: move into extension settings
-  // eslint-disable-next-line
-  const lockWallet = {
-    onClick: () => {
-      lock()
-      navigate("/", { replace: true })
-    },
-    id: "lock",
-    children: t("Lock"),
-    icon: <LockOutlinedIcon />,
+  const toUpgradeWallet = !(wallet as any)?.words?.["60"] && {
+    to: `/manage-wallet/upgrade/${walletName}`,
+    children: t("Upgrade Wallet"),
+    icon: <AlertIcon fill="var(--token-primary-500)" width={14} height={14} />,
   }
 
   if (!wallet) return
@@ -59,6 +57,6 @@ export const useManageWallet = (walletName: string) => {
       ? [toPostMultisig, toDelete]
       : is.ledger(wallet)
       ? [toSignMultisig, toDelete]
-      : [toExport, toDelete, toSignMultisig]
+      : [toExport, toDelete, toSignMultisig, toUpgradeWallet]
   ).filter((opt) => !!opt) as (LinkItem | ButtonItem)[]
 }
