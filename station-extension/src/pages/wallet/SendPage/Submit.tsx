@@ -85,15 +85,17 @@ const Submit = () => {
     trigger("input")
   }
 
+  const recipientName = getWalletName(recipient)
+
   return (
     <>
       <InputInLine
-        disabled
         style={{ cursor: "pointer" }}
         label={t("To")}
         onClick={() => goToStep(1)}
-        extra={truncate(recipient)}
-        value={getWalletName(recipient)}
+        extra={!recipientName.includes("...") && truncate(recipient)}
+        value={recipientName}
+        disabled
       />
       <SendAmount
         setValue={setValue}
