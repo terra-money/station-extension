@@ -1,5 +1,6 @@
 {
   "name": "@terra-money/station-ui",
+  "version": "1.0.0",
   "files": [
     "dist"
   ],
@@ -14,7 +15,6 @@
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"
   },
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
