@@ -9,6 +9,10 @@
   border-radius: 8px;
   padding: 0px 18px;
   gap: 16px;
+  
+  &.onClick {
+    cursor: pointer;
+  }
 
   .inline__input__label {
     color: var(--token-light-100);
