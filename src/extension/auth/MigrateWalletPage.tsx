@@ -28,7 +28,6 @@ import Overlay from "app/components/Overlay"
 import decrypt from "auth/scripts/decrypt"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
-import useAuth from "../../auth/hooks/useAuth"
 
 export type MigratedWalletResult =
   | {
@@ -365,10 +364,10 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
       subtitle={
         wallet.multisig
           ? t(
-              "Fill out the information about this multisig wallet to import it into Station V3."
+              "Fill out the information about this multisig wallet to import it into Station v3."
             )
           : t(
-              "Enter the password or recovery phrase for this wallet to import it into Station V3. Migration using recovery phrase is recommended to ensure wallet has full cross-chain functionality."
+              "Enter the password or recovery phrase for this wallet to import it into Station v3. Migration using recovery phrase is recommended to ensure wallet has full cross-chain functionality."
             )
       }
       fullHeight

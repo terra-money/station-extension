@@ -98,15 +98,14 @@ export const useGetBestRoute = (sources?: SupportedSource[]) => {
   const getBestRoute = useCallback(
     async (swap: SwapState) => {
       const routePromises = routeSources.map(async (source) => {
-          const amount = toAmount(swap.offerInput, {
-            decimals: swap.offerAsset.decimals,
-          })
-          return await routeMap[source]?.(
-            { ...swap, offerInput: amount },
-            network
-          )
-        } 
-      )
+        const amount = toAmount(swap.offerInput, {
+          decimals: swap.offerAsset.decimals,
+        })
+        return await routeMap[source]?.(
+          { ...swap, offerInput: amount },
+          network
+        )
+      })
 
       const results = await Promise.all(routePromises)
       const routes = results.filter(
@@ -116,9 +115,7 @@ export const useGetBestRoute = (sources?: SupportedSource[]) => {
       if (routes.length === 0) {
         throw new Error("No routes available for this swap.")
       }
-      const bestRoute = routes.sort(
-        (a, b) => a.txsRequired - b.txsRequired
-      )[0]
+      const bestRoute = routes.sort((a, b) => a.txsRequired - b.txsRequired)[0]
       return bestRoute
     },
     [routeSources, network]
@@ -162,7 +159,7 @@ export const useGetMsgs = (sources?: SupportedSource[]) => {
 const DEFAULT_SWAP = {
   ask: {
     chainID: "phoenix-1",
-    originDenom: "uluna",
+    denom: "uluna",
   },
   offer: {
     chainID: "phoenix-1",
@@ -176,13 +173,13 @@ export const useGetSwapDefaults = (assets: SwapAssetExtra[]) => {
   const defaults = useMemo(() => {
     const askAsset = assets.find(
       (t) =>
-        t.originDenom === DEFAULT_SWAP.ask.originDenom &&
+        t.denom === DEFAULT_SWAP.ask.denom &&
         t.chainId === DEFAULT_SWAP.ask.chainID
     )
     const offerAsset = assets.find(
       (t) =>
         t.originDenom === DEFAULT_SWAP.offer.originDenom &&
-        t.chainId === DEFAULT_SWAP.offer.chainID && 
+        t.chainId === DEFAULT_SWAP.offer.chainID &&
         t.symbol === DEFAULT_SWAP.offer.symbol
     )
 

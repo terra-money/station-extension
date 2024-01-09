@@ -136,7 +136,7 @@ const ExportWalletForm = ({ walletName }: Props) => {
         <SubmitButton
           className={styles.form__footer}
           disabled={!password || !isValid}
-          variant="secondary"
+          variant="primary"
           label={t("Submit")}
         />
       </FlexColumn>

@@ -1,45 +1,42 @@
-import { useEffect } from "react"
-import { useRoutes, useLocation } from "react-router-dom"
-import { useAddress, useChainID, useNetworkName } from "data/wallet"
-import { ErrorBoundary, Wrong } from "components/feedback"
-import InitBankBalance from "app/InitBankBalance"
-import LatestTx from "app/sections/LatestTx"
-import NetworkHeader from "app/sections/NetworkHeader"
-import SwapTx from "txs/swap/SwapTx"
-import SignMultisigTxPage from "pages/multisig/SignMultisigTxPage"
-import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
 import {
   clearWalletAddress,
   storeNetwork,
   storeTheme,
   storeWalletAddress,
 } from "./storage"
-import RequestContainer from "./RequestContainer"
+import { useAllInterchainAddresses, usePubkey } from "auth/hooks/useAddress"
+import PreferencesRouter from "app/sections/settings/PreferencesRouter"
+import { useAddress, useChainID, useNetworkName } from "data/wallet"
+import SignMultisigTxPage from "pages/multisig/SignMultisigTxPage"
+import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
+import SettingsButton from "app/sections/settings/SettingsButton"
+import ManageWalletsButton from "./auth/ManageWalletsButton"
+import NetworkStatus from "components/display/NetworkStatus"
+import { ErrorBoundary, Wrong } from "components/feedback"
+import ManageWalletRouter from "./auth/ManageWalletRouter"
+import DashboardButton from "app/sections/DashboardButton"
+import { useRoutes, useLocation } from "react-router-dom"
+import NetworkHeader from "app/sections/NetworkHeader"
 import ManageNetworks from "./networks/ManageNetworks"
 import AddNetworkPage from "./networks/AddNetworkPage"
-import Auth from "./auth/Auth"
-import Header from "./layouts/Header"
-import Front from "./modules/Front"
-import { useAllInterchainAddresses, usePubkey } from "auth/hooks/useAddress"
-import { Flex } from "components/layout"
-import NetworkStatus from "components/display/NetworkStatus"
-import PreferencesRouter from "app/sections/settings/PreferencesRouter"
-import { useAuth } from "auth"
-import is from "auth/scripts/is"
+import ExtensionPage from "./components/ExtensionPage"
+import ChangeLogModal from "./update/ChangeLogModal"
+import RequestContainer from "./RequestContainer"
+import InitBankBalance from "app/InitBankBalance"
 import { useNetworks } from "app/InitNetworks"
 import { useTheme } from "data/settings/Theme"
-import EnableCoinType from "app/sections/EnableCoinType"
-import ChangeLogModal from "./update/ChangeLogModal"
-import Welcome from "./modules/Welcome"
-import ExtensionPage from "./components/ExtensionPage"
 import { getErrorMessage } from "utils/error"
-import ManageWalletsButton from "./auth/ManageWalletsButton"
-import ManageWalletRouter from "./auth/ManageWalletRouter"
-import PreferencesButton from "app/sections/settings/PreferencesButton"
-import DashboardButton from "app/sections/DashboardButton"
-import { Tooltip } from "@terra-money/station-ui"
-import { useTranslation } from "react-i18next"
-import Forgot from "./modules/Forgot"
+import LatestTx from "app/sections/LatestTx"
+import { Flex } from "components/layout"
+import Welcome from "./modules/Welcome"
+import Header from "./layouts/Header"
+import SwapTx from "txs/swap/SwapTx"
+import Front from "./modules/Front"
+import { useEffect } from "react"
+import is from "auth/scripts/is"
+import { useAuth } from "auth"
+import Auth from "./auth/Auth"
+import UpgradeWalletButton from "app/sections/UpgradeWalletButton"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -50,7 +47,6 @@ const App = () => {
   const addresses = useAllInterchainAddresses()
   const { name: theme } = useTheme()
   const { wallet } = useAuth()
-  const { t } = useTranslation()
 
   useEffect(() => {
     storeNetwork({ ...networks[name][chainID], name }, networks[name])
@@ -109,12 +105,12 @@ const App = () => {
               <ManageWalletsButton />
               <NetworkHeader />
             </Flex>
-            <Flex>
+            <Flex gap={16}>
               <LatestTx />
-              <EnableCoinType />
+              <UpgradeWalletButton />
               <NetworkStatus />
-              <PreferencesButton />
-              <Tooltip content={t("Dashboard")} children={<DashboardButton />} />
+              <SettingsButton />
+              <DashboardButton />
             </Flex>
           </Header>
         )}

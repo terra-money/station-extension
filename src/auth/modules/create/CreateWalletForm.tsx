@@ -20,6 +20,7 @@ import {
 } from "@terra-money/station-ui"
 import styles from "./CreateWalletForm.module.scss"
 import { decrypt } from "auth/scripts/aes"
+import legacyDecrypt from "auth/scripts/decrypt"
 
 interface Values extends DefaultValues {
   confirm: string
@@ -71,16 +72,17 @@ const CreateWalletForm = () => {
         return
       }
 
-      const { seed, index, legacy } = JSON.parse(
+      const { seed, index, legacy, encrypted_key } = JSON.parse(
         Buffer.from(mnemonic, "base64").toString("ascii")
       )
 
       setValues({
         name,
-        mnemonic: seed,
+        mnemonic: seed || encrypted_key,
         index,
         coinType: legacy ? 118 : 330,
         seedPassword,
+        legacySeedKey: !seed,
       })
       setStep(2)
     } else {
@@ -92,14 +94,12 @@ const CreateWalletForm = () => {
   function validateSeed(value?: string) {
     if (!value) return t("Invalid seed key")
     try {
-      const { name, seed } = JSON.parse(
+      const { seed, encrypted_key } = JSON.parse(
         Buffer.from(value, "base64").toString("ascii")
       )
 
-      if (typeof seed !== "string") {
-        return typeof name === "string"
-          ? t("this key has been exported from an old version of Station")
-          : t("Invalid seed key")
+      if (typeof seed !== "string" && typeof encrypted_key !== "string") {
+        return t("Invalid seed key")
       }
 
       return true
@@ -110,13 +110,19 @@ const CreateWalletForm = () => {
 
   function validateSeedPassword(value: string, password: string) {
     try {
-      const { seed } = JSON.parse(
+      const { seed, encrypted_key } = JSON.parse(
         Buffer.from(value, "base64").toString("ascii")
       )
 
-      decrypt(seed, password)
+      if (seed) {
+        decrypt(seed, password)
 
-      return true
+        return true
+      } else {
+        legacyDecrypt(encrypted_key, password)
+
+        return true
+      }
     } catch {
       return false
     }
@@ -270,7 +276,9 @@ const CreateWalletForm = () => {
                   key: ImportOptions.MNEMONIC,
                   label: t("Recovery Phrase"),
                   onClick: () => {
-                    setValues({ ...formValues, mnemonic: "" })
+                    importOption !== ImportOptions.MNEMONIC &&
+                      setError("mnemonic", {})
+                    setValue("mnemonic", "")
                     setImportOption(ImportOptions.MNEMONIC)
                   },
                 },
@@ -278,7 +286,9 @@ const CreateWalletForm = () => {
                   key: ImportOptions.SEED_KEY,
                   label: t("Seed Key"),
                   onClick: () => {
-                    setValues({ ...formValues, mnemonic: "" })
+                    importOption !== ImportOptions.SEED_KEY &&
+                      setError("mnemonic", {})
+                    setValue("mnemonic", "")
                     setImportOption(ImportOptions.SEED_KEY)
                   },
                 },
