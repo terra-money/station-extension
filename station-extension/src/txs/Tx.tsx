@@ -169,7 +169,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
           ...simulationTx,
           feeDenoms: [gasDenom],
         })
-        return Math.ceil(unsignedTx.auth_info.fee.gas_limit * key.gasAdjustment)
+        return Math.ceil(unsignedTx.auth_info.fee.gas_limit)
       } catch (error) {
         console.error(error)
         return 200_000
