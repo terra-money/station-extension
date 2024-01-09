@@ -38,7 +38,7 @@ export const queryKey = mirror({
   gammTokens: "",
 
   /* lcd */
-  auth: { accountInfo: "" },
+  auth: { accountInfo: "", vestingAccountInfo: "" },
   bank: { balance: "", balances: "", supply: "" },
   distribution: {
     rewards: "",
