@@ -3,8 +3,8 @@ import axios from "axios"
 import BigNumber from "bignumber.js"
 import { isFuture, isPast } from "date-fns"
 import { last } from "ramda"
-import { useAddress, useChainID } from "../wallet"
-import { useInterchainLCDClient } from "./lcdClient"
+import { useAddress, useChainID, useNetwork } from "../wallet"
+import { RefetchOptions, queryKey } from "data/query"
 
 /* types */
 interface Coin {
@@ -156,12 +156,20 @@ export const queryAccounts = async (address: string, lcd: string) => {
 export const useAccount = () => {
   const address = useAddress()
   const chainID = useChainID()
-  const lcd = useInterchainLCDClient()
+  const network = useNetwork()
 
-  return useQuery(["accounts", chainID, address], async () => {
-    if (!address) return null
-    return await queryAccounts(address, lcd.config[chainID].lcd)
-  })
+  return useQuery(
+    [queryKey.auth.vestingAccountInfo, chainID, address],
+    async () => {
+      if (!address) return null
+      const { data } = await axios.get<{ account: Account }>(
+        `cosmos/auth/v1beta1/accounts/${address}`,
+        { baseURL: network[chainID]?.lcd }
+      )
+      return data.account
+    },
+    { ...RefetchOptions.INFINITY }
+  )
 }
 
 export const isVestingAccount = (data: any) => {

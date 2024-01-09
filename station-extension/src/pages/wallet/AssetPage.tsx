@@ -137,7 +137,7 @@ const AssetPage = () => {
     if (
       token === "uluna" &&
       symbol !== "LUNC" &&
-      account?.base_vesting_account
+      (account as any as Account)?.base_vesting_account
     ) {
       return (
         <div className={styles.chainlist}>
