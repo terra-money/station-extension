@@ -27,6 +27,7 @@ type IbcTx = {
 } & IbcTxDetails
 
 export const usePendingIbcTx = () => {
+  const chains = Object.keys(useNetwork())
   const { wallet } = useAuth()
   const walletName = wallet?.name
   const [_ibcTxs, _setIbcTxsState] = useRecoilState(ibcTxsState)
@@ -57,14 +58,24 @@ export const usePendingIbcTx = () => {
   )
 
   return {
-    totalPending: txs.filter(({ state }) => state === IbcTxStatus.LOADING)
-      .length,
-    totalSuccess: txs.filter(({ state }) => state === IbcTxStatus.SUCCESS)
-      .length,
-    totalFailed: txs.filter(({ state }) => state === IbcTxStatus.FAILED).length,
+    totalPending: txs.filter(
+      ({ state, src_chain_id }) =>
+        state === IbcTxStatus.LOADING && chains.includes(src_chain_id)
+    ).length,
+    totalSuccess: txs.filter(
+      ({ state, src_chain_id }) =>
+        state === IbcTxStatus.SUCCESS && chains.includes(src_chain_id)
+    ).length,
+    totalFailed: txs.filter(
+      ({ state, src_chain_id }) =>
+        state === IbcTxStatus.FAILED && chains.includes(src_chain_id)
+    ).length,
     clearCompletedTxs: () =>
       setIbcTxs((txs) =>
-        txs.filter(({ state }) => state === IbcTxStatus.LOADING)
+        txs.filter(
+          ({ state, src_chain_id }) =>
+            state === IbcTxStatus.LOADING && chains.includes(src_chain_id)
+        )
       ),
     showStatusTxHashes: txs.map(({ txhash }) => txhash),
     addTx: (tx: ActivityItem) => {

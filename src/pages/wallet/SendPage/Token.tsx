@@ -117,9 +117,10 @@ const Token = () => {
   return (
     <>
       <InputInLine
-        label={"To"}
+        label={t("To")}
+        style={{ cursor: "pointer" }}
         onClick={() => goToStep(1)}
-        extra={!recipientName.includes('...') && truncate(recipient)}
+        extra={!recipientName.includes("...") && truncate(recipient)}
         value={recipientName}
       />
       <SectionHeader title={t("My Tokens")} withLine />

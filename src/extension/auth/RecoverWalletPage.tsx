@@ -19,9 +19,9 @@ const RecoverWallet = () => {
       subtitle: "Select the wallet derivation path you would like to use.",
     },
     {
-      title: "Set Password",
+      title: "",
       subtitle:
-        "Set a global password for your wallet on this device. Choose a strong password with more than 10 characters.",
+        "",
     },
     {
       title: "Import Wallet Success.",
