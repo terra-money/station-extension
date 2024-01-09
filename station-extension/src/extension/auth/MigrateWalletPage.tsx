@@ -258,7 +258,10 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
     }
 
     // if words match, complete migration
-    if (words["330"] === (wallet?.words?.["330"] ?? wallet.address)) {
+    if (
+      words["330"] ===
+      (wallet?.words?.["330"] ?? wordsFromAddress(wallet.address ?? ""))
+    ) {
       onComplete({
         name: wallet.name,
         seed,
@@ -269,7 +272,10 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
       })
     }
     // if words for cointpe 118 are the same as the words for cointype 330, complete migration as a legacy wallet
-    else if (words["118"] === (wallet?.words?.["330"] ?? wallet.address)) {
+    else if (
+      words["118"] ===
+      (wallet?.words?.["330"] ?? wordsFromAddress(wallet.address ?? ""))
+    ) {
       onComplete({
         name: wallet.name,
         seed,
