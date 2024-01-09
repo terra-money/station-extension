@@ -47,7 +47,6 @@ const ManageWalletsButton = forwardRef(
     return (
       <button
         className={styles.manage__wallets}
-        style={{ margin: "24px 0px 16px 2px" }}
         data-testid="manage-wallets-button"
         onClick={() => navigate("/manage-wallet/select")}
         ref={ref}
