@@ -49,6 +49,9 @@ const Message = ({ msg }: { msg: Msg; warn: boolean }) => {
 
       {!collapsed && (
         <section className={styles.content}>
+          <div className={styles.summary__display}>
+            <TxMessage>{summary}</TxMessage>
+          </div>
           {[
             ["type", type],
             ...Object.entries(
@@ -57,7 +60,7 @@ const Message = ({ msg }: { msg: Msg; warn: boolean }) => {
           ].map(([key, value]) => {
             return (
               <article className={styles.detail} key={key}>
-                <h1>{key}</h1>
+                <h3>{key}</h3>
                 <section className={styles.value}>{renderValue(value)}</section>
               </article>
             )

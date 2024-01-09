@@ -1,4 +1,5 @@
 @import "mixins";
+@import "font_mixins";
 
 .origin {
   display: flex;
@@ -7,21 +8,16 @@
   justify-content: center;
 
   padding-top: 24px;
-  padding-bottom: 24px;
+  padding-bottom: 32px;
   text-align: center;
 
   h2 {
-    margin-top: 16px;
-
-    color: white;
-    font-size: 24px;
-    font-weight: 600;
+    @include Large;
+    color: var(--token-light-white);
   }
 
   p {
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 12px;
+    @include X-Small;
     color: var(--token-primary-600);
   }
 }
