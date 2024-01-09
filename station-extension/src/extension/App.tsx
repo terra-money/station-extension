@@ -101,11 +101,11 @@ const App = () => {
       <>
         {!hideHeader && (
           <Header>
-            <Flex>
+            <Flex gap={16} style={{ marginTop: 8 }}>
               <ManageWalletsButton />
               <NetworkHeader />
             </Flex>
-            <Flex gap={16}>
+            <Flex gap={16} style={{ marginTop: 8 }}>
               <LatestTx />
               <UpgradeWalletButton />
               <NetworkStatus />
