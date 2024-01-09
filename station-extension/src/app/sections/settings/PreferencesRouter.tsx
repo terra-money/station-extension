@@ -2,6 +2,7 @@ import { Route, Routes, useLocation } from "react-router-dom"
 import { useSettingsRoutes } from "./routes"
 import ExtensionPage from "extension/components/ExtensionPage"
 import ConfirmDelete from "txs/AddressBook/ConfirmDelete"
+import ExtensionPageV2 from 'extension/components/ExtensionPageV2'
 
 const PreferencesRouter = () => {
   const { routes } = useSettingsRoutes()
@@ -14,14 +15,13 @@ const PreferencesRouter = () => {
         <Route
           path={r.route}
           element={
-            <ExtensionPage
+            <ExtensionPageV2
               title={r.title}
               fullHeight
-              modal
               backButtonPath={backPath}
             >
               {r.element}
-            </ExtensionPage>
+            </ExtensionPageV2>
           }
           key={r.route}
         />

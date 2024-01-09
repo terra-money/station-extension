@@ -6,10 +6,19 @@
   margin: -20px 0px -20px 65%;
 }
 .container {
-  margin: 10px;
+  // margin: 10px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 24px;
+
+  justify-content: space-between;
+}
+
+.form__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
 }
 
 .text {

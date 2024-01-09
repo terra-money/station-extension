@@ -17,6 +17,7 @@ import {
   InputWrapper,
   ButtonInlineWrapper,
   SubmitButton,
+  FlexColumn,
 } from "@terra-money/station-ui"
 import classNames from "classnames"
 import DeleteButton from "components/form/DeleteButton"
@@ -133,36 +134,41 @@ const LCDSetting = (props: Props) => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(submit)}>
-      <InputWrapper label={t("Network")} error={errors.network?.message}>
-        <Dropdown
-          options={networkOptions}
-          value={network}
-          onChange={(network) => setValue("network", network)}
-        />
-      </InputWrapper>
+    <form
+      className={styles.form__container}
+      onSubmit={handleSubmit(submit)}
+    >
+      <FlexColumn gap={24}>
+        <InputWrapper label={t("Network")} error={errors.network?.message}>
+          <Dropdown
+            options={networkOptions}
+            value={network}
+            onChange={(network) => setValue("network", network)}
+          />
+        </InputWrapper>
 
-      <InputWrapper label={t("Source Chain")} error={errors?.chainID?.message}>
-        <Dropdown
-          withSearch
-          options={networksList}
-          value={chainID}
-          onChange={(chainID) => setValue("chainID", chainID)}
-        />
-      </InputWrapper>
-      <InputWrapper
-        label={t("Custom URL")}
-        error={errorMessage}
-        extra={renderIsValidLCD()}
-      >
-        <Input
-          type="text"
-          placeholder={networks[network]?.[chainID]?.lcd}
-          {...register("lcd", {
-            value: customLCDs[chainID] ?? "",
-          })}
-        />
-      </InputWrapper>
+        <InputWrapper label={t("Source Chain")} error={errors?.chainID?.message}>
+          <Dropdown
+            withSearch
+            options={networksList}
+            value={chainID}
+            onChange={(chainID) => setValue("chainID", chainID)}
+          />
+        </InputWrapper>
+        <InputWrapper
+          label={t("Custom URL")}
+          error={errorMessage}
+          extra={renderIsValidLCD()}
+        >
+          <Input
+            type="text"
+            placeholder={networks[network]?.[chainID]?.lcd}
+            {...register("lcd", {
+              value: customLCDs[chainID] ?? "",
+            })}
+          />
+        </InputWrapper>
+      </FlexColumn>
       <ButtonInlineWrapper>
         {selectedChainID && <DeleteButton onClick={handleDelete} />}
         <SubmitButton
@@ -171,7 +177,7 @@ const LCDSetting = (props: Props) => {
           label="Create Custom RPC"
         />
       </ButtonInlineWrapper>
-    </Form>
+    </form>
   )
 }
 

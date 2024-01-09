@@ -32,8 +32,12 @@ const SlippagePage = () => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)} className={style.slippage}>
-      <InputWrapper>
+    <form
+          className={style.form__container}
+          onSubmit={handleSubmit(onSubmit)}
+        >
+    {/* <Form onSubmit={handleSubmit(onSubmit)} className={style.slippage}> */}
+      <InputWrapper label={t("Max Slippage")}>
         <Input placeholder={slippage} {...register("slippage")} emoji="%" />
       </InputWrapper>
 
@@ -45,7 +49,8 @@ const SlippagePage = () => {
         />
         <SubmitButton label={t("Save")} variant="primary" />
       </ButtonInlineWrapper>
-    </Form>
+    {/* </Form> */}
+    </form>
   )
 }
 

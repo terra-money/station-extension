@@ -10,10 +10,12 @@ import {
   Input,
   SubmitButton,
   ButtonInlineWrapper,
+  FlexColumn,
 } from "@terra-money/station-ui"
 import DeleteButton from "components/form/DeleteButton"
 import { EmojiButton } from "components/form"
 import { useLocation, useNavigate } from "react-router-dom"
+import styles from "./AddressBook.module.scss"
 
 interface Props {
   item?: AddressBook
@@ -50,45 +52,50 @@ const AddressBookForm = (props: Props) => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(submit)}>
-      <InputWrapper label={t("Wallet Name")} error={errors.name?.message}>
-        <Input
-          actionIcon={{
-            icon: <EmojiButton icon={icon} onClick={emojiOnClick} />,
-          }}
-          {...register("name", {
-            required: true,
-          })}
-        />
-      </InputWrapper>
+    <form
+      className={styles.form__container}
+      onSubmit={handleSubmit(submit)}
+    >
+      <FlexColumn gap={24}>
+        <InputWrapper label={t("Wallet Name")} error={errors.name?.message}>
+          <Input
+            actionIcon={{
+              icon: <EmojiButton icon={icon} onClick={emojiOnClick} />,
+            }}
+            {...register("name", {
+              required: true,
+            })}
+          />
+        </InputWrapper>
 
-      <InputWrapper label={t("Address")} error={errors.recipient?.message}>
-        <Input
-          {...register("recipient", { validate: validate.recipient() })}
-          placeholder="terra1...fzxf"
-        />
-      </InputWrapper>
+        <InputWrapper label={t("Address")} error={errors.recipient?.message}>
+          <Input
+            {...register("recipient", { validate: validate.recipient() })}
+            placeholder="terra1...fzxf"
+          />
+        </InputWrapper>
 
-      <InputWrapper
-        label={`${t("Memo")} (${t("optional")})`}
-        error={errors.memo?.message}
-      >
-        <Input
-          {...register("memo", {
-            validate: {
-              size: validate.size(256),
-              bracket: validate.memo(),
-            },
-          })}
-        />
-      </InputWrapper>
-      <InputWrapper>
-        <Checkbox
-          label="Mark as Favorite"
-          checked={favorite}
-          {...register("favorite")}
-        />
-      </InputWrapper>
+        <InputWrapper
+          label={`${t("Memo")} (${t("optional")})`}
+          error={errors.memo?.message}
+        >
+          <Input
+            {...register("memo", {
+              validate: {
+                size: validate.size(256),
+                bracket: validate.memo(),
+              },
+            })}
+          />
+        </InputWrapper>
+        <InputWrapper>
+          <Checkbox
+            label="Mark as Favorite"
+            checked={favorite}
+            {...register("favorite")}
+          />
+        </InputWrapper>
+      </FlexColumn>
       <ButtonInlineWrapper>
         {index !== undefined && (
           <DeleteButton
@@ -99,7 +106,7 @@ const AddressBookForm = (props: Props) => {
         )}
         <SubmitButton label={t("Save")} />
       </ButtonInlineWrapper>
-    </Form>
+    </form>
   )
 }
 

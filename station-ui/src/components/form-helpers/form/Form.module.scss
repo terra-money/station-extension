@@ -1,41 +1,9 @@
-// @import "scss/mixins";
-// @import "scss/forms";
-
 .form {
-  display: grid;
-  gap: 20px;
-}
-
-.fullWidth {
-  width: "100%";
-  border: 3px solid red;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .submit {
   margin-top: 20px;
 }
-
-/* form group */
-// .group {
-//   display: flex;
-//   align-items: flex-end;
-//   gap: 10px;
-
-//   > * {
-//     flex: 1;
-//   }
-
-//   .label {
-//     font-weight: var(--normal);
-//   }
-
-//   .button {
-//     @include border;
-//     @include size;
-//     flex: none;
-//     width: var(--input-height);
-//   }
-// }
-
-/* form item */
-
