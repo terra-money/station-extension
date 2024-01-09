@@ -126,8 +126,10 @@ const Login = () => {
   const ForgotButton = () => {
     return (
       <button
+        type="button"
         className={styles.forgot__button}
-        onClick={() => navigate('/forgot')}>
+        onClick={() => navigate("/forgot")}
+      >
         {t("Forgot password?")}
       </button>
     )
@@ -158,7 +160,11 @@ const Login = () => {
         >
           <FlexColumn gap={24}>
             <FlexColumn gap={8} align="flex-start">
-              <InputWrapper label={t("Password")} error={error} extra={<ForgotButton />}>
+              <InputWrapper
+                label={t("Password")}
+                error={error}
+                extra={<ForgotButton />}
+              >
                 <Input
                   type="password"
                   ref={password}
