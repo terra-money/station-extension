@@ -8,16 +8,15 @@ import { getWallet } from "auth/scripts/keystore"
 
 const Chain = () => {
   const { form, goToStep } = useSend()
-  const { setValue } = form
+  const { setValue, watch } = form
   const networks = useAllNetworks()
-  const { recipient } = form.watch()
-  const { words } = getWallet(recipient)
+  const { recipient } = watch()
+  const wallet = getWallet(recipient)
 
   const chains = Object.values(networks)
-    .filter(({ coinType }) => !!words[coinType])
+    .filter((n) => wallet.words?.[n.coinType] && wallet.multisig ? n.prefix === "terra" : true)
     .map(({ chainID, prefix, coinType }) => {
-      const address = addressFromWords(words[coinType], prefix)
-
+      const address = addressFromWords(wallet.words?.[coinType] ?? "", prefix)
       return {
         name: getChainNamefromID(chainID, networks) ?? chainID,
         onClick: () => {
