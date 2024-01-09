@@ -59,7 +59,7 @@ const CreateWalletForm = () => {
   } = form
   const { errors, isValid } = formState
   const formValues = watch()
-  const { mnemonic, index, checked, name } = formValues
+  const { mnemonic, index, checked } = formValues
 
   useEffect(() => {
     return () => reset()
@@ -110,11 +110,9 @@ const CreateWalletForm = () => {
 
   function validateSeedPassword(value: string, password: string) {
     try {
-      const {
-        seed,
-        encrypted_key,
-        name: keyName,
-      } = JSON.parse(Buffer.from(value, "base64").toString("ascii"))
+      const { seed, encrypted_key } = JSON.parse(
+        Buffer.from(value, "base64").toString("ascii")
+      )
 
       if (seed) {
         decrypt(seed, password)

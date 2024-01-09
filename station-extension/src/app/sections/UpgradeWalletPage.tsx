@@ -1,5 +1,4 @@
 import { SeedKey } from "@terra-money/feather.js"
-import { useModal } from "@terra-money/station-ui"
 import useAuth from "auth/hooks/useAuth"
 import {
   addWallet,
@@ -20,6 +19,9 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { wordsFromAddress } from "utils/bech32"
+import { useNavigate, useParams } from "react-router-dom"
+import ExtensionPage from "extension/components/ExtensionPage"
+import is from "auth/scripts/is"
 
 interface Values {
   index: number
@@ -27,11 +29,18 @@ interface Values {
   password: string
 }
 
-const CoinTypeMnemonicForm = () => {
+const UpgradeWalletPage = () => {
   const { t } = useTranslation()
   const [error, setError] = useState<Error>()
-  const { wallet, connect } = useAuth()
-  const { closeModal } = useModal()
+  const { wallets, connect } = useAuth()
+  const { walletName } = useParams()
+  const navigate = useNavigate()
+
+  const wallet: any = wallets.find(({ name }) => name === walletName)
+
+  if (wallet?.words?.["60"] || is.ledger(wallet) || is.multisig(wallet)) {
+    navigate(`/manage-wallet/manage/${walletName}`)
+  }
 
   const form = useForm<Values>({
     mode: "onChange",
@@ -115,64 +124,70 @@ const CoinTypeMnemonicForm = () => {
         password
       )
       connect(wallet.name)
-      closeModal()
+      navigate("/")
     } catch (error) {
       setError(error as Error)
     }
   }
 
   return (
-    <Form onSubmit={handleSubmit(submit)}>
-      <Banner
-        variant="info"
-        title={t(
-          "This wallet needs to be updated to allow for full cross-chain support. Enter your recovery phrase to proceed with the update."
-        )}
-      />
-
-      <InputWrapper
-        label={t("Recovery phrase")}
-        error={errors.mnemonic?.message}
-      >
-        <Input {...register("mnemonic", { validate: validate.mnemonic })} />
-      </InputWrapper>
-
-      <InputWrapper /* do not translate this */
-        label="Index"
-        error={errors.index?.message}
-        extra={
-          <TooltipIcon
-            content={t("BIP 44 index number. For advanced users only")}
-          />
-        }
-      >
-        <Input
-          {...register("index", {
-            valueAsNumber: true,
-            validate: validate.index,
-          })}
+    <ExtensionPage
+      modal
+      backButtonPath={`/manage-wallet/manage/${walletName}`}
+      title={t("Upgrade wallet")}
+    >
+      <Form onSubmit={handleSubmit(submit)}>
+        <Banner
+          variant="info"
+          title={t(
+            "This wallet needs to be upgraded to allow for full cross-chain support. Enter your recovery phrase to proceed with the upgrade."
+          )}
         />
-        {index !== 0 && (
-          <Banner variant="warning" title={t("Default index is 0")} />
-        )}
-      </InputWrapper>
 
-      {error && <Banner variant="error" title={error.message} />}
-
-      {!isLoading && !storedPassword && (
-        <InputWrapper label={t("Password")} error={errors.password?.message}>
-          <Input
-            {...register("password", {
-              required: !isLoading && !storedPassword,
-            })}
-            type="password"
-          />
+        <InputWrapper
+          label={t("Recovery phrase")}
+          error={errors.mnemonic?.message}
+        >
+          <Input {...register("mnemonic", { validate: validate.mnemonic })} />
         </InputWrapper>
-      )}
 
-      <SubmitButton label={t("Submit")} disabled={!isValid} />
-    </Form>
+        <InputWrapper /* do not translate this */
+          label="Index"
+          error={errors.index?.message}
+          extra={
+            <TooltipIcon
+              content={t("BIP 44 index number. For advanced users only")}
+            />
+          }
+        >
+          <Input
+            {...register("index", {
+              valueAsNumber: true,
+              validate: validate.index,
+            })}
+          />
+          {index !== 0 && (
+            <Banner variant="warning" title={t("Default index is 0")} />
+          )}
+        </InputWrapper>
+
+        {error && <Banner variant="error" title={error.message} />}
+
+        {!isLoading && !storedPassword && (
+          <InputWrapper label={t("Password")} error={errors.password?.message}>
+            <Input
+              {...register("password", {
+                required: !isLoading && !storedPassword,
+              })}
+              type="password"
+            />
+          </InputWrapper>
+        )}
+
+        <SubmitButton label={t("Submit")} disabled={!isValid} />
+      </Form>
+    </ExtensionPage>
   )
 }
 
-export default CoinTypeMnemonicForm
+export default UpgradeWalletPage

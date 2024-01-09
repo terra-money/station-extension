@@ -11,8 +11,8 @@ const SettingsButton = () => {
       onClick={() => navigate("/preferences")}
       style={{
         cursor: "pointer",
-        marginTop: "24px",
-        marginBottom: "16px",
+        //marginTop: "24px",
+        //marginBottom: "16px",
       }}
       fill={"var(--token-dark-900)"}
     />
