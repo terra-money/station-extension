@@ -22,6 +22,7 @@ import {
   shouldStorePassword,
   storePassword,
 } from "auth/scripts/keystore"
+import ExtensionPage from "extension/components/ExtensionPage"
 
 interface Values {
   password: string
@@ -89,6 +90,7 @@ const PasswordForm = () => {
 
   return (
     <Form onSubmit={handleSubmit(submit)} className={styles.form}>
+      <ExtensionPage title={t("Set a Password")} subtitle={t('Set a global password for your wallet on this device. Choose a strong password with more than 10 characters.')}>
       <FlexColumn gap={18}>
         <InputWrapper label={t("Password")} error={errors.password?.message}>
           <Input
@@ -128,6 +130,7 @@ const PasswordForm = () => {
           <SubmitButton disabled={!isValid}>{t("Confirm")}</SubmitButton>
         </Flex>
       </FlexColumn>
+      </ExtensionPage>
     </Form>
   )
 }
