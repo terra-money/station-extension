@@ -16,7 +16,6 @@ import { ErrorBoundary, Wrong } from "components/feedback"
 import ManageWalletRouter from "./auth/ManageWalletRouter"
 import DashboardButton from "app/sections/DashboardButton"
 import { useRoutes, useLocation } from "react-router-dom"
-import EnableCoinType from "app/sections/EnableCoinType"
 import NetworkHeader from "app/sections/NetworkHeader"
 import ManageNetworks from "./networks/ManageNetworks"
 import AddNetworkPage from "./networks/AddNetworkPage"
@@ -37,6 +36,7 @@ import { useEffect } from "react"
 import is from "auth/scripts/is"
 import { useAuth } from "auth"
 import Auth from "./auth/Auth"
+import UpgradeWalletButton from "app/sections/UpgradeWalletButton"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -105,9 +105,9 @@ const App = () => {
               <ManageWalletsButton />
               <NetworkHeader />
             </Flex>
-            <Flex>
+            <Flex gap={16}>
               <LatestTx />
-              <EnableCoinType />
+              <UpgradeWalletButton />
               <NetworkStatus />
               <SettingsButton />
               <DashboardButton />

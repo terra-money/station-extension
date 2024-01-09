@@ -16,7 +16,7 @@ const DashboardButton = () => {
           onClick={openDashboard}
           style={{
             cursor: "pointer",
-            margin: "24px 12px 16px 16px",
+            //margin: "24px 12px 16px 16px",
           }}
           fill={"var(--token-dark-900)"}
         />
