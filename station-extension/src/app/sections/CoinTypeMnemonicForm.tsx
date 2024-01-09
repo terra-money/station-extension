@@ -126,7 +126,7 @@ const CoinTypeMnemonicForm = () => {
       <Banner
         variant="info"
         title={t(
-          "This wallet was created before version 7.2.0. Provide your recovery phrase to generate an injective address for this wallet."
+          "This wallet needs to be updated to allow for full cross-chain support. Enter your recovery phrase to proceed with the update."
         )}
       />
 
