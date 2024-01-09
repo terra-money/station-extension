@@ -10,7 +10,7 @@ interface Currency {
 
 export const currencyState = atom({
   key: "currency",
-  default: { id: "USD", name: "United States Dollar", symbol: "$" }, //getLocalSetting<Currency>(SettingKey.Currency),
+  default: getLocalSetting<Currency>(SettingKey.Currency),
 })
 
 export const useCurrency = () => {
