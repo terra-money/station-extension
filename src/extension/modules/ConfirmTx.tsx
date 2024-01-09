@@ -4,27 +4,42 @@ import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { getErrorMessage } from "utils/error"
 import { useThemeAnimation } from "data/settings/Theme"
-import { FlexColumn, Grid } from "components/layout"
-import { Form, FormError, FormItem, FormWarning } from "components/form"
-import { Input, Checkbox } from "components/form"
+import { FlexColumn } from "components/layout"
 import Overlay from "app/components/Overlay"
 import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
 import { isWallet, useAuth } from "auth"
-import { PasswordError } from "auth/scripts/keystore"
-import { getOpenURL, getStoredPassword } from "../storage"
+import { getOpenURL } from "../storage"
 import { getIsDangerousTx, SignBytesRequest, TxRequest } from "../utils"
 import { useRequest } from "../RequestContainer"
 import ExtensionPage from "../components/ExtensionPage"
-import ConfirmButtons from "../components/ConfirmButtons"
 import TxDetails from "./TxDetails"
 import OriginCard from "extension/components/OriginCard"
 import { RefetchOptions, queryKey } from "data/query"
-import { useQuery } from "react-query"
+import { useQuery, useQueryClient } from "react-query"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useChainID, useNetwork } from "data/wallet"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { Fee } from "@terra-money/feather.js"
 import SignBytesDetails from "./SignBytesDetails"
+import {
+  Banner,
+  Button,
+  ButtonInlineWrapper,
+  Checkbox,
+  Form,
+  Input,
+  InputWrapper,
+  SubmitButton,
+  SummaryHeader,
+} from "@terra-money/station-ui"
+import styles from "./ConfirmTx.module.scss"
+import {
+  getStoredPassword,
+  setShouldStorePassword,
+  shouldStorePassword,
+  storePassword,
+} from "auth/scripts/keystore"
+import { useNetworks } from "app/InitNetworks"
 
 interface Values {
   password: string
@@ -38,11 +53,14 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const passwordRequired = isWallet.single(wallet)
   const addresses = useInterchainAddresses()
   const network = useNetwork()
+  const { networksLoading } = useNetworks()
   const lcd = useInterchainLCDClient()
   const terraChainID = useChainID()
+  const queryClient = useQueryClient()
   const chainID =
     "tx" in props ? props.tx?.chainID ?? terraChainID : terraChainID
 
+  const [isRelaoding, setReloading] = useState(false)
   /* form */
   const form = useForm<Values>({
     defaultValues: { password: "" },
@@ -52,13 +70,14 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const { password } = watch()
 
   /* store password */
-  const [storePassword, setStorePassword] = useState(false)
-  const nextPassword = storePassword ? password : ""
+  const [rememberPassword, setStorePassword] = useState(shouldStorePassword())
+  const [areFeesReady, setFeesReady] = useState(!("tx" in props))
+  const [showPasswordInput, setShowPasswordInput] = useState(false)
 
   useEffect(() => {
-    getStoredPassword((password) => {
-      setValue("password", password)
-      setStorePassword(!!password)
+    getStoredPassword().then((password) => {
+      setValue("password", password ?? "")
+      setShowPasswordInput(!password)
     })
   }, [setValue])
 
@@ -138,6 +157,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const toPostMultisigTx = useToPostMultisigTx()
   const submit = async ({ password }: Values) => {
     setSubmitting(true)
+    let failed = false
 
     if ("tx" in props) {
       const { requestType, tx, signMode } = props
@@ -156,15 +176,20 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
         } else {
           const result = await auth[requestType](txOptions, password, signMode)
           const response = { result, success: true }
-          actions.tx(requestType, props, response, nextPassword)
+          actions.tx(requestType, props, response)
         }
       } catch (error) {
-        if (error instanceof PasswordError) {
-          setIncorrect(error.message)
+        const message = (error as any)?.message
+        const isPasswordError =
+          typeof message === "string" &&
+          message.toLowerCase().includes("password")
+        if (isPasswordError) {
+          failed = true
+          setIncorrect(message)
         } else {
           const message = getErrorMessage(error)
           const response = { success: false, error: { code: 3, message } }
-          actions.tx(requestType, props, response, nextPassword)
+          actions.tx(requestType, props, response)
         }
       }
     } else {
@@ -175,33 +200,45 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
         if (disabled) throw new Error(disabled)
         const result = await auth.signBytes(bytes, password)
         const response = { result, success: true }
-        actions.tx(requestType, props, response, nextPassword)
+        actions.tx(requestType, props, response)
       } catch (error) {
-        if (error instanceof PasswordError) {
-          setIncorrect(error.message)
+        const message = (error as any)?.message
+        const isPasswordError =
+          typeof message === "string" &&
+          message.toLowerCase().includes("password")
+        if (isPasswordError) {
+          failed = true
+          setIncorrect(message)
         } else {
           const message = getErrorMessage(error)
           const response = { success: false, error: { code: 3, message } }
-          actions.tx(requestType, props, response, nextPassword)
+          actions.tx(requestType, props, response)
         }
+      }
+    }
+
+    if (passwordRequired && !failed) {
+      if (rememberPassword) {
+        setShouldStorePassword(true)
+        storePassword(password)
+      } else {
+        setShouldStorePassword(false)
       }
     }
 
     setSubmitting(false)
   }
 
-  const deny = () => {
+  const deny = (msg?: string) => {
     const { requestType } = props
-    const message = t("User denied")
+    const message = msg ?? t("User denied")
     const response = { success: false, error: { code: 1, message } }
-    actions.tx(requestType, props, response, nextPassword)
+    actions.tx(requestType, props, response)
   }
 
   const warning = {
     post: "",
-    sign: t(
-      "The Transaction signing is requested. Confirm if it is from a verified origin."
-    ),
+    sign: "",
     signBytes: t("Signing of an arbitrary data is requested"),
   }[props.requestType]
 
@@ -224,46 +261,100 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
     )
   }
 
-  return submitting ? (
-    <Overlay>
-      <FlexColumn gap={20}>
-        <img {...SIZE} src={animation} alt={t("Submitting...")} />
-        {isWallet.ledger(wallet) && <p>{t("Confirm in ledger")}</p>}
-      </FlexColumn>
-    </Overlay>
-  ) : (
-    <ExtensionPage header={<OriginCard hostname={props.origin} />}>
-      <Grid gap={20}>
-        {"tx" in props && <TxDetails {...props} tx={{ ...props.tx, fee }} />}
-        {"bytes" in props && <SignBytesDetails {...props} />}
+  if (submitting || (networksLoading && !network[chainID])) {
+    return (
+      <Overlay>
+        <FlexColumn gap={20}>
+          <img {...SIZE} src={animation} alt={t("Loading...")} />
+          {networksLoading && t("Loading...")}
+        </FlexColumn>
+      </Overlay>
+    )
+  }
 
-        {warning && <FormWarning>{warning}</FormWarning>}
-        {error && <FormError>{error}</FormError>}
-
-        <Form onSubmit={handleSubmit(submit)}>
-          {passwordRequired && (
-            <Grid gap={4}>
-              <FormItem label={t("Password")} error={incorrect}>
-                <Input type="password" {...register("password")} autoFocus />
-              </FormItem>
-
-              <Checkbox
-                checked={storePassword}
-                onChange={() => setStorePassword(!storePassword)}
-              >
-                {t("Save password")}
-              </Checkbox>
-            </Grid>
-          )}
-
-          <ConfirmButtons
-            buttons={[
-              { onClick: deny, children: t("Deny") },
-              { type: "submit", children: label },
-            ]}
+  if (!networksLoading && !network[chainID]) {
+    return (
+      <ExtensionPage>
+        <article className={styles.error__container}>
+          <SummaryHeader
+            statusLabel={t("Error")}
+            statusMessage={t(
+              "The requested network ({{chainID}}) is temporarily disabled.",
+              { chainID }
+            )}
+            status={"alert"}
           />
-        </Form>
-      </Grid>
+          <ButtonInlineWrapper>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                queryClient.invalidateQueries(queryKey.tendermint.nodeInfo)
+                setReloading(true)
+                setTimeout(() => setReloading(false), 3_000)
+              }}
+              loading={isRelaoding}
+              label={isRelaoding ? t("Loading...") : t("Try again")}
+            />
+            <Button
+              variant="warning"
+              onClick={() => deny(t("Network unavailable, user denied."))}
+              label={t("Reject tx")}
+            />
+          </ButtonInlineWrapper>
+        </article>
+      </ExtensionPage>
+    )
+  }
+
+  return (
+    <ExtensionPage>
+      <article className={styles.container}>
+        <div>
+          <OriginCard hostname={props.origin} />
+
+          {"tx" in props && (
+            <TxDetails
+              {...props}
+              tx={{ ...props.tx, fee }}
+              onFeesReady={(state) => setFeesReady(state)}
+            />
+          )}
+          {"bytes" in props && <SignBytesDetails {...props} />}
+        </div>
+
+        <FlexColumn gap={24} className={styles.buttons__container}>
+          {warning && <Banner variant="warning" title={warning} />}
+          {error && <Banner variant="error" title={error} />}
+
+          <Form onSubmit={handleSubmit(submit)}>
+            {passwordRequired && showPasswordInput && !incorrect && (
+              <>
+                <InputWrapper label={t("Password")} error={incorrect}>
+                  <Input type="password" {...register("password")} autoFocus />
+                </InputWrapper>
+
+                <Checkbox
+                  checked={rememberPassword}
+                  onChange={() => setStorePassword(!rememberPassword)}
+                  label={t("Save password")}
+                />
+              </>
+            )}
+            <ButtonInlineWrapper>
+              <Button
+                variant="secondary"
+                onClick={() => deny()}
+                label={t("Reject")}
+              />
+              <SubmitButton
+                variant="primary"
+                label={label}
+                disabled={!areFeesReady}
+              />
+            </ButtonInlineWrapper>
+          </Form>
+        </FlexColumn>
+      </article>
     </ExtensionPage>
   )
 }

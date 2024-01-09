@@ -1,19 +1,22 @@
-import { ReactNode } from "react"
-import { isDenomIBC } from "@terra-money/terra-utils"
-import { readDenom, truncate } from "@terra-money/terra-utils"
-import { AccAddress } from "@terra-money/feather.js"
-import { ASSETS } from "config/constants"
-import { useTokenInfoCW20 } from "./queries/wasm"
-import { useCustomTokensCW20 } from "./settings/CustomTokens"
 import {
   useGammTokens,
   GAMM_TOKEN_DECIMALS,
   OSMO_ICON,
 } from "./external/osmosis"
+import { isDenomIBC, readDenom, truncate } from "@terra-money/terra-utils"
 import { useCW20Whitelist, useIBCWhitelist } from "./Terra/TerraAssets"
-import { useWhitelist } from "./queries/chains"
+import { useCustomTokensCW20 } from "./settings/CustomTokens"
+import { useExchangeRates } from "data/queries/coingecko"
 import { useNetworkName, useNetwork } from "./wallet"
 import { getChainIDFromAddress } from "utils/bech32"
+import { AccAddress } from "@terra-money/feather.js"
+import { useIBCBaseDenoms } from "data/queries/ibc"
+import { useTokenInfoCW20 } from "./queries/wasm"
+import { useBankBalance } from "./queries/bank"
+import { useWhitelist } from "./queries/chains"
+import { ReactNode, useMemo } from "react"
+import { ASSETS } from "config/constants"
+import { toInput } from "txs/utils"
 
 export const DEFAULT_NATIVE_DECIMALS = 6
 
@@ -90,6 +93,8 @@ export enum TokenType {
   STRIDE = "stride",
 }
 
+// React Hooks cannot be called inside of a callback like the one used by map.
+// This custom React Hook function allows for calling this Hook in a callback.
 export const useNativeDenoms = () => {
   const { whitelist, ibcDenoms } = useWhitelist()
   const { list: cw20 } = useCustomTokensCW20()
@@ -252,4 +257,155 @@ export const readIBCDenom = (item: IBCTokenItem): TokenItem => {
     icon: getIcon(path),
     decimals: item.decimals ?? 6,
   }
+}
+
+export const usePortfolioValue = () => {
+  const readNativeDenom = useNativeDenoms()
+  const coins = useBankBalance()
+  const { data: prices } = useExchangeRates()
+
+  return coins?.reduce((acc, { amount, denom }) => {
+    const { token, decimals, symbol } = readNativeDenom(denom)
+    return (
+      acc +
+      (parseInt(amount) *
+        (symbol?.endsWith("...") ? 0 : prices?.[token]?.price ?? 0)) /
+        10 ** decimals
+    )
+  }, 0)
+}
+
+export const useUnknownIBCDenoms = () => {
+  const readNativeDenom = useNativeDenoms()
+  const coins = useBankBalance()
+
+  const unknownIBCDenomsData = useIBCBaseDenoms(
+    coins
+      .map(({ denom, chain }) => ({ denom, chainID: chain }))
+      .filter(({ denom, chainID }) => {
+        const data = readNativeDenom(denom, chainID)
+        return denom.startsWith("ibc/") && data.symbol.endsWith("...")
+      })
+  )
+  const unknownIBCDenoms = unknownIBCDenomsData.reduce(
+    (acc: any, { data }: { data: any }) =>
+      data
+        ? {
+            ...acc,
+            [[data.ibcDenom, data.chainIDs[data.chainIDs.length - 1]].join(
+              "*"
+            )]: {
+              baseDenom: data.baseDenom,
+              chainID: data?.chainIDs[0],
+              chainIDs: data?.chainIDs,
+            },
+          }
+        : acc,
+    {} as Record<
+      string,
+      { baseDenom: string; chainID: string; chainIDs: string[] }
+    >
+  )
+  return unknownIBCDenoms
+}
+
+export const useParsedAssetList = () => {
+  const unknownIBCDenoms = useUnknownIBCDenoms()
+  const { data: prices } = useExchangeRates()
+  const readNativeDenom = useNativeDenoms()
+  const coins = useBankBalance()
+  const networks = useNetwork()
+
+  const list = useMemo(() => {
+    return (
+      coins.reduce((acc, { denom, amount, chain }) => {
+        const { chainID, symbol, decimals, token, icon, isNonWhitelisted } =
+          readNativeDenom(
+            unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom ?? denom,
+            unknownIBCDenoms[[denom, chain].join("*")]?.chainID ?? chain
+          )
+
+        const nativeChain =
+          chainID ??
+          unknownIBCDenoms[[denom, chain].join("*")]?.chainID ??
+          chain
+
+        let tokenIcon, tokenPrice, tokenChange, tokenWhitelisted
+        if (symbol === "LUNC") {
+          tokenIcon = "https://assets.terra.dev/icon/svg/LUNC.svg"
+          tokenPrice = prices?.["uluna:classic"]?.price ?? 0
+          tokenChange = prices?.["uluna:classic"]?.change ?? 0
+          tokenWhitelisted = true
+        } else {
+          tokenIcon = icon
+          tokenPrice = prices?.[token]?.price ?? 0
+          tokenChange = prices?.[token]?.change ?? 0
+          tokenWhitelisted = !(
+            isNonWhitelisted ||
+            unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs.find(
+              (c: any) => !networks[c]
+            )
+          )
+        }
+
+        const supported = chain
+          ? !(
+              unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom === token &&
+              unknownIBCDenoms[[denom, chain].join("*")]?.chainID ===
+                nativeChain
+            )
+          : unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom === token
+
+        const { name: chainName, icon: chainIcon } = networks[chain] || {}
+        const tokenID = `${denom}*${chain}`
+        const chainTokenItem = {
+          denom,
+          id: tokenID,
+          balance: parseInt(amount),
+          decimals,
+          tokenPrice,
+          chainID: chain,
+          chainName,
+          chainIcon,
+          tokenIcon,
+          supported,
+        }
+
+        if (acc[symbol]) {
+          if (chainTokenItem.supported) {
+            acc[symbol].totalBalance = `${
+              parseInt(acc[symbol].totalBalance) + parseInt(amount)
+            }`
+            acc[symbol].totalValue = acc[symbol].totalValue +=
+              toInput(amount, decimals) * tokenPrice
+          }
+          acc[symbol].tokenChainInfo.push(chainTokenItem)
+          return acc
+        } else {
+          const totalBalance = supported ? amount : "0"
+          const totalValue = supported
+            ? tokenPrice * toInput(amount, decimals)
+            : 0
+          return {
+            ...acc,
+            [symbol]: {
+              denom: token,
+              decimals,
+              totalBalance,
+              totalValue,
+              icon: tokenIcon,
+              symbol,
+              price: tokenPrice,
+              change: tokenChange,
+              tokenChainInfo: [chainTokenItem],
+              nativeChain: nativeChain,
+              id: tokenID,
+              whitelisted: tokenWhitelisted,
+            },
+          }
+        }
+      }, {} as Record<string, any>) ?? {}
+    )
+  }, [coins, readNativeDenom, unknownIBCDenoms, prices, networks])
+  return Object.values(list)
 }

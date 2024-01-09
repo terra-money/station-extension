@@ -1,93 +1,62 @@
+import { ButtonItem, LinkItem } from "extension/components/ExtensionList"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
-import QrCodeIcon from "@mui/icons-material/QrCode"
-import PasswordIcon from "@mui/icons-material/Password"
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
-import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined"
-import LogoutIcon from "@mui/icons-material/Logout"
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined"
-import { Col, Page } from "components/layout"
-import is from "../../scripts/is"
+import { openURL } from "extension/storage"
 import useAuth from "../../hooks/useAuth"
-import AuthList from "../../components/AuthList"
-import ConnectedWallet from "./ConnectedWallet"
+import is from "../../scripts/is"
+import {
+  AlertIcon,
+  MultisigIcon,
+  QRCodeIcon,
+  TrashIcon,
+} from "@terra-money/station-ui"
 
-export const useManageWallet = () => {
+export const useManageWallet = (walletName: string) => {
   const { t } = useTranslation()
-  const navigate = useNavigate()
-  const { wallet, disconnect, lock } = useAuth()
+  const { wallets, connectedWallet } = useAuth()
+
+  const wallet = wallets.find((w) => w.name === walletName)
 
   const toExport = {
-    to: "/auth/export",
+    to: `/auth/export/${walletName}`,
     children: t("Export wallet"),
-    icon: <QrCodeIcon />,
-  }
-
-  const toPassword = {
-    to: "/auth/password",
-    children: t("Change password"),
-    icon: <PasswordIcon />,
+    icon: <QRCodeIcon fill="var(--token-light-white)" width={14} height={14} />,
   }
 
   const toDelete = {
-    to: "/auth/delete",
+    to: `/auth/delete/${walletName}`,
     children: t("Delete wallet"),
-    icon: <DeleteOutlineIcon />,
+    icon: <TrashIcon fill="var(--token-light-white)" width={14} height={14} />,
   }
 
-  const toSignMultisig = {
-    to: "/multisig/sign",
-    children: t("Sign a multisig tx"),
-    icon: <FactCheckOutlinedIcon />,
+  const toSignMultisig = connectedWallet?.name === walletName && {
+    onClick: () => openURL("/multisig/sign"),
+    children: t("Sign Multisig Tx"),
+    icon: (
+      <MultisigIcon fill="var(--token-light-white)" width={14} height={14} />
+    ),
   }
 
-  const toPostMultisig = {
-    to: "/multisig/post",
+  const toPostMultisig = connectedWallet?.name === walletName && {
+    onClick: () => openURL("/multisig/post"),
     children: t("Post a multisig tx"),
-    icon: <FactCheckOutlinedIcon />,
+    icon: (
+      <MultisigIcon fill="var(--token-light-white)" width={14} height={14} />
+    ),
   }
 
-  const disconnectWallet = {
-    onClick: () => {
-      disconnect()
-      navigate("/", { replace: true })
-    },
-    children: t("Disconnect"),
-    icon: <LogoutIcon />,
-  }
-
-  const lockWallet = {
-    onClick: () => {
-      lock()
-      navigate("/", { replace: true })
-    },
-    children: t("Lock"),
-    icon: <LockOutlinedIcon />,
+  const toUpgradeWallet = !(wallet as any)?.words?.["60"] && {
+    to: `/manage-wallet/upgrade/${walletName}`,
+    children: t("Upgrade Wallet"),
+    icon: <AlertIcon fill="var(--token-primary-500)" width={14} height={14} />,
   }
 
   if (!wallet) return
 
-  return is.multisig(wallet)
-    ? [toPostMultisig, toDelete, disconnectWallet]
-    : is.ledger(wallet)
-    ? [toSignMultisig, disconnectWallet]
-    : [toExport, toPassword, toDelete, toSignMultisig, lockWallet]
-}
-
-const ManageWallets = () => {
-  const { t } = useTranslation()
-  const { available } = useAuth()
-  const list = useManageWallet()
-
   return (
-    <Page title={t("Manage wallets")}>
-      <Col>
-        <ConnectedWallet>
-          {list && <AuthList list={list} />}
-          {!!available.length && <AuthList list={available} />}
-        </ConnectedWallet>
-      </Col>
-    </Page>
-  )
+    is.multisig(wallet)
+      ? [toPostMultisig, toDelete]
+      : is.ledger(wallet)
+      ? [toSignMultisig, toDelete]
+      : [toExport, toDelete, toSignMultisig, toUpgradeWallet]
+  ).filter((opt) => !!opt) as (LinkItem | ButtonItem)[]
 }
-export default ManageWallets

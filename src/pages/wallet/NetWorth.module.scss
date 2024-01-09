@@ -1,89 +1,36 @@
 @import "mixins";
+@import "font_mixins";
 
 .networth {
   @include flex-column;
-  padding: 1.6rem;
-  border-bottom: var(--border-width) solid var(--card-border);
+  gap: 16px;
+  padding: 24px 24px 8px 24px;
+  background-color: var(--token-dark-500);
 
   p {
-    color: var(--text-muted);
-    font-size: 14px;
-    line-height: 140%;
+    @include X-Small;
+    color: var(--token-light-100);
   }
 
   h1 {
-    font-size: 32px;
-    line-height: 150%;
-    margin-top: 4px;
+    @include XX-Large;
+    color: var(--token-light-white);
   }
-
-  grid-area: details;
-  height: fit-content;
-  background-color: var(--card-bg);
 }
+
 .networth__buttons {
-  display: flex;
-  gap: 48px;
-  justify-content: center;
-  margin-top: 28px;
-  width: 100%;
-
-  .button__wrapper {
-    @include flex-column;
-    gap: 8px;
-  }
-
-  button {
-    min-width: 0;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    padding: 16px;
-    @include flex;
-  }
-
-  .wallet_primary {
-    box-shadow: inset 0px 1.5px 0px 0px rgb(255 255 255 / 30%),
-      0px 4px 24px 0px rgb(36 36 40 / 30%);
-    transition: all 0.1s ease-in-out;
-
-    &:hover {
-      box-shadow: inset 0px 1.5px 0px 0px rgb(255 255 255 / 20%),
-        0px 4px 24px 0px rgb(36 36 40 / 30%);
-    }
-
-    &:active {
-      box-shadow: inset 0px 0.25px 0px 0px rgb(255 255 255 / 20%),
-        0px 4px 24px 0px rgb(36 36 40 / 30%);
-    }
-  }
-
-  .wallet_default {
-    box-shadow: inset 0px 1.5px 0px 0px rgb(255 255 255 / 8%),
-      0px 4px 24px 0px rgb(36 36 40 / 30%);
-    transition: all 0.1s ease-in-out;
-
-    &:hover {
-      box-shadow: inset 0px 1.5px 0px 0px rgb(255 255 255 / 5%),
-        0px 4px 24px 0px rgb(36 36 40 / 30%);
-    }
-
-    &:active {
-      box-shadow: inset 0px 0.25px 0px 0px rgb(255 255 255 / 5%),
-        0px 4px 24px 0px rgb(36 36 40 / 30%);
-    }
-
-    svg {
-      width: 18px;
-      height: 18px;
-
-      path {
-        fill: var(--button-default-text);
-      }
-    }
-  }
+  @include flex;
+  gap: 4px;
+  width: 308px;
 }
 
-.icon {
-  font-size: 24px;
+.networth__buttons__labels {
+  @include X-Small;
+}
+
+.button__text {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+  margin-top: 8px;
 }

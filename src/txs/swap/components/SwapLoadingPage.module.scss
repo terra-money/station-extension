@@ -1,0 +1,11 @@
+.swap__loading__container {
+  //margin: 90px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .swapper {
+    margin: -20px 0px -20px 65%;
+    z-index: 2;
+  }
+}

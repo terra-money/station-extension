@@ -1,62 +1,41 @@
-import { useTranslation } from "react-i18next"
 import qs from "qs"
-import { ReactComponent as Binance } from "styles/images/exchanges/Binance.svg"
-import { ReactComponent as KuCoin } from "styles/images/exchanges/KuCoin.svg"
-import { ReactComponent as Huobi } from "styles/images/exchanges/Huobi.svg"
-import Kado from "styles/images/exchanges/Kado.svg"
-import { useAddress } from "data/wallet"
+import { useCallback } from "react"
+import { useNetwork } from "data/wallet"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { FIAT_RAMP } from "config/constants"
+import { KADO_API_KEY } from "config/constants"
 
-const exchanges = [
-  {
-    children: "Binance",
-    href: "https://www.binance.com/en/trade/LUNA_USDT",
-    icon: <Binance width={24} height={24} />,
-  },
-  {
-    children: "Huobi",
-    href: "https://www.huobi.com/en-us/exchange/luna_usdt/",
-    icon: <Huobi width={24} height={24} />,
-  },
-  {
-    children: "KuCoin",
-    href: "https://trade.kucoin.com/LUNA-USDT",
-    icon: <KuCoin width={24} height={24} />,
-  },
-]
+export const useKado = () => {
+  const addresses = useInterchainAddresses()
+  const network = useNetwork()
 
-const KADO_API_KEY = "c22391a1-594f-4354-a742-187adb1b91bf"
-const getKadoLink = (address?: string) => {
-  const KADO_URL = "https://app.kado.money"
-  const queryString = qs.stringify(
-    {
-      apiKey: KADO_API_KEY,
-      onPayCurrency: "USD",
-      onPayAmount: 200,
-      onRevCurrency: "USDC",
-      network: "TERRA",
-      onToAddress: address,
-      product: "BUY",
-      offPayCurrency: "USDC",
-      offRevCurrency: "USD",
-    },
-    { skipNulls: true }
-  )
+  const onToAddressMulti =
+    addresses &&
+    Object.keys(addresses)
+      .map((key) => `${network[key].name}:${addresses[key]}`)
+      .join(",")
 
-  return {
-    children: "Kado",
-    href: `${KADO_URL}/?${queryString}`,
-    icon: <img src={Kado} alt="Kado Ramp" width={24} height={24} />,
+  const rampParams = {
+    network: "Terra",
+    apiKey: KADO_API_KEY,
+    product: "BUY",
+    onRevCurrency: "USDC",
+    networkList: ["TERRA", "OSMOSIS", "KUJIRA", "JUNO"].join(","),
+    productList: ["BUY", "SELL"].join(","),
+    cryptoList: ["USDC"].join(","),
+    onToAddressMulti,
   }
-}
 
-export const useBuyList = (symbol: string) => {
-  const { t } = useTranslation()
-  const address = useAddress()
+  const kadoUrlParams = qs.stringify(rampParams)
 
-  if (symbol === "Luna") return [{ title: t("Exchanges"), list: exchanges }]
+  const openModal = useCallback(() => {
+    const url = `${FIAT_RAMP}?${kadoUrlParams}`
+    window.open(
+      url,
+      "_blank",
+      "toolbar=yes,scrollbars=yes,resizable=yes,top=0,left=0,width=420,height=680"
+    )
+  }, [kadoUrlParams])
 
-  if (symbol === "axlUSDC")
-    return [{ title: t("Fiat"), list: [getKadoLink(address)] }]
-
-  return
+  return { openModal }
 }

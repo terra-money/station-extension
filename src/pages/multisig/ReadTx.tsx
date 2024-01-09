@@ -1,10 +1,13 @@
-import { PropsWithChildren } from "react"
-import { useTranslation } from "react-i18next"
+import {
+  SectionHeader,
+  InputWrapper,
+  TextArea,
+  SummaryTable,
+} from "@terra-money/station-ui"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
-import { Pre } from "components/general"
-import { Auto, Card, Grid } from "components/layout"
-import { Wrong } from "components/feedback"
 import { ReadMultiple } from "components/token"
+import { useTranslation } from "react-i18next"
+import { PropsWithChildren } from "react"
 
 const ReadTx = (props: PropsWithChildren<{ tx: string }>) => {
   const { tx: encoded, children } = props
@@ -20,44 +23,50 @@ const ReadTx = (props: PropsWithChildren<{ tx: string }>) => {
   }
 
   const render = () => {
-    if (!encoded) return <Wrong>{t("Tx is not defined")}</Wrong>
-
     const tx = decodeTx(encoded)
-    if (!tx) return <Wrong>{t("Invalid tx")}</Wrong>
+    if (!tx)
+      return (
+        <>
+          <SectionHeader title={t("Details")} withLine />
+          <InputWrapper label={t("Message")}>
+            <TextArea
+              readOnly={true}
+              value={"The provided transaction hash is not valid"}
+              rows={2}
+            />
+          </InputWrapper>
+        </>
+      )
 
     const { body, auth_info } = tx
     const { memo, messages } = body
     const { fee } = auth_info
 
-    const contents = [
-      {
-        title: t("Messages"),
-        content: messages.map((message, index) => (
-          <Pre key={index}>{message.toData()}</Pre>
-        )),
-      },
-
-      { title: t("Memo"), content: memo },
-      { title: t("Fee"), content: <ReadMultiple list={fee.amount.toData()} /> },
+    const txDetails = [
+      { label: t("Memo"), value: memo },
+      { label: t("Fee"), value: <ReadMultiple list={fee.amount.toData()} /> },
     ]
 
     return (
-      <Grid gap={20}>
-        {contents.map(({ title, content }) => {
-          if (!content) return null
-
-          return (
-            <article key={title}>
-              <h1>{title}</h1>
-              {content}
-            </article>
-          )
-        })}
-      </Grid>
+      <>
+        <SectionHeader title={t("Details")} withLine />
+        <InputWrapper label={t("Message")}>
+          {messages.map((message, index) => (
+            <TextArea
+              readOnly={true}
+              value={message.toJSON()}
+              rows={9}
+              key={index}
+            />
+          ))}
+        </InputWrapper>
+        <SummaryTable rows={txDetails.filter((detail) => !!detail.value)} />
+        {children}
+      </>
     )
   }
 
-  return <Auto columns={[<Card>{children}</Card>, <Card>{render()}</Card>]} />
+  return encoded ? render() : null
 }
 
 export default ReadTx

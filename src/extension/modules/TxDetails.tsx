@@ -1,63 +1,45 @@
-import { Fragment, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { useNetwork } from "data/wallet"
 import { Grid } from "components/layout"
-import { Dl, ToNow } from "components/display"
-import { Read } from "components/token"
+import { ToNow } from "components/display"
 import { getIsNativeMsgFromExternal, TxRequest } from "../utils"
 import Message from "./Message"
-import styles from "./TxDetails.module.scss"
-import { useNativeDenoms, DEFAULT_NATIVE_DECIMALS } from "data/token"
+import DisplayFees from "txs/feeAbstraction/DisplayFees"
 
-const TxDetails = ({ origin, timestamp, tx }: TxRequest) => {
+const TxDetails = ({
+  origin,
+  timestamp,
+  tx,
+  onFeesReady,
+}: TxRequest & { onFeesReady: (state: boolean) => void }) => {
   const { msgs, memo, fee, chainID } = tx
 
   const { t } = useTranslation()
   const network = useNetwork()
-  const readNativeDenom = useNativeDenoms()
 
-  const decimals = useMemo(() => {
-    const baseAsset = network[chainID]?.baseAsset
-
-    if (typeof baseAsset !== "string") {
-      return DEFAULT_NATIVE_DECIMALS
-    }
-
-    const nativeDenom = readNativeDenom(baseAsset)
-
-    return nativeDenom?.decimals ?? DEFAULT_NATIVE_DECIMALS
-  }, [network, chainID, readNativeDenom])
-
-  const fees = fee?.amount.toData()
   const contents = [
-    { title: t("Network"), content: `${network[chainID]?.name} (${chainID})` },
-    { title: t("Origin"), content: origin },
-    { title: t("Timestamp"), content: <ToNow update>{timestamp}</ToNow> },
-    {
-      title: t("Fee"),
-      content: fees && <Read {...fees[0]} decimals={decimals} />,
-    },
-    { title: t("Memo"), content: memo },
+    { label: t("Network"), value: `${network[chainID]?.name} (${chainID})` },
+    { label: t("Timestamp"), value: <ToNow update>{timestamp}</ToNow> },
+    { label: t("Memo"), value: memo },
   ]
 
   return (
-    <Grid gap={12}>
-      <Dl className={styles.dl}>
-        {contents.map(({ title, content }) => {
-          if (!content) return null
-          return (
-            <Fragment key={title}>
-              <dt>{title}</dt>
-              <dd>{content}</dd>
-            </Fragment>
-          )
+    <Grid gap={24}>
+      <Grid gap={8}>
+        {msgs.map((msg, index) => {
+          const isNative = getIsNativeMsgFromExternal(origin)
+          return <Message msg={msg} warn={isNative(msg)} key={index} />
         })}
-      </Dl>
+      </Grid>
 
-      {msgs.map((msg, index) => {
-        const isNative = getIsNativeMsgFromExternal(origin)
-        return <Message msg={msg} warn={isNative(msg)} key={index} />
-      })}
+      <DisplayFees
+        chainID={chainID}
+        gas={fee?.gas_limit}
+        gasDenom={fee?.amount.denoms()[0]}
+        descriptions={contents.filter(({ value }) => !!value)}
+        setGasDenom={() => {}}
+        onReady={(state) => onFeesReady(state)}
+      />
     </Grid>
   )
 }

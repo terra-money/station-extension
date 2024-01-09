@@ -100,8 +100,15 @@ const Component = ({ whitelist, keyword }: Props) => {
 
   const renderTokenItem = (item: CustomTokenCW20 | NativeTokenItem) => {
     // TODO: distinguish native and cw20
-    const { token, symbol, ...rest } = item
-    return { ...rest, token, title: symbol, contract: token, key: token }
+    const { token, chainID, symbol, ...rest } = item
+    return {
+      ...rest,
+      token,
+      chainID: chainID,
+      title: symbol,
+      contract: token,
+      key: `${chainID}*${token}`,
+    }
   }
 
   return (
@@ -133,7 +140,7 @@ const ManageCustomTokens = () => {
     })
 
     return (
-      <WithSearchInput>
+      <WithSearchInput label="Search Tokens">
         {(input) => (
           <Component
             whitelist={{

@@ -13,7 +13,7 @@
   --modal-width: 520px;
   --input-height: 45px;
   --wallet-width: 420px;
-  --extension-width: min(100%, 600px);
+  --extension-width: clamp(400px, 50%, 500px);
 
   // fonts
   --font-family-monospace: "Source Code Pro", monospace;
@@ -104,9 +104,9 @@
 }
 
 .dark {
-  --button-primary-bg-h: 224;
-  --button-primary-bg-s: 82%;
-  --button-primary-bg-l: 60%;
+  --button-primary-bg-h: 218;
+  --button-primary-bg-s: 94%;
+  --button-primary-bg-l: 48%;
   --button-primary-bg: hsl(
     var(--button-primary-bg-h),
     var(--button-primary-bg-s),
@@ -135,13 +135,13 @@
 
   --link: var(--button-primary-bg);
   --text: hsl(0, 0%, 95%);
-  --text-muted: hsl(0 0% 55%);
+  --text-muted: hsl(229, 11%, 61%);
   --chart: hsl(215 90% 57%);
 
   --bg: hsl(0, 0%, 12%);
   --bg-muted: hsl(240 5% 22%);
   --card-bg: hsl(239, 6%, 17%);
-  --card-bg-muted: hsl(240, 5%, 15%);
+  --card-bg-muted: hsl(228, 10%, 10%);
   --card-border: hsl(240 5% 22%);
   --input-bg: var(--card-bg);
   --input-border: hsl(0 0% 30%);

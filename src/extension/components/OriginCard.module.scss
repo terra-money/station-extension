@@ -1,33 +1,29 @@
 @import "mixins";
+@import "font_mixins";
 
 .origin {
-  @include flex(flex-start);
-  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-  background: var(--extension-bg);
-  border: var(--border-width) solid var(--card-border);
-  border-radius: 16px;
-  color: var(--button-primary-text);
-  padding: 20px 20px;
-  text-align: left;
+  padding-top: 24px;
+  padding-bottom: 32px;
+  text-align: center;
+
+  h2 {
+    @include Large;
+    color: var(--token-light-white);
+  }
+
+  p {
+    @include X-Small;
+    color: var(--token-primary-600);
+  }
 }
 
 .icon {
   border-radius: 50%;
-  max-width: 50px;
-  max-height: 50px;
-}
-
-.details {
-  h2 {
-    font-size: 16pt;
-    font-weight: var(--bold);
-    color: var(--text);
-  }
-
-  p {
-    font-size: 11pt;
-    font-weight: var(--bold);
-    color: var(--button-primary-bg);
-  }
+  max-width: 64px;
+  max-height: 64px;
 }

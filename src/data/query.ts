@@ -56,7 +56,15 @@ export const queryKey = mirror({
     votes: "",
     tally: "",
   },
-  ibc: { denomTrace: "" },
+  ibc: {
+    denomTrace: "",
+    transactionStatus: "",
+    trackTx: "",
+    channelInfo: "",
+    packetStatus: "",
+    receivePacket: "",
+    sendPacket: "",
+  },
   market: { params: "" },
   coingecko: {
     activeDenoms: "",
@@ -84,7 +92,9 @@ export const queryKey = mirror({
     },
   },
   treasury: { taxRate: "", taxCap: "", taxProceeds: "" },
+  extension: { checkUpdate: "" },
   /* external */
   Anchor: { TotalDeposit: "", APY: "", MarketEpochState: "" },
   TNS: "",
+  Skip: { swap: "" },
 })

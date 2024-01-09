@@ -34,13 +34,15 @@ export const useNetworkOptions = () => {
   ]
 }
 
-export const useNetwork = (): Record<ChainID, InterchainNetwork> => {
+export type IInterchainNetworks = Record<ChainID, InterchainNetwork>
+
+export const useNetwork = (): IInterchainNetworks => {
   const { networks, filterEnabledNetworks } = useNetworks()
   const [network] = useNetworkState()
   const wallet = useRecoilValue(walletState)
   const { customLCDs } = useCustomLCDs()
 
-  function withCustomLCDs(networks: Record<ChainID, InterchainNetwork>) {
+  function withCustomLCDs(networks: IInterchainNetworks) {
     return Object.fromEntries(
       Object.entries(networks ?? {}).map(([key, val]) => [
         key,
@@ -52,9 +54,8 @@ export const useNetwork = (): Record<ChainID, InterchainNetwork> => {
   // multisig wallet are supported only on terra
   if (is.multisig(wallet)) {
     const terra = Object.values(
-      withCustomLCDs(
-        networks[network as NetworkName] as Record<ChainID, InterchainNetwork>
-      ) ?? {}
+      withCustomLCDs(networks[network as NetworkName] as IInterchainNetworks) ??
+        {}
     ).find(({ prefix }) => prefix === "terra")
     if (!terra) return {}
     return filterEnabledNetworks({ [terra?.chainID]: terra })
@@ -62,20 +63,26 @@ export const useNetwork = (): Record<ChainID, InterchainNetwork> => {
 
   if (wallet) {
     const enabledChains = Object.values(
-      withCustomLCDs(
-        networks[network as NetworkName] as Record<ChainID, InterchainNetwork>
-      ) ?? {}
+      withCustomLCDs(networks[network as NetworkName] as IInterchainNetworks) ??
+        {}
     ).filter(({ coinType }) => !!wallet?.words?.[coinType])
 
     return filterEnabledNetworks(
       enabledChains.reduce((acc, chain) => {
         acc[chain?.chainID] = chain
         return acc
-      }, {} as Record<ChainID, InterchainNetwork>)
+      }, {} as IInterchainNetworks)
     )
   }
 
   return filterEnabledNetworks(withCustomLCDs(networks[network as NetworkName]))
+}
+
+export const useAllNetworks = (): IInterchainNetworks => {
+  const { networks } = useNetworks()
+  const [network] = useNetworkState()
+
+  return networks[network]
 }
 
 export const useNetworkName = () => {

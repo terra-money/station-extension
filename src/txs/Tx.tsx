@@ -1,8 +1,7 @@
-import { Fragment, ReactNode } from "react"
+import { ReactNode } from "react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { QueryKey, useQuery } from "react-query"
-import { useNavigate } from "react-router-dom"
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import classNames from "classnames"
 import BigNumber from "bignumber.js"
@@ -14,7 +13,6 @@ import { isDenom } from "@terra-money/terra-utils"
 import { Coin, Coins, CreateTxOptions } from "@terra-money/feather.js"
 import { Fee } from "@terra-money/feather.js"
 
-import { Contents } from "types/components"
 import { has } from "utils/num"
 import { getErrorMessage } from "utils/error"
 import { getLocalSetting, SettingKey } from "utils/localStorage"
@@ -30,21 +28,32 @@ import { useIsWalletEmpty } from "data/queries/bank"
 
 import { Pre } from "components/general"
 import { Grid, Flex } from "components/layout"
-import { FormError, Select, Input, FormItem, Submit } from "components/form"
-import { Modal } from "components/feedback"
-import { Details } from "components/display"
 import { Read } from "components/token"
 import ConnectWallet from "app/sections/ConnectWallet"
 import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
 import { isWallet, useAuth } from "auth"
-import { PasswordError } from "auth/scripts/keystore"
 import { toInput, CoinInput, calcTaxes } from "./utils"
 import styles from "./Tx.module.scss"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { getShouldTax, useTaxCap, useTaxRate } from "data/queries/treasury"
-import { useNativeDenoms } from "data/token"
-import { useCarbonFees } from "data/queries/tx"
+import { useCarbonFees, useOsmosisGas } from "data/queries/tx"
+import {
+  Banner,
+  Button,
+  Checkbox,
+  Input,
+  InputWrapper,
+  SubmitButton,
+  Modal,
+} from "@terra-money/station-ui"
+import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
+import { openURL } from "extension/storage"
+import DisplayFees from "./feeAbstraction/DisplayFees"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
+import { usePendingIbcTx } from "./useIbcTxs"
+import { useNavigate } from "react-router-dom"
+import { useAddCachedTx } from "data/queries/activity"
 
 const cx = classNames.bind(styles)
 
@@ -71,6 +80,7 @@ interface Props<TxValues> {
   onChangeMax?: (input: number) => void
 
   /* on tx success */
+  isIbc?: boolean
   onPost?: () => void
   hideLoader?: boolean
   onSuccess?: () => void
@@ -81,7 +91,14 @@ interface Props<TxValues> {
 type RenderMax = (onClick?: (max: Amount) => void) => ReactNode
 interface RenderProps<TxValues> {
   max: { amount: Amount; render: RenderMax; reset: () => void }
-  fee: { render: (descriptions?: Contents) => ReactNode }
+  fee: {
+    render: (
+      descriptions?: { label: ReactNode; value: ReactNode }[]
+    ) => ReactNode
+    amount: string
+    denom: string
+    decimals: number | undefined
+  }
   submit: { fn: (values: TxValues) => Promise<void>; button: ReactNode }
 }
 
@@ -90,10 +107,11 @@ function Tx<TxValues>(props: Props<TxValues>) {
     props
   const { estimationTxValues, createTx, gasAdjustment: txGasAdjustment } = props
   const { children, onChangeMax } = props
-  const { onPost, redirectAfterTx, queryKeys, onSuccess } = props
+  const { onPost, redirectAfterTx, queryKeys, onSuccess, isIbc } = props
 
   const [isMax, setIsMax] = useState(false)
   const [gasDenom, setGasDenom] = useState<string>("")
+  const addCachedTx = useAddCachedTx()
 
   /* context */
   const { t } = useTranslation()
@@ -104,9 +122,9 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const isWalletEmpty = useIsWalletEmpty()
   const setLatestTx = useSetRecoilState(latestTxState)
   const isBroadcasting = useRecoilValue(isBroadcastingState)
-  const readNativeDenom = useNativeDenoms()
   const { data: carbonFees } = useCarbonFees()
-  const { data: osmosisGas } = useOsmosisGas()
+  const { addTx: trackIbcTx } = usePendingIbcTx()
+  const { data: osmosisGas } = useOsmosisGas(!chain?.startsWith("osmosis-"))
 
   /* taxes */
   const isClassic = networks[chain]?.isClassic
@@ -137,26 +155,25 @@ function Tx<TxValues>(props: Props<TxValues>) {
     msgs: simulationTx?.msgs.map((msg) => msg.toData(isClassic)["@type"]),
   }
 
+  const carbonFee = useMemo(() => {
+    const fee =
+      carbonFees?.costs[key.msgs?.[0] ?? ""] ?? carbonFees?.costs["default_fee"]
+    return Number(fee)
+  }, [carbonFees, key.msgs])
+
   const { data: estimatedGas, ...estimatedGasState } = useQuery(
-    [queryKey.tx.create, key, isWalletEmpty],
+    [queryKey.tx.create, key, isWalletEmpty, carbonFee],
     async () => {
       if (!key.address || isWalletEmpty) return 0
       if (!wallet) return 0
       if (!simulationTx || !simulationTx.msgs.length) return 0
       try {
-        if (chain.startsWith("carbon-")) {
-          return Number(
-            carbonFees?.costs[key.msgs?.[0] ?? ""] ??
-              carbonFees?.costs["default_fee"]
-          )
-        }
-
+        if (chain.startsWith("carbon-")) return carbonFee
         const unsignedTx = await lcd.tx.create([{ address: key.address }], {
           ...simulationTx,
           feeDenoms: [gasDenom],
         })
-
-        return unsignedTx.auth_info.fee.gas_limit * key.gasAdjustment
+        return Math.ceil(unsignedTx.auth_info.fee.gas_limit)
       } catch (error) {
         console.error(error)
         return 200_000
@@ -177,7 +194,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
     (denom: CoinDenom) => {
       const gasPrice = chain?.startsWith("carbon-")
         ? carbonFees?.prices[denom]
-        : chain?.startsWith("osmosis")
+        : chain?.startsWith("osmosis-")
         ? (osmosisGas || 0.0025) * 10
         : networks[chain]?.gasPrices[denom]
 
@@ -192,7 +209,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   )
 
   const gasAmount = getGasAmount(gasDenom)
-  const gasFee = { amount: gasAmount, denom: gasDenom }
+  const gasFee = { amount: gasAmount, denom: gasDenom, decimals }
 
   /* tax */
   const taxAmount =
@@ -238,7 +255,21 @@ function Tx<TxValues>(props: Props<TxValues>) {
   /* submit */
   const passwordRequired = isWallet.single(wallet)
   const [password, setPassword] = useState("")
+  const [rememberPassword, setRememberPassword] = useState(
+    shouldStorePassword()
+  )
+  const [showPasswordInput, setShowPasswordInput] = useState(false)
   const [incorrect, setIncorrect] = useState<string>()
+  const [feesReady, setFeesReady] = useState(false)
+  const navigate = useNavigate()
+
+  // autofill stored password if exists
+  useEffect(() => {
+    getStoredPassword().then((password) => {
+      setPassword(password ?? "")
+      setShowPasswordInput(!password)
+    })
+  }, []) // eslint-disable-line
 
   const disabled = estimatedGasState.isLoading
     ? t("Estimating fee...")
@@ -254,8 +285,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<Error>()
-
-  const navigate = useNavigate()
   const toPostMultisigTx = useToPostMultisigTx()
   const submit = async (values: TxValues) => {
     setSubmitting(true)
@@ -264,6 +293,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
       if (disabled) throw new Error(disabled)
       if (
         !estimatedGas ||
+        !setFeesReady ||
         (!has(gasAmount) && networks[chain]?.gasPrices[gasDenom])
       )
         throw new Error("Fee is not estimated")
@@ -282,43 +312,44 @@ function Tx<TxValues>(props: Props<TxValues>) {
       if (isWallet.multisig(wallet)) {
         // TODO: broadcast only to terra if wallet is multisig
         const unsignedTx = await auth.create({ ...tx, fee })
-        navigate(toPostMultisigTx(unsignedTx))
+        const { pathname, search } = toPostMultisigTx(unsignedTx)
+        openURL([pathname, search].join("?"))
+        return
       } else if (wallet) {
-        const result = await auth.post({ ...tx, fee }, password)
-        !hideLoader &&
+        const result = await auth.post(
+          { ...tx, fee },
+          password,
+          undefined,
+          // use broadcast mode = "block" if we are not showing the broadcast loader
+          isIbc || hideLoader
+        )
+
+        if (!hideLoader && !isIbc) {
           setLatestTx({
             txhash: result.txhash,
             queryKeys,
-            onSuccess,
-            redirectAfterTx,
+            onSuccess: onSuccess,
+            redirectAfterTx: redirectAfterTx,
             chainID: chain,
           })
+        } else {
+          isIbc && trackIbcTx({ ...(result as any), chain } as ActivityItem)
+          addCachedTx({ ...(result as any), chain } as ActivityItem)
+          onSuccess?.()
+          navigate("/#1")
+        }
       }
 
       onPost?.()
     } catch (error) {
-      if (error instanceof PasswordError) setIncorrect(error.message)
-      else setError(error as Error)
+      setError(error as Error)
     }
 
     setSubmitting(false)
   }
 
-  const submittingLabel = isWallet.ledger(wallet) ? t("Confirm in ledger") : ""
-
-  /* render */
-  const balanceAfterTx =
-    balance &&
-    amount &&
-    new BigNumber(balance)
-      .minus(amount)
-      .minus(taxAmount ? (gasFee.denom === token ? taxAmount : 0) : 0)
-      .minus((gasFee.denom === token && gasFee.amount) || 0)
-      .toString()
-
-  const insufficient = balanceAfterTx
-    ? new BigNumber(balanceAfterTx).lt(0)
-    : false
+  const submittingLabel =
+    hideLoader || isIbc ? t("Broadcasting") : t("Submitting")
 
   const availableGasDenoms = useMemo(() => {
     return Object.keys(networks[chain]?.gasPrices ?? {})
@@ -351,79 +382,18 @@ function Tx<TxValues>(props: Props<TxValues>) {
     )
   }
 
-  const renderFee = (descriptions?: Contents) => {
-    if (!estimatedGas) return null
+  const renderFee = (
+    descriptions?: { label: ReactNode; value: ReactNode }[]
+  ) => {
     return (
-      <Details>
-        <dl>
-          {descriptions?.map(({ title, content }, index) => (
-            <Fragment key={index}>
-              <dt>{title}</dt>
-              <dd>{content}</dd>
-            </Fragment>
-          ))}
-
-          <dt className={styles.gas}>
-            {t("Fee")}
-            {availableGasDenoms.length > 1 && (
-              <Select
-                value={gasDenom}
-                onChange={(e) => setGasDenom(e.target.value)}
-                className={styles.select}
-                small
-              >
-                {availableGasDenoms.map((denom) => (
-                  <option value={denom} key={denom}>
-                    {
-                      readNativeDenom(
-                        denom === token ? baseDenom ?? denom : denom
-                      ).symbol
-                    }
-                  </option>
-                ))}
-              </Select>
-            )}
-          </dt>
-          <dd>
-            {gasFee.amount && (
-              <Read
-                decimals={
-                  gasDenom ? readNativeDenom(gasDenom).decimals : decimals
-                }
-                {...gasFee}
-                denom={
-                  gasFee.denom === token
-                    ? baseDenom ?? gasFee.denom
-                    : gasFee.denom
-                }
-              />
-            )}
-          </dd>
-
-          {balanceAfterTx && (
-            <>
-              <dt>{t("Balance")}</dt>
-              <dd>
-                <Read
-                  amount={balance}
-                  token={baseDenom ?? token}
-                  decimals={decimals}
-                />
-              </dd>
-
-              <dt>{t("Balance after tx")}</dt>
-              <dd>
-                <Read
-                  amount={balanceAfterTx}
-                  token={baseDenom ?? token}
-                  decimals={decimals}
-                  className={cx(insufficient && "danger")}
-                />
-              </dd>
-            </>
-          )}
-        </dl>
-      </Details>
+      <DisplayFees
+        chainID={chain}
+        gas={estimatedGas}
+        gasDenom={gasDenom}
+        setGasDenom={setGasDenom}
+        descriptions={descriptions}
+        onReady={(state: boolean) => setFeesReady(state)}
+      />
     )
   }
 
@@ -435,23 +405,24 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
   const submitButton = (
     <>
-      {walletError && <FormError>{walletError}</FormError>}
+      {walletError && <Banner variant="error" title={walletError} />}
 
       {!addresses ? (
         <ConnectWallet
           renderButton={(open) => (
-            <Submit type="button" onClick={open}>
-              {t("Connect wallet")}
-            </Submit>
+            <Button
+              variant="secondary"
+              onClick={open}
+              label={t("Connect wallet")}
+            />
           )}
         />
       ) : (
-        <Grid gap={4}>
-          {failed ? (
-            <FormError>{failed}</FormError>
-          ) : (
-            passwordRequired && (
-              <FormItem label={t("Password")} error={incorrect}>
+        <Grid gap={12}>
+          {failed && <Banner variant="error" title={failed} />}
+          {passwordRequired && showPasswordInput && !incorrect && (
+            <>
+              <InputWrapper label={t("Password")} error={incorrect}>
                 <Input
                   type="password"
                   value={password}
@@ -460,39 +431,58 @@ function Tx<TxValues>(props: Props<TxValues>) {
                     setPassword(e.target.value)
                   }}
                 />
-              </FormItem>
-            )
+              </InputWrapper>
+
+              <InputWrapper>
+                <Checkbox
+                  label={t("Save password")}
+                  checked={rememberPassword}
+                  onChange={() => setRememberPassword((r) => !r)}
+                />
+              </InputWrapper>
+            </>
           )}
 
-          <Submit
-            disabled={!estimatedGas || !!disabled || !!walletError}
-            submitting={submitting}
-          >
-            {submitting ? submittingLabel : disabled}
-          </Submit>
+          {error && (isIbc || hideLoader) && (
+            <Banner variant="error" title={error.message} />
+          )}
+
+          {feesReady && (
+            <SubmitButton
+              variant="primary"
+              className={styles.submit}
+              icon={<CheckCircleIcon />}
+              disabled={
+                !estimatedGas || !!disabled || !!walletError || !feesReady
+              }
+              loading={submitting}
+              label={(submitting ? submittingLabel : disabled) || t("Submit")}
+            />
+          )}
         </Grid>
       )}
     </>
   )
 
-  const modal = !error
-    ? undefined
-    : {
-        title: error?.toString().includes("UserDenied")
-          ? t("Transaction was denied by user")
-          : t("Error"),
-        children: error?.toString().includes("UserDenied") ? null : (
-          <Pre height={120} normal break>
-            {error.message}
-          </Pre>
-        ),
-      }
+  const modal =
+    !error || isIbc || hideLoader
+      ? undefined
+      : {
+          title: error?.toString().includes("UserDenied")
+            ? t("Transaction was denied by user")
+            : t("Error"),
+          children: error?.toString().includes("UserDenied") ? null : (
+            <Pre height={120} normal break>
+              {error.message}
+            </Pre>
+          ),
+        }
 
   return (
     <>
       {children({
         max: { amount: max ?? "0", render: renderMax, reset: resetMax },
-        fee: { render: renderFee },
+        fee: { render: renderFee, ...gasFee },
         submit: { fn: submit, button: submitButton },
       })}
 

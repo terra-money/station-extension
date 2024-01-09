@@ -1,38 +1,45 @@
 @import "mixins";
 
 .assetlist {
-  background-color: var(--card-bg-muted);
-  padding-inline: 10px;
-  grid-area: list;
   display: grid;
   grid-template-areas: "title" "list";
   grid-template-rows: min-content auto;
   overflow-y: hidden;
+  row-gap: 16px;
 }
 
 .assetlist__title {
   @include flex(space-between);
-  margin: 25px 10px 10px;
+  padding: 10px 10px 0px 10px;
   grid-area: title;
 }
 
-.manage__button {
-  display: flex;
-  gap: 8px;
+.assetlist__list {
+  grid-area: list;
+  padding-bottom: 8px;
 
-  svg {
-    width: 16px;
-    height: 16px;
-
-    path {
-      fill: var(--button-primary-bg);
-      stroke: var(--button-primary-bg);
-    }
+  .asset__section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
 }
 
-.assetlist__list {
-  overflow-y: auto;
-  grid-area: list;
-  padding-bottom: 1.6rem;
+.filter__input {
+  margin: 0px 10px 10px 10px;
+}
+
+.filter {
+  cursor: pointer;
+  min-width: 16px;
+  transition: all 0.1s ease-in-out;
+  &.active {
+    fill: var(--token-light-white);
+  }
+}
+
+.low__bal {
+  width: 100%;
+  height: 30px;
+  cursor: pointer;
 }

@@ -1,0 +1,52 @@
+@import "mixins";
+@import "font_mixins";
+
+.login__container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding-bottom: 12px;
+
+  .logo__background {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    z-index: 0;
+  }
+
+  .login {
+    z-index: 1;
+    margin-top: 4rem;
+
+    .title {
+      @include Large;
+      color: var(--token-light-white);
+      margin-top: 8px;
+    }
+  }
+
+  .checkbox__override {
+    padding: 0 8px;
+  }
+
+  .password__container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 12px;
+  }
+}
+
+.content {
+  @include SmallLH;
+  text-align: center;
+  color: var(--token-light-100);
+}
+
+.forgot__container {
+  align-items: center;
+  grid-template-rows: repeat(2, 1fr);
+  border: 3px red solid;
+}

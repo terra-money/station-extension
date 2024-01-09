@@ -127,13 +127,6 @@ button {
 }
 
 input,
-textarea,
-select {
-  background: var(--input-bg);
-  font-weight: var(--normal);
-}
-
-input,
 textarea {
   width: 100%;
 }
@@ -148,7 +141,6 @@ select {
 
 :disabled {
   cursor: not-allowed;
-  opacity: 0.5;
 }
 
 ::placeholder {

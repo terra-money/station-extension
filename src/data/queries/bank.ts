@@ -1,6 +1,6 @@
-import { useQueries, useQuery } from "react-query"
+import { useQueries } from "react-query"
 import createContext from "utils/createContext"
-import { queryKey, RefetchOptions } from "../query"
+import { combineState, queryKey, RefetchOptions } from "../query"
 import { useInterchainLCDClient } from "./lcdClient"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useCustomTokensCW20 } from "data/settings/CustomTokens"
@@ -39,6 +39,7 @@ export const useInitialTokenBalance = () => {
           } as CoinBalance
         },
         ...RefetchOptions.DEFAULT,
+        staleTime: 3 * 60 * 1000,
       }
     })
   )
@@ -69,6 +70,7 @@ export const useInitialBankBalance = () => {
         },
         disabled: !address,
         ...RefetchOptions.DEFAULT,
+        staleTime: 3 * 60 * 1000,
       }
     })
   )
@@ -84,32 +86,35 @@ export const useBalances = () => {
   const addresses = useInterchainAddresses()
   const lcd = useInterchainLCDClient()
 
-  return useQuery(
-    [queryKey.bank.balances, addresses],
-    async () => {
-      if (!addresses) return [] as CoinBalance[]
-      const chains = Object.keys(addresses ?? {})
-
-      // TODO: Pagination
-      // Required when the number of results exceed 100
-      const balances = await Promise.all(
-        chains.map((chain) => lcd.bank.balance(addresses[chain]))
-      )
-
-      const result = [] as CoinBalance[]
-      chains.forEach((chain, i) => {
-        balances[i][0].toArray().forEach(({ denom, amount }) =>
-          result.push({
-            denom,
-            amount: amount.toString(),
-            chain,
+  const results = useQueries(
+    Object.entries(addresses ?? {}).map(([chainID, address]) => {
+      return {
+        queryKey: [queryKey.bank.balance, address, chainID],
+        queryFn: async () => {
+          const balance = await lcd.bank.balance(address)
+          return balance[0].toArray().map(({ denom, amount }) => {
+            return {
+              denom,
+              amount: amount.toString(),
+              chain: chainID,
+            } as CoinBalance
           })
-        )
-      })
-      return result
-    },
-    { ...RefetchOptions.DEFAULT }
+        },
+        ...RefetchOptions.DEFAULT,
+        staleTime: 3 * 60 * 1000,
+      }
+    })
   )
+
+  const data = [] as CoinBalance[]
+  results.forEach(({ data: result }) => {
+    if (result) data.push(...result)
+  })
+
+  return {
+    ...combineState(...results),
+    data,
+  }
 }
 
 export const useIsWalletEmpty = () => {

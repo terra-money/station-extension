@@ -17,6 +17,7 @@ export interface TokenItemProps {
   icon?: string
   contract?: TerraAddress // cw20 | cw721
   decimals?: number
+  chainID?: string
   key: string
 }
 

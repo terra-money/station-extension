@@ -2,7 +2,6 @@ import { PropsWithChildren, useEffect, useState } from "react"
 import browser from "webextension-polyfill"
 import { isNil, uniq, update } from "ramda"
 import createContext from "utils/createContext"
-import encrypt from "auth/scripts/encrypt"
 import {
   ExtensionStorage,
   PrimitiveDefaultRequest,
@@ -28,8 +27,7 @@ interface RequestContext {
     tx: (
       requestType: RequestType,
       request: PrimitiveDefaultRequest,
-      response: TxResponse,
-      password?: string
+      response: TxResponse
     ) => void
     multisigTx: (request: PrimitiveDefaultRequest) => void
     pubkey: () => void
@@ -120,16 +118,15 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
     // Delete on reject
     browser.storage?.local
       .get(["connect"])
-      .then(({ connect = { allowed: [] } }) =>
+      .then(({ connect = { allowed: [] } }) => {
+        const allowed = connect.allowed || []
         browser.storage?.local.set({
           connect: {
             request: [],
-            allowed: uniq(
-              allow ? [...connect.allowed, origin] : connect.allowed
-            ),
+            allowed: uniq(allow ? [...allowed, origin] : allowed),
           },
         })
-      )
+      })
       .then(() => setConnect(undefined))
   }
 
@@ -191,15 +188,8 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
   const handleTx: RequestContext["actions"]["tx"] = (
     requestType,
     request,
-    response,
-    password
+    response
   ) => {
-    const timestamp = Date.now()
-    browser.storage?.local.set({
-      timestamp: password ? timestamp : null,
-      encrypted: password ? encrypt(password, String(timestamp)) : null,
-    })
-
     // Store response on storage
     const type = requestType === "signBytes" ? "sign" : requestType
     browser.storage?.local.get([type]).then((storage: ExtensionStorage) => {

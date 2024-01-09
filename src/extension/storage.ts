@@ -1,6 +1,5 @@
 import { AccAddress } from "@terra-money/feather.js"
 import browser from "webextension-polyfill"
-import decrypt from "auth/scripts/decrypt"
 import { ChainID, InterchainNetwork, TerraNetwork } from "types/network"
 
 /* network */
@@ -15,13 +14,6 @@ export const storeNetwork = (
 export const storeTheme = (theme: string) => {
   browser.storage?.local.set({
     theme,
-  })
-}
-
-/* replace keplr */
-export const storeReplaceKeplr = (replaceKeplr: boolean) => {
-  browser.storage?.local.set({
-    replaceKeplr,
   })
 }
 
@@ -43,25 +35,17 @@ export const clearWalletAddress = () => {
   browser.storage?.local.remove("wallet")
 }
 
-/* password */
-export const getStoredPassword = (callback: (password: string) => void) => {
-  browser.storage?.local
-    .get(["encrypted", "timestamp"])
-    .then(({ encrypted, timestamp }) => {
-      if (!(encrypted && timestamp)) return ""
-      const decrypted = decrypt(encrypted, String(timestamp))
-      callback(decrypted)
-    })
-}
-
-export const clearStoredPassword = () => {
-  browser.storage?.local.set({ encrypted: null, timestamp: null })
-}
-
 /* open */
 export const getOpenURL = (url = "") => {
-  if (!browser.runtime) return
-  if (!browser.runtime.getURL) return
+  // test environment
+  if (!browser?.runtime?.getURL) return () => (window.location.href = `#${url}`)
+
+  // extension environment, open url in new tab
   return () =>
     window.open(browser.runtime.getURL(["index.html", url].join("#")))
+}
+
+export const openURL = (url = "", params?: Record<string, string>) => {
+  const urlParams = params ? "?" + new URLSearchParams(params).toString() : ""
+  getOpenURL(url + urlParams)()
 }

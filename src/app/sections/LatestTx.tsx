@@ -1,34 +1,36 @@
+import {
+  Button,
+  Grid,
+  LoadingCircular,
+  Modal,
+  SummaryHeader,
+} from "@terra-money/station-ui"
+import { isBroadcastingState, latestTxState, useTxInfo } from "data/queries/tx"
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
+import { createAmplitudeClient } from "utils/analytics/setupAmplitude"
+import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen"
+import ActivityTxMessage from "pages/activity/ActivityTxMessage"
+import WarningAmberIcon from "@mui/icons-material/WarningAmber"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { FinderLink, LinkButton } from "components/general"
+import { getCanonicalMsg } from "@terra-money/terra-utils"
+import { useThemeAnimation } from "data/settings/Theme"
+import DoneAllIcon from "@mui/icons-material/DoneAll"
 import { useEffect, useMemo, useState } from "react"
+import { isTxError } from "@terra-money/feather.js"
+import useInterval from "utils/hooks/useInterval"
+import CloseIcon from "@mui/icons-material/Close"
+import { AnalyticsEvent } from "utils/analytics"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil"
 import { intervalToDuration } from "date-fns"
-import DoneAllIcon from "@mui/icons-material/DoneAll"
-import WarningAmberIcon from "@mui/icons-material/WarningAmber"
-import CloseIcon from "@mui/icons-material/Close"
-import CloseFullscreenIcon from "@mui/icons-material/CloseFullscreen"
-import { isTxError, TxInfo } from "@terra-money/feather.js"
-import * as ruleset from "@terra-money/log-finder-ruleset"
-import useInterval from "utils/hooks/useInterval"
-import { isBroadcastingState, latestTxState } from "data/queries/tx"
-import { useTxInfo } from "data/queries/tx"
-import { useThemeAnimation } from "data/settings/Theme"
-import { useNetworkName } from "data/wallet"
-import { Button, FinderLink, LinkButton } from "components/general"
-import { Modal, LoadingCircular } from "components/feedback"
-import { Flex } from "components/layout"
-import TxMessage from "../containers/TxMessage"
 import styles from "./LatestTx.module.scss"
-import { createAmplitudeClient } from "utils/analytics/setupAmplitude"
-import { AnalyticsEvent } from "utils/analytics"
-
-const { createActionRuleSet, getTxCanonicalMsgs, createLogMatcherForActions } =
-  ruleset
+import { Flex } from "components/layout"
 
 enum Status {
-  LOADING = "LOADING",
-  SUCCESS = "SUCCESS",
-  FAILURE = "FAILURE",
+  LOADING = "loading",
+  SUCCESS = "success",
+  FAILURE = "alert",
 }
 
 const TxIndicator = ({ txhash }: { txhash: string }) => {
@@ -109,17 +111,7 @@ const TxIndicator = ({ txhash }: { txhash: string }) => {
   )
 
   /* parse tx log */
-  const networkName = useNetworkName()
-  const ruleset = createActionRuleSet(networkName)
-  const logMatcher = createLogMatcherForActions(ruleset)
-  const getCanonicalMsgs = (txInfo: TxInfo) => {
-    const matchedMsg = getTxCanonicalMsgs(txInfo, logMatcher)
-    return matchedMsg
-      ? matchedMsg
-          .map((matchedLog) => matchedLog.map(({ transformed }) => transformed))
-          .flat(2)
-      : []
-  }
+  const addresses = useInterchainAddresses() || {}
 
   return minimized ? (
     <div className={styles.minimized} onClick={() => setMinimized(false)}>
@@ -138,19 +130,19 @@ const TxIndicator = ({ txhash }: { txhash: string }) => {
     </div>
   ) : status === Status.LOADING ? (
     <Modal
-      icon={<img src={animation} width={100} height={100} alt="" />}
       closeIcon={<CloseFullscreenIcon fontSize="inherit" />}
-      title={t("Broadcasting transaction")}
       isOpen={!minimized}
       onRequestClose={() => setMinimized(true)}
     >
-      {hashDetails}
+      <Grid className={styles.loading__container} gap={16}>
+        <img src={animation} width={100} height={100} alt="" />
+        <h3>{t("Broadcasting transaction")}</h3>
+        {hashDetails}
+      </Grid>
     </Modal>
   ) : (
     <Modal
-      icon={icon}
       closeIcon={false}
-      title={title}
       footer={() =>
         redirectAfterTx ? (
           <LinkButton
@@ -162,7 +154,7 @@ const TxIndicator = ({ txhash }: { txhash: string }) => {
             {redirectAfterTx.label}
           </LinkButton>
         ) : (
-          <Button onClick={initLatestTx} color="primary" block>
+          <Button onClick={initLatestTx} variant="primary" block>
             {t("Confirm")}
           </Button>
         )
@@ -174,26 +166,29 @@ const TxIndicator = ({ txhash }: { txhash: string }) => {
       }}
       maxHeight
     >
-      {data && (
-        <ul className={styles.messages}>
-          {
-            // TODO: update getCanonicalMsgs() to support station.js types
-            getCanonicalMsgs(data).map((msg, index) => {
-              if (!msg) return null
-              const { canonicalMsg } = msg
-              return (
-                <li key={index}>
-                  {canonicalMsg.map((msg, index) => (
-                    <TxMessage key={index}>{msg}</TxMessage>
-                  ))}
-                </li>
-              )
-            })
-          }
-        </ul>
-      )}
+      <Grid className={styles.result__container} gap={16}>
+        <SummaryHeader statusLabel={title} status={status} statusMessage="" />
+        {data && (
+          <ul className={styles.messages}>
+            {
+              // TODO: update getCanonicalMsgs() to support station.js types
+              getCanonicalMsg(data as any, addresses).map((msg, index) => {
+                if (!msg) return null
+                const { canonicalMsg } = msg
+                return (
+                  <li key={index}>
+                    {canonicalMsg.map((msg, index) => (
+                      <ActivityTxMessage key={index}>{msg}</ActivityTxMessage>
+                    ))}
+                  </li>
+                )
+              })
+            }
+          </ul>
+        )}
 
-      {hashDetails}
+        {hashDetails}
+      </Grid>
     </Modal>
   )
 }

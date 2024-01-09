@@ -2,66 +2,111 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
-import DoneAllIcon from "@mui/icons-material/DoneAll"
-import { Form, FormItem, FormWarning, Input, Submit } from "components/form"
-import { isWallet } from "auth"
-import { deleteWallet } from "../../scripts/keystore"
+import { Form } from "components/form"
+import { deleteWallet, isPasswordValid } from "../../scripts/keystore"
 import useAuth from "../../hooks/useAuth"
-import ConfirmModal from "./ConfirmModal"
+import {
+  Banner,
+  Flex,
+  Input,
+  InputWrapper,
+  SubmitButton,
+  Button,
+  FlexColumn,
+  SummaryHeader,
+} from "@terra-money/station-ui"
+import styles from "./DeleteWalletForm.module.scss"
 
 interface Values {
-  name: string
+  password: string
 }
 
-const DeleteWalletForm = () => {
-  const { t } = useTranslation()
+interface Props {
+  walletName: string
+}
+
+const DeleteWalletForm = ({ walletName }: Props) => {
+  const { wallets, connect, disconnect } = useAuth()
   const navigate = useNavigate()
-  const { wallet, disconnect } = useAuth()
-  const walletName = isWallet.local(wallet) ? wallet.name : undefined
-  const [name, setName] = useState(walletName)
+  const { t } = useTranslation()
+
+  const [name, setName] = useState<string | undefined>(walletName)
+  const otherWallets = wallets.filter((wallet) => wallet.name !== walletName)
 
   /* form */
-  const form = useForm<Values>({ mode: "onChange" })
-  const { register, handleSubmit, formState } = form
-  const { isValid } = formState
+  const form = useForm<Values>()
+  const { register, handleSubmit, formState, setError } = form
+  const { isValid, errors } = formState
 
   /* submit */
   const submit = (values: Values) => {
-    if (values.name !== name) return
+    if (!name) return
+    if (!isPasswordValid(values.password)) {
+      setError("password", { message: t("Invalid password") })
+      return
+    }
+
+    // Remove deleted wallet.
     disconnect()
-    deleteWallet(name)
+    deleteWallet(walletName)
     setName(undefined)
+
+    // Connect to most recently connected wallet.
+    if (otherWallets.length) {
+      connect(otherWallets[0].name)
+    }
   }
 
   return (
     <>
       {!name ? (
-        <ConfirmModal
-          icon={<DoneAllIcon className="success" fontSize="inherit" />}
-          onRequestClose={() => navigate("/", { replace: true })}
-        >
-          {t("Wallet deleted successfully")}
-        </ConfirmModal>
-      ) : (
-        <Form onSubmit={handleSubmit(submit)}>
-          <FormItem>
-            <p>
-              Type <strong>{name}</strong> to confirm
-            </p>
+        <FlexColumn className={styles.form__container}>
+          <SummaryHeader
+            statusLabel={t("Success!")}
+            statusMessage={t("Wallet removed")}
+            status={"success"}
+          />
 
-            <Input
-              {...register("name", { validate: (value) => value === name })}
-              autoFocus
+          <Flex gap={24} className={styles.form__footer}>
+            <Button
+              onClick={() => navigate("/", { replace: true })}
+              label={t("Done")}
+              variant="primary"
+              style={{ width: "100%" }}
             />
-          </FormItem>
+          </Flex>
+        </FlexColumn>
+      ) : (
+        <Form onSubmit={handleSubmit(submit)} style={{ height: "90%" }}>
+          <FlexColumn className={styles.form__container}>
+            <FlexColumn gap={24}>
+              <InputWrapper
+                label={t("Password")}
+                error={errors.password?.message}
+              >
+                <Input {...register("password")} type="password" />
+              </InputWrapper>
 
-          <FormWarning>
-            {t(
-              "This action cannot be undone. A mnemonic is required to recover a deleted wallet."
-            )}
-          </FormWarning>
-
-          <Submit disabled={!isValid} />
+              <Banner
+                variant="error"
+                title={t(
+                  "This action can not be undone. You will need a private key or a recovery phrase to restore this wallet."
+                )}
+              />
+            </FlexColumn>
+            <Flex gap={24} className={styles.form__footer}>
+              <Button
+                onClick={() => navigate("/", { replace: true })}
+                label={t("Back")}
+                variant="secondary"
+              />
+              <SubmitButton
+                disabled={!isValid}
+                label={t("Remove")}
+                variant="warning"
+              />
+            </Flex>
+          </FlexColumn>
         </Form>
       )}
     </>

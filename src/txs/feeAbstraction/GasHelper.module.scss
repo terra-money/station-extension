@@ -1,0 +1,95 @@
+@import "mixins";
+
+.hepler__container {
+  display: grid;
+  gap: 24px;
+}
+
+.card {
+  .title {
+    color: var(--token-light-white);
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 16px;
+    padding-bottom: 16px;
+
+    @include flex(flex-start);
+    gap: 12px;
+  }
+
+  .description {
+    color: var(--token-light-100);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
+    padding-bottom: 24px;
+  }
+
+  .loader__container {
+    margin-top: 16px;
+  }
+
+  .amount__container {
+    p {
+      color: var(--token-dark-900);
+      font-size: 14px;
+      line-height: 14px;
+      font-weight: 500;
+    }
+
+    .amount__warning,
+    .amount__warning > *,
+    .amount__error,
+    .amount__error > *,
+    .amount,
+    .amount > * {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 14px;
+    }
+  }
+}
+
+.amount {
+  color: var(--token-light-white);
+}
+
+.amount__error {
+  color: var(--token-error-500);
+}
+
+.amount__warning {
+  color: var(--token-warning-500);
+}
+
+.asset__selector__container {
+  margin: 0 -24px;
+}
+
+.error__banner__container {
+  margin: 0 -24px;
+  margin-bottom: -24px;
+  padding-top: 18px;
+}
+
+.transaction__animation {
+  margin: 0 auto;
+}
+
+.transaction__progress {
+  padding-top: 8px;
+  position: relative;
+
+  .transaction__timer {
+    transition: 300ms;
+    position: absolute;
+    left: 50%;
+    top: 7px;
+    transform: translate(-50%, 0);
+    background-color: var(--token-dark-500);
+    padding: 0 14px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 16px;
+  }
+}

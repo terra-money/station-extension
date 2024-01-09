@@ -1,0 +1,14 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+
+  .form__content > * {
+    width: 100%;
+  }
+
+  .submit__button {
+    margin-top: 22px;
+  }
+}

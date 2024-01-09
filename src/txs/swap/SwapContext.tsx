@@ -1,34 +1,93 @@
-import { PropsWithChildren } from "react"
+import { PropsWithChildren, useEffect } from "react"
 import createContext from "utils/createContext"
 import { combineState } from "data/query"
-import { useActiveDenoms } from "data/queries/coingecko"
-import { TerraContracts } from "data/Terra/TerraAssets"
-import { useCW20Pairs } from "data/Terra/TerraAssets"
-import { useTerraContracts } from "data/Terra/TerraAssets"
 import { Fetching } from "components/feedback"
+import {
+  useSwapTokens,
+  useParseSwapTokens,
+  useGetBestRoute,
+  useGetSwapDefaults,
+  useGetMsgs,
+} from "data/queries/swap/hook"
+import {
+  SwapAssetBase,
+  SwapAssetExtra,
+  SwapSource,
+  RouteInfo,
+  SwapState,
+} from "data/queries/swap/types"
+import { UseFormReturn, useForm } from "react-hook-form"
+import { useSwapSlippage } from "utils/localStorage"
+import SwapLoadingPage from "./components/SwapLoadingPage"
 
 interface Swap {
-  activeDenoms: Denom[]
-  pairs: CW20Pairs
-  contracts?: TerraContracts
+  tokens: SwapAssetExtra[]
+  getTokensWithBal: (tokens: SwapAssetExtra[]) => SwapAssetExtra[]
+  getBestRoute: (swap: SwapState) => Promise<RouteInfo>
+  getMsgs: (swap: SwapState) => any
+  form: UseFormReturn<SwapState>
+  slippage: string
+  changeSlippage: (slippage: string) => void
 }
 
 export const [useSwap, SwapProvider] = createContext<Swap>("useSwap")
 
 const SwapContext = ({ children }: PropsWithChildren<{}>) => {
-  const { data: activeDenoms, ...activeDenomsState } = useActiveDenoms()
-  const { data: pairs, ...cw20PairsState } = useCW20Pairs()
-  const { data: contracts, ...contractsState } = useTerraContracts()
+  const SOURCES = [SwapSource.SKIP]
 
-  const state = combineState(activeDenomsState, contractsState, cw20PairsState)
+  const swap = useSwapTokens(SOURCES)
+  const getBestRoute = useGetBestRoute(SOURCES)
+  const getMsgs = useGetMsgs(SOURCES)
+
+  const { slippage, changeSlippage } = useSwapSlippage()
+  const tokens = swap.reduce(
+    (acc, { data }) => (data ? [...acc, ...data] : acc),
+    [] as SwapAssetBase[]
+  )
+
+  const parsed = useParseSwapTokens(tokens)
+  const defaultValues = useGetSwapDefaults(parsed)
+  const state = combineState(...swap)
+
+  const form = useForm<SwapState>({ mode: "onChange" })
+  const { askAsset } = form.watch()
+
+  useEffect(() => {
+    if (!askAsset) {
+      form.reset({
+        askAsset: defaultValues.askAsset,
+        offerAsset: defaultValues.offerAsset,
+        slippageTolerance: slippage,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultValues.askAsset, defaultValues.offerAsset])
+
+  const getTokensWithBal = (tokens: SwapAssetExtra[]) =>
+    tokens.filter((t) => Number(t.balance) > 0)
 
   const render = () => {
-    if (!(activeDenoms && pairs && contracts)) return null
-    const value = { activeDenoms, pairs, contracts }
+    const value = {
+      tokens: parsed,
+      getTokensWithBal,
+      getBestRoute,
+      form,
+      getMsgs,
+      slippage,
+      changeSlippage,
+    }
     return <SwapProvider value={value}>{children}</SwapProvider>
   }
 
-  return !state.isSuccess ? null : <Fetching {...state}>{render()}</Fetching>
+  return (
+    <Fetching {...state}>
+      {!state.isSuccess || !askAsset || !parsed ? (
+        <SwapLoadingPage />
+      ) : (
+        render()
+      )}
+    </Fetching>
+  )
 }
 
 export default SwapContext

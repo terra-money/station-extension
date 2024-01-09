@@ -1,18 +1,28 @@
-import { useState } from "react"
-import { useTranslation } from "react-i18next"
-import { useForm } from "react-hook-form"
+import {
+  Checkbox,
+  Copy,
+  Grid,
+  Input,
+  InputWrapper,
+  SectionHeader,
+  SubmitButton,
+  SummaryHeader,
+  TextArea,
+} from "@terra-money/station-ui"
+import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
 import { AccAddress, SignatureV2 } from "@terra-money/feather.js"
-import { SAMPLE_ADDRESS } from "config/constants"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
-import { Pre } from "components/general"
-import { Form, FormError, FormItem } from "components/form"
-import { Input, Submit, TextArea } from "components/form"
-import { Modal } from "components/feedback"
-import { isWallet, useAuth } from "auth"
-import { PasswordError } from "auth/scripts/keystore"
 import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
-import ReadTx from "./ReadTx"
+import { Form, FormError } from "components/form"
+import { SAMPLE_ADDRESS } from "config/constants"
+import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
+import validate from "auth/scripts/validate"
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { isWallet, useAuth } from "auth"
 import { useChainID } from "data/wallet"
+import ReadTx from "./ReadTx"
 
 interface TxValues {
   address: AccAddress
@@ -28,6 +38,7 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
   const { wallet, createSignature } = useAuth()
   const lcd = useInterchainLCDClient()
   const chainID = useChainID()
+  const navigate = useNavigate()
 
   /* form */
   const form = useForm<TxValues>({ mode: "onChange", defaultValues })
@@ -38,15 +49,26 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
   /* submit */
   const passwordRequired = isWallet.single(wallet)
   const [password, setPassword] = useState("")
+  const [rememberPassword, setRememberPassword] = useState(
+    shouldStorePassword()
+  )
+  const [showPasswordInput, setShowPasswordInput] = useState(false)
   const [incorrect, setIncorrect] = useState<string>()
 
-  const disabled = passwordRequired && !password ? t("Enter password") : ""
+  // autofill stored password if exists
+  useEffect(() => {
+    getStoredPassword().then((password) => {
+      setPassword(password ?? "")
+      setShowPasswordInput(!password)
+    })
+  }, []) // eslint-disable-line
 
   const [signature, setSignature] = useState<SignatureV2>()
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<Error>()
 
   const submit = async ({ address, tx }: TxValues) => {
+    setSignature(undefined)
     setSubmitting(true)
 
     try {
@@ -60,36 +82,63 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
       )
       setSignature(signature)
     } catch (error) {
-      if (error instanceof PasswordError) setIncorrect(error.message)
+      if (error instanceof Error) setIncorrect(error.message)
       else setError(error as Error)
     }
 
     setSubmitting(false)
   }
 
-  const submittingLabel = isWallet.ledger(wallet) ? t("Confirm in ledger") : ""
+  const submittingLabel = isWallet.ledger(wallet)
+    ? t("Confirm in ledger")
+    : "Generate Signature"
+
+  if (signature) {
+    return (
+      <Grid gap={40} style={{ marginTop: 20 }}>
+        <SummaryHeader
+          statusLabel={"Success!"}
+          statusMessage={"Signature generated"}
+          status={"success"}
+        />
+        {signature && (
+          <InputWrapper
+            label={t("Signature")}
+            extra={<Copy copyText={toBytes(signature)} />}
+          >
+            <TextArea readOnly={true} value={toBytes(signature)} rows={10} />
+          </InputWrapper>
+        )}
+        <SubmitButton onClick={() => navigate("/")}>{"Done"}</SubmitButton>
+      </Grid>
+    )
+  }
 
   return (
-    <ReadTx tx={tx.trim()}>
-      <Form onSubmit={handleSubmit(submit)}>
-        <FormItem label={t("Multisig address")}>
-          <Input
-            {...register("address", { validate: AccAddress.validate })}
-            placeholder={SAMPLE_ADDRESS}
-            autoFocus
-          />
-        </FormItem>
+    <Form onSubmit={handleSubmit(submit)}>
+      <InputWrapper label={t("Multisig Address")}>
+        <Input
+          {...register("address", {
+            validate: validate.address,
+          })}
+          placeholder={SAMPLE_ADDRESS}
+          autoFocus
+        />
+      </InputWrapper>
+      <InputWrapper label={t("Hashed Transaction")}>
+        <TextArea
+          {...register("tx", { required: true })}
+          placeholder={SAMPLE_ENCODED_TX}
+          rows={4}
+        />
+      </InputWrapper>
+      <ReadTx tx={tx.trim()} />
 
-        <FormItem label={t("Tx")}>
-          <TextArea
-            {...register("tx", { required: true })}
-            placeholder={SAMPLE_ENCODED_TX}
-            rows={6}
-          />
-        </FormItem>
+      <SectionHeader title="Confirm" withLine />
 
-        {passwordRequired && (
-          <FormItem label={t("Password")} error={incorrect}>
+      {passwordRequired && showPasswordInput && !incorrect && (
+        <>
+          <InputWrapper label={t("Password")} error={incorrect}>
             <Input
               type="password"
               value={password}
@@ -98,28 +147,24 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
                 setPassword(e.target.value)
               }}
             />
-          </FormItem>
-        )}
+          </InputWrapper>
 
-        {error && <FormError>{error.message}</FormError>}
-
-        <Submit submitting={submitting} disabled={!!disabled || !isValid}>
-          {submitting ? submittingLabel : disabled}
-        </Submit>
-      </Form>
-
-      {signature && (
-        <Modal
-          title={t("Signature")}
-          isOpen
-          onRequestClose={() => setSignature(undefined)}
-        >
-          <Pre normal break copy>
-            {toBytes(signature)}
-          </Pre>
-        </Modal>
+          <InputWrapper>
+            <Checkbox
+              label={t("Save password")}
+              checked={rememberPassword}
+              onChange={() => setRememberPassword((r) => !r)}
+            />
+          </InputWrapper>
+        </>
       )}
-    </ReadTx>
+
+      {error && <FormError>{error.message}</FormError>}
+
+      <SubmitButton loading={submitting} disabled={!isValid}>
+        {submittingLabel}
+      </SubmitButton>
+    </Form>
   )
 }
 

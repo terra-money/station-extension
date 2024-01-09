@@ -1,0 +1,38 @@
+.changelog__container {
+  .changelog__header {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    .icon {
+      font-size: 32pt;
+    }
+
+    .title {
+      font-size: 18pt;
+      font-weight: bold;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+    }
+  }
+
+  .changelog__body {
+    h2 {
+      font-size: 12pt;
+      font-weight: 600;
+      margin: 0.4rem 0;
+    }
+
+    li {
+      color: var(--text-muted);
+    }
+  }
+
+  .changelog__loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5rem;
+  }
+}

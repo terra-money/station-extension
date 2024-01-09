@@ -1,11 +1,11 @@
 import { QueryKey, useQuery, useQueryClient } from "react-query"
-import { atom, useSetRecoilState } from "recoil"
-import axios from "axios"
-import { useNetworks } from "app/InitNetworks"
-import { queryKey } from "../query"
 import { useInterchainLCDClient } from "./lcdClient"
+import { atom, useSetRecoilState } from "recoil"
+import { CARBON_API, OSMOSIS_GAS_ENDPOINT } from "config/constants"
+import { useNetworks } from "app/InitNetworks"
 import { RefetchOptions } from "../query"
-import { CARBON_API } from "config/constants"
+import { queryKey } from "../query"
+import axios from "axios"
 
 interface LatestTx {
   txhash: string
@@ -55,7 +55,7 @@ export const useTxInfo = ({ txhash, queryKeys, chainID }: LatestTx) => {
   )
 }
 
-export const useOsmosisGas = () => {
+export const useOsmosisGas = (disabled?: boolean) => {
   const { networks } = useNetworks()
 
   return useQuery(
@@ -63,7 +63,7 @@ export const useOsmosisGas = () => {
     async () => {
       try {
         const { data } = await axios.get<OsmosisGasResponse>(
-          "osmosis/txfees/v1beta1/cur_eip_base_fee",
+          OSMOSIS_GAS_ENDPOINT,
           {
             baseURL: networks["mainnet"]["osmosis-1"].lcd, // hard set for now.
           }
@@ -76,6 +76,7 @@ export const useOsmosisGas = () => {
     {
       ...RefetchOptions.INFINITY,
       staleTime: 60 * 1000, // cache data for 1 min
+      enabled: !disabled,
     }
   )
 }

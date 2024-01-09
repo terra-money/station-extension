@@ -35,6 +35,7 @@ interface TokenItem {
   type?: string
   name?: string
   icon?: string
+  chainID?: ChainID
   isAxelar?: boolean
   lsd?: string
 }
@@ -89,6 +90,7 @@ interface CW20TokenItem extends CW20TokenInfoResponse {
 }
 
 interface NativeTokenItem {
+  chainID?: string
   chains: string[]
   decimals: number
   icon: string

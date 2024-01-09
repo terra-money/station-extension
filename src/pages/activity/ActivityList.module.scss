@@ -1,0 +1,21 @@
+@import "mixins";
+
+.activitylist {
+  padding-bottom: 16px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.loader {
+  color: #065bed;
+  display: flex;
+  justify-content: center;
+  padding-top: 100px;
+}
+
+.loadingtext {
+  color: white;
+  padding-top: 8px;
+  display: flex;
+  justify-content: center;
+}

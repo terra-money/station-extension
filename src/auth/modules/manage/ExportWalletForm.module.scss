@@ -1,0 +1,20 @@
+.form__container {
+  justify-content: space-between;
+
+  .form__footer {
+    margin-bottom: 4px;
+  }
+}
+
+.button {
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.text {
+  color: var(--token-light-100);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  width: 100%;
+}

@@ -1,17 +1,20 @@
 import { DEFAULT_GAS_ADJUSTMENT } from "config/constants"
 import themes from "styles/themes/themes"
-import { useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { atom, useRecoilState } from "recoil"
 import { CustomNetwork, InterchainNetwork } from "types/network"
+import { AccAddress } from "@terra-money/feather.js"
+import browser from "webextension-polyfill"
 
 export enum SettingKey {
   Theme = "Theme",
   Currency = "FiatCurrency",
+  SwapSlippage = "SwapSlippage",
   CustomNetworks = "CustomNetworks",
   CustomChains = "CustomChains",
   GasAdjustment = "GasAdjust", // Tx
   AddressBook = "AddressBook", // Send
-  HideNonWhitelistTokens = "HideNonWhiteListTokens",
+  OnlyShowWhitelist = "OnlyShowWhitelist",
   Network = "Network",
   CustomLCD = "CustomLCD",
   HideLowBalTokens = "HideLowBalTokens",
@@ -21,7 +24,7 @@ export enum SettingKey {
   EnabledNetworks = "EnabledNetworks",
   NetworkCacheTime = "NetworkCacheTime",
   DevMode = "DevMode",
-  ReplaceKeplr = "ReplaceKeplr",
+  RecentRecipients = "RecentRecipients",
 }
 
 //const isSystemDarkMode =
@@ -57,17 +60,18 @@ export const DefaultSettings = {
   } as Record<string, Record<string, InterchainNetwork>>,
   [SettingKey.GasAdjustment]: DEFAULT_GAS_ADJUSTMENT,
   [SettingKey.AddressBook]: [] as AddressBook[],
+  [SettingKey.RecentRecipients]: [] as AccAddress[],
   [SettingKey.CustomTokens]: DefaultCustomTokens as CustomTokens,
   [SettingKey.MinimumValue]: 0,
   [SettingKey.NetworkCacheTime]: 0,
-  [SettingKey.HideNonWhitelistTokens]: true,
+  [SettingKey.SwapSlippage]: "0.5",
+  [SettingKey.OnlyShowWhitelist]: true,
   [SettingKey.HideLowBalTokens]: true,
   [SettingKey.WithdrawAs]: "",
   [SettingKey.Network]: "",
   [SettingKey.EnabledNetworks]: { time: 0, networks: [] as string[] },
   [SettingKey.CustomLCD]: {},
   [SettingKey.DevMode]: false,
-  [SettingKey.ReplaceKeplr]: false,
 }
 
 export const getLocalSetting = <T>(key: SettingKey): T => {
@@ -87,9 +91,9 @@ export const setLocalSetting = <T>(key: SettingKey, value: T) => {
   localStorage.setItem(key, item)
 }
 
-export const hideNoWhitelistState = atom({
-  key: "hideNoWhitelistState",
-  default: !!getLocalSetting(SettingKey.HideNonWhitelistTokens),
+export const onlyShowWhitelistState = atom({
+  key: "onlyShowWhitelist",
+  default: !!getLocalSetting(SettingKey.OnlyShowWhitelist),
 })
 
 export const hideLowBalTokenState = atom({
@@ -100,6 +104,11 @@ export const hideLowBalTokenState = atom({
 export const savedNetworkState = atom({
   key: "savedNetwork",
   default: getLocalSetting(SettingKey.Network) as string | undefined,
+})
+
+export const recentRecipients = atom({
+  key: "recentRecipients",
+  default: getLocalSetting(SettingKey.RecentRecipients) as AddressBook[],
 })
 
 export const customLCDState = atom({
@@ -121,9 +130,9 @@ export const devModeState = atom({
   default: !!getLocalSetting(SettingKey.DevMode),
 })
 
-export const replaceKeplrState = atom({
-  key: "replaceKeplrState",
-  default: !!getLocalSetting(SettingKey.ReplaceKeplr),
+export const swapSlippageState = atom({
+  key: "swapSlippageState",
+  default: getLocalSetting(SettingKey.SwapSlippage) as string,
 })
 
 export const useShowWelcomeModal = () => {
@@ -144,7 +153,7 @@ export const useSavedNetwork = () => {
 
 export const useCustomLCDs = () => {
   const [customLCDs, setCustomLCDs] = useRecoilState(customLCDState)
-  function changeCustomLCDs(chainID: string, lcd: string | undefined) {
+  const changeCustomLCDs = (chainID: string, lcd: string | undefined) => {
     const newLCDs = { ...customLCDs, [chainID]: lcd }
     setLocalSetting(SettingKey.CustomLCD, newLCDs)
     setCustomLCDs(newLCDs)
@@ -177,13 +186,31 @@ export const useCustomChains = () => {
   }
 }
 
+export const useSwapSlippage = () => {
+  const [slippage, setSlippage] = useRecoilState(swapSlippageState)
+
+  const changeSlippage = useCallback(
+    (slippage: string) => {
+      setLocalSetting(SettingKey.SwapSlippage, slippage)
+      setSlippage(slippage)
+    },
+    [setSlippage]
+  )
+
+  return {
+    slippage,
+    changeSlippage,
+  }
+}
+
 export const useTokenFilters = () => {
-  const [hideNoWhitelist, setHideNoWhitelist] =
-    useRecoilState(hideNoWhitelistState)
-  const toggleHideNoWhitelist = useCallback(() => {
-    setLocalSetting(SettingKey.HideNonWhitelistTokens, !hideNoWhitelist)
-    setHideNoWhitelist(!hideNoWhitelist)
-  }, [hideNoWhitelist, setHideNoWhitelist])
+  const [onlyShowWhitelist, setOnlyShowWhitelist] = useRecoilState(
+    onlyShowWhitelistState
+  )
+  const toggleOnlyShowWhitelist = useCallback(() => {
+    setLocalSetting(SettingKey.OnlyShowWhitelist, !onlyShowWhitelist)
+    setOnlyShowWhitelist(!onlyShowWhitelist)
+  }, [onlyShowWhitelist, setOnlyShowWhitelist])
 
   const [hideLowBal, setHideLowBal] = useRecoilState(hideLowBalTokenState)
   const toggleHideLowBal = useCallback(() => {
@@ -192,11 +219,26 @@ export const useTokenFilters = () => {
   }, [hideLowBal, setHideLowBal])
 
   return {
-    hideNoWhitelist,
-    toggleHideNoWhitelist,
+    onlyShowWhitelist,
+    toggleOnlyShowWhitelist,
     toggleHideLowBal,
     hideLowBal,
   }
+}
+
+export const useRecentRecipients = () => {
+  const [recipients, setRecipients] = useRecoilState(recentRecipients)
+  const addRecipient = useCallback(
+    (recipient: AddressBook) => {
+      if (recipients.find((r) => r.recipient === recipient.recipient)) return
+      const newRecipients = [recipient, ...recipients].splice(0, 2)
+      setLocalSetting(SettingKey.RecentRecipients, newRecipients)
+      setRecipients(newRecipients)
+    },
+    [recipients, setRecipients]
+  )
+
+  return { recipients, addRecipient }
 }
 
 const toggleSetting = (
@@ -217,9 +259,33 @@ export const useDevMode = () => {
 }
 
 export const useReplaceKeplr = () => {
-  const [replaceKeplr, setReplaceKeplr] = useRecoilState(replaceKeplrState)
-  const toggleReplaceKeplr = () =>
-    toggleSetting(SettingKey.ReplaceKeplr, replaceKeplr, setReplaceKeplr)
+  const [replaceKeplr, setReplaceKeplr] = useState(false)
 
-  return { toggleReplaceKeplr, replaceKeplr }
+  useEffect(() => {
+    // if extension env
+    if (browser?.storage?.local?.get) {
+      browser.storage.local.get(["replaceKeplr"]).then(({ replaceKeplr }) => {
+        setReplaceKeplr(!!replaceKeplr)
+      })
+    }
+    // test env
+    else {
+      setReplaceKeplr(localStorage.getItem("replaceKeplr") === "true")
+    }
+  }, [])
+
+  return {
+    setReplaceKeplr: (state: boolean) => {
+      setReplaceKeplr(state)
+      // if extension env
+      if (browser?.storage?.local?.set) {
+        browser.storage.local.set({ replaceKeplr: state })
+      }
+      // test env
+      else {
+        localStorage.setItem("replaceKeplr", `${state}`)
+      }
+    },
+    replaceKeplr,
+  }
 }

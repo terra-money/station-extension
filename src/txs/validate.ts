@@ -146,5 +146,5 @@ const validate = {
 export default validate
 
 /* tns */
-export const validateRecipient = (address: string) =>
-  AccAddress.validate(address) || address.endsWith(".ust")
+export const validateRecipient = (address: AccAddress) =>
+  AccAddress.validate(address) || address?.endsWith(".ust")

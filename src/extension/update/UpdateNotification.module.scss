@@ -1,0 +1,20 @@
+@import "mixins";
+
+.notification {
+  @include flex(space-between);
+  background-color: var(--token-primary-900);
+  padding: 16px 24px;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--token-primary-300);
+
+  button {
+    margin-left: 1rem;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

@@ -1,10 +1,11 @@
 import { useState } from "react"
 import classNames from "classnames/bind"
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import { Coins, Msg, MsgAminoCustom } from "@terra-money/feather.js"
 import { readMsg } from "@terra-money/msg-reader"
 import TxMessage from "app/containers/TxMessage"
 import styles from "./Message.module.scss"
+import { ReactComponent as ActivityIcon } from "styles/images/icons/Activity.svg"
+import { ReactComponent as ArrowIcon } from "styles/images/icons/DropdownArrow.svg"
 
 const cx = classNames.bind(styles)
 
@@ -12,7 +13,7 @@ function parseAminoType(type: string) {
   return type.split("/")[type.split("/").length - 1].split("-").join(" ")
 }
 
-const Message = ({ msg, warn }: { msg: Msg; warn: boolean }) => {
+const Message = ({ msg }: { msg: Msg; warn: boolean }) => {
   const summary =
     msg instanceof MsgAminoCustom
       ? parseAminoType(msg.toAmino()["type"] ?? "")
@@ -37,14 +38,20 @@ const Message = ({ msg, warn }: { msg: Msg; warn: boolean }) => {
   }
 
   return (
-    <article className={cx(styles.component, { warn })}>
-      <button className={styles.header} onClick={toggle}>
-        <TxMessage>{summary}</TxMessage>
-        <KeyboardArrowDownIcon style={{ fontSize: 16 }} />
+    <article className={cx(styles.component)}>
+      <button className={cx(styles.header, { collapsed })} onClick={toggle}>
+        <div className={styles.icon__container}>
+          <ActivityIcon width={18} height={18} className={styles.icon} />
+          <TxMessage>{summary}</TxMessage>
+        </div>
+        <ArrowIcon width={12} height={12} className={styles.arrow__icon} />
       </button>
 
       {!collapsed && (
-        <section>
+        <section className={styles.content}>
+          <div className={styles.summary__display}>
+            <TxMessage>{summary}</TxMessage>
+          </div>
           {[
             ["type", type],
             ...Object.entries(
@@ -53,7 +60,7 @@ const Message = ({ msg, warn }: { msg: Msg; warn: boolean }) => {
           ].map(([key, value]) => {
             return (
               <article className={styles.detail} key={key}>
-                <h1>{key}</h1>
+                <h3>{key}</h3>
                 <section className={styles.value}>{renderValue(value)}</section>
               </article>
             )

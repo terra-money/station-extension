@@ -1,0 +1,15 @@
+@import "mixins";
+
+.manage__wallets {
+  @include flex(flex-start);
+  gap: 8px;
+  color: var(--token-dark-900);
+}
+
+.selector {
+  @include flex(flex-start);
+  span,
+  svg {
+    color: var(--token-light-white);
+  }
+}

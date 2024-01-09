@@ -1,0 +1,13 @@
+.container {
+  display: grid;
+  gap: 20px;
+  grid-template-rows: repeat(7, auto) 1fr; /* Adjust the number of 'auto' rows as per your layout */
+}
+
+.button {
+  grid-row-start: -1; /* Start at the last row */
+}
+
+.green {
+  color: var(--token-success-500) !important;
+}

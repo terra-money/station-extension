@@ -1,8 +1,12 @@
 import { Flex } from "components/layout"
 import { Fetching, Empty } from "components/feedback"
-import TokenItem, { TokenItemProps } from "./TokenItem"
+import { TokenItemProps } from "./TokenItem"
 import styles from "./TokenList.module.scss"
 import TokenFilters from "./TokenFilters"
+import { Grid, TokenCheckboxListItem } from "@terra-money/station-ui"
+import { useNetwork } from "data/wallet"
+import { useMemo } from "react"
+import { sortTokens } from "utils/chain"
 
 interface Props<T> extends QueryState {
   results: T[]
@@ -14,10 +18,12 @@ interface Props<T> extends QueryState {
   remove: (item: T) => void
 }
 
-function TokenList<T extends { symbol: string }>(props: Props<T>) {
+const TokenList = <T extends { symbol: string }>(props: Props<T>) => {
   const { getIsAdded, add, remove, ...rest } = props
   const { results, renderTokenItem, ...state } = rest
   const empty = !state.isLoading && !results.length
+  const network = useNetwork()
+  const sortedResults = useMemo(() => sortTokens(results), [results])
 
   return state.error || empty ? (
     <Flex className={styles.results}>
@@ -26,23 +32,28 @@ function TokenList<T extends { symbol: string }>(props: Props<T>) {
   ) : (
     <Fetching {...state} height={2}>
       <TokenFilters />
-      <ul className={styles.results}>
-        {results
+      <Grid gap={10}>
+        {sortedResults
           .sort((a, b) => Number(getIsAdded(b)) - Number(getIsAdded(a)))
-          .map((item) => {
-            const tokenItem = renderTokenItem(item)
+          .map((i) => {
+            const token = renderTokenItem(i)
+            const isAdded = getIsAdded(i)
             return (
-              <li key={tokenItem.key}>
-                <TokenItem
-                  {...tokenItem}
-                  added={getIsAdded(item)}
-                  onAdd={() => add(item)}
-                  onRemove={() => remove(item)}
+              <Grid gap={14} key={token.key + token.chainID}>
+                <TokenCheckboxListItem
+                  symbol={i.symbol}
+                  tokenImg={token.icon ?? ""}
+                  chain={{
+                    label: network[token.chainID ?? ""]?.name,
+                    icon: network[token.chainID ?? ""]?.icon,
+                  }}
+                  checked={isAdded}
+                  onClick={isAdded ? () => remove(i) : () => add(i)}
                 />
-              </li>
+              </Grid>
             )
           })}
-      </ul>
+      </Grid>
     </Fetching>
   )
 }

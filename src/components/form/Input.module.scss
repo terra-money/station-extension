@@ -9,7 +9,6 @@
 .input {
   @include border;
   @include size;
-  flex: 1;
 }
 
 .symbol {
@@ -32,38 +31,20 @@
 
 /* search */
 .search {
-  position: relative;
-  margin: 0 var(--main-padding-horizontal);
-
-  .input {
-    padding-left: 50px;
-    background-color: var(--card-bg-muted);
-    border: 0;
-
-    &::placeholder {
-      color: var(--text-muted);
-    }
-  }
-
-  .icon {
-    top: 50%;
-    left: 16px;
-    position: absolute;
-    transform: translate(0, -50%);
-    color: var(--text-muted);
-  }
+  display: block;
 }
 
 .search__small {
   font-size: small;
 
   .icon {
-    width: 18px;
-    left: 10px;
+    display: none;
+    //width: 18px;
+    //left: 10px;
   }
 
   .input {
-    padding-left: 36px;
+    //padding-left: 36px;
   }
 }
 
@@ -73,6 +54,7 @@
   margin: 4px 6px !important;
 
   .icon {
+    display: none;
     width: 18px;
     left: 10px;
   }
@@ -81,8 +63,4 @@
     padding-left: 36px;
     height: 35px;
   }
-}
-
-.input__small {
-  height: 38px;
 }

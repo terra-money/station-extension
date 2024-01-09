@@ -1,8 +1,11 @@
 import { useNetworks } from "app/InitNetworks"
-import { addressFromWords } from "utils/bech32"
+import { addressFromWords, wordsFromAddress } from "utils/bech32"
 import useAuth from "./useAuth"
 import { useNetworkName } from "./useNetwork"
 import { useNetwork } from "data/wallet"
+import { useAddressBook } from "data/settings/AddressBook"
+import { AccAddress } from "@terra-money/feather.js"
+import { truncate } from "@terra-money/terra-utils"
 
 /* auth | walle-provider */
 const useAddress = () => {
@@ -50,6 +53,28 @@ export const useInterchainAddresses = () => {
 export const usePubkey = () => {
   const { wallet } = useAuth()
   return wallet?.pubkey
+}
+
+export const useGetLocalWalletName = () => {
+  const { wallets } = useAuth()
+  return (words: string) => {
+    const wallet = wallets.find((w) =>
+      "words" in w ? Object.values(w.words).find((w) => w === words) : null
+    )
+    return wallet?.name
+  }
+}
+export const useGetWalletName = () => {
+  const { list } = useAddressBook()
+  const getLocalWalletName = useGetLocalWalletName()
+
+  return (address: AccAddress) => {
+    const words = wordsFromAddress(address)
+    const localWalletName = getLocalWalletName(words)
+
+    const entry = list.find((l) => wordsFromAddress(l.recipient) === words)
+    return entry?.name ?? localWalletName ?? truncate(address, [11, 6])
+  }
 }
 
 export default useAddress
