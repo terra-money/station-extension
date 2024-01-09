@@ -84,29 +84,47 @@ const PrevHopActivity = (ibcDetails: IbcTxDetails) => {
 
   const { activityMessages, activityType } = parseMsgs(tx)
 
+  const timelineDisplayMessages = activityMessages.map(
+    (message: ReactElement) => {
+      return {
+        variant: (tx.code === 0 ? "success" : "warning") as
+          | "success"
+          | "warning",
+        msg: message,
+      }
+    }
+  )
+
   const prevIbcDetails = getRecvIbcTxDetails(tx)
 
   return (
     <>
       {!!prevIbcDetails && <PrevHopActivity {...prevIbcDetails} />}
-      <ActivityListItem
-        variant={tx.code === 0 ? "success" : "failed"}
-        chain={{
-          icon: network[tx.chain].icon,
-          label: network[tx.chain].name,
-        }}
-        msg={activityMessages[0]}
-        type={t(activityType)}
-        time={t(toNow(new Date(tx.timestamp)))}
-        hasTimeline
-        extra={
-          <ExternalLink
-            href={externalLink}
-            className={styles.tx__details__link}
-          >
-            {t("Details")} <ExternalLinkIcon fill="currentColor" />
-          </ExternalLink>
+
+      <Timeline
+        startOverride={
+          <ActivityListItem
+            variant={tx.code === 0 ? "success" : "failed"}
+            chain={{
+              icon: network[tx.chain].icon,
+              label: network[tx.chain].name,
+            }}
+            msg={activityMessages[0]}
+            type={t(activityType)}
+            time={t(toNow(new Date(tx.timestamp)))}
+            hasTimeline
+            extra={
+              <ExternalLink
+                href={externalLink}
+                className={styles.tx__details__link}
+              >
+                {t("Details")} <ExternalLinkIcon fill="currentColor" />
+              </ExternalLink>
+            }
+          />
         }
+        middleItems={timelineDisplayMessages.slice(1)}
+        hasNextElement
       />
     </>
   )
@@ -139,27 +157,45 @@ const NextHopActivity = (ibcDetails: IbcTxDetails) => {
 
   const nextIbcDetails = getIbcTxDetails(tx)
 
+  const timelineDisplayMessages = activityMessages.map(
+    (message: ReactElement) => {
+      return {
+        variant: (tx.code === 0 ? "success" : "warning") as
+          | "success"
+          | "warning",
+        msg: message,
+      }
+    }
+  )
+
   return (
     <>
-      <ActivityListItem
-        variant={tx.code === 0 ? "success" : "failed"}
-        chain={{
-          icon: network[tx.chain].icon,
-          label: network[tx.chain].name,
-        }}
-        msg={activityMessages[0]}
-        type={t(activityType)}
-        time={t(toNow(new Date(tx.timestamp)))}
-        hasTimeline={!!nextIbcDetails}
-        extra={
-          <ExternalLink
-            href={externalLink}
-            className={styles.tx__details__link}
-          >
-            {t("Details")} <ExternalLinkIcon fill="currentColor" />
-          </ExternalLink>
+      <Timeline
+        startOverride={
+          <ActivityListItem
+            variant={tx.code === 0 ? "success" : "failed"}
+            chain={{
+              icon: network[tx.chain].icon,
+              label: network[tx.chain].name,
+            }}
+            msg={activityMessages[0]}
+            type={t(activityType)}
+            time={t(toNow(new Date(tx.timestamp)))}
+            hasTimeline={!!nextIbcDetails || timelineDisplayMessages.length > 1}
+            extra={
+              <ExternalLink
+                href={externalLink}
+                className={styles.tx__details__link}
+              >
+                {t("Details")} <ExternalLinkIcon fill="currentColor" />
+              </ExternalLink>
+            }
+          />
         }
+        middleItems={timelineDisplayMessages.slice(1)}
+        hasNextElement={!!nextIbcDetails}
       />
+
       {!!nextIbcDetails && <NextHopActivity {...nextIbcDetails} />}
     </>
   )
