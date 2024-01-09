@@ -79,12 +79,12 @@ export const useSettingsRoutes = () => {
         ({ value }) => value === i18n.language
       )?.label,
     },
-    /*currency: {
+    currency: {
       route: "currency",
       title: t("Currency"),
       element: <CurrencySetting />,
       value: currencyId,
-    },*/
+    },
     security: {
       route: "security",
       title: t("Security"),
