@@ -179,9 +179,13 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
           actions.tx(requestType, props, response)
         }
       } catch (error) {
-        if (error instanceof Error) {
+        const message = (error as any)?.message
+        const isPasswordError =
+          typeof message === "string" &&
+          message.toLowerCase().includes("password")
+        if (isPasswordError) {
           failed = true
-          setIncorrect(error.message)
+          setIncorrect(message)
         } else {
           const message = getErrorMessage(error)
           const response = { success: false, error: { code: 3, message } }
@@ -198,9 +202,13 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
         const response = { result, success: true }
         actions.tx(requestType, props, response)
       } catch (error) {
-        if (error instanceof Error) {
+        const message = (error as any)?.message
+        const isPasswordError =
+          typeof message === "string" &&
+          message.toLowerCase().includes("password")
+        if (isPasswordError) {
           failed = true
-          setIncorrect(error.message)
+          setIncorrect(message)
         } else {
           const message = getErrorMessage(error)
           const response = { success: false, error: { code: 3, message } }
@@ -308,7 +316,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
             <TxDetails
               {...props}
               tx={{ ...props.tx, fee }}
-              onFeesReady={() => setFeesReady(true)}
+              onFeesReady={(state) => setFeesReady(state)}
             />
           )}
           {"bytes" in props && <SignBytesDetails {...props} />}
