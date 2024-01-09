@@ -247,7 +247,7 @@ const MigrationWizard = () => {
       img={icon}
       title={t("Import wallets")}
       subtitle={t(
-        "You will be required to migrate your accounts to Station V3. Please provide your password or recovery phrase for each wallet to proceed."
+        "You will be required to migrate your accounts to Station v3. Please provide your password or recovery phrase for each wallet to proceed."
       )}
       fullHeight
     >
