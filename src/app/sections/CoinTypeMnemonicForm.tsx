@@ -134,10 +134,7 @@ const CoinTypeMnemonicForm = () => {
         label={t("Recovery phrase")}
         error={errors.mnemonic?.message}
       >
-        <Input
-          type="password"
-          {...register("mnemonic", { validate: validate.mnemonic })}
-        />
+        <Input {...register("mnemonic", { validate: validate.mnemonic })} />
       </InputWrapper>
 
       <InputWrapper /* do not translate this */

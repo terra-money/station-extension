@@ -140,7 +140,6 @@ const CreateWalletForm = () => {
               }
             >
               <Input
-                type="password"
                 {...register("mnemonic", { validate: validate.mnemonic })}
               />
             </InputWrapper>
@@ -199,10 +198,7 @@ const CreateWalletForm = () => {
                 />
               }
             >
-              <Input
-                type="password"
-                {...register("mnemonic", { validate: validateSeed })}
-              />
+              <Input {...register("mnemonic", { validate: validateSeed })} />
             </InputWrapper>
 
             <InputWrapper

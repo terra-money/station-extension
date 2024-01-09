@@ -9,7 +9,6 @@ import {
   Input,
   SubmitButton,
   FlexColumn,
-  Flex,
   Copy,
   Banner,
   Button,
@@ -134,12 +133,12 @@ const ExportWalletForm = ({ walletName }: Props) => {
         <InputWrapper label={t("Password")} error={errors.password?.message}>
           <Input {...register("password")} type="password" />
         </InputWrapper>
-          <SubmitButton
-            className={styles.form__footer}
-            disabled={!password || !isValid}
-            variant="secondary"
-            label={t("Submit")}
-          />
+        <SubmitButton
+          className={styles.form__footer}
+          disabled={!password || !isValid}
+          variant="secondary"
+          label={t("Submit")}
+        />
       </FlexColumn>
     </Form>
   )
