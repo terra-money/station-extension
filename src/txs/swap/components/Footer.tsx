@@ -1,22 +1,24 @@
 import { useNavigate } from "react-router-dom"
 import { useSwap } from "../SwapContext"
 import style from "../Swap.module.scss"
+import { toInput } from "txs/utils"
 import { useTranslation } from "react-i18next"
 import { useMemo } from "react"
 import { DropdownArrowIcon } from "@terra-money/station-ui"
-import { has } from "utils/num"
 
 const Footer = () => {
   const { slippage, form } = useSwap()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { askAsset, offerAsset } = form.watch()
+  const { askAsset, offerAsset, route } = form.watch()
 
   const exchangeRate = useMemo(() => {
-    if (!(has(askAsset.price) && has(offerAsset.price))) return ""
-    const rate = (offerAsset.price / askAsset.price).toFixed(4)
-    return `1 ${offerAsset.symbol} = ${rate} ${askAsset.symbol}`
-  }, [askAsset, offerAsset])
+    if (!route) return ""
+    const amountOut = toInput(route.amountOut, askAsset.decimals)
+    const amountIn = toInput(route.amountIn, offerAsset.decimals)
+    const rate = (amountOut / amountIn).toFixed(4)
+    return `1 ${offerAsset.symbol} ≈ ${rate} ${askAsset.symbol}`
+  }, [askAsset, offerAsset, route])
 
   return (
     <div className={style.footer}>
