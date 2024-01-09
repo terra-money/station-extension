@@ -89,7 +89,9 @@ const Submit = () => {
     <>
       <InputInLine
         disabled
+        style={{ cursor: "pointer" }}
         label={t("To")}
+        onClick={() => goToStep(1)}
         extra={truncate(recipient)}
         value={getWalletName(recipient)}
       />
