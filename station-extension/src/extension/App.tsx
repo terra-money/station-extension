@@ -101,7 +101,7 @@ const App = () => {
       <>
         {!hideHeader && (
           <Header>
-            <Flex gap={8} style={{ marginTop: 8 }}>
+            <Flex gap={16} style={{ marginTop: 8 }}>
               <ManageWalletsButton />
               <NetworkHeader />
             </Flex>
