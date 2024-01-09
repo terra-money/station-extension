@@ -1,3 +1,11 @@
+
+.form__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+}
+
 .button__padding {
   margin-bottom: 50px;
 }

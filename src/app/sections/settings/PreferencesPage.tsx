@@ -46,7 +46,7 @@ const PreferencesPage = () => {
   )
 
   return (
-    <FlexColumn gap={16}>
+    <FlexColumn gap={16} justify="flex-start">
       {sandbox && (
         <NavButton
           {...routes.network}

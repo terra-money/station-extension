@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { MsgTransfer, Coin, MsgExecuteContract } from "@terra-money/feather.js"
-import { Form } from "@terra-money/station-ui"
+import { SectionHeader, Grid } from "@terra-money/station-ui"
 import { useNavigate } from "react-router-dom"
 import SwapTimeline from "./components/SwapTimeline"
 import { SwapState } from "data/queries/swap/types"
@@ -11,6 +11,8 @@ import { queryKey } from "data/query"
 import Errors from "./components/ConfirmErrors"
 import { Coins } from "@terra-money/feather.js"
 import { useIsLedger } from "utils/ledger"
+import styles from "./Swap.module.scss"
+import { useTranslation } from 'react-i18next'
 
 export const validateAssets = (
   assets: Partial<SwapState>
@@ -24,6 +26,7 @@ export const validateAssets = (
 }
 
 const Confirm = () => {
+  const { t } = useTranslation()
   const { form } = useSwap()
   const navigate = useNavigate()
   const { watch, handleSubmit, getValues } = form
@@ -85,12 +88,18 @@ const Confirm = () => {
     <Tx {...tx}>
       {/* @ts-ignore */}
       {({ fee, submit }) => (
-        <Form onSubmit={handleSubmit(submit.fn)}>
-          <SwapTimeline {...{ swapMsgs, ...getValues() }} />
-          {fee.render()}
-          <Errors feeDenom={fee.denom} />
+        <form
+          className={styles.form__container}
+          onSubmit={handleSubmit(submit.fn)}
+        >
+          <Grid gap={16}>
+            <SwapTimeline {...{ swapMsgs, ...getValues() }} />
+            <SectionHeader title={t("Details")} withLine />
+            {fee.render()}
+            <Errors feeDenom={fee.denom} />
+          </Grid>
           {submit.button}
-        </Form>
+        </form>
       )}
     </Tx>
   )
