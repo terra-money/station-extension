@@ -330,6 +330,8 @@ export const useParsedAssetList = () => {
           unknownIBCDenoms[[denom, chain].join("*")]?.chainID ??
           chain
 
+        const tokenID = `${nativeChain}/${token}`
+
         let tokenIcon, tokenPrice, tokenChange, tokenWhitelisted
         if (symbol === "LUNC") {
           tokenIcon = "https://assets.terra.dev/icon/svg/LUNC.svg"
@@ -357,12 +359,11 @@ export const useParsedAssetList = () => {
           : unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom === token
 
         const { name: chainName, icon: chainIcon } = networks[chain] || {}
-        const tokenID = `${denom}*${chain}`
         const chainTokenItem = {
           denom,
           id: tokenID,
-          balance: parseInt(amount),
           decimals,
+          balance: parseInt(amount),
           tokenPrice,
           chainID: chain,
           chainName,
@@ -371,15 +372,15 @@ export const useParsedAssetList = () => {
           supported,
         }
 
-        if (acc[symbol]) {
+        if (acc[tokenID]) {
           if (chainTokenItem.supported) {
-            acc[symbol].totalBalance = `${
-              parseInt(acc[symbol].totalBalance) + parseInt(amount)
+            acc[tokenID].totalBalance = `${
+              parseInt(acc[tokenID].totalBalance) + parseInt(amount)
             }`
-            acc[symbol].totalValue = acc[symbol].totalValue +=
+            acc[tokenID].totalValue = acc[tokenID].totalValue +=
               toInput(amount, decimals) * tokenPrice
           }
-          acc[symbol].tokenChainInfo.push(chainTokenItem)
+          acc[tokenID].tokenChainInfo.push(chainTokenItem)
           return acc
         } else {
           const totalBalance = supported ? amount : "0"
@@ -388,8 +389,9 @@ export const useParsedAssetList = () => {
             : 0
           return {
             ...acc,
-            [symbol]: {
+            [tokenID]: {
               denom: token,
+              id: tokenID,
               decimals,
               totalBalance,
               totalValue,
@@ -399,7 +401,6 @@ export const useParsedAssetList = () => {
               change: tokenChange,
               tokenChainInfo: [chainTokenItem],
               nativeChain: nativeChain,
-              id: tokenID,
               whitelisted: tokenWhitelisted,
             },
           }
