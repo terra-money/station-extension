@@ -54,13 +54,15 @@ const Asset = (props: Props) => {
   const chains = useMemo(() => {
     return props.tokenChainInfo.reduce((acc, chain) => {
       const bal = Math.pow(10, -decimals) * parseInt(chain.balance)
+      const displayBalance =
+        bal.toLocaleString() === "0" ? "< 0.01" : bal.toLocaleString()
 
       if (!isNaN(bal)) {
         acc.push({
           name: chain.chainName,
           chain: chain.chainID,
           icon: chain.chainIcon,
-          balance: bal.toLocaleString(),
+          balance: displayBalance,
           supported: chain.supported,
         })
       }
