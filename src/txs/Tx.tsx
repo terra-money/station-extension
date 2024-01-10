@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { QueryKey, useQuery } from "react-query"
+import { QueryKey, useQuery, useQueryClient } from "react-query"
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import classNames from "classnames"
 import BigNumber from "bignumber.js"
@@ -108,6 +108,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const [isMax, setIsMax] = useState(false)
   const [gasDenom, setGasDenom] = useState<string>("")
   const addCachedTx = useAddCachedTx()
+  const queryClient = useQueryClient()
 
   /* context */
   const { t } = useTranslation()
@@ -327,9 +328,21 @@ function Tx<TxValues>(props: Props<TxValues>) {
             chainID: chain,
           })
         } else {
+          // refetch balances and standard post-tx stuff
+          queryKeys?.forEach((queryKey) => {
+            queryClient.invalidateQueries(queryKey)
+          })
+          queryClient.invalidateQueries(queryKey.History)
+          queryClient.invalidateQueries(queryKey.bank.balances)
+          queryClient.invalidateQueries(queryKey.tx.create)
+
+          // if the transaction is an ibc one start the IBC tracking
           isIbc && trackIbcTx({ ...(result as any), chain } as ActivityItem)
+          // add the transaction to the activity cache so it shows up immediately on the activity list
           addCachedTx({ ...(result as any), chain } as ActivityItem)
+          // run the onSuccess function if it has ben set
           onSuccess?.()
+          // navigate to the activity page
           navigate("/#1")
         }
       }
