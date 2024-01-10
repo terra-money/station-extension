@@ -71,11 +71,11 @@ export const skipApi = {
         },
       })
       if (!res?.data?.msgs) {
-        throw new Error("No messages returned from Skip API")
+        throw new Error("No available swap routes for this pair")
       }
       return res.data.msgs
     } catch (err) {
-      throw new Error(`Unkown error`)
+      throw new Error(`Unknown error`)
     }
   },
   queryRoute: async (swap: SwapState, network: IInterchainNetworks) => {
