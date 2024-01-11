@@ -9,7 +9,6 @@ import {
   Input,
   SubmitButton,
   FlexColumn,
-  Flex,
   Copy,
   Banner,
   Button,
@@ -74,11 +73,11 @@ const ExportWalletForm = ({ walletName }: Props) => {
         <FlexColumn gap={8}>
           <NavButton
             icon={<ImportSeedIcon fill="white" />}
-            label={t("Mnemonic Phrase")}
+            label={t("Recovery Phrase")}
             onClick={() => setMode(ExportType.MNEMONIC)}
           />
           <p className={styles.text}>
-            {t("Export your 12 or 24-word mnemonic phrase.")}
+            {t("Export your 12 or 24-word recovery phrase.")}
           </p>
         </FlexColumn>
         <FlexColumn gap={8}>
@@ -112,7 +111,7 @@ const ExportWalletForm = ({ walletName }: Props) => {
         />
         <InputWrapper
           label={
-            mode === ExportType.SEED ? t("Seed key") : t("Mnemonic phrase")
+            mode === ExportType.SEED ? t("Seed key") : t("Recovery phrase")
           }
           extra={<Copy copyText={encoded} />}
         >
@@ -129,19 +128,17 @@ const ExportWalletForm = ({ walletName }: Props) => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(submit)} style={{ height: "100%" }}>
+    <Form onSubmit={handleSubmit(submit)} style={{ height: "90%" }}>
       <FlexColumn className={styles.form__container}>
         <InputWrapper label={t("Password")} error={errors.password?.message}>
           <Input {...register("password")} type="password" />
         </InputWrapper>
-
-        <Flex gap={24} className={styles.form__footer}>
-          <SubmitButton
-            disabled={!password || !isValid}
-            variant="secondary"
-            label={t("Submit")}
-          />
-        </Flex>
+        <SubmitButton
+          className={styles.form__footer}
+          disabled={!password || !isValid}
+          variant="primary"
+          label={t("Submit")}
+        />
       </FlexColumn>
     </Form>
   )

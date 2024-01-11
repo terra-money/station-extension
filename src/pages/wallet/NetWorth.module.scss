@@ -3,7 +3,7 @@
 
 .networth {
   @include flex-column;
-  gap: 24px;
+  gap: 16px;
   padding: 24px 24px 8px 24px;
   background-color: var(--token-dark-500);
 
@@ -13,7 +13,7 @@
   }
 
   h1 {
-    @include X-Large;
+    @include XX-Large;
     color: var(--token-light-white);
   }
 }
@@ -26,4 +26,11 @@
 
 .networth__buttons__labels {
   @include X-Small;
+}
+
+.button__text {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+  margin-top: 8px;
 }

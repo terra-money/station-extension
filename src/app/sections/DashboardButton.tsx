@@ -1,14 +1,28 @@
-import { ReactComponent as Dashboard } from "styles/images/icons/Dashboard.svg"
-import HeaderIconButton from "app/components/HeaderIconButton"
+import { DashboardIcon, Tooltip } from "@terra-money/station-ui"
+import { useTranslation } from "react-i18next"
 import { STATION } from "config/constants"
 
-export default function DashboardButton() {
-  const openDashboard = () => {
-    window.open(STATION, "_blank")
-  }
+const DashboardButton = () => {
+  const openDashboard = () => window.open(STATION, "_blank")
+  const { t } = useTranslation()
+
   return (
-    <HeaderIconButton onClick={openDashboard}>
-      <Dashboard style={{ height: 18, color: "var(--token-dark-900)" }} />
-    </HeaderIconButton>
+    <Tooltip
+      content={t("Dashboard")}
+      children={
+        <DashboardIcon
+          width={18}
+          height={18}
+          onClick={openDashboard}
+          style={{
+            cursor: "pointer",
+            //margin: "24px 12px 16px 16px",
+          }}
+          fill={"var(--token-dark-900)"}
+        />
+      }
+    />
   )
 }
+
+export default DashboardButton

@@ -7,7 +7,7 @@ import { Fetching } from "components/feedback"
 import WithSearchInput from "./WithSearchInput"
 import TokenList from "./TokenList"
 import { useWhitelist } from "data/queries/chains"
-import { useNetworkName } from "data/wallet"
+import { useNetwork, useNetworkName } from "data/wallet"
 
 interface Props {
   whitelist: { cw20: CW20Whitelist; native: NativeWhitelist }
@@ -20,6 +20,7 @@ const isCW20 = ({ token }: CustomTokenCW20 | NativeTokenItem) =>
 const Component = ({ whitelist, keyword }: Props) => {
   const cw20 = useCustomTokensCW20()
   const native = useCustomTokensNative()
+  const network = useNetwork()
 
   type AddedCW20 = Record<TerraAddress, CustomTokenCW20>
   type AddedNative = Record<CoinDenom, NativeTokenItem>
@@ -64,8 +65,8 @@ const Component = ({ whitelist, keyword }: Props) => {
       ? [result]
       : []
     : Object.values(merged ?? {}).filter((item) => {
-        const { symbol, name } = item
-        return [symbol, name].some((word) =>
+        const { symbol, name, chainID = "" } = item as NativeTokenItem
+        return [symbol, name, network[chainID]?.name].some((word) =>
           word?.toLowerCase().includes(keyword.toLowerCase())
         )
       })

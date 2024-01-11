@@ -1,5 +1,6 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { FlexColumn, Grid } from "@terra-money/station-ui"
 import styles from "./OriginCard.module.scss"
 
 interface Props {
@@ -62,16 +63,22 @@ const OriginCard = ({ hostname }: Props) => {
 
   return (
     <div className={styles.origin}>
-      {metadata.faviconUrl && (
-        <img
-          src={metadata.faviconUrl}
-          alt={metadata.title ?? baseUrl}
-          className={styles.icon}
-          onError={() => setMetadata((m) => ({ ...m, faviconUrl: undefined }))}
-        />
-      )}
-      <h2>{metadata.title ?? baseUrl}</h2>
-      <p>{baseUrl}</p>
+      <FlexColumn gap={16} justify="center">
+        {metadata.faviconUrl && (
+          <img
+            src={metadata.faviconUrl}
+            alt={metadata.title ?? baseUrl}
+            className={styles.icon}
+            onError={() =>
+              setMetadata((m) => ({ ...m, faviconUrl: undefined }))
+            }
+          />
+        )}
+        <Grid gap={8}>
+          <h2>{metadata.title ?? baseUrl}</h2>
+          <p>{baseUrl}</p>
+        </Grid>
+      </FlexColumn>
     </div>
   )
 }
