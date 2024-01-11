@@ -113,7 +113,7 @@ const App = () => {
               <UpgradeWalletButton />
               <NetworkStatus />
               <SettingsButton />
-              <Tooltip content={t('Dashboard')} children={<DashboardButton /> }/>
+              <Tooltip content={t('Dashboard')} placement="top" children={<DashboardButton /> }/>
             </Flex>
           </Header>
         )}
