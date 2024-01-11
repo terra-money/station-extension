@@ -67,7 +67,7 @@ export const useTxActivity = () => {
   const addresses = useInterchainAddresses()
   const cachedTxs = useCachedTx()
 
-  const LIMIT = 60
+  const LIMIT = 100
   const EVENTS = [
     // any tx signed by the user
     "message.sender",
