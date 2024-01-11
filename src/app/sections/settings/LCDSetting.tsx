@@ -1,27 +1,27 @@
-import { useNetworkName, useNetworkOptions } from "data/wallet"
+import { useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
+import { useLocation, useNavigate } from "react-router-dom"
+import classNames from "classnames"
+import { useNetworkName, useNetworkOptions } from "data/wallet"
 import { useNetworks } from "app/InitNetworks"
-import { useEffect, useMemo } from "react"
-import styles from "./LCDSetting.module.scss"
 import { useValidateLCD } from "data/queries/tendermint"
 import { LoadingCircular } from "components/feedback"
 import ClearIcon from "@mui/icons-material/Clear"
 import CheckIcon from "@mui/icons-material/Check"
-import { Flex } from "components/layout"
+import DeleteButton from "components/form/DeleteButton"
 import { useCustomLCDs } from "utils/localStorage"
 import {
   Dropdown,
   Input,
-  Form,
   InputWrapper,
   ButtonInlineWrapper,
   SubmitButton,
+  Flex,
   FlexColumn,
+  Form,
 } from "@terra-money/station-ui"
-import classNames from "classnames"
-import DeleteButton from "components/form/DeleteButton"
-import { useLocation, useNavigate } from "react-router-dom"
+import styles from "./LCDSetting.module.scss"
 
 const cx = classNames.bind(styles)
 
@@ -134,10 +134,7 @@ const LCDSetting = (props: Props) => {
   }
 
   return (
-    <form
-      className={styles.form__container}
-      onSubmit={handleSubmit(submit)}
-    >
+    <Form onSubmit={handleSubmit(submit)} spaceBetween>
       <FlexColumn gap={24}>
         <InputWrapper label={t("Network")} error={errors.network?.message}>
           <Dropdown
@@ -147,7 +144,10 @@ const LCDSetting = (props: Props) => {
           />
         </InputWrapper>
 
-        <InputWrapper label={t("Source Chain")} error={errors?.chainID?.message}>
+        <InputWrapper
+          label={t("Source Chain")}
+          error={errors?.chainID?.message}
+        >
           <Dropdown
             withSearch
             options={networksList}
@@ -177,7 +177,7 @@ const LCDSetting = (props: Props) => {
           label="Create Custom RPC"
         />
       </ButtonInlineWrapper>
-    </form>
+    </Form>
   )
 }
 

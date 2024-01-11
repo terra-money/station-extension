@@ -19,6 +19,7 @@ import {
   SummaryHeader,
   Grid,
   Button,
+  FlexColumn,
 } from "@terra-money/station-ui"
 
 interface Values {
@@ -82,41 +83,47 @@ const ChangePasswordForm = () => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(submit)}>
-      <InputWrapper
-        label={t("Current password")}
-        error={errors.current?.message}
-      >
-        <Input {...register("current")} type="password" />
-      </InputWrapper>
+    <Form onSubmit={handleSubmit(submit)} spaceBetween fullHeight>
+      <FlexColumn gap={24} align="flex-start">
+        <InputWrapper
+          label={t("Current password")}
+          error={errors.current?.message}
+        >
+          <Input {...register("current")} type="password" />
+        </InputWrapper>
 
-      <InputWrapper label={t("New password")} error={errors.password?.message}>
-        <Input
-          {...register("password", { validate: validate.password })}
-          type="password"
-        />
-      </InputWrapper>
+        <InputWrapper
+          label={t("New password")}
+          error={errors.password?.message}
+        >
+          <Input
+            {...register("password", { validate: validate.password })}
+            type="password"
+          />
+        </InputWrapper>
 
-      <InputWrapper
-        label={t("Confirm new password")}
-        error={errors.confirm?.message}
-      >
-        <Input
-          {...register("confirm", {
-            validate: (value) => validate.confirm(password, value),
-          })}
-          type="password"
-        />
-      </InputWrapper>
-      <InputWrapper>
+        <InputWrapper
+          label={t("Confirm new password")}
+          error={errors.confirm?.message}
+        >
+          <Input
+            {...register("confirm", {
+              validate: (value) => validate.confirm(password, value),
+            })}
+            type="password"
+          />
+        </InputWrapper>
+
         <Checkbox
           label={t("Save password")}
           checked={rememberPassword}
+          indent
           {...register("rememberPassword")}
         />
-      </InputWrapper>
+      </FlexColumn>
+
       <SubmitButton
-        label={t("Submit")}
+        label={t("Change Password")}
         disabled={
           isLoading ||
           !!Object.values(errors).find(({ message }) => !!message) ||

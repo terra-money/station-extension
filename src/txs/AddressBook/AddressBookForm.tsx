@@ -1,21 +1,21 @@
+import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
+import { useLocation, useNavigate } from "react-router-dom"
 import { useAddressBook } from "data/settings/AddressBook"
 import validate from "txs/validate"
-import { useEffect } from "react"
+import { EmojiButton } from "components/form"
 import {
   Checkbox,
-  Form,
   InputWrapper,
   Input,
   SubmitButton,
   ButtonInlineWrapper,
   FlexColumn,
+  Form,
+  Button,
+  TrashIcon,
 } from "@terra-money/station-ui"
-import DeleteButton from "components/form/DeleteButton"
-import { EmojiButton } from "components/form"
-import { useLocation, useNavigate } from "react-router-dom"
-import styles from "./AddressBook.module.scss"
 
 interface Props {
   item?: AddressBook
@@ -52,10 +52,7 @@ const AddressBookForm = (props: Props) => {
   }
 
   return (
-    <form
-      className={styles.form__container}
-      onSubmit={handleSubmit(submit)}
-    >
+    <Form onSubmit={handleSubmit(submit)} spaceBetween fullHeight>
       <FlexColumn gap={24}>
         <InputWrapper label={t("Wallet Name")} error={errors.name?.message}>
           <Input
@@ -98,7 +95,15 @@ const AddressBookForm = (props: Props) => {
       </FlexColumn>
       <ButtonInlineWrapper>
         {index !== undefined && (
-          <DeleteButton
+          <Button
+            variant="warning"
+            label="Remove"
+            icon={
+              <TrashIcon
+                fill="var(--token-error-500)"
+                stroke="var(--token-error-500)"
+              />
+            }
             onClick={() =>
               navigate("/preferences/address-book/delete", { state: { index } })
             }
@@ -106,7 +111,7 @@ const AddressBookForm = (props: Props) => {
         )}
         <SubmitButton label={t("Save")} />
       </ButtonInlineWrapper>
-    </form>
+    </Form>
   )
 }
 
