@@ -97,13 +97,16 @@ const SwapForm = () => {
 
   // Handlers
   const handleOpenModal = (type: SwapAssetType) => {
-    const toDisplay = type === SwapAssetType.OFFER ?  getTokensWithBal(tokens) : tokens
+    const toDisplay =
+      type === SwapAssetType.OFFER ? getTokensWithBal(tokens) : tokens
     setDisplayTokens(toDisplay)
     setAssetModal(type)
   }
   const tokenOnClick = (token: SwapAssetExtra) => {
     // add prefix to align with Skips expected formatting
-    const parsed = AccAddress.validate(token.denom) ? { ...token, denom: `cw20:${token.denom}` } : token
+    const parsed = AccAddress.validate(token.denom)
+      ? { ...token, denom: `cw20:${token.denom}` }
+      : token
     if (assetModal) setValue(assetModal as keyof SwapState, parsed)
     setAssetModal(undefined) // close modal
   }
@@ -123,14 +126,18 @@ const SwapForm = () => {
 
   // Values
   const currencyAmount = useMemo(() => {
-    const offer =  offerAsset.price ? `${currency.symbol} ${(
-      Number(offerInput) * offerAsset.price
-    ).toFixed(2)}` : "—"
+    const offer = offerAsset.price
+      ? `${currency.symbol} ${(Number(offerInput) * offerAsset.price).toFixed(
+          2
+        )}`
+      : "—"
 
-    const ask = askAsset.price ? `${currency.symbol} ${toInput(
-      Number(route?.amountOut) * askAsset.price,
-      askAsset.decimals
-    ).toFixed(2)}`: "—"
+    const ask = askAsset.price
+      ? `${currency.symbol} ${toInput(
+          Number(route?.amountOut) * askAsset.price,
+          askAsset.decimals
+        ).toFixed(2)}`
+      : "—"
 
     return { offer, ask }
   }, [offerAsset, offerInput, askAsset, route, currency])

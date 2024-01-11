@@ -90,46 +90,51 @@ const PasswordForm = () => {
 
   return (
     <Form onSubmit={handleSubmit(submit)} className={styles.form}>
-      <ExtensionPage title={t("Set a Password")} subtitle={t('Set a global password for your wallet on this device. Choose a strong password with more than 10 characters.')}>
-      <FlexColumn gap={18}>
-        <InputWrapper label={t("Password")} error={errors.password?.message}>
-          <Input
-            {...register("password", {
-              validate: passwordExists() ? undefined : validate.password,
-              value: "",
-            })}
-            type="password"
-          />
-        </InputWrapper>
-        {!passwordExists() && (
-          <InputWrapper
-            label={t("Confirm password")}
-            error={errors.confirm?.message}
-          >
+      <ExtensionPage
+        title={t("Set a Password")}
+        subtitle={t(
+          "Set a global password for your wallet on this device. Choose a strong password with more than 10 characters."
+        )}
+      >
+        <FlexColumn gap={18}>
+          <InputWrapper label={t("Password")} error={errors.password?.message}>
             <Input
-              {...register("confirm", {
-                validate: (confirm) => validate.confirm(password, confirm),
+              {...register("password", {
+                validate: passwordExists() ? undefined : validate.password,
+                value: "",
               })}
-              onFocus={() => form.trigger("confirm")}
               type="password"
             />
           </InputWrapper>
-        )}
+          {!passwordExists() && (
+            <InputWrapper
+              label={t("Confirm password")}
+              error={errors.confirm?.message}
+            >
+              <Input
+                {...register("confirm", {
+                  validate: (confirm) => validate.confirm(password, confirm),
+                })}
+                onFocus={() => form.trigger("confirm")}
+                type="password"
+              />
+            </InputWrapper>
+          )}
 
-        <InputWrapper>
-          <Checkbox
-            label={t("Save password")}
-            checked={rememberPassword}
-            {...register("rememberPassword")}
-          />
-        </InputWrapper>
-        <Flex gap={12} style={{ marginTop: 22 }}>
-          <Button variant="secondary" onClick={() => setStep(2)} block>
-            {t("Back")}
-          </Button>
-          <SubmitButton disabled={!isValid}>{t("Confirm")}</SubmitButton>
-        </Flex>
-      </FlexColumn>
+          <InputWrapper>
+            <Checkbox
+              label={t("Save password")}
+              checked={rememberPassword}
+              {...register("rememberPassword")}
+            />
+          </InputWrapper>
+          <Flex gap={12} style={{ marginTop: 22 }}>
+            <Button variant="secondary" onClick={() => setStep(2)} block>
+              {t("Back")}
+            </Button>
+            <SubmitButton disabled={!isValid}>{t("Confirm")}</SubmitButton>
+          </Flex>
+        </FlexColumn>
       </ExtensionPage>
     </Form>
   )

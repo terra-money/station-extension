@@ -14,8 +14,7 @@ import { useState } from "react"
 import { useNetwork } from "data/wallet"
 import { ChainID } from "types/network"
 import { Read } from "components/token"
-import style from './SwapTokenSelector.module.scss'
-
+import style from "./SwapTokenSelector.module.scss"
 
 interface Props {
   tokenOnClick: (token: SwapAssetExtra) => void

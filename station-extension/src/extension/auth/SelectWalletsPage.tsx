@@ -11,7 +11,9 @@ export default function SelectWalletsPage() {
   const { wallets, connectedWallet, connect } = useAuth()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const activeWallet = wallets.filter((wallet) => wallet.name === connectedWallet?.name)[0]
+  const activeWallet = wallets.filter(
+    (wallet) => wallet.name === connectedWallet?.name
+  )[0]
   const activeWalletAddress = addressFromWords(
     connectedWallet?.words["330"] ?? "",
     "terra"
