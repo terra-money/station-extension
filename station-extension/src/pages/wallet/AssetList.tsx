@@ -65,7 +65,6 @@ const AssetList = () => {
           Number(a.totalBalance) / 10 ** a.decimals > 0.01
       )
       .sort((a, b) => {
-        console.log(a, b)
         if (a.totalValue && b.totalValue) {
           return b.totalValue - a.totalValue
         } else if (!a.totalValue && !b.totalValue) {
