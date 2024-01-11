@@ -54,6 +54,7 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
   )
 
   const sendButtonDisabled = isWalletEmpty && !!availableGasDenoms.length
+  console.log('denom', denom)
 
   const buttons: WalletActionButton[] = [
     {
@@ -64,10 +65,7 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
       primary: true,
       label: t("Send"),
       onClick: () =>
-        (isLedger ? openURL : navigate)(
-          `/send/1`,
-          denom ? { denom } : undefined
-        ),
+        (isLedger ? openURL : navigate)(`/send/1`, denom ? { state: denom } : undefined),
       disabled: sendButtonDisabled,
     },
     {
