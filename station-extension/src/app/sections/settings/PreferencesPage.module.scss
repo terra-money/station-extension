@@ -1,12 +1,13 @@
+@import "font_mixins";
+
 .subtitle {
   padding-left: 28px;
+  @include X-SmallLH;
   color: var(--token-dark-900);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 14px;
 }
 
 .version {
-  font-size: 10px;
+  margin-top: 16px;
+  @include XX-Small;
   color: var(--token-light-100);
 }

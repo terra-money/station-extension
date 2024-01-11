@@ -1,8 +1,7 @@
 import { Route, Routes, useLocation } from "react-router-dom"
 import { useSettingsRoutes } from "./routes"
-import ExtensionPage from "extension/components/ExtensionPage"
 import ConfirmDelete from "txs/AddressBook/ConfirmDelete"
-import ExtensionPageV2 from 'extension/components/ExtensionPageV2'
+import ExtensionPageV2 from "extension/components/ExtensionPageV2"
 
 const PreferencesRouter = () => {
   const { routes } = useSettingsRoutes()

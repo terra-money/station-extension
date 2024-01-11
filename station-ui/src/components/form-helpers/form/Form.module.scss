@@ -1,9 +1,13 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
+  gap: 24px;
 
-.submit {
-  margin-top: 20px;
+  &.space__between {
+    justify-content: space-between;
+  }
+
+  &.full__height {
+    height: 100%;
+  }
 }

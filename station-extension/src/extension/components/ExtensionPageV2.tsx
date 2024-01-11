@@ -30,12 +30,15 @@ const ExtensionPageV2 = (props: PropsWithChildren<Props>) => {
   const navigate = useNavigate()
 
   return (
-    <Container>
+    <Container
+      className={cx(overNavbar && styles.over__navbar__full__container)}
+    >
       <article
         className={cx(
           styles.page,
           fullHeight && styles.full__height,
-          overNavbar && styles.over__navbar
+          overNavbar && styles.over__navbar,
+          !title && styles.no__header
         )}
       >
         {(title || backButtonPath) && (
@@ -53,15 +56,21 @@ const ExtensionPageV2 = (props: PropsWithChildren<Props>) => {
               </button>
             )}
 
-            <header className={cx(styles.header, { [styles.header__with__back]: backButtonPath })}>
+            <header
+              className={cx(styles.header, {
+                [styles.header__with__back]: backButtonPath,
+              })}
+            >
               <h1 className={cx(styles.title)}>{title}</h1>
-              <h3 className={cx(styles.subtitle)}>
-                {subtitle}
-              </h3>
+              <h3 className={cx(styles.subtitle)}>{subtitle}</h3>
             </header>
 
             {!hideCloseButton && (
-              <button type="button" className={styles.close} onClick={() => navigate("/")}>
+              <button
+                type="button"
+                className={styles.close}
+                onClick={() => navigate("/")}
+              >
                 <CloseIcon
                   width={16}
                   height={16}
@@ -77,7 +86,6 @@ const ExtensionPageV2 = (props: PropsWithChildren<Props>) => {
         <section className={cx(styles.main)}>
           <ErrorBoundary>{children}</ErrorBoundary>
         </section>
-
       </article>
       <ExtensionFooter />
     </Container>
