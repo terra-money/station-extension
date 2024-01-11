@@ -395,7 +395,7 @@ export const useParsedAssetList = () => {
 
         const chainTokenItem = {
           denom,
-          id: tokenID,
+          id: `${token}*${chain}`,
           decimals,
           balance: parseInt(amount),
           tokenPrice,
