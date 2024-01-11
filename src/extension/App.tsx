@@ -37,6 +37,8 @@ import is from "auth/scripts/is"
 import { useAuth } from "auth"
 import Auth from "./auth/Auth"
 import UpgradeWalletButton from "app/sections/UpgradeWalletButton"
+import { Tooltip } from "@terra-money/station-ui"
+import { useTranslation } from "react-i18next"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -47,6 +49,7 @@ const App = () => {
   const addresses = useAllInterchainAddresses()
   const { name: theme } = useTheme()
   const { wallet } = useAuth()
+  const { t } = useTranslation()
 
   useEffect(() => {
     storeNetwork({ ...networks[name][chainID], name }, networks[name])
@@ -110,7 +113,7 @@ const App = () => {
               <UpgradeWalletButton />
               <NetworkStatus />
               <SettingsButton />
-              <DashboardButton />
+              <Tooltip content={t('Dashboard')} placement="top" children={<DashboardButton /> }/>
             </Flex>
           </Header>
         )}
