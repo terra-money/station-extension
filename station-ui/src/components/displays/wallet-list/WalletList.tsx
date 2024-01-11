@@ -3,18 +3,18 @@ import SectionHeader from "components/headers/section/SectionHeader"
 import { truncate } from "utils/format"
 import styles from "./WalletList.module.scss"
 
+interface Wallet { 
+  name: string
+  address: string
+  settingsOnClick?: () => void
+  isLedger?: boolean
+  isMultisig?: boolean
+  onClick?: () => void
+}
+
 export interface WalletListProps {
-  activeWallet?: {
-    name: string
-    address: string
-    settingsOnClick?: () => void
-  }
-  otherWallets: {
-    name: string
-    address: string
-    onClick: () => void
-    settingsOnClick?: () => void
-  }[]
+  activeWallet?: Wallet
+  otherWallets: Wallet[]
 }
 
 const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
@@ -34,7 +34,10 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
             copyValue={activeWallet.address}
             subLabel={truncate(activeWallet.address)}
             active
+            isLedger={activeWallet.isLedger}
+            isMultisig={activeWallet.isMultisig}
             settingsOnClick={activeWallet.settingsOnClick}
+            onClick={activeWallet.onClick}
           />
         </div>
       )}
@@ -49,6 +52,8 @@ const WalletList = ({ activeWallet, otherWallets }: WalletListProps) => {
               copyValue={wallet.address}
               subLabel={truncate(wallet.address)}
               onClick={wallet.onClick}
+              isLedger={wallet.isLedger}
+              isMultisig={wallet.isMultisig}
               settingsOnClick={wallet.settingsOnClick}
               key={i}
             />

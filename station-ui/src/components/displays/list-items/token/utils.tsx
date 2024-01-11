@@ -65,6 +65,7 @@ export const ChainImage = ({ chainImg, chainName, className, small }: ChainImage
   const [displayChainImg, setDisplayChainImg] = useState(chainImg)
 
   useEffect(() => {
+    setDisplayChainImg(chainImg)
     if (chainImageCache.get(chainImg)) {
       setIsLoading(false)
     }

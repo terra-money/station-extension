@@ -23,7 +23,6 @@ import { useAuth } from "auth"
 
 const Welcome = () => {
   const { t } = useTranslation()
-  // const icon = useThemeFavicon()
   const { wallets, connect } = useAuth()
   const existsWallets = wallets.length > 0
   const existsLegacyWallets = getStoredLegacyWallets().length > 0
@@ -33,30 +32,32 @@ const Welcome = () => {
     <ExtensionPage fullHeight>
       <main className={styles.welcome__container}>
         <CornerBackgroundLogo className={styles.logo__background} />
-        {existsWallets ? (
-          <WalletList
-            otherWallets={wallets.map((w) => ({
-              name: w.name,
-              address:
-                "address" in w ? w.address : addressFromWords(w.words["330"]),
-              onClick: () => {
-                connect(w.name)
-              },
-            }))}
-          />
-        ) : (
-          <FlexColumn align={"center"} className={styles.welcome} gap={16}>
-            <StationIcon width={57} height={54} />
-            <h1 className={styles.title}>{t("Welcome!")}</h1>
-            <p className={styles.content}>
-              {t(
-                existsLegacyWallets
-                  ? "Welcome to your brand new Station Wallet. You'll need to migrate your current wallets to continue using your Station Wallet."
-                  : "Station Wallet is the gateway to the interchain and beyond! Please choose how to get started below."
-              )}
-            </p>
-          </FlexColumn>
-        )}
+        <div className={styles.top__content__wrapper}>
+          {existsWallets ? (
+            <WalletList
+              otherWallets={wallets.map((w) => ({
+                name: w.name,
+                address:
+                  "address" in w ? w.address : addressFromWords(w.words["330"]),
+                onClick: () => {
+                  connect(w.name)
+                },
+              }))}
+            />
+          ) : (
+            <FlexColumn align={"center"} className={styles.welcome} gap={16}>
+              <StationIcon width={57} height={54} />
+              <h1 className={styles.title}>{t("Welcome!")}</h1>
+              <p className={styles.content}>
+                {t(
+                  existsLegacyWallets
+                    ? "Welcome to your brand new Station Wallet. You'll need to migrate your current wallets to continue using your Station Wallet."
+                    : "Station Wallet is the gateway to the interchain and beyond! Please choose how to get started below."
+                )}
+              </p>
+            </FlexColumn>
+          )}
+        </div>
         <Grid gap={16}>
           {!existsWallets && existsLegacyWallets && !migrationCompleted ? (
             <>
@@ -108,7 +109,7 @@ const Welcome = () => {
               {existsLegacyWallets && (
                 <Button
                   onClick={() => openURL("/auth/migration")}
-                  variant="outlined"
+                  variant="secondary"
                   block
                   icon={<WalletIcon fill="var(--token-light-white)" />}
                   label={t("Finish wallets migration")}

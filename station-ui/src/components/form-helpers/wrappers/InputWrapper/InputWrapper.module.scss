@@ -13,12 +13,12 @@
 
 .label {
   color: var(--token-light-100);
-  @include Small;
+  @include X-Small;
 }
 
 .extra {
   color: var(--token-light-100);
-  @include Small;
+  @include X-Small;
 }
 
 .warning {
@@ -29,7 +29,7 @@
   p {
     padding: 0 8px;
     color: var(--token-warning-500);
-    @include SmallLH;
+    @include X-SmallLH;
   }
 }
 
@@ -41,6 +41,6 @@
   p {
     padding: 0 8px;
     color: var(--token-error-500);
-    @include SmallLH;
+    @include X-SmallLH;
   }
 }

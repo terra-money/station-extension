@@ -5,6 +5,7 @@ import {
   Msg,
   MsgExecuteContract,
   MsgTransfer,
+  TxInfo,
 } from "@terra-money/feather.js"
 import { useAuth } from "auth"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
@@ -12,7 +13,7 @@ import { useNetwork } from "auth/hooks/useNetwork"
 import axios from "axios"
 import { useBalances } from "data/queries/bank"
 import { useInterchainLCDClient } from "data/queries/lcdClient"
-import { useCarbonFees } from "data/queries/tx"
+import { useCarbonFees, useOsmosisGas } from "data/queries/tx"
 import { RefetchOptions, queryKey } from "data/query"
 import { useQuery } from "react-query"
 
@@ -61,40 +62,56 @@ export function useSwappableDenoms() {
   const { data: balances } = useBalances()
 
   return Object.values(networks)
-    .filter(({ chainID, gasPrices, baseAsset }) => {
+    .map(({ chainID, baseAsset, ...network }) => {
+      return {
+        chainID,
+        baseAsset,
+        ...network,
+        balance: Number(
+          balances?.find(
+            ({ denom, chain }) => denom === baseAsset && chain === chainID
+          )?.amount
+        ),
+      }
+    })
+    .filter(({ gasPrices, baseAsset, balance }) => {
       const gasPrice = gasPrices[baseAsset]
 
       if (!gasPrice) return false
 
-      return (
-        Number(
-          balances?.find(
-            ({ denom, chain }) => denom === baseAsset && chain === chainID
-          )?.amount
-        ) >
-        gasPrice * 1_000_000
-      )
+      return balance > gasPrice * 1_500_000
     })
-    .map(({ baseAsset, chainID }) => ({ denom: baseAsset, chainID }))
+    .map(({ baseAsset, chainID, balance }) => ({
+      denom: baseAsset,
+      chainID,
+      balance,
+    }))
 }
 
-export function useSwapRoute({
-  fromDenom,
-  toDenom,
-  fromChain,
-  toChain,
-  finalAmount,
-}: {
-  fromDenom?: string
-  toDenom: string
-  fromChain?: string
-  toChain: string
-  finalAmount: number
-}) {
+export function useSwapRoute(
+  {
+    fromDenom,
+    toDenom,
+    fromChain,
+    toChain,
+    amount,
+    type,
+  }: {
+    fromDenom?: string
+    toDenom: string
+    fromChain?: string
+    toChain: string
+    amount: number
+    type: "in" | "out"
+  },
+  disabled?: boolean
+) {
   const addresses = useInterchainAddresses()
   const { data: carbonFees } = useCarbonFees()
   const lcd = useInterchainLCDClient()
   const networks = useNetwork()
+  const isOsmosis = fromChain?.startsWith("osmosis-")
+  const { data: osmosisGas } = useOsmosisGas(!isOsmosis)
 
   async function estimateGas(chainID: string, msg: Msg) {
     try {
@@ -115,7 +132,9 @@ export function useSwapRoute({
 
       return Math.ceil(
         unsignedTx.auth_info.fee.gas_limit *
-          (networks[chainID]?.gasAdjustment ?? 1)
+          (isOsmosis
+            ? (osmosisGas || 0.0025) * 10
+            : networks[chainID]?.gasAdjustment ?? 1)
       )
     } catch (error) {
       console.error(error)
@@ -130,7 +149,8 @@ export function useSwapRoute({
       toDenom,
       fromChain,
       toChain,
-      finalAmount,
+      amount,
+      type,
       addresses,
     ],
     async () => {
@@ -143,7 +163,8 @@ export function useSwapRoute({
             source_asset_chain_id: fromChain,
             dest_asset_denom: toDenom,
             dest_asset_chain_id: toChain,
-            amount_out: finalAmount.toString(),
+            amount_out: type === "out" ? amount.toString() : "",
+            amount_in: type === "in" ? amount.toString() : "",
             slippage_tolerance_percent: "10",
           }
         )
@@ -177,7 +198,8 @@ export function useSwapRoute({
         return {
           chainID,
           msg,
-          amount: Number(data.route.amount_in),
+          amount_in: Number(data.route.amount_in),
+          amount_out: Number(data.route.amount_out),
           gasAmount,
           feeAmount: Math.ceil(
             gasAmount * networks[chainID]?.gasPrices[fromDenom ?? ""] ?? 0
@@ -190,7 +212,8 @@ export function useSwapRoute({
     {
       ...RefetchOptions.DEFAULT,
       retry: false,
-      enabled: !!fromChain && !!fromDenom,
+      enabled: !!fromChain && !!fromDenom && !disabled,
+      staleTime: 120_000,
     }
   )
 }
@@ -210,34 +233,24 @@ export function useIsBalanceEnough() {
 
       return b && Number(b.amount) >= requiredAmount
     },
+    getBalanceAmount: (denom: string, chainID: string) => {
+      const b = balances?.find(
+        ({ chain, denom: d }) => chain === chainID && d === denom
+      )
+
+      return (b && Number(b.amount)) ?? 0
+    },
   }
 }
 
 export function useSubmitTx() {
   const auth = useAuth()
-  const lcd = useInterchainLCDClient()
 
   return async (txOptions: CreateTxOptions, password: string) => {
     // broadcast the tx
-    const result = await auth.post(txOptions, password)
+    const result = await auth.post(txOptions, password, undefined, true)
 
-    // wait for the tx to be confirmed on-chain
-    while (true) {
-      try {
-        await lcd.tx.txInfo(result.txhash, txOptions.chainID)
-        break
-      } catch (error) {
-        await new Promise((r) => setTimeout(r, 5000))
-      }
-    }
-
-    // start tracking the tx with skip api
-    await axios.post("https://api.skip.money/v1/tx/track", {
-      tx_hash: result.txhash,
-      chain_id: txOptions.chainID,
-    })
-
-    return result.txhash
+    return result as TxInfo
   }
 }
 

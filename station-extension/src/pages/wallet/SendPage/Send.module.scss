@@ -1,7 +1,6 @@
 .container {
   display: grid;
   gap: 20px;
-  height: 100%; /* Full viewport height, or any other height */
   grid-template-rows: repeat(7, auto) 1fr; /* Adjust the number of 'auto' rows as per your layout */
 }
 

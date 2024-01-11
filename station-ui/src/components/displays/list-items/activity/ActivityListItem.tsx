@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
 import classNames from "classnames/bind"
-import { LoadingIcon, AlertIcon, SmallCircleCheckIcon } from "components"
+import { LoadingIcon, AlertIcon, SmallCircleCheckIcon, Flex } from "components"
 import Pill from "components/general/pill/Pill"
 import styles from "./ActivityListItem.module.scss"
 import { ChainImage } from "../token/utils"
@@ -9,7 +9,7 @@ const cx = classNames.bind(styles)
 
 export interface ActivityListItemProps {
   variant?: "success" | "failed" | "loading"
-  chain: { icon: string, label: string }
+  chain: { icon: string; label: string }
   msg: ReactNode
   type: string
   secondaryPill?: ReactNode
@@ -18,6 +18,7 @@ export interface ActivityListItemProps {
   hasTimeline?: boolean
   onClick?: () => void
   progressTracker?: ReactNode
+  extra?: ReactNode
 }
 
 const ActivityListItem = ({
@@ -31,6 +32,7 @@ const ActivityListItem = ({
   secondaryPill,
   onClick,
   progressTracker,
+  extra,
 }: ActivityListItemProps) => {
   const messageText = msgCount === 1 ? "Message" : "Messages"
 
@@ -52,11 +54,7 @@ const ActivityListItem = ({
             chainName={chain.label}
             className={styles.activity__icon}
           />
-          {variant && (
-            <span className={styles.status__icon}>
-              {statusIcon}
-            </span>
-          )}
+          {variant && <span className={styles.status__icon}>{statusIcon}</span>}
         </div>
         <div className={styles.activity__details__container}>
           <div className={styles.pill__container}>
@@ -66,24 +64,19 @@ const ActivityListItem = ({
             />
             {secondaryPill}
           </div>
-          <h3 className={styles.activity__msg}>
-            {msg}
-          </h3>
-          {msgCount ? (
-            <h6 className={styles.activity__time}>
-              +{msgCount} {messageText}
-            </h6>
-          ) : (
-            time ? (
+          <h3 className={styles.activity__msg}>{msg}</h3>
+          <Flex justify="space-between">
+            {msgCount ? (
               <h6 className={styles.activity__time}>
-                {time}
+                +{msgCount} {messageText}
               </h6>
-            ) : null
-          )}
+            ) : time ? (
+              <h6 className={styles.activity__time}>{time}</h6>
+            ) : null}
+            {extra}
+          </Flex>
           {progressTracker && (
-            <div className={styles.progress__tracker}>
-              {progressTracker}
-            </div>
+            <div className={styles.progress__tracker}>{progressTracker}</div>
           )}
         </div>
       </div>

@@ -1,9 +1,9 @@
 @import "scss/font_mixins";
 
 .nav__button {
-  height: 56px;
+  height: 50px;
   width: 100%;
-  padding: 20px 18px;
+  padding: 18px;
   display: flex;
   justify-content: space-between;
 
@@ -19,19 +19,19 @@
 
   .left__side {
     svg {
-      height: 16px;
-      width: 16px;
+      height: 14px;
+      width: 14px;
     }
 
     .label {
-      @include Medium;
+      @include Small;
       color: var(--token-light-white);
     }
   }
 
   .right__side {
     .sub__label {
-      @include Medium;
+      @include Small;
       color: var(--token-light-100);
     }
   }

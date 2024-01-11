@@ -66,6 +66,9 @@
           @include Large;
           color: var(--token-light-white);
           text-align: end;
+          max-width: 100px;
+          overflow-x: scroll;
+          overflow-y: hidden;
 
           /* Chrome, Safari, Edge, Opera */
           &::-webkit-outer-spin-button,

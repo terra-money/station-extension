@@ -1,5 +1,6 @@
 {
   "name": "@terra-money/station-ui",
+  "version": "1.0.1",
   "files": [
     "dist"
   ],
@@ -14,7 +15,6 @@
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"
   },
-  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -36,6 +36,7 @@
     "@types/styled-components": "^5.1.26",
     "bignumber.js": "^9.1.2",
     "classnames": "^2.3.2",
+    "image-size": "^1.0.2",
     "lottie-react": "^2.4.0",
     "ramda": "^0.29.1",
     "react": "^18.2.0",

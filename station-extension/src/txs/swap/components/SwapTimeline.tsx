@@ -81,7 +81,11 @@ const SwapTimeline = ({
     <>
       <SectionHeader title={t("Swap Path")} withLine />
       {/* @ts-ignore */}
-      <Timeline startOverride={startOverride} middleItems={middleItems} />
+      <Timeline
+        startOverride={startOverride}
+        forceShowAll={route.operations.length === 3}
+        middleItems={middleItems}
+      />
     </>
   )
 }

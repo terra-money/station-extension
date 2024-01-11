@@ -4,7 +4,7 @@ import { isDenom, truncate } from "@terra-money/terra-utils"
 import { AccAddress, Coin, Coins, ValAddress } from "@terra-money/feather.js"
 import { useAddress, useNetwork } from "data/wallet"
 import { useValidators } from "data/queries/staking"
-import { WithTokenItem } from "data/token"
+import { WithTokenItem, useNativeDenoms } from "data/token"
 import { useCW20Contracts, useCW20Whitelist } from "data/Terra/TerraAssets"
 import { FinderLink } from "components/general"
 import { Read } from "components/token"
@@ -77,6 +77,7 @@ interface Props {
 
 const TxMessage = ({ children: sentence, className }: Props) => {
   const address = useAddress()
+  const readNativeDenom = useNativeDenoms()
   if (!sentence) return null
 
   const parse = (word: string, index: number): ReactNode => {
@@ -91,6 +92,8 @@ const TxMessage = ({ children: sentence, className }: Props) => {
       <ValidatorAddress>{word}</ValidatorAddress>
     ) : AccAddress.validate(word) ? (
       <TerraAddress>{word}</TerraAddress>
+    ) : /^ibc\/[0-9A-F]{64}$/g.test(word) ? (
+      <span className={styles.textmain}>{readNativeDenom(word).symbol}</span>
     ) : !index ? (
       capitalize(word)
     ) : (

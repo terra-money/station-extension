@@ -129,7 +129,7 @@ export const useExchangeRates = () => {
 
       return priceObject
     },
-    { ...RefetchOptions.DEFAULT }
+    { ...RefetchOptions.DEFAULT, staleTime: 3 * 60 * 1000 }
   )
 }
 

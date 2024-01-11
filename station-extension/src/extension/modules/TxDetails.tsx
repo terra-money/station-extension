@@ -11,7 +11,7 @@ const TxDetails = ({
   timestamp,
   tx,
   onFeesReady,
-}: TxRequest & { onFeesReady: () => void }) => {
+}: TxRequest & { onFeesReady: (state: boolean) => void }) => {
   const { msgs, memo, fee, chainID } = tx
 
   const { t } = useTranslation()
@@ -24,11 +24,13 @@ const TxDetails = ({
   ]
 
   return (
-    <Grid gap={12}>
-      {msgs.map((msg, index) => {
-        const isNative = getIsNativeMsgFromExternal(origin)
-        return <Message msg={msg} warn={isNative(msg)} key={index} />
-      })}
+    <Grid gap={24}>
+      <Grid gap={8}>
+        {msgs.map((msg, index) => {
+          const isNative = getIsNativeMsgFromExternal(origin)
+          return <Message msg={msg} warn={isNative(msg)} key={index} />
+        })}
+      </Grid>
 
       <DisplayFees
         chainID={chainID}
@@ -36,7 +38,7 @@ const TxDetails = ({
         gasDenom={fee?.amount.denoms()[0]}
         descriptions={contents.filter(({ value }) => !!value)}
         setGasDenom={() => {}}
-        onReady={() => onFeesReady()}
+        onReady={(state) => onFeesReady(state)}
       />
     </Grid>
   )

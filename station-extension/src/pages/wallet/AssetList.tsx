@@ -33,6 +33,7 @@ const AssetList = () => {
   const [search, setSearch] = useState("")
   const [showFilter, setShowFilter] = useState(false)
   const navigate = useNavigate()
+  const showHideText = hideLowBal ? "Show" : "Hide"
 
   const toggleFilter = () => {
     setSearch("")
@@ -59,17 +60,20 @@ const AssetList = () => {
 
     const visible = filtered
       .filter(
-        (a) => a.value >= 0.1 || toInput(a.totalBalance, a.decimals) >= 0.1
+        (a) =>
+          a.totalValue >= 0.1 ||
+          Number(a.totalBalance) / 10 ** a.decimals > 0.01
       )
       .sort((a, b) => {
-        if (a.value && b.value) {
-          return b.value - a.value
-        } else if (!a.value && !b.value) {
+        console.log(a, b)
+        if (a.totalValue && b.totalValue) {
+          return b.totalValue - a.totalValue
+        } else if (!a.totalValue && !b.totalValue) {
           return (
-           toInput(b.totalBalance, b.decimals) -
-           toInput(a.totalBalance, a.decimals)
+            toInput(b.totalBalance, b.decimals) -
+            toInput(a.totalBalance, a.decimals)
           )
-        } else if (!a.value) {
+        } else if (!a.totalValue) {
           return 1
         } else {
           return -1
@@ -127,7 +131,7 @@ const AssetList = () => {
           <>
             <button className={styles.low__bal} onClick={toggleHideLowBal}>
               <SectionHeader
-                title={t(`Show Low Balance Assets ({{count}})`, {
+                title={t(`${showHideText} Low Balance Assets ({{count}})`, {
                   count: assets.lowBal.length,
                 })}
                 withLine

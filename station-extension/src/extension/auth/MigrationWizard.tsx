@@ -1,6 +1,3 @@
-import { useTranslation } from "react-i18next"
-import ExtensionPage from "../components/ExtensionPage"
-import { useState } from "react"
 import {
   connectWallet,
   getStoredLegacyWallets,
@@ -9,24 +6,26 @@ import {
   setMigrationCompleted,
   storeWallets,
 } from "auth/scripts/keystore"
-import PasswordForm from "./PasswordForm"
 import {
-  SelectableListItem,
+  Banner,
   Button,
   Grid,
-  Banner,
+  SelectableListItem,
   SummaryHeader,
 } from "@terra-money/station-ui"
-import { FlexColumn } from "components/layout"
-
+import MigrateWalletPage, { MigratedWalletResult } from "./MigrateWalletPage"
 import { ReactComponent as CheckIcon } from "styles/images/icons/Check.svg"
 import { ReactComponent as AlertIcon } from "styles/images/icons/Alert.svg"
-import MigrateWalletPage, { MigratedWalletResult } from "./MigrateWalletPage"
+import ExtensionPage from "../components/ExtensionPage"
+import { useThemeFavicon } from "data/settings/Theme"
 import { truncate } from "@terra-money/terra-utils"
 import { addressFromWords } from "utils/bech32"
-import { encrypt } from "auth/scripts/aes"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import { useThemeFavicon } from "data/settings/Theme"
+import { FlexColumn } from "components/layout"
+import { encrypt } from "auth/scripts/aes"
+import PasswordForm from "./PasswordForm"
+import { useState } from "react"
 
 function needsMigration(w: any): boolean {
   // ledger wallets with pubkey do not need migration
@@ -182,10 +181,36 @@ const MigrationWizard = () => {
         } else if ("privatekey" in w) {
           return {
             name: fixWalletName(w.name),
-            encrypted: encrypt(w.privatekey.toString("hex"), password),
+            encrypted: {
+              "330": encrypt(w.privatekey.toString("hex"), password),
+            },
             words: w.words,
             pubkey: w.pubkey,
-          } as LegacyStoredWallet
+          } as InterchainStoredWallet
+        } else if ("privatekeys" in w) {
+          return {
+            name: fixWalletName(w.name),
+            encrypted:
+              "118" in w.privatekeys
+                ? {
+                    "330": encrypt(
+                      w.privatekeys["330"].toString("hex"),
+                      password
+                    ),
+                    "118": encrypt(
+                      w.privatekeys["118"].toString("hex"),
+                      password
+                    ),
+                  }
+                : {
+                    "330": encrypt(
+                      w.privatekeys["330"].toString("hex"),
+                      password
+                    ),
+                  },
+            words: w.words,
+            pubkey: w.pubkey,
+          } as InterchainStoredWallet
         } else {
           return w as ResultStoredWallet
         }
@@ -206,14 +231,12 @@ const MigrationWizard = () => {
     // cleanup sensitive data
     setPassword(undefined)
 
-    // if legacy active wallet is migrated, connect to it
-    const activeWallet =
-      JSON.parse(localStorage.getItem("user") ?? "{}")?.name ||
-      // otherwise, connect to the first migrated wallet
-      migratedWallets[0]?.name
-
-    // if we have a wallet to connect to (we will not if the user has choose to migrate no wallet), connect to it
-    activeWallet && connectWallet(activeWallet)
+    // Connect to last migrated wallet if there is not a wallet already connected.
+    if (!localStorage.connectedWallet) {
+      const lastMigratedWallet =
+        migratedWallets[migratedWallets.length - 1]?.name
+      connectWallet(lastMigratedWallet)
+    }
 
     // redirect to success page
     setCompleted(true)
@@ -224,7 +247,7 @@ const MigrationWizard = () => {
       img={icon}
       title={t("Import wallets")}
       subtitle={t(
-        "You will be required to migrate your accounts to Station V3. Please provide your password or seed phrase for each wallet to proceed."
+        "You will be required to migrate your accounts to Station v3. Please provide your password or recovery phrase for each wallet to proceed."
       )}
       fullHeight
     >

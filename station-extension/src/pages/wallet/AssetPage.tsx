@@ -5,6 +5,7 @@ import { useExchangeRates } from "data/queries/coingecko"
 import WalletActionButtons from "./WalletActionButtons"
 import { SectionHeader } from "@terra-money/station-ui"
 import { Read, TokenIcon } from "components/token"
+import { useAccount } from "data/queries/vesting"
 import { useTranslation } from "react-i18next"
 import styles from "./AssetPage.module.scss"
 import { decode, encode } from "js-base64"
@@ -15,6 +16,7 @@ import { useMemo } from "react"
 
 const AssetPage = () => {
   const { data: prices } = useExchangeRates()
+  const { data: account } = useAccount()
   const balances = useBankBalance()
   const readNativeDenom = useNativeDenoms()
   const { t } = useTranslation()
@@ -91,11 +93,7 @@ const AssetPage = () => {
 
   const AssetPageHeader = () => {
     const totalBalance = useMemo(
-      () =>
-        [...supportedAssets, ...unsupportedAssets].reduce(
-          (acc, b) => acc + parseInt(b.amount),
-          0
-        ),
+      () => supportedAssets.reduce((acc, b) => acc + parseInt(b.amount), 0),
       []
     )
 
@@ -122,7 +120,7 @@ const AssetPage = () => {
                 currency
                 amount={totalBalance * price}
                 fixed={2}
-                decimalColorSecondary
+                decimalSizeSecondary
               />
             ) : (
               <span>—</span>
@@ -136,7 +134,11 @@ const AssetPage = () => {
 
   const VestingSection = () => {
     const chainID = useChainID()
-    if (token === "uluna" && symbol !== "LUNC") {
+    if (
+      token === "uluna" &&
+      symbol !== "LUNC" &&
+      account?.base_vesting_account
+    ) {
       return (
         <div className={styles.chainlist}>
           <SectionHeader

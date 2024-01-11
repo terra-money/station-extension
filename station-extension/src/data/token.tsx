@@ -340,6 +340,7 @@ export interface AssetItem {
   nativeChain: string
   id: string
   whitelisted: boolean
+  totalValue: number
 }
 
 export const useParsedAssetList = () => {
@@ -384,43 +385,60 @@ export const useParsedAssetList = () => {
         }
 
         const { name: chainName, icon: chainIcon } = networks[chain] ?? {}
+
+        const supported = chain
+          ? !(
+              unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom === token &&
+              unknownIBCDenoms[[denom, chain].join("*")]?.chainID ===
+                nativeChain
+            )
+          : unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom === token
+
         const chainTokenItem = {
           denom,
           id: tokenID,
+          decimals,
           balance: parseInt(amount),
-          decimals: decimals,
+          tokenPrice,
           chainID: chain,
           chainName,
           chainIcon,
+          tokenIcon,
+          supported,
         }
 
         if (acc[tokenID]) {
-          acc[tokenID].totalBalance = `${
-            parseInt(acc[tokenID].totalBalance) + parseInt(amount)
-          }`
-          acc[tokenID].value = acc[tokenID].value += (toInput(amount, decimals) * tokenPrice)
+          if (chainTokenItem.supported) {
+            acc[tokenID].totalBalance = `${
+              parseInt(acc[tokenID].totalBalance) + parseInt(amount)
+            }`
+            acc[tokenID].totalValue = acc[tokenID].totalValue +=
+              toInput(amount, decimals) * tokenPrice
+          }
           acc[tokenID].tokenChainInfo.push(chainTokenItem)
           return acc
         } else {
-          const result: Record<string, AssetItem> = {
+          const totalBalance = supported ? amount : "0"
+          const totalValue = supported
+            ? tokenPrice * toInput(amount, decimals)
+            : 0
+          return {
             ...acc,
             [tokenID]: {
-              balance: amount,
               denom: token,
-              decimals: decimals,
-              totalBalance: amount,
-              value: tokenPrice * toInput(amount, decimals),
+              id: tokenID,
+              decimals,
+              totalBalance,
+              totalValue,
               icon: tokenIcon,
-              symbol: symbol,
+              symbol,
               price: tokenPrice,
               change: tokenChange,
               tokenChainInfo: [chainTokenItem],
               nativeChain: nativeChain,
-              id: tokenID,
               whitelisted: tokenWhitelisted,
             },
-          }
-          return result
+          } as Record<string, AssetItem>
         }
       }, {} as Record<string, AssetItem>) ?? {}
     )

@@ -38,7 +38,7 @@ export const queryKey = mirror({
   gammTokens: "",
 
   /* lcd */
-  auth: { accountInfo: "" },
+  auth: { accountInfo: "", vestingAccountInfo: "" },
   bank: { balance: "", balances: "", supply: "" },
   distribution: {
     rewards: "",
@@ -56,7 +56,15 @@ export const queryKey = mirror({
     votes: "",
     tally: "",
   },
-  ibc: { denomTrace: "" },
+  ibc: {
+    denomTrace: "",
+    transactionStatus: "",
+    trackTx: "",
+    channelInfo: "",
+    packetStatus: "",
+    receivePacket: "",
+    sendPacket: "",
+  },
   market: { params: "" },
   coingecko: {
     activeDenoms: "",
@@ -74,7 +82,7 @@ export const queryKey = mirror({
     unbondings: "",
     pool: "",
   },
-  tx: { txInfo: "", create: "", fees: "" },
+  tx: { txInfo: "", create: "", fees: "", osmosisGas: "" },
   wasm: { contractInfo: "", contractQuery: "" },
   interchain: {
     staking: {
@@ -84,6 +92,7 @@ export const queryKey = mirror({
     },
   },
   treasury: { taxRate: "", taxCap: "", taxProceeds: "" },
+  extension: { checkUpdate: "" },
   /* external */
   Anchor: { TotalDeposit: "", APY: "", MarketEpochState: "" },
   TNS: "",

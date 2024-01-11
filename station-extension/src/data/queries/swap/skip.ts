@@ -13,11 +13,15 @@ import {
 } from "./types"
 import { InterchainAddresses } from "types/network"
 import { IInterchainNetworks } from "data/wallet"
+import { isTerraChain } from "utils/chain"
 
 export const skipApi = {
   queryTokens: async () => {
     try {
       const result = await axios.get(SKIP_SWAP_API.routes.tokens, {
+        params: {
+          include_cw20_assets: true,
+        },
         baseURL: SKIP_SWAP_API.baseUrl,
         headers: {
           accept: "application/json",
@@ -44,61 +48,66 @@ export const skipApi = {
       console.log("Skip Token Error", err)
     }
   },
-  queryMsgs: async (state: SwapState, addresses: InterchainAddresses) => {
+  queryMsgs: async (swap: SwapState, addresses: InterchainAddresses) => {
     try {
       const { askAsset, offerInput, offerAsset, route, slippageTolerance } =
-        state
-      if (!route || !addresses) return null
-      const res = await axios.post(
-        SKIP_SWAP_API.routes.msgs,
-        {
-          amount_in: offerInput,
-          amount_out: route.amountOut,
-          source_asset_denom: offerAsset.denom,
-          source_asset_chain_id: offerAsset.chainId,
-          dest_asset_denom: askAsset.denom,
-          dest_asset_chain_id: askAsset.chainId,
-          address_list: route.chainIds.map((chainId) => addresses[chainId]),
-          operations: route.operations,
-          slippage_tolerance_percent: slippageTolerance.toString(),
+        swap
+      if (!route || !addresses) return
+      const params = {
+        amount_in: offerInput,
+        amount_out: route.amountOut,
+        source_asset_denom: offerAsset.denom,
+        source_asset_chain_id: offerAsset.chainId,
+        dest_asset_denom: askAsset.denom,
+        dest_asset_chain_id: askAsset.chainId,
+        address_list: route.chainIds.map((chainId) => addresses[chainId]),
+        operations: route.operations,
+        slippage_tolerance_percent: slippageTolerance.toString(),
+      }
+      const res = await axios.post(SKIP_SWAP_API.routes.msgs, params, {
+        baseURL: SKIP_SWAP_API.baseUrl,
+        headers: {
+          accept: "application/json",
         },
-        {
-          baseURL: SKIP_SWAP_API.baseUrl,
-          headers: {
-            accept: "application/json",
-          },
-        }
-      )
-      if (!res.data.msgs) {
-        throw new Error("No msgs returned from Skip API")
+      })
+      if (!res?.data?.msgs) {
+        throw new Error("No available swap routes for this pair")
       }
       return res.data.msgs
     } catch (err) {
-      console.log("Skip Msgs Error", err)
+      throw new Error(`Unknown error`)
     }
   },
   queryRoute: async (swap: SwapState, network: IInterchainNetworks) => {
     try {
       const { askAsset, offerInput, offerAsset } = swap
-      const res = await axios.post(
-        SKIP_SWAP_API.routes.route,
-        {
-          amount_in: offerInput,
-          source_asset_denom: offerAsset.denom,
-          source_asset_chain_id: offerAsset.chainId,
-          dest_asset_denom: askAsset.denom,
-          dest_asset_chain_id: askAsset.chainId,
-          cumulative_affiliate_fee_bps: "0",
-        },
-        {
-          baseURL: SKIP_SWAP_API.baseUrl,
-          headers: {
-            accept: "application/json",
-          },
-        }
-      )
-      if (!res?.data) throw new Error("No data returned from Skip API")
 
+      const payload: { [key: string]: any } = {
+        amount_in: offerInput,
+        source_asset_denom: offerAsset.denom,
+        source_asset_chain_id: offerAsset.chainId,
+        dest_asset_denom: askAsset.denom,
+        dest_asset_chain_id: askAsset.chainId,
+        cumulative_affiliate_fee_bps: "0",
+      }
+      const swapOnTerra = [offerAsset.chainId, askAsset.chainId].every(
+        isTerraChain
+      )
+
+      if (swapOnTerra) {
+        payload.swap_venue = {
+          name: SwapVenue.ASTROPORT,
+          chain_id: offerAsset.chainId,
+        }
+      }
+
+      const res = await axios.post(SKIP_SWAP_API.routes.route, payload, {
+        baseURL: SKIP_SWAP_API.baseUrl,
+        headers: {
+          accept: "application/json",
+        },
+      })
+      if (!res?.data) throw new Error("No data returned from Skip API")
       if (res.data.txs_required > 1)
         throw new Error(
           `Swap not supported, ${res.data.txs_required} txs required`
