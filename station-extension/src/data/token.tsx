@@ -334,7 +334,6 @@ export interface AssetItem {
   icon?: string
   symbol: string
   price: number
-  value: number
   change: number
   tokenChainInfo: ChainTokenItem[]
   nativeChain: string
