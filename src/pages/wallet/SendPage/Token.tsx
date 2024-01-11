@@ -53,7 +53,7 @@ const Token = () => {
         const isNative = chain === destination
         const channel = getIBCChannel({
           from: chain,
-          to: destination,
+          to: destination ?? "",
           tokenAddress: denom,
           icsChannel:
             ibcDenoms[networkName][`${destination}:${denom}`]?.icsChannel,

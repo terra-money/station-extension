@@ -18,6 +18,7 @@ interface Props extends Partial<FormatConfig> {
   amount?: Amount | Value
   denom?: Denom
   token?: Token
+  chainID?: string
   currency?: boolean
 
   approx?: boolean
@@ -34,6 +35,7 @@ const Read = forwardRef(
       approx,
       block,
       comma = false,
+      chainID,
       decimalSizeSecondary,
       ...props
     }: Props,
@@ -84,7 +86,7 @@ const Read = forwardRef(
       return (
         <span className={styles.symbol}>
           {" "}
-          <WithTokenItem token={token}>
+          <WithTokenItem token={token} chainID={chainID}>
             {({ symbol }) =>
               AccAddress.validate(symbol)
                 ? truncate(symbol)

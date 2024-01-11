@@ -9,6 +9,12 @@ import { SwapState } from "data/queries/swap/types"
 import { swapVenueToName } from "data/queries/swap/types"
 import { capitalize } from "@mui/material"
 import style from "../Swap.module.scss"
+import { ReactNode } from "react"
+
+interface SwapTimelineElement {
+  msg: ReactNode
+  variant: "success"
+}
 
 const SwapTimeline = ({
   offerAsset,
@@ -51,37 +57,43 @@ const SwapTimeline = ({
     />
   )
 
-  // eslint-disable-next-line array-callback-return
-  const middleItems = route.timelineMsgs.map((msg) => {
-    if (msg.type === "transfer")
-      return {
-        msg: (
-          <>
-            {capitalize(msg.type)} <span>{msg.symbol}</span> from{" "}
-            <span>{msg.from}</span> to <span>{msg.to}</span>
-          </>
-        ),
-        variant: "success",
-      }
-    if (msg.type === "swap")
-      return {
-        msg: (
-          <>
-            {capitalize(msg.type)}{" "}
-            <span className={style.text}> {msg.offerAssetSymbol}</span> for{" "}
-            <span className={style.text}> {msg.askAssetSymbol}</span> on{" "}
-            <span className={style.text}> {swapVenueToName[msg.venue]}</span>
-          </>
-        ),
-        variant: "success",
-      }
-  })
+  const middleItems: (SwapTimelineElement | null)[] = route.timelineMsgs.map(
+    (msg) => {
+      if (msg.type === "transfer")
+        return {
+          msg: (
+            <>
+              {capitalize(msg.type)} <span>{msg.symbol}</span> from{" "}
+              <span>{msg.from}</span> to <span>{msg.to}</span>
+            </>
+          ),
+          variant: "success",
+        }
+      if (msg.type === "swap")
+        return {
+          msg: (
+            <>
+              {capitalize(msg.type)}{" "}
+              <span className={style.text}> {msg.offerAssetSymbol}</span> for{" "}
+              <span className={style.text}> {msg.askAssetSymbol}</span> on{" "}
+              <span className={style.text}> {swapVenueToName[msg.venue]}</span>
+            </>
+          ),
+          variant: "success",
+        }
+
+      return null
+    }
+  )
 
   return (
     <>
       <SectionHeader title={t("Swap Path")} withLine />
-      {/* @ts-ignore */}
-      <Timeline startOverride={startOverride} middleItems={middleItems} />
+      <Timeline
+        startOverride={startOverride}
+        forceShowAll={route.operations.length === 3}
+        middleItems={middleItems.filter((m): m is SwapTimelineElement => !!m)}
+      />
     </>
   )
 }

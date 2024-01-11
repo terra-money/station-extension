@@ -62,7 +62,7 @@ export const skipApi = {
         dest_asset_chain_id: askAsset.chainId,
         address_list: route.chainIds.map((chainId) => addresses[chainId]),
         operations: route.operations,
-        slippage_tolerance_percent: slippageTolerance,
+        slippage_tolerance_percent: slippageTolerance.toString(),
       }
       const res = await axios.post(SKIP_SWAP_API.routes.msgs, params, {
         baseURL: SKIP_SWAP_API.baseUrl,
@@ -71,11 +71,11 @@ export const skipApi = {
         },
       })
       if (!res?.data?.msgs) {
-        throw new Error("No messages returned from Skip API")
+        throw new Error("No available swap routes for this pair")
       }
       return res.data.msgs
     } catch (err) {
-      throw new Error(`Unkown error`)
+      throw new Error(`Unknown error`)
     }
   },
   queryRoute: async (swap: SwapState, network: IInterchainNetworks) => {

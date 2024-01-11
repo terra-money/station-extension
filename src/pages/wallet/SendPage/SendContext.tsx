@@ -7,7 +7,7 @@ import { CoinBalance, useBankBalance } from "data/queries/bank"
 import { useParsedAssetList } from "data/token"
 import { useIBCChannels } from "data/queries/chains"
 import { TxValues } from "./types"
-import { useNetwork } from "data/wallet"
+import { IInterchainNetworks, useNetwork } from "data/wallet"
 
 interface Send {
   form: UseFormReturn<TxValues>
@@ -15,9 +15,28 @@ interface Send {
   getWalletName: (address: string) => string
   balances: CoinBalance[]
   assetList: any[]
-  getIBCChannel: any
-  getICSContract: any
-  networks: any
+  getIBCChannel: ({
+    from,
+    to,
+    tokenAddress,
+    icsChannel,
+  }: {
+    from: string
+    to: string
+    tokenAddress: string
+    icsChannel?: string | undefined
+  }) => string | undefined
+
+  getICSContract: ({
+    from,
+    to,
+    tokenAddress,
+  }: {
+    from: string
+    to: string
+    tokenAddress: string
+  }) => string | undefined
+  networks: IInterchainNetworks
 }
 
 export const [useSend, SendProvider] = createContext<Send>("useSwap")

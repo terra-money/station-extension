@@ -63,6 +63,10 @@ const SwapContext = ({ children }: PropsWithChildren<{}>) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValues.askAsset, defaultValues.offerAsset])
 
+  useEffect(() => {
+    form.setValue("slippageTolerance", slippage)
+  }, [slippage, form])
+
   const getTokensWithBal = (tokens: SwapAssetExtra[]) =>
     tokens.filter((t) => Number(t.balance) > 0)
 
