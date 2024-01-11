@@ -143,7 +143,12 @@ export default function DisplayFees({
             </div>
           ),
           value: (
-            <Read amount={feeAmount} decimals={decimals} denom={gasDenom} />
+            <Read
+              amount={feeAmount}
+              decimals={decimals}
+              denom={gasDenom}
+              chainID={chainID}
+            />
           ),
         },
       ]}
