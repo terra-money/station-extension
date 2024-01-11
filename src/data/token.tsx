@@ -205,6 +205,7 @@ export const useNativeDenoms = () => {
           icon: "https://assets.terra.dev/icon/svg/LUNC.svg",
           decimals: 6,
           isNonWhitelisted: false,
+          chainID: "colombus-5",
         }
       } else if (chainID === "phoenix-1" || chainID === "pisco-1") {
         return {
@@ -395,7 +396,7 @@ export const useParsedAssetList = () => {
 
         const chainTokenItem = {
           denom,
-          id: `${token}*${chain}`,
+          id: `${token}*${nativeChain}*${chain}`,
           decimals,
           balance: parseInt(amount),
           tokenPrice,
