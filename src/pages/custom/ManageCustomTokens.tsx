@@ -65,7 +65,7 @@ const Component = ({ whitelist, keyword }: Props) => {
       ? [result]
       : []
     : Object.values(merged ?? {}).filter((item) => {
-        const { symbol, name, chainID = '' } = item as NativeTokenItem
+        const { symbol, name, chainID = "" } = item as NativeTokenItem
         return [symbol, name, network[chainID]?.name].some((word) =>
           word?.toLowerCase().includes(keyword.toLowerCase())
         )
