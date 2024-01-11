@@ -48,7 +48,7 @@ export const useTxInfo = ({ txhash, queryKeys, chainID }: LatestTx) => {
         })
 
         queryClient.invalidateQueries(queryKey.History)
-        queryClient.invalidateQueries(queryKey.bank.balance)
+        queryClient.invalidateQueries(queryKey.bank.balances)
         queryClient.invalidateQueries(queryKey.tx.create)
       },
     }
