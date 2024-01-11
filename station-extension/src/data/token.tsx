@@ -293,26 +293,22 @@ export const useUnknownIBCDenoms = () => {
         return denom.startsWith("ibc/") && data.symbol.endsWith("...")
       })
   )
-  const unknownIBCDenoms: Record<string, IBCDenom> =
-    unknownIBCDenomsData.reduce(
-      (acc: any, { data }: { data: any }) =>
-        data
-          ? {
-              ...acc,
-              [[data.ibcDenom, data.chainIDs[data.chainIDs.length - 1]].join(
-                "*"
-              )]: {
-                baseDenom: data.baseDenom,
-                chainID: data?.chainIDs[0],
-                chainIDs: data?.chainIDs,
-              },
-            }
-          : acc,
-      {} as Record<
-        string,
-        { baseDenom: string; chainID: string; chainIDs: string[] }
-      >
-    )
+  const unknownIBCDenoms = unknownIBCDenomsData.reduce(
+    (acc, { data }) =>
+      data
+        ? {
+            ...acc,
+            [[data.ibcDenom, data.chainIDs[data.chainIDs.length - 1]].join(
+              "*"
+            )]: {
+              baseDenom: data.baseDenom,
+              chainID: data?.chainIDs[0],
+              chainIDs: data?.chainIDs,
+            },
+          }
+        : acc,
+    {} as Record<string, IBCDenom>
+  )
   return unknownIBCDenoms
 }
 
@@ -327,7 +323,7 @@ interface ChainTokenItem {
 }
 
 export interface AssetItem {
-  balance: string
+  //balance: string
   denom: string
   decimals: number
   totalBalance: string
@@ -353,46 +349,40 @@ export const useParsedAssetList = () => {
     return (
       coins.reduce((acc, { denom, amount, chain }) => {
         const ibcDenomData = unknownIBCDenoms[[denom, chain].join("*")]
-
         const { chainID, symbol, decimals, token, icon, isNonWhitelisted } =
           readNativeDenom(
             ibcDenomData?.baseDenom ?? denom,
             ibcDenomData?.chainID ?? chain
           )
 
-        const tokenID = `${token}*${chainID}`
-        const nativeChain = chainID ?? chain
+        const nativeChain = chainID ?? ibcDenomData?.chainID ?? chain
 
-        let tokenIcon = icon,
-          tokenPrice,
-          tokenChange,
-          tokenWhitelisted
+        const tokenID = `${nativeChain}*${token}`
+
+        let tokenIcon, tokenPrice, tokenChange, tokenWhitelisted
         if (symbol === "LUNC") {
           tokenIcon = "https://assets.terra.dev/icon/svg/LUNC.svg"
           tokenPrice = prices?.["uluna:classic"]?.price ?? 0
           tokenChange = prices?.["uluna:classic"]?.change ?? 0
           tokenWhitelisted = true
         } else {
+          tokenIcon = icon
           tokenPrice = prices?.[token]?.price ?? 0
           tokenChange = prices?.[token]?.change ?? 0
           tokenWhitelisted = !(
             isNonWhitelisted ||
-            unknownIBCDenoms[[denom, chain].join("*")]?.chainIDs.find(
-              (c: any) => !networks[c]
-            )
+            ibcDenomData?.chainIDs.find((c: any) => !networks[c])
           )
         }
 
-        const { name: chainName, icon: chainIcon } = networks[chain] ?? {}
-
         const supported = chain
           ? !(
-              unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom === token &&
-              unknownIBCDenoms[[denom, chain].join("*")]?.chainID ===
-                nativeChain
+              ibcDenomData?.baseDenom === token &&
+              ibcDenomData?.chainID === nativeChain
             )
-          : unknownIBCDenoms[[denom, chain].join("*")]?.baseDenom === token
+          : ibcDenomData?.baseDenom === token
 
+        const { name: chainName, icon: chainIcon } = networks[chain] || {}
         const chainTokenItem = {
           denom,
           id: tokenID,
@@ -421,7 +411,8 @@ export const useParsedAssetList = () => {
           const totalValue = supported
             ? tokenPrice * toInput(amount, decimals)
             : 0
-          return {
+
+          const result: Record<string, AssetItem> = {
             ...acc,
             [tokenID]: {
               denom: token,
@@ -437,7 +428,9 @@ export const useParsedAssetList = () => {
               nativeChain: nativeChain,
               whitelisted: tokenWhitelisted,
             },
-          } as Record<string, AssetItem>
+          }
+
+          return result
         }
       }, {} as Record<string, AssetItem>) ?? {}
     )
