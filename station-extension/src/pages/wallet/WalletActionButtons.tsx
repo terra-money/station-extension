@@ -54,8 +54,6 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
   )
 
   const sendButtonDisabled = isWalletEmpty && !!availableGasDenoms.length
-  console.log('denom', denom)
-
   const buttons: WalletActionButton[] = [
     {
       icon: (
