@@ -6,6 +6,7 @@ import {
   SectionHeader,
   ActivityListItem,
   Banner,
+  FlexColumn,
 } from "@terra-money/station-ui"
 import { useSend } from "./SendContext"
 import { truncate } from "@terra-money/terra-utils"
@@ -172,7 +173,7 @@ const Confirm = () => {
     ]
 
     return (
-      <>
+      <FlexColumn gap={24} align="stretch" justify="space-between">
         <SendHeader
           heading={t("Sending")}
           label={`${input} ${assetInfo?.symbol}`}
@@ -208,7 +209,7 @@ const Confirm = () => {
         />
 
         {fee.render(rows)}
-      </>
+      </FlexColumn>
     )
   }
   const tx = {
@@ -234,10 +235,12 @@ const Confirm = () => {
   return (
     <Tx {...tx}>
       {({ submit, fee }) => (
-        <Form onSubmit={handleSubmit(submit.fn)}>
+        <Form onSubmit={handleSubmit(submit.fn)} spaceBetween fullHeight>
           <TxInfo {...fee} />
-          {submit.button}
-          {error && <Banner variant="warning" title={t(error)} />}
+          <FlexColumn gap={24} align="stretch">
+            {error && <Banner variant="warning" title={t(error)} />}
+            {submit.button}
+          </FlexColumn>
         </Form>
       )}
     </Tx>

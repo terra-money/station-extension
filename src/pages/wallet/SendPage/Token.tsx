@@ -2,6 +2,7 @@ import {
   SectionHeader,
   InputInLine,
   TokenSingleChainListItem,
+  FlexColumn,
 } from "@terra-money/station-ui"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import WithSearchInput from "pages/custom/WithSearchInput"
@@ -115,7 +116,7 @@ const Token = () => {
   const recipientName = getWalletName(recipient) // wallet name or address if none found
 
   return (
-    <>
+    <FlexColumn gap={24} justify="flex-start" align="stretch">
       <InputInLine
         label={t("To")}
         style={{ cursor: "pointer" }}
@@ -141,7 +142,7 @@ const Token = () => {
                 parseInt(b.balVal) - parseInt(a.balVal)
             )
           return (
-            <>
+            <FlexColumn gap={24} align="stretch">
               {filtered.length === 0 && <Empty />}
               {filtered.map((asset: AssetType, i: number) => (
                 <TokenSingleChainListItem
@@ -150,11 +151,11 @@ const Token = () => {
                   onClick={() => onClick(asset)}
                 />
               ))}
-            </>
+            </FlexColumn>
           )
         }}
       </WithSearchInput>
-    </>
+    </FlexColumn>
   )
 }
 

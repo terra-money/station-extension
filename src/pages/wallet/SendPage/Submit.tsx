@@ -1,3 +1,11 @@
+import { useEffect, useMemo } from "react"
+import { useTranslation } from "react-i18next"
+import { truncate } from "@terra-money/terra-utils"
+import validate from "txs/validate"
+import { toInput } from "txs/utils"
+import { useCurrency } from "data/settings/Currency"
+import { useIBCBaseDenom } from "data/queries/ibc"
+import { useSend } from "./SendContext"
 import {
   InputInLine,
   SendAmount,
@@ -7,16 +15,8 @@ import {
   Input,
   Banner,
   Checkbox,
+  FlexColumn,
 } from "@terra-money/station-ui"
-import { useSend } from "./SendContext"
-import { truncate } from "@terra-money/terra-utils"
-import validate from "txs/validate"
-import { useCurrency } from "data/settings/Currency"
-import { toInput } from "txs/utils"
-import { useTranslation } from "react-i18next"
-import style from "./Send.module.scss"
-import { useEffect, useMemo } from "react"
-import { useIBCBaseDenom } from "data/queries/ibc"
 
 const Submit = () => {
   const { form, getWalletName, goToStep, networks } = useSend()
@@ -88,74 +88,77 @@ const Submit = () => {
   const recipientName = getWalletName(recipient)
 
   return (
-    <>
-      <InputInLine
-        style={{ cursor: "pointer" }}
-        label={t("To")}
-        onClick={() => goToStep(1)}
-        extra={!recipientName.includes("...") && truncate(recipient)}
-        value={recipientName}
-      />
-      <SendAmount
-        setValue={setValue}
-        tokenInputAttr={{
-          ...register("input", {
-            required: true,
-            valueAsNumber: true,
-            validate: validate.input(toInput(balance, decimals), decimals),
-          }),
-        }}
-        tokenAmount={input ?? 0}
-        currencyInputAttrs={{
-          ...register("currencyAmount", {
-            valueAsNumber: true,
-            required: true,
-            deps: ["input"],
-          }),
-        }}
-        currencyAmount={currencyAmount ?? 0}
-        tokenIcon={tokenImg}
-        symbol={symbol}
-        currencySymbol={currency.symbol}
-        price={price}
-        formState={formState}
-      />
-      <TokenSingleChainListItem {...assetInfo} onClick={handleMax} />
-      <InputWrapper
-        label={`${t("Memo")} (${t("optional")})`}
-        error={errors.memo?.message}
-      >
-        <Input
-          {...register("memo", {
-            validate: {
-              size: validate.size(256, "Memo"),
-              brackets: validate.memo(),
-              mnemonic: validate.isNotMnemonic(),
-            },
-          })}
+    <FlexColumn gap={24} justify="space-between" align="stretch">
+      <FlexColumn gap={24} justify="flex-start" align="stretch">
+        <InputInLine
+          style={{ cursor: "pointer" }}
+          label={t("To")}
+          onClick={() => goToStep(1)}
+          extra={!recipientName.includes("...") && truncate(recipient)}
+          value={recipientName}
         />
-      </InputWrapper>
-      {showIBCWarning && (
-        <>
-          <Banner
-            variant="warning"
-            title={t(
-              "Caution: This asset may not be recognized on the destination chain. Send asset back to {{home}} first before proceeding.",
-              {
-                home: networks[originChain ?? ""].name,
-              }
-            )}
+        <SendAmount
+          setValue={setValue}
+          tokenInputAttr={{
+            ...register("input", {
+              required: true,
+              valueAsNumber: true,
+              validate: validate.input(toInput(balance, decimals), decimals),
+            }),
+          }}
+          tokenAmount={input ?? 0}
+          currencyInputAttrs={{
+            ...register("currencyAmount", {
+              valueAsNumber: true,
+              required: true,
+              deps: ["input"],
+            }),
+          }}
+          currencyAmount={currencyAmount ?? 0}
+          tokenIcon={tokenImg}
+          symbol={symbol}
+          currencySymbol={currency.symbol}
+          price={price}
+          formState={formState}
+        />
+        <div>
+          <TokenSingleChainListItem {...assetInfo} onClick={handleMax} />
+        </div>
+        <InputWrapper
+          label={`${t("Memo")} (${t("optional")})`}
+          error={errors.memo?.message}
+        >
+          <Input
+            {...register("memo", {
+              validate: {
+                size: validate.size(256, "Memo"),
+                brackets: validate.memo(),
+                mnemonic: validate.isNotMnemonic(),
+              },
+            })}
           />
-          <Checkbox
-            {...register("ibcWarning")}
-            className={style.checkbox}
-            checked={ibcWarning}
-            label={t(`I know what I'm doing`)}
-          />
-        </>
-      )}
+        </InputWrapper>
+        {showIBCWarning && (
+          <>
+            <Banner
+              variant="warning"
+              title={t(
+                "Caution: This asset may not be recognized on the destination chain. Send asset back to {{home}} first before proceeding.",
+                {
+                  home: networks[originChain ?? ""].name,
+                }
+              )}
+            />
+            <Checkbox
+              {...register("ibcWarning")}
+              checked={ibcWarning}
+              label={t(`I know what I'm doing`)}
+              indent
+            />
+          </>
+        )}
+      </FlexColumn>
       <Button
-        className={style.button}
         disabled={
           input !== undefined &&
           (Object.keys(formState.errors).length !== 0 || !formState.isValid)
@@ -164,7 +167,7 @@ const Submit = () => {
         onClick={() => goToStep(5)}
         label={t("Continue")}
       />
-    </>
+    </FlexColumn>
   )
 }
 export default Submit
