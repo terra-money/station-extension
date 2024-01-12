@@ -30,7 +30,6 @@ import BackgroundBlobs from "components/layout/BackgroundBlobs"
 
 /* init */
 import InitBankBalance from "./InitBankBalance"
-import Wallet from "pages/wallet/Wallet"
 import NavButton from "./sections/NavButton"
 import NetworkStatus from "components/display/NetworkStatus"
 import EnableCoinType from "./sections/EnableCoinType"
@@ -77,7 +76,6 @@ const App = () => {
             <MainContainer>
               <BackgroundBlobs />
               {routes}
-              <Wallet />
             </MainContainer>
           </ErrorBoundary>
         </Content>

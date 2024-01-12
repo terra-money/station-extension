@@ -16,7 +16,6 @@ import SwitchWallet from "auth/modules/select/SwitchWallet"
 import PopoverNone from "../components/PopoverNone"
 import styles from "./Connected.module.scss"
 import { useRecoilState } from "recoil"
-import { isWalletBarOpen, walletBarRoute, Path } from "pages/wallet/Wallet"
 import { useNavigate } from "react-router-dom"
 import { useConnectedWallet, useWallet } from "@terra-money/wallet-kit"
 import {
@@ -32,8 +31,6 @@ const Connected = () => {
   const { disconnect } = useWallet()
   const connectedWallet = useConnectedWallet()
   const { data: name } = useTnsName(address ?? "")
-  const [, setWalletIsOpen] = useRecoilState(isWalletBarOpen)
-  const [, setWalletRoute] = useRecoilState(walletBarRoute)
 
   /* hack to close popover */
   const [key, setKey] = useState(0)
@@ -58,14 +55,6 @@ const Connected = () => {
       icon: <LogoutIcon style={{ fontSize: 16 }} />,
     },
     {
-      onClick: () => {
-        setWalletIsOpen(true)
-        setWalletRoute({
-          path: Path.receive,
-          previousPage: { path: Path.wallet },
-        })
-        closePopover()
-      },
       children: t("View wallet addresses"),
       icon: <ContactsIcon style={{ fontSize: 16 }} />,
     },
@@ -92,7 +81,6 @@ const Connected = () => {
         >
           <Grid gap={40}>
             <SwitchWallet />
-            <List list={list} />
           </Grid>
         </PopoverNone>
       }
