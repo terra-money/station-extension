@@ -134,6 +134,7 @@ const AssetList = () => {
                   count: assets.lowBal.length,
                 })}
                 withLine
+                withArrow
               />
             </button>
             {!hideLowBal && assets.lowBal.map(renderAsset)}
