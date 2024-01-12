@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import ExtensionPage from "extension/components/ExtensionPage"
+// import ExtensionPage from "extension/components/ExtensionPage"
 import Address from "./Address"
 import Chain from "./Chain"
 import Token from "./Token"
@@ -8,6 +8,7 @@ import Confirm from "./Confirm"
 import SendContext from "./SendContext"
 import { Routes, Route, useLocation } from "react-router-dom"
 import styles from "./Send.module.scss"
+import ExtensionPageV2 from "extension/components/ExtensionPageV2"
 
 const SendTx = () => {
   const { pathname } = useLocation()
@@ -36,13 +37,12 @@ const SendTx = () => {
             key={r.path}
             path={r.path}
             element={
-              <ExtensionPage
+              <ExtensionPageV2
                 backButtonPath={getBackPath(pathname)}
                 title={t(r.title)}
-                modal
               >
-                <div className={styles.container}>{r.element}</div>
-              </ExtensionPage>
+                {r.element}
+              </ExtensionPageV2>
             }
           />
         ))}
