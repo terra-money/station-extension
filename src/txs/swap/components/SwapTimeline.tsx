@@ -52,7 +52,7 @@ const SwapTimeline = ({
         </>
       }
       type={"Execute Contract"}
-      msgCount={route.operations.length}
+      msgCount={route.timelineMsgs.length}
       hasTimeline
     />
   )
@@ -91,7 +91,7 @@ const SwapTimeline = ({
       <SectionHeader title={t("Swap Path")} withLine />
       <Timeline
         startOverride={startOverride}
-        forceShowAll={route.operations.length === 3}
+        forceShowAll={route.timelineMsgs.length === 3}
         middleItems={middleItems.filter((m): m is SwapTimelineElement => !!m)}
       />
     </>
