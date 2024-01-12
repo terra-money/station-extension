@@ -13,7 +13,7 @@ import { ReactNode } from "react"
 
 interface SwapTimelineElement {
   msg: ReactNode
-  variant: "success"
+  variant: "default"
 }
 
 const SwapTimeline = ({
@@ -27,7 +27,6 @@ const SwapTimeline = ({
 
   const startOverride = (
     <ActivityListItem
-      variant={"success"}
       chain={{
         label: offerAsset.chain.name,
         icon: offerAsset.chain.icon,
@@ -67,7 +66,7 @@ const SwapTimeline = ({
               <span>{msg.from}</span> to <span>{msg.to}</span>
             </>
           ),
-          variant: "success",
+          variant: "default",
         }
       if (msg.type === "swap")
         return {
@@ -79,7 +78,7 @@ const SwapTimeline = ({
               <span className={style.text}> {swapVenueToName[msg.venue] ?? t("Unknown Swap Venue")}</span>
             </>
           ),
-          variant: "success",
+          variant: "default",
         }
 
       return null
