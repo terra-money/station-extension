@@ -6,24 +6,27 @@ import CloseIcon from "@mui/icons-material/Close"
 import { mobileIsMenuOpenState } from "components/layout"
 import { useNav } from "../routes"
 import styles from "./Nav.module.scss"
-import { useThemeFavicon, useTheme } from "data/settings/Theme"
 import { isWalletBarOpen } from "pages/wallet/Wallet"
+import {
+  CornerBackgroundLogo,
+  StationIcon,
+  NavButton,
+} from "@terra-money/station-ui"
 
 const cx = classNames.bind(styles)
 
 const Nav = () => {
   useCloseMenuOnNavigate()
   const { menu } = useNav()
-  const icon = useThemeFavicon()
   const [isOpen, setIsOpen] = useRecoilState(mobileIsMenuOpenState)
   const close = () => setIsOpen(false)
-  const { name } = useTheme()
 
   return (
     <nav>
       <header className={styles.header}>
+        <CornerBackgroundLogo />
         <div className={cx(styles.item, styles.logo)}>
-          <img src={icon} alt="Station" />{" "}
+          <StationIcon />
           <strong className={styles.title}>Station</strong>
         </div>
         {isOpen && (
@@ -45,26 +48,6 @@ const Nav = () => {
           {title}
         </NavLink>
       ))}
-
-      {name === "blossom" && (
-        <>
-          <div
-            className={`${styles.background_blur_blossom} ${
-              isOpen ? styles.open : ""
-            }`}
-          />
-          <div
-            className={`${styles.background_blur_blossom2} ${
-              isOpen ? styles.open : ""
-            }`}
-          />
-          <div
-            className={`${styles.background_blur_blossom3} ${
-              isOpen ? styles.open : ""
-            }`}
-          />
-        </>
-      )}
     </nav>
   )
 }
@@ -79,8 +62,7 @@ const useCloseMenuOnNavigate = () => {
 
   useEffect(() => {
     if (isOpen) {
-      // close wallet menu on mobile
-      setIsWalletOpen(false)
+      setIsWalletOpen(false) // close wallet menu on mobile
     }
     setIsOpen(false)
   }, [pathname, setIsOpen, setIsWalletOpen]) // eslint-disable-line react-hooks/exhaustive-deps
