@@ -244,8 +244,7 @@ const MigrationWizard = () => {
 
   return (
     <ExtensionPage
-      img={icon}
-      title={t("Import wallets")}
+      title={t("Migrate wallets")}
       subtitle={t(
         "You will be required to migrate your accounts to Station v3. Please provide your password or recovery phrase for each wallet to proceed."
       )}
