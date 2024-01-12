@@ -45,7 +45,8 @@ const Address = () => {
     },
   ]
 
-  const handleKnownWallet = (recipient: AccAddress | WalletName) => {
+  const handleKnownWallet = (recipient: AccAddress | WalletName, _: number, memo?: string) => {
+    setValue("memo", memo)
     if (!AccAddress.validate(recipient ?? "")) {
       setValue("recipient", recipient)
       goToStep(2)
