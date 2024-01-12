@@ -14,7 +14,6 @@ import { useNetworkName, useNetwork, useChainID } from "data/wallet"
 import { useIsWalletEmpty } from "data/queries/bank"
 import { useKado } from "pages/wallet/Buy"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { useNativeDenoms } from "data/token"
 import { openURL } from "extension/storage"
 import { useIsLedger } from "utils/ledger"
 import styles from "./NetWorth.module.scss"
@@ -29,7 +28,7 @@ interface WalletActionButton {
   hide?: boolean
 }
 
-const WalletActionButtons = ({ token }: { token: TokenItem }) => {
+const WalletActionButtons = ({ token }: { token?: TokenItem }) => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
   const networks = useNetwork()
@@ -38,8 +37,6 @@ const WalletActionButtons = ({ token }: { token: TokenItem }) => {
   const navigate = useNavigate()
   const networkName = useNetworkName()
   const { pathname } = useLocation()
-  const readNativeDenom = useNativeDenoms()
-  const token = readNativeDenom(denom ?? "", pathname.split("/")[2])
   const addresses = useInterchainAddresses()
   const isLedger = useIsLedger()
 
@@ -60,7 +57,7 @@ const WalletActionButtons = ({ token }: { token: TokenItem }) => {
       primary: true,
       label: t("Send"),
       onClick: () =>
-        (isLedger ? openURL : navigate)(`/send/1`,{ state: token?.symbol }),
+        (isLedger ? openURL : navigate)(`/send/1`, token ? { state: token?.symbol } : undefined),
       disabled: sendButtonDisabled,
     },
     {
@@ -74,7 +71,7 @@ const WalletActionButtons = ({ token }: { token: TokenItem }) => {
       size: "default",
       label: t("Swap"),
       onClick: () =>
-        (isLedger ? openURL : navigate)(`/swap`, { state: token?.token }),
+        (isLedger ? openURL : navigate)(`/swap`, token ? { state: token?.token } : undefined),
       hide: networkName !== "mainnet",
     },
     {
