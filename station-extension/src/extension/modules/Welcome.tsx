@@ -46,6 +46,7 @@ const Welcome = () => {
             />
           ) : (
             <FlexColumn align={"center"} className={styles.welcome} gap={16}>
+              <StationIcon width={57} height={54} />
               <h1 className={styles.title}>{t("Welcome!")}</h1>
               <p className={styles.content}>
                 {t(
