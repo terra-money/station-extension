@@ -41,6 +41,7 @@
 
   &.no__header {
     padding-top: 56px;
+    height: 100vh;
   }
 
   .header__container {
@@ -86,9 +87,10 @@
   }
 
   .main {
-    height: 100%;
+    width: 100%;
     display: flex;
     align-items: flex-start;
+    flex: 1;
 
     & > * {
       flex: 1;

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNetworks } from "app/InitNetworks"
-import { RadioList, RadioListItem } from "@terra-money/station-ui"
+import { FlexColumn, RadioList, RadioListItem } from "@terra-money/station-ui"
 
 interface Props {
   value: string
@@ -19,23 +19,26 @@ const SettingsSelector = ({
   const { networks } = useNetworks()
 
   return (
-    <RadioList>
-      {options.map(({ value, label }, index) => (
-        <RadioListItem
-          key={value}
-          label={label}
-          checked={value === selectedOption}
-          onClick={() => onChange(value)}
-          {...(accordion && {
-            isOpen: openAcc === index,
-            setOpenAcc: () => setOpenAcc(openAcc === index ? undefined : index),
-            accContent: Object.values(networks[value]).map(
-              ({ name, icon }) => ({ name, icon })
-            ),
-          })}
-        />
-      ))}
-    </RadioList>
+    <FlexColumn align="stretch" justify="flex-start">
+      <RadioList>
+        {options.map(({ value, label }, index) => (
+          <RadioListItem
+            key={value}
+            label={label}
+            checked={value === selectedOption}
+            onClick={() => onChange(value)}
+            {...(accordion && {
+              isOpen: openAcc === index,
+              setOpenAcc: () =>
+                setOpenAcc(openAcc === index ? undefined : index),
+              accContent: Object.values(networks[value]).map(
+                ({ name, icon }) => ({ name, icon })
+              ),
+            })}
+          />
+        ))}
+      </RadioList>
+    </FlexColumn>
   )
 }
 

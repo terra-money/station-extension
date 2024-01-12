@@ -107,7 +107,7 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
       {buttons.map(
         ({ size, icon, label, onClick, disabled, primary, hide }) =>
           !hide && (
-            <FlexColumn key={label} gap={8}>
+            <FlexColumn key={label} gap={8} className={styles.button__wrapper}>
               <RoundedButton
                 size={size}
                 variant={primary ? "primary" : "secondary"}
