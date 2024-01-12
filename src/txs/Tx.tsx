@@ -66,6 +66,7 @@ interface Props<TxValues> {
   coins?: CoinInput[]
   balance?: Amount
   gasAdjustment?: number
+  memo?: string
 
   /* tx simulation */
   estimationTxValues?: TxValues
@@ -103,7 +104,7 @@ interface RenderProps<TxValues> {
 }
 
 function Tx<TxValues>(props: Props<TxValues>) {
-  const { token, decimals, amount, balance, chain, baseDenom, hideLoader } =
+  const { token, decimals, amount, balance, chain, baseDenom, hideLoader, memo } =
     props
   const { estimationTxValues, createTx, gasAdjustment: txGasAdjustment } = props
   const { children, onChangeMax } = props
@@ -299,26 +300,25 @@ function Tx<TxValues>(props: Props<TxValues>) {
       )
         throw new Error("Fee is not estimated")
 
-      const tx = createTx(values)
+        const gasCoins = new Coins([Coin.fromData(gasFee)])
+        const taxCoin =
+          token && taxAmount && has(taxAmount) && new Coin(token, taxAmount)
+        const taxCoins = sanitizeTaxes(taxes) ?? taxCoin
+        const feeCoins = taxCoins ? gasCoins.add(taxCoins) : gasCoins
+        const fee = new Fee(estimatedGas, feeCoins)
+
+      const tx = { ...createTx(values), fee, memo } as CreateTxOptions
 
       if (!tx) throw new Error("Tx is not defined")
 
-      const gasCoins = new Coins([Coin.fromData(gasFee)])
-      const taxCoin =
-        token && taxAmount && has(taxAmount) && new Coin(token, taxAmount)
-      const taxCoins = sanitizeTaxes(taxes) ?? taxCoin
-      const feeCoins = taxCoins ? gasCoins.add(taxCoins) : gasCoins
-      const fee = new Fee(estimatedGas, feeCoins)
-
       if (isWallet.multisig(wallet)) {
         // TODO: broadcast only to terra if wallet is multisig
-        const unsignedTx = await auth.create({ ...tx, fee })
+        const unsignedTx = await auth.create(tx)
         const { pathname, search } = toPostMultisigTx(unsignedTx)
         openURL([pathname, search].join("?"))
         return
       } else if (wallet) {
-        const result = await auth.post(
-          { ...tx, fee },
+        const result = await auth.post(tx,
           password,
           undefined,
           // use broadcast mode = "block" if we are not showing the broadcast loader
@@ -346,7 +346,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
           isIbc && trackIbcTx({ ...(result as any), chain } as ActivityItem)
           // add the transaction to the activity cache so it shows up immediately on the activity list
           addCachedTx({ ...(result as any), chain } as ActivityItem)
-          // run the onSuccess function if it has ben set
+          // run the onSuccess function if it has been set
           onSuccess?.()
           // navigate to the activity page
           navigate("/#1")
