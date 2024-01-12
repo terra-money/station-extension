@@ -83,7 +83,6 @@ const Confirm = () => {
 
   return (
     <Tx {...tx}>
-      {/* @ts-ignore */}
       {({ fee, submit }) => (
         <Form onSubmit={handleSubmit(submit.fn)}>
           <SwapTimeline {...{ swapMsgs, ...getValues() }} />
