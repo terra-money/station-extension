@@ -29,7 +29,7 @@ interface WalletActionButton {
   hide?: boolean
 }
 
-const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
+const WalletActionButtons = ({ token }: { token: TokenItem }) => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
   const networks = useNetwork()
@@ -38,14 +38,12 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
   const navigate = useNavigate()
   const networkName = useNetworkName()
   const { pathname } = useLocation()
-  const readNativeDenom = useNativeDenoms()
-  const token = readNativeDenom(denom ?? "")
   const addresses = useInterchainAddresses()
   const isLedger = useIsLedger()
 
   const address = useMemo(() => {
     if (!addresses) return ""
-    return addresses[token.chainID]
+    return addresses[token?.chainID]
   }, [addresses, token])
 
   const availableGasDenoms = useMemo(
@@ -63,7 +61,7 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
       primary: true,
       label: t("Send"),
       onClick: () =>
-        (isLedger ? openURL : navigate)(`/send/1`, denom ? { state: denom } : undefined),
+        (isLedger ? openURL : navigate)(`/send/1`,{ state: token?.symbol }),
       disabled: sendButtonDisabled,
     },
     {
@@ -77,7 +75,7 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
       size: "default",
       label: t("Swap"),
       onClick: () =>
-        (isLedger ? openURL : navigate)(`/swap`, denom ? { denom } : undefined),
+        (isLedger ? openURL : navigate)(`/swap`, { state: token?.token }),
       hide: networkName !== "mainnet",
     },
     {
