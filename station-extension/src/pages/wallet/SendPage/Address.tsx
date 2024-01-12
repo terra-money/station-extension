@@ -19,16 +19,16 @@ import { useLocation } from "react-router-dom"
 
 const Address = () => {
   const { form, goToStep, getWalletName, networks } = useSend()
-  const { state } = useLocation()
+  const { state: denom } = useLocation()
   const { recipients } = useRecentRecipients()
   const { register, setValue, formState, watch, trigger } = form
   const { errors } = formState
   const { recipient } = watch()
   const { t } = useTranslation()
-
+  
   useEffect(() => {
-    setValue("asset", state?.denom)
-  }, [state?.denom, setValue])
+    setValue("asset", denom) // pre-selected from asset page
+  }, [denom, setValue])
 
   const [tab, setTab] = useState("wallets")
 
