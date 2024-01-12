@@ -38,13 +38,12 @@ const WalletActionButtons = ({ token }: { token: TokenItem }) => {
   const navigate = useNavigate()
   const networkName = useNetworkName()
   const { pathname } = useLocation()
+  const readNativeDenom = useNativeDenoms()
+  const token = readNativeDenom(denom ?? "", pathname.split("/")[2])
   const addresses = useInterchainAddresses()
   const isLedger = useIsLedger()
 
-  const address = useMemo(() => {
-    if (!addresses) return ""
-    return addresses[token?.chainID]
-  }, [addresses, token])
+  const address = useMemo(() => addresses?.[token?.chainID], [addresses, token])
 
   const availableGasDenoms = useMemo(
     () => Object.keys(networks[chainID]?.gasPrices ?? {}),
