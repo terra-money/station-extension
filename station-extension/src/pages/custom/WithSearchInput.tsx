@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react"
-import { Grid } from "components/layout"
 import { SearchInput } from "components/form"
+import { FlexColumn } from "@terra-money/station-ui"
 
 interface Props {
   gap?: number
@@ -31,7 +31,7 @@ const WithSearchInput = ({
   const [input, setInput] = useState(defaultInput ?? "")
 
   return (
-    <Grid gap={gap ?? 20} className={className}>
+    <FlexColumn gap={gap ?? 20} className={className}>
       <SearchInput
         label={label}
         value={input}
@@ -44,7 +44,7 @@ const WithSearchInput = ({
         padding={padding}
       />
       {children(input)}
-    </Grid>
+    </FlexColumn>
   )
 }
 
