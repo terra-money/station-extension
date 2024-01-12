@@ -36,7 +36,7 @@ const SwapForm = () => {
     useSwap()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { state } = useLocation()
+  const { state: denom } = useLocation()
   const currency = useCurrency()
   // State
   const { watch, getValues, setValue, register } = form
@@ -63,9 +63,9 @@ const SwapForm = () => {
 
   // Lifecycle
   useEffect(() => {
-    if (!state?.denom) return
+    if (!denom) return
     const token = tokens
-      .filter((t) => t.originDenom === state.denom && has(t.balance))
+      .filter((t) => t.originDenom === denom && has(t.balance))
       .sort((a, b) => Number(b.balance) - Number(a.balance))[0]
     if (!token) return
     setValue("offerAsset", token)

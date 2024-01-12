@@ -25,7 +25,7 @@ const Address = () => {
   const { errors } = formState
   const { recipient } = watch()
   const { t } = useTranslation()
-
+  
   useEffect(() => {
     setValue("asset", denom) // pre-selected from asset page
   }, [denom, setValue])
