@@ -76,7 +76,7 @@ const SwapTimeline = ({
               {capitalize(msg.type)}{" "}
               <span className={style.text}> {msg.offerAssetSymbol}</span> for{" "}
               <span className={style.text}> {msg.askAssetSymbol}</span> on{" "}
-              <span className={style.text}> {swapVenueToName[msg.venue]}</span>
+              <span className={style.text}> {swapVenueToName[msg.venue] ?? t("Unknown Swap Venue")}</span>
             </>
           ),
           variant: "success",
