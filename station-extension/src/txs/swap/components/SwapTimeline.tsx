@@ -13,7 +13,7 @@ import { ReactNode } from "react"
 
 interface SwapTimelineElement {
   msg: ReactNode
-  variant: "success"
+  variant: "default"
 }
 
 const SwapTimeline = ({
@@ -27,7 +27,6 @@ const SwapTimeline = ({
 
   const startOverride = (
     <ActivityListItem
-      variant={"success"}
       chain={{
         label: offerAsset.chain.name,
         icon: offerAsset.chain.icon,
@@ -52,7 +51,7 @@ const SwapTimeline = ({
         </>
       }
       type={"Execute Contract"}
-      msgCount={route.operations.length}
+      msgCount={route.timelineMsgs.length}
       hasTimeline
     />
   )
@@ -67,7 +66,7 @@ const SwapTimeline = ({
               <span>{msg.from}</span> to <span>{msg.to}</span>
             </>
           ),
-          variant: "success",
+          variant: "default",
         }
       if (msg.type === "swap")
         return {
@@ -76,10 +75,10 @@ const SwapTimeline = ({
               {capitalize(msg.type)}{" "}
               <span className={style.text}> {msg.offerAssetSymbol}</span> for{" "}
               <span className={style.text}> {msg.askAssetSymbol}</span> on{" "}
-              <span className={style.text}> {swapVenueToName[msg.venue]}</span>
+              <span className={style.text}> {swapVenueToName[msg.venue] ?? t("Unknown Swap Venue")}</span>
             </>
           ),
-          variant: "success",
+          variant: "default",
         }
 
       return null
@@ -91,7 +90,7 @@ const SwapTimeline = ({
       <SectionHeader title={t("Swap Path")} withLine />
       <Timeline
         startOverride={startOverride}
-        forceShowAll={route.operations.length === 3}
+        forceShowAll={route.timelineMsgs.length === 3}
         middleItems={middleItems.filter((m): m is SwapTimelineElement => !!m)}
       />
     </>
