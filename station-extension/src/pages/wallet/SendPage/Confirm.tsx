@@ -82,13 +82,18 @@ const Confirm = () => {
   }, [assetInfo, destination, chain])
 
   const createTx = useCallback(
-    ({ address, memo }: TxValues) => {
+    ({ address, memo, recipient: txRecipient }: TxValues) => {
       const amount = toAmount(input, { decimals: assetInfo?.decimals })
       const { senderAddress, denom, channel } = assetInfo ?? {}
+
       if (!(recipient && AccAddress.validate(recipient))) return
       if (!(chain && destination && denom && amount && senderAddress)) return
 
-      const execute_msg = { transfer: { recipient: address, amount } }
+      const execute_msg = {
+        transfer: { recipient: txRecipient ?? address, amount },
+      }
+
+      console.log({ txRecipient, address, execute_msg })
       let msgs
 
       if (destination === chain) {
@@ -111,7 +116,7 @@ const Confirm = () => {
                   msg: Buffer.from(
                     JSON.stringify({
                       channel,
-                      remote_address: address,
+                      remote_address: txRecipient ?? address,
                     })
                   ).toString("base64"),
                 },
