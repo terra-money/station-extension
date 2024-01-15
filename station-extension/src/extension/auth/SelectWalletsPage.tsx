@@ -1,25 +1,31 @@
-import ExtensionPage from "extension/components/ExtensionPage"
 import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
+import { useAuth } from "auth"
+import is from "auth/scripts/is"
+import { addressFromWords } from "utils/bech32"
+import ExtensionPageV2 from "extension/components/ExtensionPageV2"
 import { FlexColumn, NavButton, WalletList } from "@terra-money/station-ui"
 import styles from "./SelectWallets.module.scss"
-import { useAuth } from "auth"
-import { addressFromWords } from "utils/bech32"
-import { useNavigate } from "react-router-dom"
-import is from "auth/scripts/is"
 
 export default function SelectWalletsPage() {
   const { wallets, connectedWallet, connect } = useAuth()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const activeWallet = wallets.filter((wallet) => wallet.name === connectedWallet?.name)[0]
+  const activeWallet = wallets.filter(
+    (wallet) => wallet.name === connectedWallet?.name
+  )[0]
   const activeWalletAddress = addressFromWords(
     connectedWallet?.words["330"] ?? "",
     "terra"
   )
 
   return (
-    <ExtensionPage title={t("Select wallet")} fullHeight modal>
-      <FlexColumn gap={24} className={styles.select__wallet__container}>
+    <ExtensionPageV2 title={t("Select wallet")} fullHeight>
+      <FlexColumn
+        gap={24}
+        className={styles.select__wallet__container}
+        justify="flex-start"
+      >
         <NavButton
           label={t("Add Wallet")}
           onClick={() => navigate("/manage-wallet/add")}
@@ -56,6 +62,6 @@ export default function SelectWalletsPage() {
             })}
         />
       </FlexColumn>
-    </ExtensionPage>
+    </ExtensionPageV2>
   )
 }

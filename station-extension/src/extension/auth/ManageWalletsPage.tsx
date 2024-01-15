@@ -1,8 +1,8 @@
-import { useManageWallet } from "auth/modules/manage/ManageWallets"
-import ExtensionList from "extension/components/ExtensionList"
-import ExtensionPage from "extension/components/ExtensionPage"
 import { useTranslation } from "react-i18next"
 import { useNavigate, useParams } from "react-router-dom"
+import { useManageWallet } from "auth/modules/manage/ManageWallets"
+import ExtensionList from "extension/components/ExtensionList"
+import ExtensionPageV2 from "extension/components/ExtensionPageV2"
 
 export default function ManageWalletsPage() {
   const { t } = useTranslation()
@@ -16,14 +16,13 @@ export default function ManageWalletsPage() {
   }
 
   return (
-    <ExtensionPage
+    <ExtensionPageV2
       title={t("Manage wallet")}
       fullHeight
-      modal
       backButtonPath="/manage-wallet/select"
       subtitle={wallet}
     >
       <ExtensionList list={manageWallet} />
-    </ExtensionPage>
+    </ExtensionPageV2>
   )
 }
