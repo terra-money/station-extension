@@ -15,8 +15,14 @@ axios.interceptors.response.use(
 
 export const getPlaceholder = (decimals = 6) => "0.".padEnd(decimals + 2, "0")
 
-export const toInput = (amount: BigNumber.Value, decimals = 6) =>
-  new BigNumber(readAmount(amount, { decimals })).toNumber()
+export const toInput = (
+  amount: BigNumber.Value,
+  decimals = 6,
+  roundDecimals?: number
+) =>
+  new BigNumber(readAmount(amount, { decimals }))
+    .decimalPlaces(decimals ?? roundDecimals, BigNumber.ROUND_DOWN)
+    .toNumber()
 
 /* field array (coins) */
 export interface CoinInput {
