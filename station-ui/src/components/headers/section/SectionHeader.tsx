@@ -53,7 +53,8 @@ const SectionHeader = ({
                 <DropdownArrowIcon
                   className={cx(styles.arrow__icon)}
                   style={{
-                    transform: rotateArrow ? "rotate(180deg)" : "rotate(0deg)",
+                    transform: `rotate(${rotateArrow ? 180 : 0}deg)`,
+                    transition: "transform 0.5s ease",
                   }}
                 />
               )}
