@@ -93,7 +93,6 @@ const Confirm = () => {
         transfer: { recipient: txRecipient ?? address, amount },
       }
 
-      console.log({ txRecipient, address, execute_msg })
       let msgs
 
       if (destination === chain) {
