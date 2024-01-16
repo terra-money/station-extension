@@ -1,3 +1,4 @@
+import { ReactComponent as ActivityIconSVG } from "./icon/Activity.svg"
 import { ReactComponent as AddressBookIconSVG } from "./icon/AddressBook.svg"
 import { ReactComponent as AlertIconSVG } from "./icon/Alert.svg"
 import { ReactComponent as BackArrowIconSVG } from "./icon/BackArrow.svg"
@@ -18,7 +19,6 @@ import { ReactComponent as ExternalLinkIconSVG } from "./icon/ExternalLink.svg"
 import { ReactComponent as FavoriteIconSVG } from "./icon/Favorite.svg"
 import { ReactComponent as FilterIconSVG } from "./icon/Filter.svg"
 import { ReactComponent as FlipArrowsIconSVG } from "./icon/FlipArrows.svg"
-import { ReactComponent as GasIconSVG } from "./icon/Gas.svg"
 import { ReactComponent as GithubIconSVG } from "./icon/Github.svg"
 import { ReactComponent as GovernanceIconSVG } from "./icon/Governance.svg"
 import { ReactComponent as ImportSeedIconSVG } from "./icon/ImportSeed.svg"
@@ -28,9 +28,9 @@ import { ReactComponent as LaughIconSVG } from "./icon/Laugh.svg"
 import { ReactComponent as LedgerIconSVG } from "./icon/Ledger.svg"
 import { ReactComponent as LightbulbIconSVG } from "./icon/Lightbulb.svg"
 import { ReactComponent as LoadingIconSVG } from "./icon/Loading.svg"
+import { ReactComponent as LoadingV2IconSVG } from "./icon/LoadingV2.svg"
 import { ReactComponent as LockIconSVG } from "./icon/Lock.svg"
 import { ReactComponent as ManageAssetIconSVG } from "./icon/ManageAsset.svg"
-import { ReactComponent as MultisigIconSVG } from "./icon/Multisig.svg"
 import { ReactComponent as MultisigWalletIconSVG } from "./icon/MultisigWallet.svg"
 import { ReactComponent as NoInternetIconSVG } from "./icon/NoInternet.svg"
 import { ReactComponent as PuzzlePieceIconSVG } from "./icon/PuzzlePiece.svg"
@@ -41,8 +41,6 @@ import { ReactComponent as RoughlyEqualsIconSVG } from "./icon/RoughlyEquals.svg
 import { ReactComponent as SearchIconSVG } from "./icon/Search.svg"
 import { ReactComponent as SendArrowIconSVG } from "./icon/SendArrow.svg"
 import { ReactComponent as SmallCircleCheckIconSVG } from "./icon/SmallCircleCheck.svg"
-import { ReactComponent as StationIconSVG } from "./icon/StationIcon.svg"
-import { ReactComponent as StationIconLightSVG } from "./icon/StationIconLight.svg"
 import { ReactComponent as StakeIconSVG } from "./icon/Stake.svg"
 import { ReactComponent as SwapArrowsIconSVG } from "./icon/SwapArrows.svg"
 import { ReactComponent as TelegramIconSVG } from "./icon/Telegram.svg"
@@ -53,8 +51,7 @@ import { ReactComponent as TwitterIconSVG } from "./icon/Twitter.svg"
 import { ReactComponent as WalletIconSVG } from "./icon/Wallet.svg"
 import { ReactComponent as WalletConnectIconSVG } from "./icon/WalletConnect.svg"
 
-import { ReactComponent as CornerBackgroundLogoSVG } from "./icon/CornerBackgroundLogo.svg"
-
+export const ActivityIcon = ActivityIconSVG
 export const AddressBookIcon = AddressBookIconSVG
 export const AlertIcon = AlertIconSVG
 export const BackArrowIcon = BackArrowIconSVG
@@ -75,7 +72,6 @@ export const ExternalLinkIcon = ExternalLinkIconSVG
 export const FavoriteIcon = FavoriteIconSVG
 export const FilterIcon = FilterIconSVG
 export const FlipArrowsIcon = FlipArrowsIconSVG
-export const GasIcon = GasIconSVG
 export const GithubIcon = GithubIconSVG
 export const GovernanceIcon = GovernanceIconSVG
 export const ImportSeedIcon = ImportSeedIconSVG
@@ -85,9 +81,9 @@ export const LaughIcon = LaughIconSVG
 export const LedgerIcon = LedgerIconSVG
 export const LightbulbIcon = LightbulbIconSVG
 export const LoadingIcon = LoadingIconSVG
+export const LoadingV2Icon = LoadingV2IconSVG
 export const LockIcon = LockIconSVG
 export const ManageAssetIcon = ManageAssetIconSVG
-export const MultisigIcon = MultisigIconSVG
 export const MultisigWalletIcon = MultisigWalletIconSVG
 export const NoInternetIcon = NoInternetIconSVG
 export const PuzzlePieceIcon = PuzzlePieceIconSVG
@@ -98,8 +94,6 @@ export const RoughlyEqualsIcon = RoughlyEqualsIconSVG
 export const SearchIcon = SearchIconSVG
 export const SendArrowIcon = SendArrowIconSVG
 export const SmallCircleCheckIcon = SmallCircleCheckIconSVG
-export const StationIcon = StationIconSVG
-export const StationIconLight = StationIconLightSVG
 export const StakeIcon = StakeIconSVG
 export const SwapArrowsIcon = SwapArrowsIconSVG
 export const TelegramIcon = TelegramIconSVG
@@ -110,4 +104,9 @@ export const TwitterIcon = TwitterIconSVG
 export const WalletIcon = WalletIconSVG
 export const WalletConnectIcon = WalletConnectIconSVG
 
-export const CornerBackgroundLogo = CornerBackgroundLogoSVG
+import { ReactComponent as TotalAssets } from "./backdrops/total-assets.svg"
+import { ReactComponent as StakedAssets } from "./backdrops/staked-assets.svg"
+import { ReactComponent as ClaimableAssets } from "./backdrops/claimable-rewards.svg"
+export const TotalAssetsSVG = TotalAssets
+export const StakedAssetsSVG = StakedAssets
+export const ClaimableAssetsSVG = ClaimableAssets

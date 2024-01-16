@@ -1,0 +1,68 @@
+@import "scss/font_mixins";
+
+.nav__button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+
+  @include Small;
+  color: var(--token-dark-900);
+  transition: all 0.1s ease-in;
+
+  .icon__container {
+    position: relative;
+    display: flex;
+
+    .indicator {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--token-dark-200);
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: var(--token-warning-500);
+      }
+    }
+  }
+  svg {
+    width: 16px;
+    height: 16px;
+    transition: all 0.1s ease-in;
+  }
+
+  &:hover {
+    color: var(--token-light-white);
+  }
+
+  &.active {
+    padding: 16px;
+    background-color: var(--token-dark-500);
+    color: var(--token-light-white);
+
+    svg {
+      fill: var(--token-primary-500);
+    }
+  }
+
+  &.small {
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+}

@@ -2,6 +2,7 @@
 import { useState } from "react"
 import type { Meta, StoryObj } from "@storybook/react"
 import Dropdown, { DropdownProps } from "./Dropdown"
+import MultiSelectDropdown from './MultiSelectDropdown'
 import { TokenSingleChainListItem } from "components"
 import { tokenPrices, tokensBySymbol, walletBalance } from "../asset-selector/fakedata"
 
@@ -57,6 +58,40 @@ export const DefaultWithSearch: StoryObj<DropdownProps> = {
         options={options}
         onChange={(value) => setSelectedValue(value)}
         value={selectedValue}
+        withSearch
+      />
+    )
+  },
+  argTypes: {},
+}
+
+export const MultiSelect: StoryObj<DropdownProps> = {
+  render: () => {
+    const options = [
+      { value: "terra", label: "Terra", image: "https://station-assets.terra.dev/img/chains/Terra.svg" },
+      { value: "axelar", label: "Axelar", image: "https://station-assets.terra.dev/img/chains/Axelar.svg" },
+      { value: "carbon", label: "Carbon", image: "https://station-assets.terra.dev/img/chains/Carbon.svg" },
+      { value: "cosmos", label: "Cosmos", image: "https://station-assets.terra.dev/img/chains/Cosmos.svg" },
+      { value: "crescent", label: "Crescent", image: "https://station-assets.terra.dev/img/chains/Crescent.svg" },
+      { value: "juno", label: "Juno", image: "https://station-assets.terra.dev/img/chains/Juno.svg" },
+      { value: "mars", label: "Mars", image: "https://station-assets.terra.dev/img/chains/Mars.svg" },
+    ]
+
+    const [selectedValues, setSelectedValues] = useState<string[]>([])
+
+    const onChange = (value: string) => {
+      if (selectedValues.includes(value)) {
+        setSelectedValues(selectedValues.filter((item) => item !== value))
+      } else {
+        setSelectedValues([...selectedValues, value])
+      }
+    }
+
+    return (
+      <MultiSelectDropdown
+        options={options}
+        onChange={onChange}
+        values={selectedValues}
         withSearch
       />
     )
