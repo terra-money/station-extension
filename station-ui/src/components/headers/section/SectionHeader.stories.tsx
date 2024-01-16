@@ -66,6 +66,19 @@ export const TitleWithIcon: StoryObj<SectionHeaderProps> = {
   },
 };
 
+export const TitleWithArrow: StoryObj<SectionHeaderProps> = {
+  render: () => {
+    return (
+      <SectionHeader
+        title="Show Low Balance Assets (2)"
+        withArrow
+        withLine
+        onClick={() => console.log('clicked')}
+      />
+    );
+  },
+};
+
 export const JustALine: StoryObj<SectionHeaderProps> = {
   render: () => {
     return (
