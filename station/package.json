@@ -30,7 +30,7 @@
     "@terra-money/log-finder-ruleset": "^3.0.3",
     "@terra-money/msg-reader": "^3.0.1",
     "@terra-money/station-connector": "^1.0.5",
-    "@terra-money/station-ui": "file:../station-ui/terra-money-station-ui-1.0.1.tgz",
+    "@terra-money/station-ui": "file:../station-ui/terra-money-station-ui-1.0.3.tgz",
     "@terra-money/terra-station-mobile": "^1.0.12",
     "@terra-money/terra-utils": "^1.0.9",
     "@terra-money/terra.js": "^3.1.9",
