@@ -54,7 +54,14 @@ const Address = ({ children: address }: { children: string }) => {
   return <span>{name ?? truncate(address)}</span>
 }
 
-const Tokens = ({ children: coins }: { children: string }) => {
+interface TokenProps {
+  chainID: string
+  children: string
+}
+
+const Tokens = (props: TokenProps) => {
+  const { chainID, children: coins } = props
+
   const list = new Coins(coins).toArray()
 
   const tokenWords =
@@ -65,8 +72,10 @@ const Tokens = ({ children: coins }: { children: string }) => {
           const { denom } = data
 
           return (
-            <WithTokenItem token={denom} key={denom}>
-              {({ decimals }) => <Read {...data} decimals={decimals} />}
+            <WithTokenItem token={denom} chainID={chainID} key={denom}>
+              {({ decimals }) => (
+                <Read {...data} chainID={chainID} decimals={decimals} />
+              )}
             </WithTokenItem>
           )
         })
@@ -113,7 +122,7 @@ const ActivityTxMessage = ({
     const voteTypes = ["Yes", "No", "No With Veto", "Abstain"]
 
     return validateTokens(word) ? (
-      <Tokens>{word}</Tokens>
+      <Tokens chainID={chainID || ""}>{word}</Tokens>
     ) : /^proposal:(\d+)/.exec(word)?.[1] ? (
       <Proposal
         proposalID={parseInt(/^proposal:(\d+)$/.exec(word)?.[1] || "")}
