@@ -1,29 +1,34 @@
-import { ReactComponent as ReceiveIcon } from "styles/images/icons/Receive_v2.svg"
-import { ReactComponent as SendIcon } from "styles/images/icons/Send_v2.svg"
-import { ReactComponent as AddIcon } from "styles/images/icons/Buy_v2.svg"
+import { useMemo } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import { capitalize } from "@mui/material"
+import {
+  BuyIcon,
+  FlexColumn,
+  ReceiveIcon,
+  RoundedButton,
+  SendArrowIcon,
+  SwapArrowsIcon,
+} from "@terra-money/station-ui"
 import { useNetworkName, useNetwork, useChainID } from "data/wallet"
 import { useIsWalletEmpty } from "data/queries/bank"
 import { useKado } from "pages/wallet/Buy"
-import { useTranslation } from "react-i18next"
-import styles from "./NetWorth.module.scss"
-import { capitalize } from "@mui/material"
-import { useMemo } from "react"
-import { FlexColumn, RoundedButton } from "@terra-money/station-ui"
-import { ReactComponent as Swap } from "styles/images/icons/Swap.svg"
-import { useLocation, useNavigate } from "react-router-dom"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import { useNativeDenoms } from "data/token"
+import { openURL } from "extension/storage"
+import { useIsLedger } from "utils/ledger"
+import styles from "./NetWorth.module.scss"
 
 interface WalletActionButton {
   icon: JSX.Element
   label: string
+  size: "default" | "large" | "small" | undefined
   onClick: () => void
   disabled?: boolean
   primary?: boolean
   hide?: boolean
 }
 
-const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
+const WalletActionButtons = ({ token }: { token?: TokenItem }) => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
   const networks = useNetwork()
@@ -32,14 +37,10 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
   const navigate = useNavigate()
   const networkName = useNetworkName()
   const { pathname } = useLocation()
-  const readNativeDenom = useNativeDenoms()
-  const token = readNativeDenom(denom ?? "")
   const addresses = useInterchainAddresses()
+  const isLedger = useIsLedger()
 
-  const address = useMemo(() => {
-    if (!addresses) return ""
-    return addresses[token.chainID]
-  }, [addresses, token])
+  const address = useMemo(() => addresses?.[token?.chainID], [addresses, token])
 
   const availableGasDenoms = useMemo(
     () => Object.keys(networks[chainID]?.gasPrices ?? {}),
@@ -47,28 +48,49 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
   )
 
   const sendButtonDisabled = isWalletEmpty && !!availableGasDenoms.length
-
   const buttons: WalletActionButton[] = [
     {
-      icon: <SendIcon />,
+      icon: (
+        <SendArrowIcon width={16} height={16} fill="var(--token-light-white)" />
+      ),
+      size: "default",
       primary: true,
       label: t("Send"),
-      onClick: () => navigate(`/send/1`, { state: { denom } }),
+      onClick: () =>
+        (isLedger ? openURL : navigate)(
+          `/send/1`,
+          token ? { state: token?.symbol } : undefined
+        ),
       disabled: sendButtonDisabled,
     },
     {
-      icon: <Swap />,
+      icon: (
+        <SwapArrowsIcon
+          width={16}
+          height={16}
+          fill="var(--token-light-white)"
+        />
+      ),
+      size: "default",
       label: t("Swap"),
-      onClick: () => navigate(`/swap`, { state: { denom } }),
+      onClick: () =>
+        (isLedger ? openURL : navigate)(
+          `/swap`,
+          token ? { state: token?.token } : undefined
+        ),
       hide: networkName !== "mainnet",
     },
     {
-      icon: <ReceiveIcon />,
+      icon: (
+        <ReceiveIcon width={16} height={16} fill="var(--token-light-white)" />
+      ),
+      size: "default",
       label: t("Receive"),
       onClick: () => navigate(`/receive/${address ?? ""}`),
     },
     {
-      icon: <AddIcon />,
+      icon: <BuyIcon width={16} height={16} fill="var(--token-light-white)" />,
+      size: "default",
       label: t("Buy"),
       onClick: () => openModal(),
       disabled: networkName !== "mainnet",
@@ -79,16 +101,19 @@ const WalletActionButtons = ({ denom }: { denom?: Denom }) => {
   return (
     <div className={styles.networth__buttons}>
       {buttons.map(
-        ({ icon, label, onClick, disabled, primary, hide }) =>
+        ({ size, icon, label, onClick, disabled, primary, hide }) =>
           !hide && (
-            <FlexColumn key={label}>
+            <FlexColumn key={label} gap={8}>
               <RoundedButton
+                size={size}
                 variant={primary ? "primary" : "secondary"}
                 onClick={onClick}
                 icon={icon}
                 disabled={disabled}
               />
-              <span>{capitalize(label)}</span>
+              <span className={styles.networth__buttons__labels}>
+                {capitalize(label)}
+              </span>
             </FlexColumn>
           )
       )}

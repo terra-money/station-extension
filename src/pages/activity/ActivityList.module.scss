@@ -1,7 +1,7 @@
 @import "mixins";
 
 .activitylist {
-  padding-bottom: 1.6rem;
+  padding-bottom: 16px;
   overflow-y: auto;
   width: 100%;
 }
@@ -14,8 +14,8 @@
 }
 
 .loadingtext {
-  color: #065bed;
-  padding-top: 14px;
+  color: white;
+  padding-top: 8px;
   display: flex;
   justify-content: center;
 }

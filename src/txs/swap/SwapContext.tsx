@@ -63,12 +63,14 @@ const SwapContext = ({ children }: PropsWithChildren<{}>) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValues.askAsset, defaultValues.offerAsset])
 
-  const getTokensWithBal = (tokens: SwapAssetExtra[]) => {
-    return tokens.filter((t) => Number(t.balance) > 0)
-  }
+  useEffect(() => {
+    form.setValue("slippageTolerance", slippage)
+  }, [slippage, form])
+
+  const getTokensWithBal = (tokens: SwapAssetExtra[]) =>
+    tokens.filter((t) => Number(t.balance) > 0)
 
   const render = () => {
-    if (!askAsset || !parsed) return null
     const value = {
       tokens: parsed,
       getTokensWithBal,
@@ -81,10 +83,14 @@ const SwapContext = ({ children }: PropsWithChildren<{}>) => {
     return <SwapProvider value={value}>{children}</SwapProvider>
   }
 
-  return !state.isSuccess ? (
-    <SwapLoadingPage />
-  ) : (
-    <Fetching {...state}>{render()}</Fetching>
+  return (
+    <Fetching {...state}>
+      {!state.isSuccess || !askAsset || !parsed ? (
+        <SwapLoadingPage />
+      ) : (
+        render()
+      )}
+    </Fetching>
   )
 }
 

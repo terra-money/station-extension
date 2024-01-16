@@ -23,6 +23,7 @@ import AssetFormExtra from "./components/AssetFormExtra"
 import { toAmount } from "@terra-money/terra-utils"
 import { validateAssets } from "./SwapConfirm"
 import Footer from "./components/Footer"
+import { AccAddress } from "@terra-money/feather.js"
 
 enum SwapAssetType {
   ASK = "askAsset",
@@ -31,18 +32,19 @@ enum SwapAssetType {
 
 const SwapForm = () => {
   // Hooks
-  const { tokens, getTokensWithBal, getBestRoute, form, getMsgs } = useSwap()
+  const { tokens, getTokensWithBal, getBestRoute, form, getMsgs, slippage } =
+    useSwap()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { state } = useLocation()
+  const { state: denom } = useLocation()
   const currency = useCurrency()
-  const [error, setError] = useState<string | undefined>()
-
   // State
   const { watch, getValues, setValue, register } = form
   const [assetModal, setAssetModal] = useState<SwapAssetType | undefined>()
   const [displayTokens, setDisplayTokens] = useState<SwapAssetExtra[]>([])
   const { offerAsset, askAsset, offerInput, route } = watch()
+  const [error, setError] = useState<string | undefined>()
+  const [warning, setWarning] = useState<string | undefined>()
 
   const offerAssetAmount = useMemo(
     () => toAmount(offerInput, { decimals: offerAsset.decimals }),
@@ -61,9 +63,9 @@ const SwapForm = () => {
 
   // Lifecycle
   useEffect(() => {
-    if (!state?.denom) return
+    if (!denom) return
     const token = tokens
-      .filter((t) => t.originDenom === state.denom && has(t.balance))
+      .filter((t) => t.originDenom === denom && has(t.balance))
       .sort((a, b) => Number(b.balance) - Number(a.balance))[0]
     if (!token) return
     setValue("offerAsset", token)
@@ -71,10 +73,15 @@ const SwapForm = () => {
 
   useEffect(() => {
     setError(undefined)
+    setWarning(undefined)
     setValue("route", undefined) // for loading purposees
 
     if (insufficientFunds) setError("Insufficient funds")
     if (sameAssets) setError("Swap assets must be different")
+    if (Number(slippage) >= 1)
+      setWarning(
+        "Your transaction may be frontrun and result in an unfavorable trade."
+      )
     if (!has(offerInput)) return
 
     const fetchRouteAndMsgs = async () => {
@@ -90,13 +97,17 @@ const SwapForm = () => {
 
   // Handlers
   const handleOpenModal = (type: SwapAssetType) => {
-    setDisplayTokens(
+    const toDisplay =
       type === SwapAssetType.OFFER ? getTokensWithBal(tokens) : tokens
-    )
+    setDisplayTokens(toDisplay)
     setAssetModal(type)
   }
   const tokenOnClick = (token: SwapAssetExtra) => {
-    if (assetModal) setValue(assetModal as keyof SwapState, token)
+    // add prefix to align with Skips expected formatting
+    const parsed = AccAddress.validate(token.denom)
+      ? { ...token, denom: `cw20:${token.denom}` }
+      : token
+    if (assetModal) setValue(assetModal as keyof SwapState, parsed)
     setAssetModal(undefined) // close modal
   }
 
@@ -115,15 +126,20 @@ const SwapForm = () => {
 
   // Values
   const currencyAmount = useMemo(() => {
-    const offer = `${currency.symbol} ${(
-      offerAsset.price * Number(offerInput)
-    ).toFixed(2)}`
+    const offer = offerAsset.price
+      ? `${currency.symbol} ${(Number(offerInput) * offerAsset.price).toFixed(
+          2
+        )}`
+      : "—"
 
-    const ask = `${currency.symbol} ${toInput(
-      Number(route?.amountOut) * askAsset.price,
-      askAsset.decimals
-    ).toFixed(2)}`
-    return { offer: offer ?? "—", ask: ask ?? "—" }
+    const ask = askAsset.price
+      ? `${currency.symbol} ${toInput(
+          Number(route?.amountOut) * askAsset.price,
+          askAsset.decimals
+        ).toFixed(2)}`
+      : "—"
+
+    return { offer, ask }
   }, [offerAsset, offerInput, askAsset, route, currency])
 
   const sameAssets = !validateAssets({ offerAsset, askAsset })
@@ -164,12 +180,13 @@ const SwapForm = () => {
             chainName={askAsset?.chain?.name}
             tokenIcon={askAsset?.icon ?? ""}
             onSymbolClick={() => handleOpenModal(SwapAssetType.ASK)}
-            amount={Number(askAssetAmount).toFixed(2)}
+            amount={askAssetAmount}
             currencyAmount={currencyAmount.ask}
           />
         </Grid>
         <Footer />
         {error && <Banner title={t(error)} variant="error" />}
+        {warning && <Banner title={t(warning)} variant="warning" />}
       </Grid>
       <Button
         variant="primary"

@@ -1,5 +1,5 @@
 import { AccAddress } from "@terra-money/feather.js"
-import { useNetwork } from "data/wallet"
+import { useAllNetworks } from "data/wallet"
 import { InterchainNetwork } from "types/network"
 import createContext from "utils/createContext"
 
@@ -69,7 +69,20 @@ export function getChainIdFromAddress(
 }
 
 export function useIBCChannels() {
-  const networks = useNetwork()
+  // the destination netowrk does not need to be enabled in order to send tokens to it
+  const networks = useAllNetworks()
+
+  function getICS20(to: string, from: string, token: AccAddress) {
+    const channels = networks[from]?.ics20Channels?.[to]
+    return (
+      // ics20 channel specific for this token
+      channels?.find(({ tokens }) => !!tokens?.find((t) => t === token)) ||
+      // default ics channel for the chain
+      channels?.find(({ tokens }) => !tokens) ||
+      // fallback: ics channel from legacy assetlist | TODO: remove when this PR gets merged: https://github.com/terra-money/station-assets/pull/203
+      networks[from]?.icsChannels?.[to]
+    )
+  }
 
   return {
     getIBCChannel: ({
@@ -86,14 +99,21 @@ export function useIBCChannels() {
       const isCW20 = AccAddress.validate(tokenAddress)
 
       if (isCW20) {
-        return networks[from]?.icsChannels?.[to]?.channel
+        return getICS20(to, from, tokenAddress)?.channel
       }
 
       if (
         icsChannel &&
-        networks[to]?.icsChannels?.[from]?.channel === icsChannel
+        (networks[to]?.ics20Channels?.[from].find(
+          ({ channel }) => channel === icsChannel
+        ) ||
+          networks[to]?.icsChannels?.[from]?.channel === icsChannel)
       ) {
-        return networks[to]?.icsChannels?.[from]?.otherChannel
+        return (
+          networks[to]?.ics20Channels?.[from].find(
+            ({ channel }) => channel === icsChannel
+          )?.otherChannel || networks[to]?.icsChannels?.[from]?.otherChannel
+        )
       }
 
       return networks[from]?.channels?.[to]
@@ -102,11 +122,13 @@ export function useIBCChannels() {
     getICSContract: ({
       from,
       to,
+      tokenAddress,
     }: {
       from: string
       to: string
+      tokenAddress: AccAddress
     }): string | undefined => {
-      return networks[from]?.icsChannels?.[to]?.contract
+      return getICS20(to, from, tokenAddress)?.contract
     },
   }
 }

@@ -45,12 +45,20 @@ export const useParseSwapTokens = (tokens: SwapAssetBase[]) => {
   const parsedtoken = tokens
     .filter(({ chainId }) => Object.keys(network).includes(chainId))
     .map((token) => {
+      token.denom = token.denom.replace("cw20:", "") // remove cw20: prefix
       const balance =
         balances.find(
           ({ denom, chain }) => denom === token.denom && token.chainId === chain
         )?.amount ?? "0"
-      const price = prices?.[token.denom]?.price ?? 0
-      const change = prices?.[token.denom]?.change ?? 0
+      let price, change
+      if (token.symbol === "LUNC") {
+        // Price and change currently not available for LUNC.
+        price = prices?.["uluna:classic"]?.price ?? 0
+        change = prices?.["uluna:classic"]?.change ?? 0
+      } else {
+        price = prices?.[token.originDenom]?.price ?? 0
+        change = prices?.[token.originDenom]?.change ?? 0
+      }
       const value = Number(balance) * price * Math.pow(10, -token.decimals)
       const { icon: chainIcon, name: chainName } = network[token.chainId]
       const ibcDenom = unknownIBCDenoms[[token.denom, token.chainId].join("*")]
@@ -58,7 +66,6 @@ export const useParseSwapTokens = (tokens: SwapAssetBase[]) => {
         ibcDenom?.baseDenom ?? token.denom,
         ibcDenom?.chainIDs?.[0] ?? token.chainId
       )
-
       return {
         ...token,
         symbol: isNonWhitelisted ? token.symbol : symbol,
@@ -91,18 +98,13 @@ export const useGetBestRoute = (sources?: SupportedSource[]) => {
   const getBestRoute = useCallback(
     async (swap: SwapState) => {
       const routePromises = routeSources.map(async (source) => {
-        try {
-          const amount = toAmount(swap.offerInput, {
-            decimals: swap.offerAsset.decimals,
-          })
-          return await routeMap[source]?.(
-            { ...swap, offerInput: amount },
-            network
-          )
-        } catch (error) {
-          console.error(`Error getting route from ${source}:`, error)
-          return null // Return null in case of error to not break Promise.all
-        }
+        const amount = toAmount(swap.offerInput, {
+          decimals: swap.offerAsset.decimals,
+        })
+        return await routeMap[source]?.(
+          { ...swap, offerInput: amount },
+          network
+        )
       })
 
       const results = await Promise.all(routePromises)
@@ -113,9 +115,7 @@ export const useGetBestRoute = (sources?: SupportedSource[]) => {
       if (routes.length === 0) {
         throw new Error("No routes available for this swap.")
       }
-      const bestRoute = routes.sort(
-        (a, b) => Number(b.amountOut) - Number(a.amountOut)
-      )[0]
+      const bestRoute = routes.sort((a, b) => a.txsRequired - b.txsRequired)[0]
       return bestRoute
     },
     [routeSources, network]
@@ -162,8 +162,9 @@ const DEFAULT_SWAP = {
     denom: "uluna",
   },
   offer: {
-    chainID: "axelar-dojo-1",
-    denom: "uusdc",
+    chainID: "phoenix-1",
+    originDenom: "uusdc",
+    symbol: "axlUSDC",
   },
 }
 
@@ -172,13 +173,14 @@ export const useGetSwapDefaults = (assets: SwapAssetExtra[]) => {
   const defaults = useMemo(() => {
     const askAsset = assets.find(
       (t) =>
-        t.originDenom === DEFAULT_SWAP.ask.denom &&
+        t.denom === DEFAULT_SWAP.ask.denom &&
         t.chainId === DEFAULT_SWAP.ask.chainID
     )
     const offerAsset = assets.find(
       (t) =>
-        t.originDenom === DEFAULT_SWAP.offer.denom &&
-        t.chainId === DEFAULT_SWAP.offer.chainID
+        t.originDenom === DEFAULT_SWAP.offer.originDenom &&
+        t.chainId === DEFAULT_SWAP.offer.chainID &&
+        t.symbol === DEFAULT_SWAP.offer.symbol
     )
 
     return {

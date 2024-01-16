@@ -27,8 +27,8 @@ import { Coin } from "@terra-money/feather.js"
 import { queryKey } from "data/query"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { CoinInput } from "txs/utils"
-import { useNavigate } from "react-router-dom"
 import style from "./Send.module.scss"
+import { useIsLedger } from "utils/ledger"
 
 enum TxType {
   SEND = "Send",
@@ -54,10 +54,10 @@ const Confirm = () => {
   const currency = useCurrency()
   const { handleSubmit, setValue } = form
   const { addRecipient } = useRecentRecipients()
-  const navigate = useNavigate()
   const addresses = useInterchainAddresses()
   const [error, setError] = useState<string | null>(null)
   const { input, assetInfo, destination, recipient, chain, memo } = form.watch()
+  const isLedger = useIsLedger()
 
   /* fee */
   const coins = useMemo(() => [{ input, denom: "" }] as CoinInput[], [input])
@@ -82,14 +82,17 @@ const Confirm = () => {
   }, [assetInfo, destination, chain])
 
   const createTx = useCallback(
-    ({ address, memo }: TxValues) => {
+    ({ memo }: TxValues) => {
       const amount = toAmount(input, { decimals: assetInfo?.decimals })
       const { senderAddress, denom, channel } = assetInfo ?? {}
+
       if (!(recipient && AccAddress.validate(recipient))) return
+      if (!(chain && destination && denom && amount && senderAddress)) return
 
-      const execute_msg = { transfer: { recipient: address, amount } }
+      const execute_msg = {
+        transfer: { recipient, amount },
+      }
 
-      if (!chain || !destination || !denom || !amount || !senderAddress) return
       let msgs
 
       if (destination === chain) {
@@ -106,12 +109,13 @@ const Confirm = () => {
                   contract: getICSContract({
                     from: chain,
                     to: destination,
+                    tokenAddress: denom,
                   }),
                   amount: amount,
                   msg: Buffer.from(
                     JSON.stringify({
                       channel,
-                      remote_address: address,
+                      remote_address: recipient,
                     })
                   ).toString("base64"),
                 },
@@ -224,10 +228,12 @@ const Confirm = () => {
     createTx,
     onSuccess: () => {
       addRecipient({ recipient, name: getWalletName(recipient ?? "") })
-      navigate("/")
+      isLedger && window.close()
     },
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
     gasAdjustment: destination !== chain ? 2 : 1,
+    isIbc: destination !== chain,
+    hideLoader: destination === chain,
   }
 
   return (

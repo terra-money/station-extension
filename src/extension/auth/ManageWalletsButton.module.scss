@@ -2,8 +2,7 @@
 
 .manage__wallets {
   @include flex(flex-start);
-  gap: 12px;
-  padding-inline: 10px;
+  gap: 8px;
   color: var(--token-dark-900);
 }
 

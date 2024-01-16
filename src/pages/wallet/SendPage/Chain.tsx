@@ -1,6 +1,5 @@
-import { useMemo } from "react"
 import { useSend } from "./SendContext"
-import { useNetwork } from "data/wallet"
+import { useAllNetworks } from "data/wallet"
 import { getChainNamefromID } from "data/queries/chains"
 import { SearchChains } from "../ReceivePage"
 import { addressFromWords } from "utils/bech32"
@@ -9,17 +8,19 @@ import { getWallet } from "auth/scripts/keystore"
 
 const Chain = () => {
   const { form, goToStep } = useSend()
-  const { setValue } = form
-  const networks = useNetwork()
-  const { recipient } = form.watch()
-  const { words } = getWallet(recipient)
+  const { setValue, watch } = form
+  const networks = useAllNetworks()
+  const { recipient } = watch()
+  const wallet = getWallet(recipient)
 
-  const chains = useMemo(() => {
-    return Object.values(networks).map(({chainID}) => {
-      const address = addressFromWords(
-        words[networks[chainID]?.coinType ?? "330"],
-        networks[chainID]?.prefix
-      )
+  const chains = Object.values(networks)
+    .filter((n) =>
+      wallet.words?.[n.coinType] && wallet.multisig
+        ? n.prefix === "terra"
+        : true
+    )
+    .map(({ chainID, prefix, coinType }) => {
+      const address = addressFromWords(wallet.words?.[coinType] ?? "", prefix)
       return {
         name: getChainNamefromID(chainID, networks) ?? chainID,
         onClick: () => {
@@ -31,7 +32,7 @@ const Chain = () => {
         address,
       }
     })
-  }, [networks, words, setValue, goToStep])
+
   return (
     <SearchChains
       data={chains.filter((item) => AccAddress.validate(item.address))}

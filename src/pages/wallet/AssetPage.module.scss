@@ -1,21 +1,43 @@
 @import "mixins";
+@import "font_mixins";
 
 .details {
+  // background-color: var(--token-dark-500);
   @include flex(center);
   flex-direction: column;
   width: 100%;
-  padding-bottom: 1.6rem;
+  padding-bottom: 16px;
   height: fit-content;
   grid-area: details;
+
+  .cost__container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 8px;
+  }
 
   .token {
     @include flex(center);
     color: var(--token-light-100);
-    gap: 10px;
+    gap: 8px;
+
+    .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .token__amount {
+      @include X-Small;
+      color: var(--token-light-100);
+    }
   }
 
   h1 {
-    font-size: 20pt;
+    @include XX-Large;
+    color: var(--token-light-white);
+    margin-bottom: 24px;
   }
 
   p {
@@ -23,6 +45,10 @@
     font-size: 12pt;
     margin-top: 0.2rem;
   }
+}
+
+.chainlist__container {
+  padding: 24px 0;
 }
 
 .chainlist {
@@ -36,13 +62,15 @@
 
 .chainlist__title {
   grid-area: title;
-  margin-bottom: 10px;
+  padding: 0px 10px 6px;
 }
 
 .chainlist__list {
+  gap: 4px;
+  display: grid;
   overflow-y: auto;
   grid-area: list;
-  padding-bottom: 1rem;
+  padding-bottom: 14px;
 }
 
 .actions {
@@ -64,4 +92,5 @@
 .vesting {
   width: 100%;
   margin-bottom: 20px;
+  margin-top: 10px;
 }

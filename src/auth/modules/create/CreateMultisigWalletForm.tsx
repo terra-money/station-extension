@@ -17,6 +17,7 @@ import {
   InputWrapper,
   Banner,
   SubmitButton,
+  ButtonInlineWrapper,
 } from "@terra-money/station-ui"
 import { wordsFromAddress } from "utils/bech32"
 import { truncate } from "@terra-money/terra-utils"
@@ -30,10 +31,15 @@ interface Values {
 
 interface Props {
   onCreated?: (publicKey: MultisigWallet) => void
-  onPubkey?: (publicKey: LegacyAminoMultisigPublicKey) => void
+  onPubkey?: (data: {
+    pubkeys: string[]
+    threshold: number
+    words: { "330": string }
+  }) => void
+  onBack?: () => void
 }
 
-const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
+const CreateMultisigWalletForm = ({ onCreated, onPubkey, onBack }: Props) => {
   const { t } = useTranslation()
   const lcd = useInterchainLCDClient()
 
@@ -87,10 +93,18 @@ const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
       const values = addresses.map(({ value }) => value)
       const pubkeys = await getPublicKeys(values)
       const publicKey = new LegacyAminoMultisigPublicKey(threshold, pubkeys)
-      onPubkey?.(publicKey)
-      if (!onCreated) return
       const address = publicKey.address("terra")
       const words = { "330": wordsFromAddress(address) }
+      onPubkey?.({
+        pubkeys: pubkeys.map((k) => k.toAminoJSON()),
+        threshold,
+        words,
+      })
+
+      if (!onCreated) {
+        setSubmitting(false)
+        return
+      }
       const wallet = {
         name,
         words,
@@ -120,12 +134,14 @@ const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
           />
         </InputWrapper>
       )}
-      <Banner
-        variant="warning"
-        title={t(
-          "All wallets must have enough coins or tokens to cover gas fees."
-        )}
-      />
+      {!onPubkey && (
+        <Banner
+          variant="warning"
+          title={t(
+            "All wallets must have enough coins or tokens to cover gas fees."
+          )}
+        />
+      )}
 
       <MultiInputWrapper label={t("Wallets")} layout="vertical">
         {fields.map(({ id }, index) => (
@@ -163,11 +179,20 @@ const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
 
       {error && <Banner variant="error" title={error.message} />}
 
-      <SubmitButton
-        loading={submitting}
-        disabled={!isValid}
-        label={t("Create")}
-      />
+      <ButtonInlineWrapper>
+        {!!onBack && (
+          <Button
+            variant="secondary"
+            label={t("Back")}
+            onClick={() => onBack()}
+          />
+        )}
+        <SubmitButton
+          loading={submitting}
+          disabled={!isValid}
+          label={t("Create")}
+        />
+      </ButtonInlineWrapper>
     </Form>
   )
 }

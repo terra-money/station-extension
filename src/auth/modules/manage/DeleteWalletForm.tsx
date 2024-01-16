@@ -26,11 +26,12 @@ interface Props {
 }
 
 const DeleteWalletForm = ({ walletName }: Props) => {
-  const { t } = useTranslation()
+  const { wallets, connect, disconnect } = useAuth()
   const navigate = useNavigate()
-  const { disconnect } = useAuth()
+  const { t } = useTranslation()
 
   const [name, setName] = useState<string | undefined>(walletName)
+  const otherWallets = wallets.filter((wallet) => wallet.name !== walletName)
 
   /* form */
   const form = useForm<Values>()
@@ -45,9 +46,15 @@ const DeleteWalletForm = ({ walletName }: Props) => {
       return
     }
 
+    // Remove deleted wallet.
     disconnect()
     deleteWallet(walletName)
     setName(undefined)
+
+    // Connect to most recently connected wallet.
+    if (otherWallets.length) {
+      connect(otherWallets[0].name)
+    }
   }
 
   return (
@@ -70,7 +77,7 @@ const DeleteWalletForm = ({ walletName }: Props) => {
           </Flex>
         </FlexColumn>
       ) : (
-        <Form onSubmit={handleSubmit(submit)} style={{ height: "100%" }}>
+        <Form onSubmit={handleSubmit(submit)} style={{ height: "90%" }}>
           <FlexColumn className={styles.form__container}>
             <FlexColumn gap={24}>
               <InputWrapper
@@ -83,23 +90,20 @@ const DeleteWalletForm = ({ walletName }: Props) => {
               <Banner
                 variant="error"
                 title={t(
-                  "This action can not be undone. You will need a private key or a mnemonic seed phrase to restore this wallet to the app."
+                  "This action can not be undone. You will need a private key or a recovery phrase to restore this wallet."
                 )}
               />
             </FlexColumn>
-
             <Flex gap={24} className={styles.form__footer}>
               <Button
                 onClick={() => navigate("/", { replace: true })}
                 label={t("Back")}
                 variant="secondary"
-                style={{ width: "100%" }}
               />
               <SubmitButton
                 disabled={!isValid}
                 label={t("Remove")}
                 variant="warning"
-                style={{ width: "100%" }}
               />
             </Flex>
           </FlexColumn>

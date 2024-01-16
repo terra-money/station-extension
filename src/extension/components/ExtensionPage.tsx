@@ -58,76 +58,6 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
               </header>
             )}
 
-            {title && (
-              <Container
-                className={cx(
-                  styles.container,
-                  styles.close__container,
-                  modal && !backButtonPath && styles.container__with__icon
-                )}
-              >
-                <header className={styles.header}>
-                  <div className={styles.header_container}>
-                    {backButtonPath && (
-                      <BackIcon
-                        className={styles.back__icon}
-                        width={20}
-                        height={20}
-                        onClick={() => navigate(backButtonPath)}
-                        fill="currentColor"
-                      />
-                    )}
-                    <div className={styles.title__container}>
-                      {img && (
-                        <div
-                          className={cx(styles.img__container, {
-                            img__with__label: !!label,
-                          })}
-                        >
-                          {typeof img === "string" ? (
-                            <img src={img} alt={title} />
-                          ) : (
-                            img
-                          )}
-                        </div>
-                      )}
-                      <h1
-                        className={cx(
-                          styles.title,
-                          backButtonPath
-                            ? styles.skew_title
-                            : subtitle && styles.with_subtitle
-                        )}
-                      >
-                        {title}
-                      </h1>
-                      {label && <h5 className={styles.label}>{label}</h5>}
-                      {subtitle && (
-                        <h3
-                          className={cx(
-                            backButtonPath
-                              ? styles.small__subtitle
-                              : styles.subtitle
-                          )}
-                        >
-                          {subtitle}
-                        </h3>
-                      )}
-                    </div>
-                  </div>
-                </header>
-                {modal && (
-                  <CloseIcon
-                    width={16}
-                    height={16}
-                    className={styles.modal__close__icon}
-                    onClick={() => navigate("/")}
-                    fill="currentColor"
-                  />
-                )}
-              </Container>
-            )}
-
             <section
               className={cx(
                 styles.main,
@@ -141,6 +71,74 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                   fullHeight && styles.full__height__body
                 )}
               >
+                {title && (
+                  <div
+                    className={cx(
+                      styles.close__container,
+                      modal && !backButtonPath && styles.container__with__icon
+                    )}
+                  >
+                    <header className={styles.header}>
+                      <div className={styles.header_container}>
+                        {backButtonPath && (
+                          <BackIcon
+                            className={styles.back__icon}
+                            width={20}
+                            height={20}
+                            onClick={() => navigate(backButtonPath)}
+                            fill="currentColor"
+                          />
+                        )}
+                        <div className={styles.title__container}>
+                          {img && (
+                            <div
+                              className={cx(styles.img__container, {
+                                img__with__label: !!label,
+                              })}
+                            >
+                              {typeof img === "string" ? (
+                                <img src={img} alt={title} />
+                              ) : (
+                                img
+                              )}
+                            </div>
+                          )}
+                          <h1
+                            className={cx(
+                              styles.title,
+                              backButtonPath
+                                ? styles.skew_title
+                                : subtitle && styles.with_subtitle
+                            )}
+                          >
+                            {title}
+                          </h1>
+                          {label && <h5 className={styles.label}>{label}</h5>}
+                          {subtitle && (
+                            <h3
+                              className={cx(
+                                backButtonPath
+                                  ? styles.small__subtitle
+                                  : styles.subtitle
+                              )}
+                            >
+                              {subtitle}
+                            </h3>
+                          )}
+                        </div>
+                      </div>
+                    </header>
+                    {modal && (
+                      <CloseIcon
+                        width={16}
+                        height={16}
+                        className={styles.modal__close__icon}
+                        onClick={() => navigate("/")}
+                        fill="currentColor"
+                      />
+                    )}
+                  </div>
+                )}
                 {wrong ? (
                   <Card>{wrong}</Card>
                 ) : (

@@ -1,45 +1,44 @@
-import { useEffect } from "react"
-import { useRoutes, useLocation } from "react-router-dom"
-import { useAddress, useChainID, useNetworkName } from "data/wallet"
-import { ErrorBoundary, Wrong } from "components/feedback"
-import InitBankBalance from "app/InitBankBalance"
-import LatestTx from "app/sections/LatestTx"
-import NetworkHeader from "app/sections/NetworkHeader"
-import SwapTx from "txs/swap/SwapTx"
-import SignMultisigTxPage from "pages/multisig/SignMultisigTxPage"
-import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
 import {
   clearWalletAddress,
   storeNetwork,
-  storeReplaceKeplr,
   storeTheme,
   storeWalletAddress,
 } from "./storage"
-import RequestContainer from "./RequestContainer"
+import { useAllInterchainAddresses, usePubkey } from "auth/hooks/useAddress"
+import PreferencesRouter from "app/sections/settings/PreferencesRouter"
+import { useAddress, useChainID, useNetworkName } from "data/wallet"
+import SignMultisigTxPage from "pages/multisig/SignMultisigTxPage"
+import PostMultisigTxPage from "pages/multisig/PostMultisigTxPage"
+import SettingsButton from "app/sections/settings/SettingsButton"
+import ManageWalletsButton from "./auth/ManageWalletsButton"
+import NetworkStatus from "components/display/NetworkStatus"
+import { ErrorBoundary, Wrong } from "components/feedback"
+import ManageWalletRouter from "./auth/ManageWalletRouter"
+import DashboardButton from "app/sections/DashboardButton"
+import { useRoutes, useLocation } from "react-router-dom"
+import NetworkHeader from "app/sections/NetworkHeader"
 import ManageNetworks from "./networks/ManageNetworks"
 import AddNetworkPage from "./networks/AddNetworkPage"
-import Auth from "./auth/Auth"
-import Header from "./layouts/Header"
-import Front from "./modules/Front"
-import { useAllInterchainAddresses, usePubkey } from "auth/hooks/useAddress"
-import { Flex } from "components/layout"
-import NetworkStatus from "components/display/NetworkStatus"
-import PreferencesRouter from "app/sections/settings/PreferencesRouter"
-import { useAuth } from "auth"
-import is from "auth/scripts/is"
+import ExtensionPage from "./components/ExtensionPage"
+import ChangeLogModal from "./update/ChangeLogModal"
+import RequestContainer from "./RequestContainer"
+import InitBankBalance from "app/InitBankBalance"
 import { useNetworks } from "app/InitNetworks"
 import { useTheme } from "data/settings/Theme"
-import { useReplaceKeplr } from "utils/localStorage"
-import EnableCoinType from "app/sections/EnableCoinType"
-import ChangeLogModal from "./update/ChangeLogModal"
-import Welcome from "./modules/Welcome"
-import ExtensionPage from "./components/ExtensionPage"
 import { getErrorMessage } from "utils/error"
-import ManageWalletsButton from "./auth/ManageWalletsButton"
-import ManageWalletRouter from "./auth/ManageWalletRouter"
-import PreferencesButton from "app/sections/settings/PreferencesButton"
-import InitActivity from "pages/activity/InitActivity"
-import DashboardButton from "app/sections/DashboardButton"
+import LatestTx from "app/sections/LatestTx"
+import { Flex } from "components/layout"
+import Welcome from "./modules/Welcome"
+import Header from "./layouts/Header"
+import SwapTx from "txs/swap/SwapTx"
+import Front from "./modules/Front"
+import { useEffect } from "react"
+import is from "auth/scripts/is"
+import { useAuth } from "auth"
+import Auth from "./auth/Auth"
+import UpgradeWalletButton from "app/sections/UpgradeWalletButton"
+import { Tooltip } from "@terra-money/station-ui"
+import { useTranslation } from "react-i18next"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -50,7 +49,7 @@ const App = () => {
   const addresses = useAllInterchainAddresses()
   const { name: theme } = useTheme()
   const { wallet } = useAuth()
-  const { replaceKeplr } = useReplaceKeplr()
+  const { t } = useTranslation()
 
   useEffect(() => {
     storeNetwork({ ...networks[name][chainID], name }, networks[name])
@@ -72,10 +71,6 @@ const App = () => {
   useEffect(() => {
     storeTheme(theme)
   }, [theme])
-
-  useEffect(() => {
-    storeReplaceKeplr(replaceKeplr)
-  }, [replaceKeplr])
 
   const routes = useRoutes([
     { path: "/networks", element: <ManageNetworks /> },
@@ -109,20 +104,23 @@ const App = () => {
       <>
         {!hideHeader && (
           <Header>
-            <Flex>
+            <Flex gap={16} style={{ marginTop: 8 }}>
               <ManageWalletsButton />
               <NetworkHeader />
             </Flex>
-            <Flex>
+            <Flex gap={16} style={{ marginTop: 8 }}>
               <LatestTx />
-              <EnableCoinType />
+              <UpgradeWalletButton />
               <NetworkStatus />
-              <PreferencesButton />
-              <DashboardButton />
+              <SettingsButton />
+              <Tooltip
+                content={t("Dashboard")}
+                placement="top"
+                children={<DashboardButton />}
+              />
             </Flex>
           </Header>
         )}
-
         <ErrorBoundary fallback={fallback}>{routes}</ErrorBoundary>
       </>
     )
@@ -131,9 +129,7 @@ const App = () => {
   return (
     <ErrorBoundary fallback={fallback}>
       <InitBankBalance>
-        <InitActivity>
-          <RequestContainer>{render()}</RequestContainer>
-        </InitActivity>
+        <RequestContainer>{render()}</RequestContainer>
       </InitBankBalance>
       <ChangeLogModal />
     </ErrorBoundary>

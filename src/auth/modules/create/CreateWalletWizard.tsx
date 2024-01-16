@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { SeedKey } from "@terra-money/feather.js"
+import { RawKey, SeedKey } from "@terra-money/feather.js"
 import createContext from "utils/createContext"
 import { addWallet } from "../../scripts/keystore"
 import CreateWalletForm from "./CreateWalletForm"
@@ -8,6 +8,7 @@ import CreatedWallet from "./CreatedWallet"
 import { wordsFromAddress } from "utils/bech32"
 import PasswordForm from "./PasswordForm"
 import { decrypt } from "auth/scripts/aes"
+import legacyDecrypt from "auth/scripts/decrypt"
 
 export interface Values {
   name: string
@@ -15,6 +16,7 @@ export interface Values {
   index: number
   coinType?: Bip
   seedPassword?: string
+  legacySeedKey?: boolean
 }
 
 /* context */
@@ -56,45 +58,73 @@ const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
   /* create wallet */
   const [createdWallet, setCreatedWallet] = useState<SingleWallet>()
   const createWallet = (password: string) => {
-    const { name, mnemonic, coinType, index, seedPassword } = values
+    const { name, mnemonic, coinType, index, seedPassword, legacySeedKey } =
+      values
 
     const seed = seedPassword
-      ? Buffer.from(decrypt(mnemonic, seedPassword), "base64")
+      ? legacySeedKey
+        ? Buffer.from(legacyDecrypt(mnemonic, seedPassword), "hex")
+        : Buffer.from(decrypt(mnemonic, seedPassword), "base64")
       : SeedKey.seedFromMnemonic(mnemonic)
-    const key330 = new SeedKey({ seed, coinType: coinType ?? 330, index })
-    const key118 = new SeedKey({ seed, coinType: 118, index })
-    const key60 = new SeedKey({ seed, coinType: 60, index })
-    const words = {
-      "330": wordsFromAddress(key330.accAddress("terra")),
-      "118": wordsFromAddress(key118.accAddress("terra")),
-      "60": wordsFromAddress(key60.accAddress("inj")),
+
+    if (!legacySeedKey) {
+      const key330 = new SeedKey({ seed, coinType: coinType ?? 330, index })
+      const key118 = new SeedKey({ seed, coinType: 118, index })
+      const key60 = new SeedKey({ seed, coinType: 60, index })
+      const words = {
+        "330": wordsFromAddress(key330.accAddress("terra")),
+        "118": wordsFromAddress(key118.accAddress("terra")),
+        "60": wordsFromAddress(key60.accAddress("inj")),
+      }
+
+      const pubkey = {
+        // @ts-expect-error
+        "330": key330.publicKey.key,
+        // @ts-expect-error
+        "118": key118.publicKey.key,
+        // @ts-expect-error
+        "60": key60.publicKey.key,
+      }
+
+      try {
+        addWallet(
+          {
+            name,
+            words,
+            mnemonic: seedPassword ? undefined : mnemonic,
+            seed,
+            pubkey,
+            index,
+            legacy: coinType === 118,
+          },
+          password
+        )
+      } catch (e) {}
+      setCreatedWallet({ name, words, pubkey })
+    } else {
+      const key330 = new RawKey(seed)
+      const words = {
+        "330": wordsFromAddress(key330.accAddress("terra")),
+      }
+
+      const pubkey = {
+        // @ts-expect-error
+        "330": key330.publicKey.key,
+      }
+      try {
+        addWallet(
+          {
+            name,
+            words,
+            key: { "330": seed },
+            pubkey,
+          },
+          password
+        )
+      } catch (e) {}
+      setCreatedWallet({ name, words, pubkey })
     }
 
-    const pubkey = {
-      // @ts-expect-error
-      "330": key330.publicKey.key,
-      // @ts-expect-error
-      "118": key118.publicKey.key,
-      // @ts-expect-error
-      "60": key60.publicKey.key,
-    }
-
-    try {
-      addWallet(
-        {
-          name,
-          words,
-          mnemonic,
-          seed,
-          pubkey,
-          index,
-          legacy: coinType === 118,
-        },
-        password
-      )
-    } catch (e) {}
-
-    setCreatedWallet({ name, words, pubkey })
     setStep(4)
   }
 
@@ -114,6 +144,7 @@ const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
 
       case 2:
         if (!values.mnemonic) setStep(1)
+        if (values.legacySeedKey) setStep(3)
         return beforeCreate
 
       case 3:
