@@ -49,9 +49,19 @@ import { ReactComponent as TrendDownIconSVG } from "./icon/TrendDown.svg"
 import { ReactComponent as TrendUpIconSVG } from "./icon/TrendUp.svg"
 import { ReactComponent as TwitterIconSVG } from "./icon/Twitter.svg"
 import { ReactComponent as WalletIconSVG } from "./icon/Wallet.svg"
-import { ReactComponent as WalletConnectIconSVG } from "./icon/WalletConnect.svg"
+import { ReactComponent as StationIconSvg } from "./icon/StationIcon.svg"
+import { ReactComponent as StationIconLightSvg } from "./icon/StationIconLight.svg"
+import { ReactComponent as CornerBackgroundLogoSvg } from "./icon/CornerBackgroundLogo.svg"
+import { ReactComponent as WalletConneIconSVG } from "./icon/WalletConnect.svg"
+import { ReactComponent as GasIconSvg } from "./icon/Gas.svg"
+import { ReactComponent as MultisigIconSvg } from "./icon/Multisig.svg"
 
 export const ActivityIcon = ActivityIconSVG
+export const StationIcon = StationIconSvg
+export const MultisigIcon = MultisigIconSvg
+export const GasIcon = GasIconSvg
+export const StationIconLight = StationIconLightSvg
+export const CornerBackgroundLogo = CornerBackgroundLogoSvg
 export const AddressBookIcon = AddressBookIconSVG
 export const AlertIcon = AlertIconSVG
 export const BackArrowIcon = BackArrowIconSVG
@@ -102,7 +112,7 @@ export const TrendDownIcon = TrendDownIconSVG
 export const TrendUpIcon = TrendUpIconSVG
 export const TwitterIcon = TwitterIconSVG
 export const WalletIcon = WalletIconSVG
-export const WalletConnectIcon = WalletConnectIconSVG
+export const WalletConnectIcon = WalletConneIconSVG
 
 import { ReactComponent as TotalAssets } from "./backdrops/total-assets.svg"
 import { ReactComponent as StakedAssets } from "./backdrops/staked-assets.svg"
