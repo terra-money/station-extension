@@ -75,12 +75,20 @@ const Welcome = () => {
                 icon={<BuyIcon fill="var(--token-light-white)" />}
                 label={t("Create new wallet")}
               />
+
               <Button
                 onClick={() => openURL("/auth/ledger")}
                 variant="secondary"
                 block
                 icon={<LedgerIcon fill="var(--token-light-white)" />}
                 label={t("Connect Ledger wallet")}
+              />
+              <Button
+                onClick={() => openURL("/auth/recover")}
+                variant="secondary"
+                block
+                icon={<WalletIcon fill="var(--token-light-white)" />}
+                label={t("Import existing wallet")}
               />
             </>
           ) : (
@@ -112,7 +120,7 @@ const Welcome = () => {
                   variant="secondary"
                   block
                   icon={<WalletIcon fill="var(--token-light-white)" />}
-                  label={t("Finish wallets migration")}
+                  label={t("Finish wallet migration")}
                 />
               )}
             </>
