@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { truncate } from "@terra-money/terra-utils"
@@ -66,8 +67,21 @@ const Submit = () => {
     } else {
       clearErrors("ibcWarning")
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showIBCWarning, ibcWarning, assetInfo, destination])
+
+  useEffect(() => {
+    if (!(assetInfo && recipient)) {
+      goToStep(1)
+      return
+    }
+
+    const { price } = assetInfo
+
+    if (price) {
+      const amount = input || 0
+      setValue("currencyAmount", amount * price)
+    }
+  }, [input])
 
   if (!(assetInfo && recipient)) {
     goToStep(1)
@@ -99,7 +113,7 @@ const Submit = () => {
         walletAmount={toInput(balance, decimals)}
         handleMaxClick={handleMax}
         symbol={symbol}
-        onSymbolClick={() => goToStep(2)}
+        onSymbolClick={() => goToStep(1)}
         tokenIcon={tokenImg}
         chainIcon={assetInfo.chain.icon}
         chainName={assetInfo.chain.label}
