@@ -110,7 +110,7 @@ const WalletActionButtons = ({ token }: { token?: TokenItem }) => {
                 onClick={onClick}
                 icon={icon}
                 disabled={disabled}
-                data-testid={`wallet-action-button-${index}`} // Add the data-testid attribute here
+                data-testid={`wallet-action-button-${index}`}
               />
               <span className={styles.networth__buttons__labels}>
                 {capitalize(label)}
