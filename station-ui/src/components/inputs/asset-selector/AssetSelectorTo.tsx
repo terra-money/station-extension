@@ -28,8 +28,7 @@ const AssetSelectorTo = ({
   currencyAmount,
   currencySymbol,
 }: AssetSelectorToProps) => {
-  const amountDisplayRef = useRef<HTMLSpanElement>(null)
-  const [fontSize, setFontSize] = useState(24)
+  const displayRef = useRef<HTMLDivElement>(null)
   const [maxWidth, setMaxWidth] = useState(0)
 
   const formatValue = (value: string, decimalLimit: number) => {
@@ -41,28 +40,10 @@ const AssetSelectorTo = ({
   }
 
   useEffect(() => {
-    if (amountDisplayRef.current && maxWidth === 0) {
-      setMaxWidth(amountDisplayRef.current.parentElement?.clientWidth || amountDisplayRef.current.clientWidth)
-      setFontSize(24)
+    if (displayRef.current) {
+      setMaxWidth(displayRef.current.offsetWidth - 17) // 17 is the width of the RoughlyEqualsIcon + 8px gap
     }
-
-    if (amountDisplayRef.current) {
-      const scrollWidth = amountDisplayRef.current.scrollWidth
-
-      const hasOverflow = scrollWidth > maxWidth - 18
-      let newFontSize = fontSize
-
-      if (hasOverflow && newFontSize > 12) {
-        newFontSize -= 3
-      } else if (!hasOverflow && newFontSize < 24) {
-        if (amountDisplayRef.current?.parentElement && scrollWidth < amountDisplayRef.current?.parentElement?.clientWidth) {
-          newFontSize += 1
-        }
-      }
-
-      setFontSize(newFontSize)
-    }
-  }, [amount, maxWidth])
+  }, [amount])
 
   return (
     <div className={styles.asset__selector_wrapper}>
@@ -100,12 +81,15 @@ const AssetSelectorTo = ({
         </div>
 
         <div className={styles.amounts__wrapper}>
-          <div className={styles.input__amount} style={{ width: "100%" }}>
+          <div className={styles.input__amount} style={{ width: "100%" }} ref={displayRef}>
             <RoughlyEqualsIcon fill="var(--token-light-100)" />
             <span
-              ref={amountDisplayRef}
-              className={cx(styles.amount__token, { [`${styles.amount__empty}`]: Number.isNaN(amount) || amount === 0 })}
-              style={{ fontSize: `${fontSize}px` }}
+              className={cx(
+                styles.amount__token, {
+                  [`${styles.amount__empty}`]: Number.isNaN(amount) || amount === 0
+                }
+              )}
+              style={{ maxWidth }}
             >
               {!Number.isNaN(amount) ? formatValue(amount.toString(), 4) : "0.00"}
             </span>

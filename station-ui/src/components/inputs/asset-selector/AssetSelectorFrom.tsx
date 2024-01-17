@@ -1,15 +1,11 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { InputHTMLAttributes, useEffect, useRef, useState } from "react"
+import { InputHTMLAttributes } from "react"
 import classNames from "classnames/bind"
-import BigNumber from "bignumber.js"
 import { WalletIcon, DropdownArrowIcon } from "assets"
 import styles from "./AssetSelector.module.scss"
 
 const cx = classNames.bind(styles)
 
 export interface AssetSelectorFromProps {
-  setValue: any
   walletAmount: number
   handleMaxClick: () => void
   symbol: string
@@ -18,13 +14,11 @@ export interface AssetSelectorFromProps {
   chainIcon: string
   chainName: string
   amountInputAttrs: InputHTMLAttributes<HTMLInputElement>
-  amount: number
   currencyAmount: number
   currencySymbol: string
 }
 
 const AssetSelectorFrom = ({
-  setValue,
   walletAmount,
   handleMaxClick,
   symbol,
@@ -33,14 +27,9 @@ const AssetSelectorFrom = ({
   chainIcon,
   chainName,
   amountInputAttrs,
-  amount,
   currencyAmount,
   currencySymbol,
 }: AssetSelectorFromProps) => {
-  const [helperAmount, setHelperAmount] = useState("0")
-  const mirrorSpanRef = useRef<HTMLSpanElement>(null)
-  const [fontSize, setFontSize] = useState(24)
-  const [maxWidth, setMaxWidth] = useState(0)
 
   const formatValue = (value: string, decimalLimit: number) => {
     const parts = value.split(".")
@@ -50,57 +39,9 @@ const AssetSelectorFrom = ({
     return value
   }
 
-  const formatNumber = (number: number) => {
-    const bn = new BigNumber(number)
-    if (bn.abs().isGreaterThan(1e+21)) {
-      return bn.toExponential()
-    } else {
-      return bn.toFixed()
-    }
-  }
-
-  useEffect(() => {
-    setHelperAmount(formatNumber(amount))
-  }, [amount])
-
-  useEffect(() => {
-    if (mirrorSpanRef.current && maxWidth === 0) {
-      setFontSize(24)
-      setMaxWidth(mirrorSpanRef.current.parentElement?.clientWidth || mirrorSpanRef.current.clientWidth)
-    }
-
-    if (mirrorSpanRef.current) {
-      setMaxWidth(mirrorSpanRef.current.parentElement?.clientWidth || mirrorSpanRef.current.clientWidth)
-    }
-
-    if (mirrorSpanRef.current) {
-      const hasOverflow = mirrorSpanRef.current.scrollWidth > maxWidth - 1
-      let newFontSize = fontSize
-
-      if (hasOverflow && newFontSize > 12) {
-        newFontSize -= 3
-      } else if (!hasOverflow && newFontSize < 24) {
-        if (mirrorSpanRef.current?.parentElement && mirrorSpanRef.current.scrollWidth < mirrorSpanRef.current?.parentElement?.clientWidth) {
-          newFontSize += 1
-        }
-      }
-
-      setFontSize(newFontSize)
-    }
-  }, [helperAmount, amount, symbol, maxWidth])
-
-  const handleInputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    amountInputAttrs.onChange && amountInputAttrs.onChange(e)
-    const inputValue = e.target.value
-
-    const formattedValue = formatNumber(parseFloat(inputValue))
-    setHelperAmount(formattedValue)
-    setValue(amountInputAttrs.name || "tokenAmount", formattedValue)
-  }
-
   return (
-    <div className={styles.asset__selector_wrapper}>
-      <div className={cx(styles.header, styles.from )}>
+    <div className={cx(styles.asset__selector_wrapper, styles.from)}>
+      <div className={styles.header}>
         <div className={styles.left}>
           <WalletIcon width={12} height={12} fill="var(--token-dark-900)" />
           <div className={styles.wallet__text__wrapper}>
@@ -152,18 +93,8 @@ const AssetSelectorFrom = ({
               inputMode="decimal"
               placeholder="0.00"
               {...amountInputAttrs}
-              onChange={handleInputOnChange}
-              style={{ fontSize: `${fontSize}px` }}
               step={0.000000000000000001}
             />
-            <span
-              ref={mirrorSpanRef}
-              className={cx(styles.mirror__span)}
-              aria-hidden="true"
-              style={{ fontSize: `${fontSize}px` }}
-            >
-              {helperAmount}
-            </span>
           </div>
           <div className={styles.amount__currency}>
             {currencySymbol}{formatValue(currencyAmount.toString(), 2)}

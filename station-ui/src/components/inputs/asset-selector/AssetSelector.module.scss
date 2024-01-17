@@ -1,4 +1,4 @@
-@import 'scss/font_mixins';
+@import "scss/font_mixins";
 
 .asset__selector_wrapper {
   background-color: var(--token-dark-300);
@@ -13,13 +13,25 @@
   flex-direction: column;
   gap: 16px;
 
+  &.from {
+    .header {
+      justify-content: space-between;
+    }
+
+    .amounts__wrapper {
+      .input__amount {
+        width: 100%;
+
+        .amount__token {
+          width: 100%;
+        }
+      }
+    }
+  }
+
   .header {
     display: flex;
     align-items: center;
-
-    &.from {
-      justify-content: space-between;
-    }
 
     .left {
       display: flex;
@@ -57,6 +69,7 @@
   .inputs {
     display: flex;
     justify-content: space-between;
+    gap: 16px;
 
     .token__selector {
       display: flex;
@@ -105,6 +118,8 @@
         color: var(--token-light-white);
 
         .amount__token {
+          overflow-x: scroll;
+          overflow-y: hidden;
           text-align: end;
           @include Large;
           color: var(--token-light-white);
@@ -124,21 +139,6 @@
           &::placeholder,
           &.amount__empty {
             color: var(--token-dark-900);
-          }
-        }
-
-        .mirror__span {
-          text-align: end;
-          @include Large;
-          visibility: hidden;
-          white-space: pre;
-          position: absolute;
-          pointer-events: none;
-          font-feature-settings: normal;
-          max-width: 190px;
-
-          &.mirror__span__currency {
-            margin-left: 23px;
           }
         }
       }
