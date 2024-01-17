@@ -84,6 +84,19 @@ import { SectionHeader } from "station-ui";
   `} />
 </div>
 
+## Title With Arrow
+<div className="story_with_source_below">
+  <Canvas of={SectionHeaderStories.TitleWithArrow} />
+  <Source code={`
+    <SectionHeader
+  title="Show Low Balance Assets (2)"
+  withArrow
+  withLine
+  onClick={() => console.log('clicked')}
+/>
+  `} />
+</div>
+
 ## Just A Line
 <div className="story_with_source_below">
   <Canvas of={SectionHeaderStories.JustALine} />
