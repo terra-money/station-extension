@@ -31,7 +31,7 @@ const WithSearchInput = ({
   const [input, setInput] = useState(defaultInput ?? "")
 
   return (
-    <FlexColumn gap={gap ?? 20} className={className}>
+    <FlexColumn gap={gap ?? 24} className={className} justify="flex-start">
       <SearchInput
         label={label}
         value={input}
