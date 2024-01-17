@@ -1,3 +1,11 @@
+import { useEffect, useMemo } from "react"
+import { useTranslation } from "react-i18next"
+import { truncate } from "@terra-money/terra-utils"
+import validate from "txs/validate"
+import { toInput } from "txs/utils"
+import { useCurrency } from "data/settings/Currency"
+import { useIBCBaseDenom } from "data/queries/ibc"
+import { useSend } from "./SendContext"
 import {
   InputInLine,
   AssetSelectorFrom,
@@ -7,15 +15,7 @@ import {
   Banner,
   Checkbox,
 } from "@terra-money/station-ui"
-import { useSend } from "./SendContext"
-import { truncate } from "@terra-money/terra-utils"
-import validate from "txs/validate"
-import { useCurrency } from "data/settings/Currency"
-import { toInput } from "txs/utils"
-import { useTranslation } from "react-i18next"
 import style from "./Send.module.scss"
-import { useEffect, useMemo } from "react"
-import { useIBCBaseDenom } from "data/queries/ibc"
 
 const Submit = () => {
   const { form, getWalletName, goToStep, networks } = useSend()
@@ -93,7 +93,6 @@ const Submit = () => {
         value={getWalletName(recipient)}
       />
       <AssetSelectorFrom
-        setValue={setValue}
         walletAmount={toInput(balance, decimals)}
         handleMaxClick={handleMax}
         symbol={symbol}
@@ -108,7 +107,6 @@ const Submit = () => {
             validate: validate.input(toInput(balance, decimals), decimals),
           }),
         }}
-        amount={input ?? 0}
         currencyAmount={currencyAmount ?? 0}
         currencySymbol={currency.symbol}
       />

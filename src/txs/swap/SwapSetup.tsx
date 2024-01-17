@@ -1,4 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useMemo, useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
+import { useLocation, useNavigate } from "react-router-dom"
+import { toAmount } from "@terra-money/terra-utils"
+import { SwapAssetExtra, SwapState } from "data/queries/swap/types"
+import { useCurrency } from "data/settings/Currency"
+import { has } from "utils/num"
+import { toInput } from "txs/utils"
+import SwapTokenSelector from "./components/SwapTokenSelector"
+import { useSwap } from "./SwapContext"
+import { validateAssets } from "./SwapConfirm"
+import Footer from "./components/Footer"
 import {
   AssetSelectorTo,
   AssetSelectorFrom,
@@ -8,21 +20,7 @@ import {
   FlipButton,
   Grid,
 } from "@terra-money/station-ui"
-import { useMemo, useState } from "react"
-import { SwapAssetExtra, SwapState } from "data/queries/swap/types"
-import { useSwap } from "./SwapContext"
-import { useTranslation } from "react-i18next"
-import { toInput } from "txs/utils"
-import SwapTokenSelector from "./components/SwapTokenSelector"
-import { useEffect } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
 import styles from "./Swap.module.scss"
-import { useCurrency } from "data/settings/Currency"
-import { has } from "utils/num"
-import AssetFormExtra from "./components/AssetFormExtra"
-import { toAmount } from "@terra-money/terra-utils"
-import { validateAssets } from "./SwapConfirm"
-import Footer from "./components/Footer"
 
 enum SwapAssetType {
   ASK = "askAsset",
@@ -121,9 +119,7 @@ const SwapForm = () => {
 
   // Values
   const currencyAmount = useMemo(() => {
-    const offer = `${(
-      offerAsset.price * Number(offerInput)
-    ).toFixed(2)}`
+    const offer = `${(offerAsset.price * Number(offerInput)).toFixed(2)}`
 
     const ask = `${toInput(
       Number(route?.amountOut) * askAsset.price,
@@ -140,11 +136,9 @@ const SwapForm = () => {
     setValue(
       "offerInput",
       toInput(offerAsset.balance, offerAsset.decimals).toString()
-      )
-    }
+    )
+  }
 
-  console.log("🚀 ~ file: SwapSetup.tsx:134 ~ currencyAmount ~ currencyAmount:", currencyAmount)
-  console.log("parseFloat(currencyAmount.offer): ", parseFloat(currencyAmount.offer))
   return (
     <div className={styles.container}>
       <Modal
@@ -157,7 +151,6 @@ const SwapForm = () => {
       <Grid gap={24}>
         <Grid gap={4}>
           <AssetSelectorFrom
-            setValue={setValue}
             handleMaxClick={handleMaxClick}
             walletAmount={toInput(offerAsset.balance, offerAsset.decimals)}
             symbol={offerAsset.symbol}
@@ -166,7 +159,6 @@ const SwapForm = () => {
             tokenIcon={offerAsset.icon ?? ""}
             onSymbolClick={() => handleOpenModal(SwapAssetType.OFFER)}
             amountInputAttrs={{ ...register("offerInput") }}
-            amount={parseFloat(offerInput)}
             currencyAmount={parseFloat(currencyAmount.offer)}
             currencySymbol={currency.symbol}
           />
