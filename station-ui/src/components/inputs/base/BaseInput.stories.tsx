@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { ReactComponent as WalletIcon } from 'assets/icon/Wallet.svg';
 import Input, { InputProps } from './Input';
+import { SearchIcon } from 'assets';
 
 const meta: Meta<InputProps> = {
   title: 'Components/Inputs/Base/Stories',
@@ -73,6 +74,24 @@ export const SubIcon: StoryObj<InputProps> = {
         onClick: () => console.log('clicked')
       }}
       placeholder='Primary with sub icon'
+    />
+  ),
+  argTypes: {
+    placeholder: {
+      control: false,
+    },
+  }
+};
+
+export const Small: StoryObj<InputProps> = {
+  render: () => (
+    <Input
+      actionIcon={{
+        icon: <SearchIcon fill='var(--token-dark-900)' />,
+        onClick: () => console.log('search')
+      }}
+      placeholder='Search tokens, chains, contracts, etc'
+      small
     />
   ),
   argTypes: {

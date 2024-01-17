@@ -10,15 +10,17 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     onClick?: () => void
   }
   emoji?: string
+  small?: boolean
+  widthOverride?: number
 }
 
 const Input = forwardRef(
   (
-    { actionIcon, emoji, ...attrs }: InputProps,
+    { actionIcon, emoji, small, widthOverride, ...attrs }: InputProps,
     ref: ForwardedRef<HTMLInputElement>
   ) => {
     return (
-      <div className={cx(styles.base__input)}>
+      <div className={cx(styles.base__input, { small })} style={{ width: `${widthOverride}px` }}>
         <input
           className={styles.base__input__field}
           type={attrs.type ?? 'text'}

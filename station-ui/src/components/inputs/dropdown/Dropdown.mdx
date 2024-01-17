@@ -91,6 +91,48 @@ return (
   `} />
 </div>
 
+## MultiSelect
+A Dropdown that allows multiple selections.
+<div
+  className="story__wrapper"
+  style={{
+    width: "calc(100% - 20px)",
+    margin: "45px 10px 60px 10px",
+  }}
+>
+  <Story of={DropdownStories.MultiSelect} />
+  <Source code={`
+    const options = [
+  { value: "terra", label: "Terra", image: "https://station-assets.terra.dev/img/chains/Terra.svg" },
+  { value: "axelar", label: "Axelar", image: "https://station-assets.terra.dev/img/chains/Axelar.svg" },
+  { value: "carbon", label: "Carbon", image: "https://station-assets.terra.dev/img/chains/Carbon.svg" },
+  { value: "cosmos", label: "Cosmos", image: "https://station-assets.terra.dev/img/chains/Cosmos.svg" },
+  { value: "crescent", label: "Crescent", image: "https://station-assets.terra.dev/img/chains/Crescent.svg" },
+  { value: "juno", label: "Juno", image: "https://station-assets.terra.dev/img/chains/Juno.svg" },
+  { value: "mars", label: "Mars", image: "https://station-assets.terra.dev/img/chains/Mars.svg" },
+]
+
+const [selectedValues, setSelectedValues] = useState<string[]>([])
+
+const onChange = (value: string) => {
+  if (selectedValues.includes(value)) {
+    setSelectedValues(selectedValues.filter((item) => item !== value))
+  } else {
+    setSelectedValues([...selectedValues, value])
+  }
+}
+
+return (
+  <MultiSelectDropdown
+    options={options}
+    onChange={onChange}
+    values={selectedValues}
+    withSearch
+  />
+)
+  `} />
+</div>
+
 ## Default Text Only
 <div
   className="story__wrapper"
