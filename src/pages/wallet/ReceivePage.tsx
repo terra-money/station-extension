@@ -70,7 +70,7 @@ const ReceivePage = () => {
   if (!data.length) return null
 
   return (
-    <FlexColumn gap={24}>
+    <FlexColumn gap={24} justify="space-between">
       <SearchChains data={data} />
       <Button
         label={t("Back")}
