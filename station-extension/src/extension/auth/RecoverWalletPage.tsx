@@ -12,16 +12,15 @@ const RecoverWallet = () => {
     {
       title: "Import Wallet",
       subtitle:
-        "Enter your preferred wallet name and the wallet's seed phrase or seed key.",
+        "Enter your preferred wallet name and the wallet's recovery phrase or seed key.",
     },
     {
       title: "Select wallet",
       subtitle: "Select the wallet derivation path you would like to use.",
     },
     {
-      title: "Set Password",
-      subtitle:
-        "Set a global password for your wallet on this device. Choose a strong password with more than 10 characters.",
+      title: "",
+      subtitle: "",
     },
     {
       title: "Import Wallet Success.",

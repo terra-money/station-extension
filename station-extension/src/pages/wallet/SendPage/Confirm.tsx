@@ -82,13 +82,17 @@ const Confirm = () => {
   }, [assetInfo, destination, chain])
 
   const createTx = useCallback(
-    ({ address, memo }: TxValues) => {
+    ({ memo }: TxValues) => {
       const amount = toAmount(input, { decimals: assetInfo?.decimals })
       const { senderAddress, denom, channel } = assetInfo ?? {}
+
       if (!(recipient && AccAddress.validate(recipient))) return
       if (!(chain && destination && denom && amount && senderAddress)) return
 
-      const execute_msg = { transfer: { recipient: address, amount } }
+      const execute_msg = {
+        transfer: { recipient, amount },
+      }
+
       let msgs
 
       if (destination === chain) {
@@ -105,12 +109,13 @@ const Confirm = () => {
                   contract: getICSContract({
                     from: chain,
                     to: destination,
+                    tokenAddress: denom,
                   }),
                   amount: amount,
                   msg: Buffer.from(
                     JSON.stringify({
                       channel,
-                      remote_address: address,
+                      remote_address: recipient,
                     })
                   ).toString("base64"),
                 },

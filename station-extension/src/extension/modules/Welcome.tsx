@@ -23,7 +23,6 @@ import { useAuth } from "auth"
 
 const Welcome = () => {
   const { t } = useTranslation()
-  // const icon = useThemeFavicon()
   const { wallets, connect } = useAuth()
   const existsWallets = wallets.length > 0
   const existsLegacyWallets = getStoredLegacyWallets().length > 0

@@ -389,6 +389,22 @@ export const getCanonicalMsg = (
                 ],
                 inAssets: [receiveIBCAmount]
               })
+            } else if (data?.wasm?.msg && data?.wasm?.contract) {
+              returnMsgs.push({
+                msgType: "Transfer",
+                canonicalMsg: [
+                  `Received ${receiveIBCAmount} from ${sender} via IBC`
+                ],
+                inAssets: [receiveIBCAmount]
+              })
+              returnMsgs.push({
+                msgType: "Execute",
+                canonicalMsg: [
+                  `Executed ${Object.keys(data?.wasm?.msg).join(", ")} on ${
+                    data?.wasm?.contract
+                  }`
+                ]
+              })
             }
           }
         }
@@ -404,9 +420,13 @@ export const getCanonicalMsg = (
       /* ----------------------------- Unknown Message ---------------------------- */
 
       default:
+        const msgTypeRegex = new RegExp(/.*?(Msg[a-zA-Z]+)$/)
+        const msgTypeMatch = msgTypeRegex.exec(msgType)
+        const msgTypeText = msgTypeMatch?.[1] ? msgTypeMatch[1] : msgType
+
         returnMsgs.push({
-          msgType: "Unknown",
-          canonicalMsg: [msgType]
+          msgType: msgTypeText,
+          canonicalMsg: [`Initiated ${msgTypeText} transaction`]
         })
         break
     }

@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { QueryKey, useQuery } from "react-query"
+import { QueryKey, useQuery, useQueryClient } from "react-query"
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import classNames from "classnames"
 import BigNumber from "bignumber.js"
@@ -49,6 +49,7 @@ import DisplayFees from "./feeAbstraction/DisplayFees"
 import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 import { usePendingIbcTx } from "./useIbcTxs"
 import { useNavigate } from "react-router-dom"
+import { useAddCachedTx } from "data/queries/activity"
 
 const cx = classNames.bind(styles)
 
@@ -61,6 +62,7 @@ interface Props<TxValues> {
   coins?: CoinInput[]
   balance?: Amount
   gasAdjustment?: number
+  memo?: string
 
   /* tx simulation */
   estimationTxValues?: TxValues
@@ -98,14 +100,24 @@ interface RenderProps<TxValues> {
 }
 
 function Tx<TxValues>(props: Props<TxValues>) {
-  const { token, decimals, amount, balance, chain, baseDenom, hideLoader } =
-    props
+  const {
+    token,
+    decimals,
+    amount,
+    balance,
+    chain,
+    baseDenom,
+    hideLoader,
+    memo,
+  } = props
   const { estimationTxValues, createTx, gasAdjustment: txGasAdjustment } = props
   const { children, onChangeMax } = props
   const { onPost, redirectAfterTx, queryKeys, onSuccess, isIbc } = props
 
   const [isMax, setIsMax] = useState(false)
   const [gasDenom, setGasDenom] = useState<string>("")
+  const addCachedTx = useAddCachedTx()
+  const queryClient = useQueryClient()
 
   /* context */
   const { t } = useTranslation()
@@ -118,7 +130,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const isBroadcasting = useRecoilValue(isBroadcastingState)
   const { data: carbonFees } = useCarbonFees()
   const { addTx: trackIbcTx } = usePendingIbcTx()
-  const { data: osmosisGas } = useOsmosisGas()
+  const { data: osmosisGas } = useOsmosisGas(!chain?.startsWith("osmosis-"))
 
   /* taxes */
   const isClassic = networks[chain]?.isClassic
@@ -150,8 +162,8 @@ function Tx<TxValues>(props: Props<TxValues>) {
   }
 
   const carbonFee = useMemo(() => {
-    const fee = carbonFees?.costs[key.msgs?.[0] ?? ""] ??
-      carbonFees?.costs["default_fee"]
+    const fee =
+      carbonFees?.costs[key.msgs?.[0] ?? ""] ?? carbonFees?.costs["default_fee"]
     return Number(fee)
   }, [carbonFees, key.msgs])
 
@@ -167,7 +179,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
           ...simulationTx,
           feeDenoms: [gasDenom],
         })
-        return Math.ceil(unsignedTx.auth_info.fee.gas_limit * key.gasAdjustment)
+        return Math.ceil(unsignedTx.auth_info.fee.gas_limit)
       } catch (error) {
         console.error(error)
         return 200_000
@@ -188,7 +200,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
     (denom: CoinDenom) => {
       const gasPrice = chain?.startsWith("carbon-")
         ? carbonFees?.prices[denom]
-        : chain?.startsWith("osmosis")
+        : chain?.startsWith("osmosis-")
         ? (osmosisGas || 0.0025) * 10
         : networks[chain]?.gasPrices[denom]
       if (isNil(estimatedGas) || !gasPrice) return "0"
@@ -290,10 +302,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
       )
         throw new Error("Fee is not estimated")
 
-      const tx = createTx(values)
-
-      if (!tx) throw new Error("Tx is not defined")
-
       const gasCoins = new Coins([Coin.fromData(gasFee)])
       const taxCoin =
         token && taxAmount && has(taxAmount) && new Coin(token, taxAmount)
@@ -301,15 +309,19 @@ function Tx<TxValues>(props: Props<TxValues>) {
       const feeCoins = taxCoins ? gasCoins.add(taxCoins) : gasCoins
       const fee = new Fee(estimatedGas, feeCoins)
 
+      const tx = { ...createTx(values), fee, memo } as CreateTxOptions
+
+      if (!tx) throw new Error("Tx is not defined")
+
       if (isWallet.multisig(wallet)) {
         // TODO: broadcast only to terra if wallet is multisig
-        const unsignedTx = await auth.create({ ...tx, fee })
+        const unsignedTx = await auth.create(tx)
         const { pathname, search } = toPostMultisigTx(unsignedTx)
         openURL([pathname, search].join("?"))
         return
       } else if (wallet) {
         const result = await auth.post(
-          { ...tx, fee },
+          tx,
           password,
           undefined,
           // use broadcast mode = "block" if we are not showing the broadcast loader
@@ -325,8 +337,21 @@ function Tx<TxValues>(props: Props<TxValues>) {
             chainID: chain,
           })
         } else {
+          // refetch balances and standard post-tx stuff
+          queryKeys?.forEach((queryKey) => {
+            queryClient.invalidateQueries(queryKey)
+          })
+          queryClient.invalidateQueries(queryKey.History)
+          queryClient.invalidateQueries(queryKey.bank.balances)
+          queryClient.invalidateQueries(queryKey.tx.create)
+
+          // if the transaction is an ibc one start the IBC tracking
           isIbc && trackIbcTx({ ...(result as any), chain } as ActivityItem)
+          // add the transaction to the activity cache so it shows up immediately on the activity list
+          addCachedTx({ ...(result as any), chain } as ActivityItem)
+          // run the onSuccess function if it has been set
           onSuccess?.()
+          // navigate to the activity page
           navigate("/#1")
         }
       }
@@ -383,7 +408,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
         gasDenom={gasDenom}
         setGasDenom={setGasDenom}
         descriptions={descriptions}
-        onReady={() => setFeesReady(true)}
+        onReady={(state: boolean) => setFeesReady(state)}
       />
     )
   }
@@ -438,16 +463,18 @@ function Tx<TxValues>(props: Props<TxValues>) {
             <Banner variant="error" title={error.message} />
           )}
 
-          <SubmitButton
-            variant="primary"
-            className={styles.submit}
-            icon={<CheckCircleIcon />}
-            disabled={
-              !estimatedGas || !!disabled || !!walletError || !feesReady
-            }
-            loading={submitting}
-            label={(submitting ? submittingLabel : disabled) || t("Submit")}
-          />
+          {feesReady && (
+            <SubmitButton
+              variant="primary"
+              className={styles.submit}
+              icon={<CheckCircleIcon />}
+              disabled={
+                !estimatedGas || !!disabled || !!walletError || !feesReady
+              }
+              loading={submitting}
+              label={(submitting ? submittingLabel : disabled) || t("Submit")}
+            />
+          )}
         </Grid>
       )}
     </>

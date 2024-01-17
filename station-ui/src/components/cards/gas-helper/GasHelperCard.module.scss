@@ -1,0 +1,27 @@
+@import "scss/font_mixins";
+
+.gashelper__card__container {
+  background-color: var(--token-dark-500);
+
+  border-radius: 8px;
+}
+
+.gashelper__card {
+  background-repeat: repeat-x;
+  background-position: top;
+  background-blend-mode: multiply;
+
+  padding: 24px;
+  border-radius: 8px;
+}
+
+.yellow {
+  padding-top: 34px;
+  background-image: url("./WarningBannerYellow.svg");
+}
+
+.gray {
+  padding-top: 34px;
+  background-image: url("./WarningBannerGray.svg");
+}
+

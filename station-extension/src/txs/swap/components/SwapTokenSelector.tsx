@@ -14,6 +14,7 @@ import { useState } from "react"
 import { useNetwork } from "data/wallet"
 import { ChainID } from "types/network"
 import { Read } from "components/token"
+import style from "./SwapTokenSelector.module.scss"
 
 interface Props {
   tokenOnClick: (token: SwapAssetExtra) => void
@@ -32,6 +33,7 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
     ...Object.values(network).map((chain) => ({
       label: chain.name,
       value: chain.chainID,
+      image: chain.icon,
     })),
   ]
 
@@ -39,6 +41,7 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
     <Grid gap={24}>
       <InputWrapper label={t("Chains")}>
         <Dropdown
+          withSearch
           options={dropdownOptions}
           onChange={(value) => setChainFilter(value)}
           value={chainFilter}
@@ -47,7 +50,7 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
       <SectionHeader title={t("Tokens")} withLine />
       <WithSearchInput gap={16} small label={t("Search tokens...")}>
         {(input) => (
-          <Grid gap={20}>
+          <Grid gap={20} className={style.token__container}>
             {tokens
               .filter(
                 (t) =>
@@ -92,7 +95,7 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
                 .sort((a, b) => b.value - a.value)
                 .map((token, i) => (
                   <TokenSingleChainListItem
-                    key={`search-chain-${i}`}
+                    key={`search-token-${token.denom}-${i}`}
                     amountNode={toInput(token.balance, token.decimals)}
                     priceNode={
                       token.price === 0 ? (

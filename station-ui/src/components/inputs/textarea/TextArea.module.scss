@@ -1,9 +1,5 @@
 @import "scss/font_mixins";
 
-.textarea__override {
-  height: 150px;
-}
-
 .textarea {
   background: var(--token-dark-300);
   border: 1px solid var(--token-dark-700);

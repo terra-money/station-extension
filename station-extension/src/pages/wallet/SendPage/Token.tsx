@@ -53,7 +53,7 @@ const Token = () => {
         const isNative = chain === destination
         const channel = getIBCChannel({
           from: chain,
-          to: destination,
+          to: destination ?? "",
           tokenAddress: denom,
           icsChannel:
             ibcDenoms[networkName][`${destination}:${denom}`]?.icsChannel,
@@ -112,14 +112,16 @@ const Token = () => {
     goToStep(1)
     return null
   }
+  const recipientName = getWalletName(recipient) // wallet name or address if none found
 
   return (
     <>
       <InputInLine
-        disabled
-        label={"To"}
-        extra={truncate(recipient)}
-        value={getWalletName(recipient)}
+        label={t("To")}
+        style={{ cursor: "pointer" }}
+        onClick={() => goToStep(1)}
+        extra={!recipientName.includes("...") && truncate(recipient)}
+        value={recipientName}
       />
       <SectionHeader title={t("My Tokens")} withLine />
       <WithSearchInput

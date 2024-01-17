@@ -1,4 +1,5 @@
 import {
+  createNewPassword,
   getStoredPassword,
   isPasswordValid,
   passwordExists,
@@ -82,7 +83,10 @@ const PasswordForm = ({ onComplete, onCompleteLedger }: Props) => {
         { shouldFocus: true }
       )
       return
+    } else if (!passwordExists()) {
+      createNewPassword(password)
     }
+
     if (rememberPassword) {
       setShouldStorePassword(true)
       storePassword(password)
