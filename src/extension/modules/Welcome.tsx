@@ -69,6 +69,13 @@ const Welcome = () => {
                 label={t("Upgrade wallets")}
               />
               <Button
+                onClick={() => openURL("/auth/recover")}
+                variant="secondary"
+                block
+                icon={<WalletIcon fill="var(--token-light-white)" />}
+                label={t("Import existing wallet")}
+              />
+              <Button
                 onClick={() => openURL("/auth/new")}
                 variant="secondary"
                 block
@@ -112,7 +119,7 @@ const Welcome = () => {
                   variant="secondary"
                   block
                   icon={<WalletIcon fill="var(--token-light-white)" />}
-                  label={t("Finish wallets migration")}
+                  label={t("Finish wallet migration")}
                 />
               )}
             </>
