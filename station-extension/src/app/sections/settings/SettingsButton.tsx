@@ -14,6 +14,7 @@ const SettingsButton = () => {
         //marginTop: "24px",
         //marginBottom: "16px",
       }}
+      data-testid="settings-button"
       fill={"var(--token-dark-900)"}
     />
   )

@@ -9,7 +9,13 @@ const HeaderIconButton = forwardRef(
     return (
       // wrap for tooltip
       <span className={styles.wrapper}>
-        <button type="button" {...attrs} className={styles.button} ref={ref} />
+        <button
+          type="button"
+          {...attrs}
+          className={styles.button}
+          ref={ref}
+          data-testid="dashboard-button"
+        />
       </span>
     )
   }

@@ -57,7 +57,10 @@ const WalletActionButtons = ({ token }: { token?: TokenItem }) => {
       primary: true,
       label: t("Send"),
       onClick: () =>
-        (isLedger ? openURL : navigate)(`/send/1`, token ? { state: token?.symbol } : undefined),
+        (isLedger ? openURL : navigate)(
+          `/send/1`,
+          token ? { state: token?.symbol } : undefined
+        ),
       disabled: sendButtonDisabled,
     },
     {
@@ -71,7 +74,10 @@ const WalletActionButtons = ({ token }: { token?: TokenItem }) => {
       size: "default",
       label: t("Swap"),
       onClick: () =>
-        (isLedger ? openURL : navigate)(`/swap`, token ? { state: token?.token } : undefined),
+        (isLedger ? openURL : navigate)(
+          `/swap`,
+          token ? { state: token?.token } : undefined
+        ),
       hide: networkName !== "mainnet",
     },
     {
@@ -95,7 +101,7 @@ const WalletActionButtons = ({ token }: { token?: TokenItem }) => {
   return (
     <div className={styles.networth__buttons}>
       {buttons.map(
-        ({ size, icon, label, onClick, disabled, primary, hide }) =>
+        ({ size, icon, label, onClick, disabled, primary, hide }, index) =>
           !hide && (
             <FlexColumn key={label} gap={8}>
               <RoundedButton
@@ -104,6 +110,7 @@ const WalletActionButtons = ({ token }: { token?: TokenItem }) => {
                 onClick={onClick}
                 icon={icon}
                 disabled={disabled}
+                data-testid={`wallet-action-button-${index}`} // Add the data-testid attribute here
               />
               <span className={styles.networth__buttons__labels}>
                 {capitalize(label)}
