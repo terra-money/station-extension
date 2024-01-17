@@ -17,7 +17,7 @@ import MigrateWalletPage, { MigratedWalletResult } from "./MigrateWalletPage"
 import { ReactComponent as CheckIcon } from "styles/images/icons/Check.svg"
 import { ReactComponent as AlertIcon } from "styles/images/icons/Alert.svg"
 import ExtensionPage from "../components/ExtensionPage"
-import { useThemeFavicon } from "data/settings/Theme"
+// import { useThemeFavicon } from "data/settings/Theme"
 import { truncate } from "@terra-money/terra-utils"
 import { addressFromWords } from "utils/bech32"
 import { useTranslation } from "react-i18next"
@@ -45,7 +45,7 @@ function isLegacyLedger(w: any): boolean {
 const MigrationWizard = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const icon = useThemeFavicon()
+  // const icon = useThemeFavicon()
 
   const [password, setPassword] = useState<string | undefined>()
   const [selectedWallet, setSelectedWallet] = useState<string | undefined>()
