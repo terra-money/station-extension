@@ -98,10 +98,16 @@ const SelectAddress = () => {
     const length = coins.length
 
     return (
-      <section className={styles.selector__container}>
-        <div className={styles.selector__title}>
-          <h1>m/44'/{bip}'</h1>
-          <h4>{truncate(address)}</h4>
+      <section
+        className={styles.selector__container}
+        data-testid={`details-section-${bip}`}
+      >
+        <div
+          className={styles.selector__title}
+          data-testid={`title-div-${bip}`}
+        >
+          <h1 data-testid={`bip-title-${bip}`}>m/44'/{bip}'</h1>
+          <h4 data-testid={`address-title-${bip}`}>{truncate(address)}</h4>
         </div>
 
         <div className={styles.selector__details}>

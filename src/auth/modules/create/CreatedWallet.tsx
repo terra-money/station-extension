@@ -22,15 +22,16 @@ const CreatedWallet = ({ name, words, onConfirm }: Props) => {
   }
 
   return (
-    <Grid gap={40}>
+    <Grid gap={40} data-testid="grid-container">
       <SummaryHeader
         statusLabel={t("Success!")}
         statusMessage={t("The wallet was created")}
         status={"success"}
         summaryTitle={name}
         summaryValue={address}
+        data-testid="summary-header"
       />
-      <Button variant="primary" onClick={submit}>
+      <Button variant="primary" onClick={submit} data-testid="submit-button">
         {t("Done")}
       </Button>
     </Grid>
