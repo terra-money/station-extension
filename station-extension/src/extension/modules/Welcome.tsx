@@ -69,26 +69,25 @@ const Welcome = () => {
                 label={t("Upgrade wallets")}
               />
               <Button
+                onClick={() => openURL("/auth/recover")}
+                variant="secondary"
+                block
+                icon={<WalletIcon fill="var(--token-light-white)" />}
+                label={t("Import existing wallet")}
+              />
+              <Button
                 onClick={() => openURL("/auth/new")}
                 variant="secondary"
                 block
                 icon={<BuyIcon fill="var(--token-light-white)" />}
                 label={t("Create new wallet")}
               />
-
               <Button
                 onClick={() => openURL("/auth/ledger")}
                 variant="secondary"
                 block
                 icon={<LedgerIcon fill="var(--token-light-white)" />}
                 label={t("Connect Ledger wallet")}
-              />
-              <Button
-                onClick={() => openURL("/auth/recover")}
-                variant="secondary"
-                block
-                icon={<WalletIcon fill="var(--token-light-white)" />}
-                label={t("Import existing wallet")}
               />
             </>
           ) : (
