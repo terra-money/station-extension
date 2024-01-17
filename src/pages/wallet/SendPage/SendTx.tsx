@@ -21,7 +21,7 @@ const SendTx = () => {
   }
 
   const routes = [
-    { path: "/1", element: <Address />, title: "Address" },
+    { path: "/1", element: <Address />, title: "Send" },
     { path: "/2", element: <Chain />, title: "Select Chain" },
     { path: "/3", element: <Token />, title: "Send" },
     { path: "/4", element: <Submit />, title: "Send" },

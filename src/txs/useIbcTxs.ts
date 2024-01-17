@@ -2,7 +2,7 @@ import { useAuth } from "auth"
 import axios from "axios"
 import { RefetchOptions, queryKey } from "data/query"
 import { useNetwork } from "data/wallet"
-import { useQueries, useQuery } from "react-query"
+import { useQueries, useQuery, useQueryClient } from "react-query"
 import { atom, useRecoilState } from "recoil"
 
 const LOCALSTORAGE_IBC_TXS_KEY = "pendingIbcTxs"
@@ -27,9 +27,11 @@ type IbcTx = {
 } & IbcTxDetails
 
 export const usePendingIbcTx = () => {
+  const chains = Object.keys(useNetwork())
   const { wallet } = useAuth()
   const walletName = wallet?.name
   const [_ibcTxs, _setIbcTxsState] = useRecoilState(ibcTxsState)
+  const queryClient = useQueryClient()
 
   const txs = _ibcTxs[walletName] ?? []
   function setIbcTxs(state: (prev: IbcTx[]) => IbcTx[]) {
@@ -43,22 +45,37 @@ export const usePendingIbcTx = () => {
 
   useIbcTxStatus(
     txs.filter(({ state }) => state === IbcTxStatus.LOADING),
-    (hash, state) =>
-      state !== IbcTxStatus.LOADING &&
-      setIbcTxs((txs) =>
-        txs.map((tx) => (tx.txhash === hash ? { ...tx, state } : tx))
-      )
+    (hash, state) => {
+      if (state !== IbcTxStatus.LOADING) {
+        setIbcTxs((txs) =>
+          txs.map((tx) => (tx.txhash === hash ? { ...tx, state } : tx))
+        )
+        // when ibc tx is successful refetch balances
+        queryClient.invalidateQueries(queryKey.bank.balance)
+        queryClient.invalidateQueries(queryKey.bank.balances)
+      }
+    }
   )
 
   return {
-    totalPending: txs.filter(({ state }) => state === IbcTxStatus.LOADING)
-      .length,
-    totalSuccess: txs.filter(({ state }) => state === IbcTxStatus.SUCCESS)
-      .length,
-    totalFailed: txs.filter(({ state }) => state === IbcTxStatus.FAILED).length,
+    totalPending: txs.filter(
+      ({ state, src_chain_id }) =>
+        state === IbcTxStatus.LOADING && chains.includes(src_chain_id)
+    ).length,
+    totalSuccess: txs.filter(
+      ({ state, src_chain_id }) =>
+        state === IbcTxStatus.SUCCESS && chains.includes(src_chain_id)
+    ).length,
+    totalFailed: txs.filter(
+      ({ state, src_chain_id }) =>
+        state === IbcTxStatus.FAILED && chains.includes(src_chain_id)
+    ).length,
     clearCompletedTxs: () =>
       setIbcTxs((txs) =>
-        txs.filter(({ state }) => state === IbcTxStatus.LOADING)
+        txs.filter(
+          ({ state, src_chain_id }) =>
+            state === IbcTxStatus.LOADING && chains.includes(src_chain_id)
+        )
       ),
     showStatusTxHashes: txs.map(({ txhash }) => txhash),
     addTx: (tx: ActivityItem) => {
@@ -136,6 +153,7 @@ export const useIbcTxStatus = (
   const multiHopDetails = multiHopTxsNextTx.map(
     ({ data, isLoading }) => data && { data: getIbcTxDetails(data), isLoading }
   )
+
   const multiHopChannelInfoData = useIbcChannelInfo(
     multiHopDetails.map((dt) => dt?.data)
   )
@@ -287,7 +305,7 @@ export const useIbcPrevHop = (details?: IbcTxDetails) => {
           return false
         }
         return (details?.timeout_timestamp ?? 0) + 60_000 < new Date().getTime()
-          ? 25_000
+          ? 15_000
           : false
       },
     }
@@ -326,10 +344,12 @@ const useIbcNextHops = (details: IbcTxDetails[]) => {
 
         if (!data.tx_responses.length) return undefined
 
-        return {
+        const result = {
           ...(data.tx_responses as ActivityItem[])[0],
           chain: dst_chain_ids[i].data,
         } as ActivityItem
+
+        return result
       },
 
       staleTime: Infinity,
@@ -338,8 +358,9 @@ const useIbcNextHops = (details: IbcTxDetails[]) => {
         if (data) {
           return false
         }
-        return (detail.timeout_timestamp ?? 0) + 60_000 < new Date().getTime()
-          ? 25_000
+
+        return (detail.timeout_timestamp ?? 0) + 60_000 > new Date().getTime()
+          ? 10_000
           : false
       },
     }))

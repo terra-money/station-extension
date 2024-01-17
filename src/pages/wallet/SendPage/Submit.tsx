@@ -84,13 +84,16 @@ const Submit = () => {
     trigger("input")
   }
 
+  const recipientName = getWalletName(recipient)
+
   return (
     <>
       <InputInLine
-        disabled
+        style={{ cursor: "pointer" }}
         label={t("To")}
-        extra={truncate(recipient)}
-        value={getWalletName(recipient)}
+        onClick={() => goToStep(1)}
+        extra={!recipientName.includes("...") && truncate(recipient)}
+        value={recipientName}
       />
       <AssetSelectorFrom
         walletAmount={toInput(balance, decimals)}

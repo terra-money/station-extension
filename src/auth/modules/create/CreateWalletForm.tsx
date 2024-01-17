@@ -20,6 +20,7 @@ import {
 } from "@terra-money/station-ui"
 import styles from "./CreateWalletForm.module.scss"
 import { decrypt } from "auth/scripts/aes"
+import legacyDecrypt from "auth/scripts/decrypt"
 
 interface Values extends DefaultValues {
   confirm: string
@@ -71,16 +72,17 @@ const CreateWalletForm = () => {
         return
       }
 
-      const { seed, index, legacy } = JSON.parse(
+      const { seed, index, legacy, encrypted_key } = JSON.parse(
         Buffer.from(mnemonic, "base64").toString("ascii")
       )
 
       setValues({
         name,
-        mnemonic: seed,
+        mnemonic: seed || encrypted_key,
         index,
         coinType: legacy ? 118 : 330,
         seedPassword,
+        legacySeedKey: !seed,
       })
       setStep(2)
     } else {
@@ -92,14 +94,12 @@ const CreateWalletForm = () => {
   function validateSeed(value?: string) {
     if (!value) return t("Invalid seed key")
     try {
-      const { name, seed } = JSON.parse(
+      const { seed, encrypted_key } = JSON.parse(
         Buffer.from(value, "base64").toString("ascii")
       )
 
-      if (typeof seed !== "string") {
-        return typeof name === "string"
-          ? t("this key has been exported from an old version of Station")
-          : t("Invalid seed key")
+      if (typeof seed !== "string" && typeof encrypted_key !== "string") {
+        return t("Invalid seed key")
       }
 
       return true
@@ -110,13 +110,19 @@ const CreateWalletForm = () => {
 
   function validateSeedPassword(value: string, password: string) {
     try {
-      const { seed } = JSON.parse(
+      const { seed, encrypted_key } = JSON.parse(
         Buffer.from(value, "base64").toString("ascii")
       )
 
-      decrypt(seed, password)
+      if (seed) {
+        decrypt(seed, password)
 
-      return true
+        return true
+      } else {
+        legacyDecrypt(encrypted_key, password)
+
+        return true
+      }
     } catch {
       return false
     }
@@ -128,7 +134,7 @@ const CreateWalletForm = () => {
         return (
           <>
             <InputWrapper
-              label={t("Mnemonic phrase")}
+              label={t("Recovery phrase")}
               error={errors.mnemonic?.message}
               extra={
                 <Paste
@@ -140,7 +146,6 @@ const CreateWalletForm = () => {
               }
             >
               <Input
-                type="password"
                 {...register("mnemonic", { validate: validate.mnemonic })}
               />
             </InputWrapper>
@@ -199,10 +204,7 @@ const CreateWalletForm = () => {
                 />
               }
             >
-              <Input
-                type="password"
-                {...register("mnemonic", { validate: validateSeed })}
-              />
+              <Input {...register("mnemonic", { validate: validateSeed })} />
             </InputWrapper>
 
             <InputWrapper
@@ -220,7 +222,7 @@ const CreateWalletForm = () => {
             <Banner
               variant="info"
               title={t(
-                "This is the password you use on the device from where you exported the key."
+                "Only keys exported directly from Station wallet are supported. You will need the key as well as the password used on the previous wallet to complete the import."
               )}
             />
           </>
@@ -242,7 +244,7 @@ const CreateWalletForm = () => {
         {generated ? (
           <>
             <InputWrapper
-              label={t("Mnemonic phrase")}
+              label={t("Recovery phrase")}
               error={errors.mnemonic?.message}
               extra={generated && <Copy copyText={mnemonic} />}
             >
@@ -253,7 +255,7 @@ const CreateWalletForm = () => {
               <Banner
                 variant="warning"
                 title={t(
-                  "Never share the mnemonic with others or enter it in unverified sites"
+                  "Never share the recovery phrase with others or enter it in unverified sites"
                 )}
               />
             </Grid>
@@ -261,7 +263,7 @@ const CreateWalletForm = () => {
             <Checkbox
               {...register("checked", { required: true })}
               checked={!!checked}
-              label={t("I have written down the mnemonic")}
+              label={t("I have written down the recovery phrase")}
             />
           </>
         ) : (
@@ -272,9 +274,11 @@ const CreateWalletForm = () => {
               tabs={[
                 {
                   key: ImportOptions.MNEMONIC,
-                  label: t("Mnemonic Phrase"),
+                  label: t("Recovery Phrase"),
                   onClick: () => {
-                    setValues({ ...formValues, mnemonic: "" })
+                    importOption !== ImportOptions.MNEMONIC &&
+                      setError("mnemonic", {})
+                    setValue("mnemonic", "")
                     setImportOption(ImportOptions.MNEMONIC)
                   },
                 },
@@ -282,7 +286,9 @@ const CreateWalletForm = () => {
                   key: ImportOptions.SEED_KEY,
                   label: t("Seed Key"),
                   onClick: () => {
-                    setValues({ ...formValues, mnemonic: "" })
+                    importOption !== ImportOptions.SEED_KEY &&
+                      setError("mnemonic", {})
+                    setValue("mnemonic", "")
                     setImportOption(ImportOptions.SEED_KEY)
                   },
                 },
@@ -296,7 +302,7 @@ const CreateWalletForm = () => {
 
         <SubmitButton
           disabled={!isValid}
-          variant={generated ? "primary" : "secondary"}
+          variant={"primary"}
           className={styles.submit__button}
         >
           {generated ? t("Create Wallet") : t("Import")}

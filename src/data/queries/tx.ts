@@ -48,14 +48,14 @@ export const useTxInfo = ({ txhash, queryKeys, chainID }: LatestTx) => {
         })
 
         queryClient.invalidateQueries(queryKey.History)
-        queryClient.invalidateQueries(queryKey.bank.balance)
+        queryClient.invalidateQueries(queryKey.bank.balances)
         queryClient.invalidateQueries(queryKey.tx.create)
       },
     }
   )
 }
 
-export const useOsmosisGas = () => {
+export const useOsmosisGas = (disabled?: boolean) => {
   const { networks } = useNetworks()
 
   return useQuery(
@@ -76,6 +76,7 @@ export const useOsmosisGas = () => {
     {
       ...RefetchOptions.INFINITY,
       staleTime: 60 * 1000, // cache data for 1 min
+      enabled: !disabled,
     }
   )
 }

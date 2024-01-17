@@ -13,11 +13,15 @@ import {
 } from "./types"
 import { InterchainAddresses } from "types/network"
 import { IInterchainNetworks } from "data/wallet"
+import { isTerraChain } from "utils/chain"
 
 export const skipApi = {
   queryTokens: async () => {
     try {
       const result = await axios.get(SKIP_SWAP_API.routes.tokens, {
+        params: {
+          include_cw20_assets: true,
+        },
         baseURL: SKIP_SWAP_API.baseUrl,
         headers: {
           accept: "application/json",
@@ -44,61 +48,66 @@ export const skipApi = {
       console.log("Skip Token Error", err)
     }
   },
-  queryMsgs: async (state: SwapState, addresses: InterchainAddresses) => {
+  queryMsgs: async (swap: SwapState, addresses: InterchainAddresses) => {
     try {
       const { askAsset, offerInput, offerAsset, route, slippageTolerance } =
-        state
-      if (!route || !addresses) return null
-      const res = await axios.post(
-        SKIP_SWAP_API.routes.msgs,
-        {
-          amount_in: offerInput,
-          amount_out: route.amountOut,
-          source_asset_denom: offerAsset.denom,
-          source_asset_chain_id: offerAsset.chainId,
-          dest_asset_denom: askAsset.denom,
-          dest_asset_chain_id: askAsset.chainId,
-          address_list: route.chainIds.map((chainId) => addresses[chainId]),
-          operations: route.operations,
-          slippage_tolerance_percent: slippageTolerance.toString(),
+        swap
+      if (!route || !addresses) return
+      const params = {
+        amount_in: offerInput,
+        amount_out: route.amountOut,
+        source_asset_denom: offerAsset.denom,
+        source_asset_chain_id: offerAsset.chainId,
+        dest_asset_denom: askAsset.denom,
+        dest_asset_chain_id: askAsset.chainId,
+        address_list: route.chainIds.map((chainId) => addresses[chainId]),
+        operations: route.operations,
+        slippage_tolerance_percent: slippageTolerance.toString(),
+      }
+      const res = await axios.post(SKIP_SWAP_API.routes.msgs, params, {
+        baseURL: SKIP_SWAP_API.baseUrl,
+        headers: {
+          accept: "application/json",
         },
-        {
-          baseURL: SKIP_SWAP_API.baseUrl,
-          headers: {
-            accept: "application/json",
-          },
-        }
-      )
-      if (!res.data.msgs) {
-        throw new Error("No msgs returned from Skip API")
+      })
+      if (!res?.data?.msgs) {
+        throw new Error("No available swap routes for this pair")
       }
       return res.data.msgs
     } catch (err) {
-      console.log("Skip Msgs Error", err)
+      throw new Error(`Unknown error`)
     }
   },
   queryRoute: async (swap: SwapState, network: IInterchainNetworks) => {
     try {
       const { askAsset, offerInput, offerAsset } = swap
-      const res = await axios.post(
-        SKIP_SWAP_API.routes.route,
-        {
-          amount_in: offerInput,
-          source_asset_denom: offerAsset.denom,
-          source_asset_chain_id: offerAsset.chainId,
-          dest_asset_denom: askAsset.denom,
-          dest_asset_chain_id: askAsset.chainId,
-          cumulative_affiliate_fee_bps: "0",
-        },
-        {
-          baseURL: SKIP_SWAP_API.baseUrl,
-          headers: {
-            accept: "application/json",
-          },
-        }
-      )
-      if (!res?.data) throw new Error("No data returned from Skip API")
 
+      const payload: { [key: string]: any } = {
+        amount_in: offerInput,
+        source_asset_denom: offerAsset.denom,
+        source_asset_chain_id: offerAsset.chainId,
+        dest_asset_denom: askAsset.denom,
+        dest_asset_chain_id: askAsset.chainId,
+        cumulative_affiliate_fee_bps: "0",
+      }
+      const swapOnTerra = [offerAsset.chainId, askAsset.chainId].every(
+        isTerraChain
+      )
+
+      if (swapOnTerra) {
+        payload.swap_venue = {
+          name: SwapVenue.ASTROPORT,
+          chain_id: offerAsset.chainId,
+        }
+      }
+
+      const res = await axios.post(SKIP_SWAP_API.routes.route, payload, {
+        baseURL: SKIP_SWAP_API.baseUrl,
+        headers: {
+          accept: "application/json",
+        },
+      })
+      if (!res?.data) throw new Error("No data returned from Skip API")
       if (res.data.txs_required > 1)
         throw new Error(
           `Swap not supported, ${res.data.txs_required} txs required`
@@ -130,36 +139,45 @@ const getTimelineMessages = (
   swap: SwapState,
   network: IInterchainNetworks
 ) => {
-  let swapOccured = false
+  let swapsOccured = 0
+  const swapsRequired = route.operations.filter(
+    (op: any) => Object.keys(op)[0] === "swap"
+  ).length
 
   const timelineMsgs: TimelineMessage[] = route.operations.map(
     // eslint-disable-next-line array-callback-return
     (op: any, i: number) => {
       const type = Object.keys(op)[0] as OperationType
+      const swapIn = route.operations[i + 1]?.swap?.swap_in
+      const swapOut = route.operations[i + 1]?.swap?.swap_out
+      const venue = (swapIn ?? swapOut)?.swap_venue
 
       if (type === "transfer") {
         const fromChainId = op[type].chain_id
-        const toChainId =
-          route.operations[i + 1]?.transfer?.chain_id ??
-          route.operations[i + 1]?.swap.swap_in.swap_venue.chain_id
+        const toChainId = venue?.chain_id
         return {
           type,
-          symbol: swapOccured ? swap.askAsset.symbol : swap.offerAsset.symbol, // TODO: make robust against multiple swaps
+          symbol:
+            swapsOccured === swapsRequired
+              ? swap.askAsset.symbol
+              : swap.offerAsset.symbol,
           from: network[fromChainId]?.name ?? "Unknown",
           to: network[toChainId ?? swap.askAsset.chainId]?.name ?? "Unknown", // get final chainId from askAsset or next one in ops
         }
       }
 
       if (type === "swap") {
-        swapOccured = true
-        return {
-          type,
-          venue: op[type].swap_in.swap_venue.name as SwapVenue,
-          askAssetSymbol: swap.askAsset.symbol,
-          offerAssetSymbol: swap.offerAsset.symbol,
+        swapsOccured++
+        if (venue?.name) {
+          return {
+            type,
+            venue: venue.name as SwapVenue,
+            askAssetSymbol: swap.askAsset.symbol,
+            offerAssetSymbol: swap.offerAsset.symbol,
+          }
         }
       }
     }
   )
-  return timelineMsgs
+  return timelineMsgs.filter(Boolean)
 }

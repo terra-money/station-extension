@@ -51,10 +51,16 @@ export interface SwapAssetExtra extends SwapAssetBase {
   }
 }
 
-export type SwapVenue = "osmosis-poolmanager" | "terra-astroport"
+export enum SwapVenue {
+  OSMOSIS = "osmosis-poolmanager",
+  ASTROPORT = "terra-astroport",
+  NEUTRON = "neutron-astroport",
+}
+
 export const swapVenueToName = {
   "osmosis-poolmanager": "Osmosis",
   "terra-astroport": "Astroport",
+  "neutron-astroport": "Astroport",
 }
 export type SwapOperation = any[]
 

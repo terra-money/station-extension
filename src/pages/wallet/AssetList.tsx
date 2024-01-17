@@ -19,6 +19,7 @@ import { useMemo, useState } from "react"
 import classNames from "classnames"
 import { encode } from "js-base64"
 import Asset from "./Asset"
+import { toInput } from "txs/utils"
 
 const cx = classNames.bind(styles)
 
@@ -32,6 +33,7 @@ const AssetList = () => {
   const [search, setSearch] = useState("")
   const [showFilter, setShowFilter] = useState(false)
   const navigate = useNavigate()
+  const showHideText = hideLowBal ? "Show" : "Hide"
 
   const toggleFilter = () => {
     setSearch("")
@@ -58,15 +60,17 @@ const AssetList = () => {
 
     const visible = filtered
       .filter(
-        (a) => a.totalValue >= 0.1 || a.totalBalance / 10 ** a.decimals > 0.01
+        (a) =>
+          a.totalValue >= 0.1 ||
+          Number(a.totalBalance) / 10 ** a.decimals > 0.01
       )
       .sort((a, b) => {
         if (a.totalValue && b.totalValue) {
           return b.totalValue - a.totalValue
         } else if (!a.totalValue && !b.totalValue) {
           return (
-            b.totalBalance / 10 ** b.decimals -
-            a.totalBalance / 10 ** a.decimals
+            toInput(b.totalBalance, b.decimals) -
+            toInput(a.totalBalance, a.decimals)
           )
         } else if (!a.totalValue) {
           return 1
@@ -78,8 +82,8 @@ const AssetList = () => {
     const lowBal = filtered
       .filter((a: any) => !visible.includes(a))
       .sort((a, b) => {
-        const normalizedAmountA = a.totalBalance / 10 ** a.decimals
-        const normalizedAmountB = b.totalBalance / 10 ** b.decimals
+        const normalizedAmountA = toInput(a.totalBalance, a.decimals)
+        const normalizedAmountB = toInput(b.totalBalance, b.decimals)
 
         return normalizedAmountB - normalizedAmountA
       })
@@ -126,7 +130,7 @@ const AssetList = () => {
           <>
             <button className={styles.low__bal} onClick={toggleHideLowBal}>
               <SectionHeader
-                title={t(`Show Low Balance Assets ({{count}})`, {
+                title={t(`${showHideText} Low Balance Assets ({{count}})`, {
                   count: assets.lowBal.length,
                 })}
                 withLine
