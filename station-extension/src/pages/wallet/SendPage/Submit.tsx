@@ -106,14 +106,14 @@ const Submit = () => {
         style={{ cursor: "pointer" }}
         label={t("To")}
         onClick={() => goToStep(1)}
-        extra={!recipientName.includes("...") && truncate(recipient)}
+        extra={!recipientName.includes("...") && truncate(recipient, [11, 6])}
         value={recipientName}
       />
       <AssetSelectorFrom
         walletAmount={toInput(balance, decimals)}
         handleMaxClick={handleMax}
         symbol={symbol}
-        onSymbolClick={() => goToStep(1)}
+        onSymbolClick={() => goToStep(3)}
         tokenIcon={tokenImg}
         chainIcon={assetInfo.chain.icon}
         chainName={assetInfo.chain.label}
