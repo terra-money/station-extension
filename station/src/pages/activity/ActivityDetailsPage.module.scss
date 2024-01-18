@@ -1,0 +1,23 @@
+@import "mixins";
+
+.txcontainer {
+  margin: 5px 0px;
+  padding: 0px 8px;
+  z-index: 1002;
+
+  & > *:not(:first-child) {
+    margin-top: 30px;
+  }
+}
+
+.activityitem {
+  overflow-wrap: anywhere;
+}
+
+.tx__details__link {
+  color: var(--token-light-100);
+  text-decoration: none !important;
+  font-size: 12px;
+  @include flex(flex-end);
+  gap: 6px;
+}

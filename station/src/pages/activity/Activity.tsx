@@ -1,12 +1,12 @@
 import { useTranslation } from "react-i18next"
-import ActivityList from "../activity/ActivityList"
+import ActivityList from "./ActivityList"
 import { /*ChainFilter,*/ Page } from "components/layout"
 
-const History = () => {
+const Activity = () => {
   const { t } = useTranslation()
 
   return (
-    <Page title={t("History")}>
+    <Page title={t("Activity")}>
       <ActivityList />
       {/* <ChainFilter outside all>
         {(chain) => <HistoryList chainID={chain} />}
@@ -15,4 +15,4 @@ const History = () => {
   )
 }
 
-export default History
+export default Activity
