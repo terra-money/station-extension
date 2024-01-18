@@ -113,7 +113,10 @@ const Submit = () => {
         walletAmount={toInput(balance, decimals)}
         handleMaxClick={handleMax}
         symbol={symbol}
-        onSymbolClick={() => goToStep(3)}
+        onSymbolClick={() => {
+          setValue("asset", undefined)
+          goToStep(3)
+        }}
         tokenIcon={tokenImg}
         chainIcon={assetInfo.chain.icon}
         chainName={assetInfo.chain.label}
