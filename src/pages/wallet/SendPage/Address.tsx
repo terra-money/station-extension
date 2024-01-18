@@ -52,7 +52,7 @@ const Address = () => {
   ) => {
     setValue("memo", memo)
     if (!AccAddress.validate(recipient ?? "")) {
-      setValue("recipient", recipient)
+      setValue("recipientWalletName", recipient)
       goToStep(2)
     } else {
       handleKnownChain(recipient)
