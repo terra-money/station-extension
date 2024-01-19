@@ -52,7 +52,7 @@ const SwapTimeline = ({
       }
       type={"Execute Contract"}
       msgCount={route.timelineMsgs.length}
-      hasTimeline
+      hasTimeline={route.timelineMsgs.length > 0}
     />
   )
 
@@ -75,7 +75,10 @@ const SwapTimeline = ({
               {capitalize(msg.type)}{" "}
               <span className={style.text}> {msg.offerAssetSymbol}</span> for{" "}
               <span className={style.text}> {msg.askAssetSymbol}</span> on{" "}
-              <span className={style.text}> {swapVenueToName[msg.venue] ?? t("Unknown Swap Venue")}</span>
+              <span className={style.text}>
+                {" "}
+                {swapVenueToName[msg.venue] ?? t("Unknown Swap Venue")}
+              </span>
             </>
           ),
           variant: "default",
