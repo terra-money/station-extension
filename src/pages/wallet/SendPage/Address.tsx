@@ -16,16 +16,23 @@ import { useRecentRecipients } from "utils/localStorage"
 import { useTranslation } from "react-i18next"
 import { WalletName } from "types/network"
 import { useLocation } from "react-router-dom"
+import { useNetworkName } from "data/wallet"
 
 const Address = () => {
   const { form, goToStep, getWalletName, networks } = useSend()
   const { state: denom } = useLocation()
+
   const { recipients } = useRecentRecipients()
+  const networkName = useNetworkName()
+  const networkRecipients = recipients.filter(
+    (recipient) => recipient.network === networkName
+  )
+
   const { register, setValue, formState, watch, trigger } = form
   const { errors } = formState
   const { recipient } = watch()
   const { t } = useTranslation()
-  
+
   useEffect(() => {
     setValue("asset", denom) // pre-selected from asset page
   }, [denom, setValue])
@@ -45,7 +52,11 @@ const Address = () => {
     },
   ]
 
-  const handleKnownWallet = (recipient: AccAddress | WalletName, _: number, memo?: string) => {
+  const handleKnownWallet = (
+    recipient: AccAddress | WalletName,
+    _: number,
+    memo?: string
+  ) => {
     setValue("memo", memo)
     if (!AccAddress.validate(recipient ?? "")) {
       setValue("recipient", recipient)
@@ -83,11 +94,11 @@ const Address = () => {
           label={t("Continue")}
         />
       )}
-      {recipients.length > 0 && (
+      {networkRecipients.length > 0 && (
         <>
           <SectionHeader title="Recently Used" withLine />
           <AddressBookList
-            items={recipients.map((r) => ({
+            items={networkRecipients.map((r) => ({
               ...r,
               name: getWalletName(r.recipient),
             }))}
