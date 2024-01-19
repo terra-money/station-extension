@@ -85,8 +85,8 @@ const TransactionTracker = ({ steps, stepLabels }: TransactionTrackerProps) => {
       {stepLabels && (
         <div className={styles.text}>
           {stepLabels?.map((label: string, index: React.Key | null | undefined) => (
-            <div key={index} className={styles.label}>
-              <span className={cx({ [styles.first]: index === 0, [styles.last]: index === stepLabels.length - 1 })}>{label}</span>
+            <div key={index} className={cx(styles.label, { [styles.first]: index === 0, [styles.last]: index === stepLabels.length - 1 })}>
+              <span>{label}</span>
             </div>
           ))}
         </div>
