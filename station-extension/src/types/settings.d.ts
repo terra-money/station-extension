@@ -6,6 +6,7 @@ interface AddressBook {
   favorite?: boolean
   icon?: string
   index?: number
+  network?: string
 }
 
 /* Tokens */
