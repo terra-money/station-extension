@@ -381,7 +381,7 @@ const MigrateWalletPage = ({ wallet, onComplete, onBack }: Props) => {
       {wallet.multisig ? (
         <Grid gap={30}>
           {multisigError && <Banner variant="error" title={multisigError} />}
-          <CreateMultisigWalletForm onPubkey={submitMultisig} />
+          <CreateMultisigWalletForm onPubkey={submitMultisig} onBack={onBack} />
         </Grid>
       ) : (
         <Form onSubmit={handleSubmit(submit)}>

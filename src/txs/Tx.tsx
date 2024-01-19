@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { QueryKey, useQuery } from "react-query"
+import { QueryKey, useQuery, useQueryClient } from "react-query"
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import classNames from "classnames"
 import BigNumber from "bignumber.js"
@@ -62,6 +62,7 @@ interface Props<TxValues> {
   coins?: CoinInput[]
   balance?: Amount
   gasAdjustment?: number
+  memo?: string
 
   /* tx simulation */
   estimationTxValues?: TxValues
@@ -99,8 +100,16 @@ interface RenderProps<TxValues> {
 }
 
 function Tx<TxValues>(props: Props<TxValues>) {
-  const { token, decimals, amount, balance, chain, baseDenom, hideLoader } =
-    props
+  const {
+    token,
+    decimals,
+    amount,
+    balance,
+    chain,
+    baseDenom,
+    hideLoader,
+    memo,
+  } = props
   const { estimationTxValues, createTx, gasAdjustment: txGasAdjustment } = props
   const { children, onChangeMax } = props
   const { onPost, redirectAfterTx, queryKeys, onSuccess, isIbc } = props
@@ -108,6 +117,7 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const [isMax, setIsMax] = useState(false)
   const [gasDenom, setGasDenom] = useState<string>("")
   const addCachedTx = useAddCachedTx()
+  const queryClient = useQueryClient()
 
   /* context */
   const { t } = useTranslation()
@@ -292,10 +302,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
       )
         throw new Error("Fee is not estimated")
 
-      const tx = createTx(values)
-
-      if (!tx) throw new Error("Tx is not defined")
-
       const gasCoins = new Coins([Coin.fromData(gasFee)])
       const taxCoin =
         token && taxAmount && has(taxAmount) && new Coin(token, taxAmount)
@@ -303,15 +309,19 @@ function Tx<TxValues>(props: Props<TxValues>) {
       const feeCoins = taxCoins ? gasCoins.add(taxCoins) : gasCoins
       const fee = new Fee(estimatedGas, feeCoins)
 
+      const tx = { ...createTx(values), fee, memo } as CreateTxOptions
+
+      if (!tx) throw new Error("Tx is not defined")
+
       if (isWallet.multisig(wallet)) {
         // TODO: broadcast only to terra if wallet is multisig
-        const unsignedTx = await auth.create({ ...tx, fee })
+        const unsignedTx = await auth.create(tx)
         const { pathname, search } = toPostMultisigTx(unsignedTx)
         openURL([pathname, search].join("?"))
         return
       } else if (wallet) {
         const result = await auth.post(
-          { ...tx, fee },
+          tx,
           password,
           undefined,
           // use broadcast mode = "block" if we are not showing the broadcast loader
@@ -327,9 +337,21 @@ function Tx<TxValues>(props: Props<TxValues>) {
             chainID: chain,
           })
         } else {
+          // refetch balances and standard post-tx stuff
+          queryKeys?.forEach((queryKey) => {
+            queryClient.invalidateQueries(queryKey)
+          })
+          queryClient.invalidateQueries(queryKey.History)
+          queryClient.invalidateQueries(queryKey.bank.balances)
+          queryClient.invalidateQueries(queryKey.tx.create)
+
+          // if the transaction is an ibc one start the IBC tracking
           isIbc && trackIbcTx({ ...(result as any), chain } as ActivityItem)
+          // add the transaction to the activity cache so it shows up immediately on the activity list
           addCachedTx({ ...(result as any), chain } as ActivityItem)
+          // run the onSuccess function if it has been set
           onSuccess?.()
+          // navigate to the activity page
           navigate("/#1")
         }
       }

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Station Wallet",
-  "version": "8.0.3",
-  "version_name": "8.0.3",
+  "version": "8.0.5.1",
+  "version_name": "8.0.5.1",
   "background": {
     "service_worker": "background.js"
   },

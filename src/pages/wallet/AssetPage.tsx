@@ -29,7 +29,9 @@ const AssetPage = () => {
   const [chain, denom] = routeDenom.includes("*")
     ? routeDenom.split("*")
     : [params.chain, routeDenom]
-  const { token, symbol, decimals, icon } = readNativeDenom(denom, chain)
+
+  const tokenInfo = readNativeDenom(denom, chain)
+  const { token, symbol, decimals, icon } = tokenInfo
   const unknownIBCDenoms = useUnknownIBCDenoms()
   const navigate = useNavigate()
 
@@ -134,7 +136,7 @@ const AssetPage = () => {
             )}
           </h1>
         </div>
-        <WalletActionButtons denom={token} />
+        <WalletActionButtons token={tokenInfo} />
       </section>
     )
   }

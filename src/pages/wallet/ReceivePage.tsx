@@ -33,18 +33,22 @@ export const SearchChains = ({ data }: SearchChainsProps) => {
             .filter((item) =>
               item.name.toLowerCase().includes(input.toLowerCase())
             )
-            .map(({ address, id, name, onClick }) => (
-              <AddressSelectableListItem
-                key={id}
-                label={capitalize(name)}
-                chain={{
-                  icon: networks[id]?.icon,
-                  label: name,
-                }}
-                subLabel={truncate(address, [11, 6])}
-                onClick={onClick}
-              />
-            ))
+            .map(({ address, id, name, onClick }) => {
+              const labelText =
+                name === "dydx protocol" ? "dYdX Protocol" : capitalize(name)
+              return (
+                <AddressSelectableListItem
+                  key={id}
+                  label={labelText}
+                  chain={{
+                    icon: networks[id]?.icon,
+                    label: name,
+                  }}
+                  subLabel={truncate(address, [11, 6])}
+                  onClick={onClick}
+                />
+              )
+            })
         }
       </WithSearchInput>
     </>

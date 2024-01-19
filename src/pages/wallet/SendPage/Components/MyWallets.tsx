@@ -6,7 +6,7 @@ import { useAuth } from "auth"
 import { ReactComponent as ActiveWalletIcon } from "styles/images/icons/ActiveWallet.svg"
 
 interface MyWalletsProps {
-  onClick?: (address: string, index: number) => void
+  onClick?: (address: string, index: number, memo?: string) => void
   tab: string
 }
 

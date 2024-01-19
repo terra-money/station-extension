@@ -14,7 +14,11 @@ const Chain = () => {
   const wallet = getWallet(recipient)
 
   const chains = Object.values(networks)
-    .filter((n) => wallet.words?.[n.coinType] && wallet.multisig ? n.prefix === "terra" : true)
+    .filter((n) =>
+      wallet.words?.[n.coinType] && wallet.multisig
+        ? n.prefix === "terra"
+        : true
+    )
     .map(({ chainID, prefix, coinType }) => {
       const address = addressFromWords(wallet.words?.[coinType] ?? "", prefix)
       return {

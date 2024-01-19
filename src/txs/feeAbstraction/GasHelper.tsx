@@ -77,7 +77,6 @@ export default function GasHelper({
     chainIcon: networks[swapDenom.chainId]?.icon,
   }
   const [rawSwapAmount, setSwapAmount] = useState<string | undefined>()
-  console.log(rawSwapAmount)
   const swapAmount = Number(rawSwapAmount || 0) * 10 ** readSwapDenom.decimals
   const {
     data: minimumSwapData,
