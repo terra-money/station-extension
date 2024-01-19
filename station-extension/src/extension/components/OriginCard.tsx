@@ -69,7 +69,9 @@ const OriginCard = ({ hostname }: Props) => {
             src={metadata.faviconUrl}
             alt={metadata.title ?? baseUrl}
             className={styles.icon}
-            onError={() => setMetadata((m) => ({ ...m, faviconUrl: undefined }))}
+            onError={() =>
+              setMetadata((m) => ({ ...m, faviconUrl: undefined }))
+            }
           />
         )}
         <Grid gap={8}>

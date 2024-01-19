@@ -20,8 +20,7 @@ const RecoverWallet = () => {
     },
     {
       title: "",
-      subtitle:
-        "",
+      subtitle: "",
     },
     {
       title: "Import Wallet Success.",

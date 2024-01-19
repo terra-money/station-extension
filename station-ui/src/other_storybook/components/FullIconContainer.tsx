@@ -1,6 +1,7 @@
 import { useState } from "react"
 import IconContainer from "./IconContainer.tsx"
 import {
+  ActivityIcon,
   AddressBookIcon,
   AlertIcon,
   BackArrowIcon,
@@ -64,6 +65,11 @@ const FullIconContainer = () => {
   const [selectedColor, setSelectedColor] = useState("--token-light-white")
 
   const icons = [
+    {
+      name: "Activity",
+      icon: <ActivityIcon fill={`var(${selectedColor})`} width={size} height={size} />,
+      iconCopy: `<ActivityIcon fill={"var(${selectedColor})"} />`
+    },
     {
       name: "AddressBook",
       icon: <AddressBookIcon fill={`var(${selectedColor})`} width={size} height={size} />,

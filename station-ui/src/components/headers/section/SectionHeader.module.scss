@@ -3,6 +3,10 @@
 .section__header {
   width: 100%;
 
+  &.pointer {
+    cursor: pointer;
+  }
+
   .header {
     display: flex;
     justify-content: space-between;
@@ -16,11 +20,7 @@
       justify-content: center;
     }
 
-    &.pointer {
-      cursor: pointer;
-    }
-
-    .title__wrapper {
+    .full__wrapper {
       width: 100%;
       display: flex;
       align-items: center;
@@ -45,15 +45,29 @@
         background-color: var(--token-dark-700);
       }
 
-      .title {
-        @include Small;
-        color: var(--token-light-100);
+      .title__wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
 
-        &.indented {
-          @include X-Small;
+        .title {
+          white-space: nowrap;
+          @include Small;
+          color: var(--token-light-100);
+
+          &.indented {
+            @include X-Small;
+          }
         }
 
-        white-space: nowrap;
+        .arrow__icon {
+          transform: rotate(0deg);
+          transition: transform 0.15s ease-in;
+
+          &.arrow__rotated {
+            transform: rotate(180deg);
+          }
+        }
       }
     }
   }

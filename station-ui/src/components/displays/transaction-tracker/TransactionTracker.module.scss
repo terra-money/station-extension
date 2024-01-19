@@ -66,12 +66,14 @@
     display: flex;
     justify-content: space-between;
     margin-top: 8px;
+    height: 10px;
 
     @include XX-Small;
     color: var(--token-light-100);
 
     .label {
       display: flex;
+      justify-content: center;
       width: 5px;
       width: auto;
       flex-wrap: nowrap;

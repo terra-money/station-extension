@@ -1,0 +1,87 @@
+@import "scss/font_mixins";
+
+.activity__li__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px 24px 24px;
+  background-color: var(--token-dark-300);
+  border-radius: 8px;
+  gap: 12px;
+
+  .activity__li {
+    display: flex;
+    gap: 16px;
+
+    .activity__icon__container {
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      .activity__icon {
+        width: 32px;
+        height: 32px;
+      }
+
+      .status__icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        background-color: var(--token-dark-300);
+        border-radius: 50%;
+        position: absolute;
+        top: 0px;
+        right: -4px;
+        z-index: 1000;
+
+        svg {
+          width: 12px;
+          height: 12px;
+        }
+      }
+    }
+
+    .activity__details__container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+
+      .activity__line {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .activity__msg {
+          @include Medium;
+          color: var(--token-light-100);
+          flex: 2 0 auto;
+
+          span {
+            color: var(--token-light-white);
+          }
+        }
+
+        .pill__container {
+          display: flex;
+          gap: 8px;
+          flex: 1 1 auto;
+        }
+      }
+
+      .activity__time {
+        @include Small;
+        color: var(--token-dark-900);
+      }
+
+    }
+  }
+
+  .progress__tracker {
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
+  }
+}

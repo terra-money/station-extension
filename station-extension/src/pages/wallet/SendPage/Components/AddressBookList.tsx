@@ -18,7 +18,7 @@ export const AddressBookList = ({
   items: AddressBook[]
   title?: string
   icon?: ReactNode
-  onClick?: (address: string, index: number) => void
+  onClick?: (address: string, index: number, memo?: string) => void
 }) => {
   const network = useNetwork()
   const { t } = useTranslation()
@@ -41,7 +41,7 @@ export const AddressBookList = ({
           walletName={i.name}
           walletAddress={truncate(i.recipient, [11, 6])}
           chainIcon={network[getChainIdFromAddress(i.recipient, network)]?.icon}
-          onClick={() => onClick?.(i.recipient, index)}
+          onClick={() => onClick?.(i.recipient, index, i.memo)}
         />
       ))}
     </Grid>

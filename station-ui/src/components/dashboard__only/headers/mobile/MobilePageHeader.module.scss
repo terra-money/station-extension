@@ -1,0 +1,30 @@
+@import "scss/font_mixins";
+
+.page__header {
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  align-items: center;
+
+  .top {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .page__icon__title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .title {
+        @include Medium-Large;
+        color: var(--token-light-white, #FFF);
+      }
+    }
+
+    .subtitle {
+      @include X-SmallLH;
+      color: var(--token-dark-900, #5E616E);
+    }
+  }
+}

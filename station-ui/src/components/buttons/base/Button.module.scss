@@ -19,6 +19,10 @@
     height: 14px;
   }
 
+  &.small {
+    min-height: 48px;
+  }
+
   &:disabled {
     background-color: var(--token-dark-500);
     color: var(--token-dark-900);

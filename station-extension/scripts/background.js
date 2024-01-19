@@ -1,7 +1,5 @@
-const PortStream = require("extension-port-stream")
-if (typeof importScripts !== "undefined") {
-  importScripts("browser-polyfill.js")
-}
+import PortStream from "extension-port-stream"
+import browser from "webextension-polyfill"
 
 const connectRemote = (remotePort) => {
   if (remotePort.name !== "TerraStationExtension") {
@@ -113,8 +111,10 @@ const connectRemote = (remotePort) => {
 
             const denied =
               oldValue &&
-              oldValue.request.length - 1 === newValue.request.length &&
-              oldValue.allowed.length === newValue.allowed.length
+              (oldValue.request || []).length - 1 ===
+                (newValue.request || []).length &&
+              (oldValue.allowed || []).length ===
+                (newValue.allowed || []).length
 
             if (!denied)
               browser.storage.local
@@ -131,12 +131,12 @@ const connectRemote = (remotePort) => {
           //    - send back the response and close the popup.
           // 2. If not,
           //    - store the address on the storage and open the popup to request it (only if it is not the requested address).
-          const isAllowed = connect.allowed.includes(origin)
+          const allowed = connect.allowed || []
+          const request = connect.request || []
+
+          const isAllowed = allowed.includes(origin)
           const walletExists = wallet.address
-          const alreadyRequested = [
-            ...connect.request,
-            ...connect.allowed,
-          ].includes(origin)
+          const alreadyRequested = [...request, ...allowed].includes(origin)
 
           if (isAllowed && walletExists) {
             sendResponse("onConnect", wallet)
@@ -145,7 +145,7 @@ const connectRemote = (remotePort) => {
           } else {
             !alreadyRequested &&
               browser.storage.local.set({
-                connect: { ...connect, request: [origin, ...connect.request] },
+                connect: { ...connect, request: [origin, ...request] },
               })
 
             openPopup()
@@ -189,7 +189,7 @@ const connectRemote = (remotePort) => {
           //    - send back the response and close the popup.
           // 2. If not,
           //    - store the address on the storage and open the popup to request it (only if it is not the requested address).
-          const isAllowed = connect.allowed.includes(origin)
+          const isAllowed = (connect.allowed || []).includes(origin)
           const hasPubKey = wallet.pubkey
 
           if (isAllowed && hasPubKey) {

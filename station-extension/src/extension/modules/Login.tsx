@@ -1,10 +1,11 @@
 import {
   isLoginNeeded,
+  isPasswordValid,
   lockWallet,
+  setLogin,
   setShouldStorePassword,
   shouldStorePassword,
   storePassword,
-  unlockWallets,
 } from "auth/scripts/keystore"
 import {
   Checkbox,
@@ -50,12 +51,16 @@ export const useLogin = () => {
   return {
     isLoggedIn: loginState.isLoggedIn,
     isLoading: loginState.isLoading,
-    login: (password: string) => {
-      unlockWallets(password)
+    login: (password: string): boolean => {
+      if (!isPasswordValid(password)) {
+        return false
+      }
+      setLogin(true)
       setLoginState({
         isLoading: false,
         isLoggedIn: true,
       })
+      return true
     },
     logout: () => {
       lockWallet()
@@ -109,7 +114,11 @@ const Login = () => {
   const submit = async () => {
     try {
       if (!password.current?.value) return setError("Password is required")
-      login(password.current?.value)
+      if (!login(password.current?.value)) {
+        setError("Invalid password")
+        setIsValid(false)
+        return
+      }
 
       if (rememberPassword) {
         setShouldStorePassword(true)

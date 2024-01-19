@@ -13,7 +13,11 @@ const SwapTx = () => {
   const routes = [
     { path: "/", element: <Setup />, title: "Swap" },
     { path: "/confirm", element: <Confirm />, title: "Confirm Swap" },
-    { path: "/slippage", element: <SwapSettings />, title: "Swap Settings" },
+    {
+      path: "/slippage",
+      element: <SwapSettings />,
+      title: "Slippage Settings",
+    },
   ]
 
   return (

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42" fill="none">
+    <!-- Top Left Circle -->
+    <path d="M1 21.0001C1 9.95437 9.9543 1.00007 21 1.00007" stroke="#075CEE" stroke-width="2" stroke-linecap="round">
+        <animateTransform attributeName="transform" type="rotate" from="0 21 21" to="360 21 21" dur="2.5s" repeatCount="indefinite"/>
+    </path>
+    <!-- Top Right Circle -->
+    <path d="M41 21C41 32.0457 32.0457 41 21 41" stroke="#075CEE" stroke-width="2" stroke-linecap="round">
+        <animateTransform attributeName="transform" type="rotate" from="0 21 21" to="360 21 21" dur="2.5s" repeatCount="indefinite"/>
+    </path>
+    <!-- Bottom Left Element -->
+    <path d="M12.5147 29.4854C7.82841 24.7991 7.82841 17.2011 12.5147 12.5148" stroke="#075CEE" stroke-width="2" stroke-linecap="round">
+        <animateTransform attributeName="transform" type="rotate" from="360 21 21" to="0 21 21" dur="2.5s" repeatCount="indefinite"/>
+    </path>
+    <!-- Bottom Right Element -->
+    <path d="M29.4853 12.5148C34.1716 17.2011 34.1716 24.7991 29.4853 29.4853" stroke="#075CEE" stroke-width="2" stroke-linecap="round">
+        <animateTransform attributeName="transform" type="rotate" from="360 21 21" to="0 21 21" dur="2.5s" repeatCount="indefinite"/>
+    </path>
+</svg>

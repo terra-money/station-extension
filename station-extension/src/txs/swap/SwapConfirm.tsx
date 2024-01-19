@@ -85,7 +85,6 @@ const Confirm = () => {
 
   return (
     <Tx {...tx}>
-      {/* @ts-ignore */}
       {({ fee, submit }) => (
         <Form onSubmit={handleSubmit(submit.fn)} spaceBetween fullHeight>
           <Grid gap={16}>
