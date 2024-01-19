@@ -29,6 +29,7 @@ import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { CoinInput } from "txs/utils"
 import style from "./Send.module.scss"
 import { useIsLedger } from "utils/ledger"
+import { useNetworkName } from "data/wallet"
 
 enum TxType {
   SEND = "Send",
@@ -58,6 +59,7 @@ const Confirm = () => {
   const [error, setError] = useState<string | null>(null)
   const { input, assetInfo, destination, recipient, chain, memo } = form.watch()
   const isLedger = useIsLedger()
+  const networkName = useNetworkName()
 
   /* fee */
   const coins = useMemo(() => [{ input, denom: "" }] as CoinInput[], [input])
@@ -227,7 +229,11 @@ const Confirm = () => {
     estimationTxValues,
     createTx,
     onSuccess: () => {
-      addRecipient({ recipient, name: getWalletName(recipient ?? "") })
+      addRecipient({
+        recipient,
+        name: getWalletName(recipient ?? ""),
+        network: networkName,
+      })
       isLedger && window.close()
     },
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
