@@ -100,8 +100,16 @@ interface RenderProps<TxValues> {
 }
 
 function Tx<TxValues>(props: Props<TxValues>) {
-  const { token, decimals, amount, balance, chain, baseDenom, hideLoader, memo } =
-    props
+  const {
+    token,
+    decimals,
+    amount,
+    balance,
+    chain,
+    baseDenom,
+    hideLoader,
+    memo,
+  } = props
   const { estimationTxValues, createTx, gasAdjustment: txGasAdjustment } = props
   const { children, onChangeMax } = props
   const { onPost, redirectAfterTx, queryKeys, onSuccess, isIbc } = props
@@ -294,12 +302,12 @@ function Tx<TxValues>(props: Props<TxValues>) {
       )
         throw new Error("Fee is not estimated")
 
-        const gasCoins = new Coins([Coin.fromData(gasFee)])
-        const taxCoin =
-          token && taxAmount && has(taxAmount) && new Coin(token, taxAmount)
-        const taxCoins = sanitizeTaxes(taxes) ?? taxCoin
-        const feeCoins = taxCoins ? gasCoins.add(taxCoins) : gasCoins
-        const fee = new Fee(estimatedGas, feeCoins)
+      const gasCoins = new Coins([Coin.fromData(gasFee)])
+      const taxCoin =
+        token && taxAmount && has(taxAmount) && new Coin(token, taxAmount)
+      const taxCoins = sanitizeTaxes(taxes) ?? taxCoin
+      const feeCoins = taxCoins ? gasCoins.add(taxCoins) : gasCoins
+      const fee = new Fee(estimatedGas, feeCoins)
 
       const tx = { ...createTx(values), fee, memo } as CreateTxOptions
 
@@ -312,7 +320,8 @@ function Tx<TxValues>(props: Props<TxValues>) {
         openURL([pathname, search].join("?"))
         return
       } else if (wallet) {
-        const result = await auth.post(tx,
+        const result = await auth.post(
+          tx,
           password,
           undefined,
           // use broadcast mode = "block" if we are not showing the broadcast loader

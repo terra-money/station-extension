@@ -57,7 +57,10 @@ const WalletActionButtons = ({ token }: { token?: TokenItem }) => {
       primary: true,
       label: t("Send"),
       onClick: () =>
-        (isLedger ? openURL : navigate)(`/send/1`, token ? { state: token?.symbol } : undefined),
+        (isLedger ? openURL : navigate)(
+          `/send/1`,
+          token ? { state: token?.symbol } : undefined
+        ),
       disabled: sendButtonDisabled,
     },
     {
@@ -71,7 +74,10 @@ const WalletActionButtons = ({ token }: { token?: TokenItem }) => {
       size: "default",
       label: t("Swap"),
       onClick: () =>
-        (isLedger ? openURL : navigate)(`/swap`, token ? { state: token?.token } : undefined),
+        (isLedger ? openURL : navigate)(
+          `/swap`,
+          token ? { state: token?.token } : undefined
+        ),
       hide: networkName !== "mainnet",
     },
     {
