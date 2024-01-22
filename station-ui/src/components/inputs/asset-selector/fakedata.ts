@@ -4,7 +4,7 @@ interface IWalletBalance {
 }
 
 const walletBalance: IWalletBalance = {
-  LUNA: "420.00",
+  LUNA: "420.123456789",
   UST: "0.00",
   axlUSDC: "100.00",
 }

@@ -1,4 +1,4 @@
-@import 'scss/font_mixins';
+@import "scss/font_mixins";
 
 .asset__selector_wrapper {
   background-color: var(--token-dark-300);
@@ -13,15 +13,63 @@
   flex-direction: column;
   gap: 16px;
 
+  &.from {
+    .header {
+      justify-content: space-between;
+    }
+
+    .amounts__wrapper {
+      .input__amount {
+        width: 100%;
+
+        .amount__token {
+          width: 100%;
+        }
+      }
+    }
+  }
+
   .header {
     display: flex;
     align-items: center;
-    gap: 8px;
+
+    .left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .wallet__text__wrapper {
+        display: inline-flex;
+        gap: 4px;
+      }
+
+      .has__value {
+        color: var(--token-light-white);
+      }
+    }
+
+    .right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .max__button {
+        @include X-Small;
+        color: var(--token-dark-900);
+        text-transform: uppercase;
+        transition: color 0.1s ease-in-out;
+
+        &:hover {
+          color: var(--token-light-white);
+        }
+      }
+    }
   }
 
   .inputs {
     display: flex;
     justify-content: space-between;
+    gap: 16px;
 
     .token__selector {
       display: flex;
@@ -34,6 +82,9 @@
         gap: 8px;
 
         .symbol {
+          @include Large;
+          color: var(--token-light-white);
+
           .symbol__button {
             display: flex;
             gap: 8px;
@@ -55,20 +106,23 @@
       flex-direction: column;
       align-items: flex-end;
       gap: 8px;
+      width: 100%;
 
       .input__amount {
         display: flex;
         align-items: center;
+        justify-content: flex-end;
         gap: 8px;
         position: relative;
+        @include Large;
+        color: var(--token-light-white);
 
         .amount__token {
-          @include Large;
-          color: var(--token-light-white);
-          text-align: end;
-          max-width: 100px;
           overflow-x: scroll;
           overflow-y: hidden;
+          text-align: end;
+          @include Large;
+          color: var(--token-light-white);
 
           /* Chrome, Safari, Edge, Opera */
           &::-webkit-outer-spin-button,
@@ -86,6 +140,17 @@
           &.amount__empty {
             color: var(--token-dark-900);
           }
+        }
+      }
+
+      .amount__currency {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        .bottom__value {
+          @include X-Small;
+          color: var(--token-light-100);
         }
       }
     }
