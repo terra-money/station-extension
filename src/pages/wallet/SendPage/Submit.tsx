@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { truncate } from "@terra-money/terra-utils"
@@ -8,8 +9,7 @@ import { useIBCBaseDenom } from "data/queries/ibc"
 import { useSend } from "./SendContext"
 import {
   InputInLine,
-  SendAmount,
-  TokenSingleChainListItem,
+  AssetSelectorFrom,
   Button,
   InputWrapper,
   Input,
@@ -67,8 +67,21 @@ const Submit = () => {
     } else {
       clearErrors("ibcWarning")
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showIBCWarning, ibcWarning, assetInfo, destination])
+
+  useEffect(() => {
+    if (!(assetInfo && recipient)) {
+      goToStep(1)
+      return
+    }
+
+    const { price } = assetInfo
+
+    if (price) {
+      const amount = input || 0
+      setValue("currencyAmount", amount * price)
+    }
+  }, [input])
 
   if (!(assetInfo && recipient)) {
     goToStep(1)
@@ -94,36 +107,30 @@ const Submit = () => {
           style={{ cursor: "pointer" }}
           label={t("To")}
           onClick={() => goToStep(1)}
-          extra={!recipientName.includes("...") && truncate(recipient)}
+          extra={!recipientName.includes("...") && truncate(recipient, [11, 6])}
           value={recipientName}
         />
-        <SendAmount
-          setValue={setValue}
-          tokenInputAttr={{
+        <AssetSelectorFrom
+          walletAmount={toInput(balance, decimals)}
+          handleMaxClick={handleMax}
+          symbol={symbol}
+          onSymbolClick={() => {
+            setValue("asset", undefined)
+            goToStep(3)
+          }}
+          tokenIcon={tokenImg}
+          chainIcon={assetInfo.chain.icon}
+          chainName={assetInfo.chain.label}
+          amountInputAttrs={{
             ...register("input", {
               required: true,
               valueAsNumber: true,
               validate: validate.input(toInput(balance, decimals), decimals),
             }),
           }}
-          tokenAmount={input ?? 0}
-          currencyInputAttrs={{
-            ...register("currencyAmount", {
-              valueAsNumber: true,
-              required: true,
-              deps: ["input"],
-            }),
-          }}
           currencyAmount={currencyAmount ?? 0}
-          tokenIcon={tokenImg}
-          symbol={symbol}
           currencySymbol={currency.symbol}
-          price={price}
-          formState={formState}
         />
-        <div>
-          <TokenSingleChainListItem {...assetInfo} onClick={handleMax} />
-        </div>
         <InputWrapper
           label={`${t("Memo")} (${t("optional")})`}
           error={errors.memo?.message}
@@ -170,4 +177,5 @@ const Submit = () => {
     </FlexColumn>
   )
 }
+
 export default Submit

@@ -10,8 +10,8 @@ const Chain = () => {
   const { form, goToStep } = useSend()
   const { setValue, watch } = form
   const networks = useAllNetworks()
-  const { recipient } = watch()
-  const wallet = getWallet(recipient)
+  const { recipientWalletName } = watch()
+  const wallet = getWallet(recipientWalletName)
 
   const chains = Object.values(networks)
     .filter((n) =>
@@ -32,11 +32,8 @@ const Chain = () => {
         address,
       }
     })
+    .filter((item) => AccAddress.validate(item.address))
 
-  return (
-    <SearchChains
-      data={chains.filter((item) => AccAddress.validate(item.address))}
-    />
-  )
+  return <SearchChains data={chains} />
 }
 export default Chain
