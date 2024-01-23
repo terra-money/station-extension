@@ -52,7 +52,7 @@ const SwapTimeline = ({
       }
       type={"Execute Contract"}
       msgCount={route.timelineMsgs.length}
-      hasTimeline
+      hasTimeline={route.timelineMsgs.length > 0}
     />
   )
 
