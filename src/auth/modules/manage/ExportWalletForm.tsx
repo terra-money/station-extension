@@ -1,9 +1,12 @@
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
-import { Form, Value } from "components/form"
+import { useNavigate } from "react-router-dom"
+import { Value } from "components/form"
 import useAuth from "../../hooks/useAuth"
 import QRCode from "../../components/QRCode"
+import { getWallet, isPasswordValid } from "auth/scripts/keystore"
+import { decrypt } from "auth/scripts/aes"
 import {
   InputWrapper,
   Input,
@@ -15,11 +18,9 @@ import {
   NavButton,
   ImportSeedIcon,
   KeyIcon,
+  Form,
 } from "@terra-money/station-ui"
-import { getWallet, isPasswordValid } from "auth/scripts/keystore"
 import styles from "./ExportWalletForm.module.scss"
-import { useNavigate } from "react-router-dom"
-import { decrypt } from "auth/scripts/aes"
 
 interface Values {
   password: string
@@ -69,7 +70,7 @@ const ExportWalletForm = ({ walletName }: Props) => {
 
   if (!mode) {
     return (
-      <FlexColumn gap={32}>
+      <FlexColumn gap={32} justify="flex-start">
         <FlexColumn gap={8}>
           <NavButton
             icon={<ImportSeedIcon fill="white" />}
@@ -98,25 +99,29 @@ const ExportWalletForm = ({ walletName }: Props) => {
 
   if (encoded) {
     return (
-      <FlexColumn gap={24}>
-        {mode === ExportType.SEED && (
-          <QRCode value={`terrastation://wallet_recover/?payload=${encoded}`} />
-        )}
-        <Banner
-          variant="warning"
-          title={t(
-            "Your {{keyType}} allows for FULL access to your wallet.  Make sure to keep it safe!",
-            { keyType: mode }
+      <FlexColumn gap={24} justify="space-between">
+        <FlexColumn gap={24}>
+          {mode === ExportType.SEED && (
+            <QRCode
+              value={`terrastation://wallet_recover/?payload=${encoded}`}
+            />
           )}
-        />
-        <InputWrapper
-          label={
-            mode === ExportType.SEED ? t("Seed key") : t("Recovery phrase")
-          }
-          extra={<Copy copyText={encoded} />}
-        >
-          <Value>{encoded}</Value>
-        </InputWrapper>
+          <Banner
+            variant="warning"
+            title={t(
+              "Your {{keyType}} allows for FULL access to your wallet.  Make sure to keep it safe!",
+              { keyType: mode }
+            )}
+          />
+          <InputWrapper
+            label={
+              mode === ExportType.SEED ? t("Seed key") : t("Recovery phrase")
+            }
+            extra={<Copy copyText={encoded} />}
+          >
+            <Value>{encoded}</Value>
+          </InputWrapper>
+        </FlexColumn>
         <Button
           variant="primary"
           label={t("Done")}
@@ -128,18 +133,16 @@ const ExportWalletForm = ({ walletName }: Props) => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(submit)} style={{ height: "90%" }}>
-      <FlexColumn className={styles.form__container}>
-        <InputWrapper label={t("Password")} error={errors.password?.message}>
-          <Input {...register("password")} type="password" />
-        </InputWrapper>
-        <SubmitButton
-          className={styles.form__footer}
-          disabled={!password || !isValid}
-          variant="primary"
-          label={t("Submit")}
-        />
-      </FlexColumn>
+    <Form onSubmit={handleSubmit(submit)} spaceBetween fullHeight>
+      <InputWrapper label={t("Password")} error={errors.password?.message}>
+        <Input {...register("password")} type="password" />
+      </InputWrapper>
+      <SubmitButton
+        className={styles.form__footer}
+        disabled={!password || !isValid}
+        variant="primary"
+        label={t("Submit")}
+      />
     </Form>
   )
 }

@@ -32,7 +32,7 @@ const TokenList = <T extends { symbol: string }>(props: Props<T>) => {
   ) : (
     <Fetching {...state} height={2}>
       <TokenFilters />
-      <Grid gap={10}>
+      <Grid gap={24}>
         {sortedResults
           .sort((a, b) => Number(getIsAdded(b)) - Number(getIsAdded(a)))
           .map((i) => {

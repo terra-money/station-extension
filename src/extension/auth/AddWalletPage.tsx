@@ -1,18 +1,17 @@
-import ExtensionPage from "extension/components/ExtensionPage"
 import { useTranslation } from "react-i18next"
+import ExtensionPageV2 from "extension/components/ExtensionPageV2"
 import AddWallet from "./AddWallet"
 
 export default function AddWalletPage() {
   const { t } = useTranslation()
 
   return (
-    <ExtensionPage
+    <ExtensionPageV2
       title={t("Add wallet")}
       fullHeight
-      modal
       backButtonPath="/manage-wallet/select"
     >
       <AddWallet />
-    </ExtensionPage>
+    </ExtensionPageV2>
   )
 }
