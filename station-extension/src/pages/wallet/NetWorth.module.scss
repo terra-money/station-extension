@@ -22,6 +22,10 @@
   @include flex;
   gap: 4px;
   width: 308px;
+
+  .button__wrapper {
+    max-width: 74px;
+  }
 }
 
 .networth__buttons__labels {

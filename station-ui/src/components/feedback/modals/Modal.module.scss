@@ -20,7 +20,7 @@
   max-height: calc(100% - 40px);
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
 
   background: var(--token-dark-200);
   border-radius: 8px;
@@ -119,6 +119,7 @@
 }
 
 .main {
+  flex: 1;
   overflow-y: scroll;
   max-height: 70vh;
 

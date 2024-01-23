@@ -34,6 +34,10 @@
       transition: color 100ms;
     }
   }
+
+  &.indent {
+    padding-left: 8px;
+  }
 }
 
 .track {
@@ -42,9 +46,10 @@
   align-items: center;
 
   border: solid 1px var(--token-dark-900);
+  background-color: var(--token-dark-300);
   border-radius: 6px;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .indicator {

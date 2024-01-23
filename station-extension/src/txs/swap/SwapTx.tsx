@@ -1,10 +1,10 @@
 import { useTranslation } from "react-i18next"
-import ExtensionPage from "extension/components/ExtensionPage"
+import { Routes, Route, useLocation } from "react-router-dom"
 import Setup from "./SwapSetup"
 import Confirm from "./SwapConfirm"
 import SwapContext from "./SwapContext"
-import { Routes, Route, useLocation } from "react-router-dom"
 import SwapSettings from "./SwapSettingsPage"
+import ExtensionPageV2 from "extension/components/ExtensionPageV2"
 
 const SwapTx = () => {
   const location = useLocation()
@@ -28,9 +28,13 @@ const SwapTx = () => {
             key={r.path}
             path={r.path}
             element={
-              <ExtensionPage backButtonPath={backPath} title={t(r.title)} modal>
+              <ExtensionPageV2
+                backButtonPath={backPath}
+                title={t(r.title)}
+                overNavbar={r.path !== "/"}
+              >
                 {r.element}
-              </ExtensionPage>
+              </ExtensionPageV2>
             }
           />
         ))}

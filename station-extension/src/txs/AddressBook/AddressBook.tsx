@@ -1,9 +1,9 @@
-import { useTranslation } from "react-i18next"
 import { useState } from "react"
-import { Grid, Tabs, NavButton } from "@terra-money/station-ui"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import MyWallets from "pages/wallet/SendPage/Components/MyWallets"
 import { AccAddress } from "@terra-money/feather.js"
+import MyWallets from "pages/wallet/SendPage/Components/MyWallets"
+import { Grid, Tabs, NavButton, WalletIcon } from "@terra-money/station-ui"
 
 const AddressBook = () => {
   const { t } = useTranslation()
@@ -37,7 +37,11 @@ const AddressBook = () => {
 
   return (
     <Grid gap={24}>
-      <NavButton label={t("Add New Address")} onClick={() => handleOpen()} />
+      <NavButton
+        label={t("New Address")}
+        onClick={() => handleOpen()}
+        icon={<WalletIcon fill="var(--token-light-white)" />}
+      />
       <Tabs activeTabKey={tabKey} tabs={tabs} />
       <MyWallets tab={tabKey} onClick={onClick} />
     </Grid>

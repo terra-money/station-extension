@@ -144,7 +144,6 @@ const getTimelineMessages = (
     (op: any) => Object.keys(op)[0] === "swap"
   ).length
 
-
   const timelineMsgs: TimelineMessage[] = route.operations.map(
     // eslint-disable-next-line array-callback-return
     (op: any, i: number) => {
@@ -155,13 +154,16 @@ const getTimelineMessages = (
 
       if (type === "transfer") {
         const fromChainId = op[type].chain_id
-        const toChainId = venue?.chain_id    
-          return {
-            type,
-            symbol: swapsOccured === swapsRequired ? swap.askAsset.symbol : swap.offerAsset.symbol, 
-            from: network[fromChainId]?.name ?? "Unknown",
-            to: network[toChainId ?? swap.askAsset.chainId]?.name ?? "Unknown", // get final chainId from askAsset or next one in ops
-          }
+        const toChainId = venue?.chain_id
+        return {
+          type,
+          symbol:
+            swapsOccured === swapsRequired
+              ? swap.askAsset.symbol
+              : swap.offerAsset.symbol,
+          from: network[fromChainId]?.name ?? "Unknown",
+          to: network[toChainId ?? swap.askAsset.chainId]?.name ?? "Unknown", // get final chainId from askAsset or next one in ops
+        }
       }
 
       if (type === "swap") {

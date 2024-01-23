@@ -1,12 +1,13 @@
+import { useState } from "react"
 import {
   ModalButton,
   Input,
   InputWrapper,
   Button,
   useModal,
+  FlexColumn,
+  LaughIcon,
 } from "@terra-money/station-ui"
-import { useState } from "react"
-import { ReactComponent as EmptyEmoji } from "styles/images/icons/EmptyEmoji.svg"
 import styles from "./EmojiButton.module.scss"
 const emojiOptions = [
   "💳",
@@ -35,26 +36,28 @@ const EmojiPage = (props: Props) => {
   const icon = props.icon ?? ""
   const [emoji, setEmoji] = useState(icon)
   return (
-    <>
-      <InputWrapper label="Icon">
-        <Input
-          placeholder="Letter or Emoji"
-          maxLength={1}
-          value={emoji}
-          onChange={(e) => setEmoji(e.target.value)}
-        />
-      </InputWrapper>
-      <div className={styles.picker}>
-        {emojiOptions.map((emoji) => (
-          <button
-            key={emoji}
-            onClick={() => setEmoji(emoji)}
-            className={styles.emojiButton}
-          >
-            {emoji}
-          </button>
-        ))}
-      </div>
+    <FlexColumn gap={24} justify="space-between" style={{ height: "100%" }}>
+      <FlexColumn gap={32}>
+        <InputWrapper label="Icon">
+          <Input
+            placeholder="Letter or Emoji"
+            maxLength={1}
+            value={emoji}
+            onChange={(e) => setEmoji(e.target.value)}
+          />
+        </InputWrapper>
+        <div className={styles.picker}>
+          {emojiOptions.map((emoji) => (
+            <button
+              key={emoji}
+              onClick={() => setEmoji(emoji)}
+              className={styles.emojiButton}
+            >
+              {emoji}
+            </button>
+          ))}
+        </div>
+      </FlexColumn>
       <Button
         variant="primary"
         style={{ width: "100%" }}
@@ -65,7 +68,7 @@ const EmojiPage = (props: Props) => {
           closeModal()
         }}
       />
-    </>
+    </FlexColumn>
   )
 }
 
@@ -77,7 +80,7 @@ const EmojiButton = (props: Props) => {
         props.icon ? (
           <span onClick={open}>{props.icon}</span>
         ) : (
-          <EmptyEmoji onClick={open} />
+          <LaughIcon fill={"var(--token-dark-900)"} onClick={open} />
         )
       }
     >
