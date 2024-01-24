@@ -1,16 +1,15 @@
-import style from "./Swap.module.scss"
+import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import {
   Button,
   Input,
   InputWrapper,
   ButtonInlineWrapper,
-  Form,
   SubmitButton,
+  Form,
 } from "@terra-money/station-ui"
 import { useSwap } from "./SwapContext"
-import { useForm } from "react-hook-form"
-import { useNavigate } from "react-router-dom"
 
 interface SlippageForm {
   slippage: string
@@ -32,8 +31,8 @@ const SlippagePage = () => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)} className={style.slippage}>
-      <InputWrapper>
+    <Form onSubmit={handleSubmit(onSubmit)} spaceBetween fullHeight>
+      <InputWrapper label={t("Max Slippage")}>
         <Input placeholder={slippage} {...register("slippage")} emoji="%" />
       </InputWrapper>
 

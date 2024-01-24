@@ -466,7 +466,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
           {feesReady && (
             <SubmitButton
               variant="primary"
-              className={styles.submit}
               icon={<CheckCircleIcon />}
               disabled={
                 !estimatedGas || !!disabled || !!walletError || !feesReady

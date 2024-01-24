@@ -1,3 +1,17 @@
+import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
+import { useForm } from "react-hook-form"
+import { AccAddress, SignatureV2 } from "@terra-money/feather.js"
+import { isWallet, useAuth } from "auth"
+import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
+import validate from "auth/scripts/validate"
+import { useInterchainLCDClient } from "data/queries/lcdClient"
+import { useChainID } from "data/wallet"
+import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
+import { FormError } from "components/form"
+import { SAMPLE_ADDRESS } from "config/constants"
+import ReadTx from "./ReadTx"
 import {
   Checkbox,
   Copy,
@@ -8,21 +22,9 @@ import {
   SubmitButton,
   SummaryHeader,
   TextArea,
+  Form,
+  FlexColumn,
 } from "@terra-money/station-ui"
-import { getStoredPassword, shouldStorePassword } from "auth/scripts/keystore"
-import { AccAddress, SignatureV2 } from "@terra-money/feather.js"
-import { useInterchainLCDClient } from "data/queries/lcdClient"
-import { SAMPLE_ENCODED_TX } from "./utils/placeholder"
-import { Form, FormError } from "components/form"
-import { SAMPLE_ADDRESS } from "config/constants"
-import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
-import validate from "auth/scripts/validate"
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { isWallet, useAuth } from "auth"
-import { useChainID } from "data/wallet"
-import ReadTx from "./ReadTx"
 
 interface TxValues {
   address: AccAddress
@@ -115,49 +117,51 @@ const SignMultisigTxForm = ({ defaultValues }: Props) => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(submit)}>
-      <InputWrapper label={t("Multisig Address")}>
-        <Input
-          {...register("address", {
-            validate: validate.address,
-          })}
-          placeholder={SAMPLE_ADDRESS}
-          autoFocus
-        />
-      </InputWrapper>
-      <InputWrapper label={t("Hashed Transaction")}>
-        <TextArea
-          {...register("tx", { required: true })}
-          placeholder={SAMPLE_ENCODED_TX}
-          rows={4}
-        />
-      </InputWrapper>
-      <ReadTx tx={tx.trim()} />
+    <Form onSubmit={handleSubmit(submit)} spaceBetween>
+      <FlexColumn gap={24}>
+        <InputWrapper label={t("Multisig Address")}>
+          <Input
+            {...register("address", {
+              validate: validate.address,
+            })}
+            placeholder={SAMPLE_ADDRESS}
+            autoFocus
+          />
+        </InputWrapper>
+        <InputWrapper label={t("Hashed Transaction")}>
+          <TextArea
+            {...register("tx", { required: true })}
+            placeholder={SAMPLE_ENCODED_TX}
+            rows={4}
+          />
+        </InputWrapper>
+        <ReadTx tx={tx.trim()} />
 
-      <SectionHeader title="Confirm" withLine />
+        <SectionHeader title="Confirm" withLine />
 
-      {passwordRequired && showPasswordInput && !incorrect && (
-        <>
-          <InputWrapper label={t("Password")} error={incorrect}>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setIncorrect(undefined)
-                setPassword(e.target.value)
-              }}
-            />
-          </InputWrapper>
+        {passwordRequired && showPasswordInput && !incorrect && (
+          <>
+            <InputWrapper label={t("Password")} error={incorrect}>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setIncorrect(undefined)
+                  setPassword(e.target.value)
+                }}
+              />
+            </InputWrapper>
 
-          <InputWrapper>
-            <Checkbox
-              label={t("Save password")}
-              checked={rememberPassword}
-              onChange={() => setRememberPassword((r) => !r)}
-            />
-          </InputWrapper>
-        </>
-      )}
+            <InputWrapper>
+              <Checkbox
+                label={t("Save password")}
+                checked={rememberPassword}
+                onChange={() => setRememberPassword((r) => !r)}
+              />
+            </InputWrapper>
+          </>
+        )}
+      </FlexColumn>
 
       {error && <FormError>{error.message}</FormError>}
 

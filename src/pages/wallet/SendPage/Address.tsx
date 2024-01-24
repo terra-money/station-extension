@@ -8,6 +8,7 @@ import {
   InputInLine,
   Tabs,
   Button,
+  FlexColumn,
 } from "@terra-money/station-ui"
 import { AddressBookList } from "./Components/AddressBookList"
 import MyWallets from "./Components/MyWallets"
@@ -52,7 +53,7 @@ const Address = () => {
   ) => {
     setValue("memo", memo)
     if (!AccAddress.validate(recipient ?? "")) {
-      setValue("recipient", recipient)
+      setValue("recipientWalletName", recipient)
       goToStep(2)
     } else {
       handleKnownChain(recipient)
@@ -69,7 +70,7 @@ const Address = () => {
   }
 
   return (
-    <>
+    <FlexColumn gap={24} justify="flex-start" align="stretch">
       <InputWrapper error={errors.recipient?.message}>
         <InputInLine
           type="text"
@@ -102,7 +103,7 @@ const Address = () => {
       <SectionHeader title="Other Wallets" withLine />
       <Tabs activeTabKey={tab} tabs={tabs} />
       <MyWallets tab={tab} onClick={handleKnownWallet} />
-    </>
+    </FlexColumn>
   )
 }
 export default Address

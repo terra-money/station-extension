@@ -1,15 +1,14 @@
-import { useNetworkOptions, useNetworkState } from "data/wallet"
+import { useNavigate } from "react-router-dom"
+import { useNetworkOptions, useNetworkState, useNetwork } from "data/wallet"
 import SettingsSelector from "components/layout/SettingsSelector"
+import { useCustomLCDs } from "utils/localStorage"
 import {
+  FlexColumn,
   NavButton,
   SectionHeader,
   AddressSelectableListItem,
+  BuyIcon,
 } from "@terra-money/station-ui"
-import { FlexColumn } from "components/layout"
-import AddIcon from "@mui/icons-material/Add"
-import { useCustomLCDs } from "utils/localStorage"
-import { useNetwork } from "data/wallet"
-import { useNavigate } from "react-router-dom"
 
 const NetworkSetting = () => {
   const [network, setNetwork] = useNetworkState()
@@ -28,7 +27,7 @@ const NetworkSetting = () => {
   if (!networkOptions) return null
 
   return (
-    <FlexColumn gap={30}>
+    <FlexColumn gap={40} justify="flex-start">
       <SettingsSelector
         accordion
         options={networkOptions}
@@ -36,7 +35,9 @@ const NetworkSetting = () => {
         onChange={setNetwork}
       />
       <NavButton
-        icon={<AddIcon />}
+        icon={
+          <BuyIcon width={14} height={14} fill={"var(--token-light-white)"} />
+        }
         label="Add Custom LCD Endpoint"
         onClick={() => navigate("/preferences/network/lcd")}
       />
