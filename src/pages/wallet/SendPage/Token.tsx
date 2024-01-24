@@ -56,8 +56,7 @@ const Token = () => {
           from: chain,
           to: destination ?? "",
           tokenAddress: denom,
-          icsChannel:
-            ibcDenoms[networkName][`${destination}:${denom}`]?.icsChannel,
+          icsChannel: ibcDenoms[networkName][`${chain}:${denom}`]?.icsChannel,
         })
 
         if ((isNative || channel) && supported) {
