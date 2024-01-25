@@ -91,7 +91,7 @@ const Submit = () => {
   const { balance, decimals, price, tokenImg, symbol } = assetInfo
 
   const handleMax = () => {
-    setValue("input", toInput(balance, decimals))
+    setValue("input", toInput(balance, decimals, 5)) // 5 decimal place round-down for SendAmount component
     if (price) {
       setValue("currencyAmount", toInput(Number(balance) * price, decimals))
     }
