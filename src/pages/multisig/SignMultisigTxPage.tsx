@@ -1,13 +1,13 @@
+import { useTranslation } from "react-i18next"
+import { truncate } from "@terra-money/terra-utils"
+import { isWallet, useAuth } from "auth"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
-import ExtensionPage from "extension/components/ExtensionPage"
 import useDefaultValues from "./utils/useDefaultValues"
 import SignMultisigTxForm from "./SignMultisigTxForm"
-import { truncate } from "@terra-money/terra-utils"
-import { useTranslation } from "react-i18next"
 import { Wrong } from "components/feedback"
-import { isWallet, useAuth } from "auth"
-import { useChainID } from "data/wallet"
 import { Card } from "components/layout"
+import { useChainID } from "data/wallet"
+import ExtensionPageV2 from "extension/components/ExtensionPageV2"
 
 const SignMultisigTxPage = () => {
   const { t } = useTranslation()
@@ -23,19 +23,17 @@ const SignMultisigTxPage = () => {
   )
 
   return (
-    <ExtensionPage
+    <ExtensionPageV2
       backButtonPath={`/manage-wallet/manage/${wallet.name}`}
       title={t("Sign Multisig Tx")}
       subtitle={truncate(addresses?.[chainID], [13, 6])}
-      fullHeight
-      modal
     >
       {isWallet.multisig(wallet) ? (
         incorrectWalletErrorPage
       ) : (
         <SignMultisigTxForm defaultValues={defaultValues} />
       )}
-    </ExtensionPage>
+    </ExtensionPageV2>
   )
 }
 

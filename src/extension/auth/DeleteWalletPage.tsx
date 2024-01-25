@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next"
-import ExtensionPage from "../components/ExtensionPage"
-import DeleteWalletForm from "auth/modules/manage/DeleteWalletForm"
 import { useParams } from "react-router-dom"
+import DeleteWalletForm from "auth/modules/manage/DeleteWalletForm"
+import ExtensionPageV2 from "extension/components/ExtensionPageV2"
 
 const DeleteWalletPage = () => {
   const { t } = useTranslation()
@@ -9,15 +9,14 @@ const DeleteWalletPage = () => {
   if (!walletName) return null
 
   return (
-    <ExtensionPage
+    <ExtensionPageV2
       title={t("Delete wallet")}
       subtitle={walletName}
       backButtonPath={`/manage-wallet/manage/${walletName}`}
       fullHeight
-      modal
     >
       <DeleteWalletForm walletName={walletName} />
-    </ExtensionPage>
+    </ExtensionPageV2>
   )
 }
 

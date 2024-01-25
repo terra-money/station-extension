@@ -1,14 +1,14 @@
-import ExtensionPage from "extension/components/ExtensionPage"
-import VestingDetailsPage from "./VestingDetailsPage"
-import AddressChain from "pages/wallet/AddressChain"
-import { Route, Routes } from "react-router-dom"
+import { encode } from "js-base64"
 import { useTranslation } from "react-i18next"
+import { Route, Routes } from "react-router-dom"
+import AddressChain from "pages/wallet/AddressChain"
 import { useChainID } from "data/wallet"
+import VestingDetailsPage from "./VestingDetailsPage"
 import ReceivePage from "./ReceivePage"
 import SendTx from "./SendPage/SendTx"
 import WalletMain from "./WalletMain"
 import AssetPage from "./AssetPage"
-import { encode } from "js-base64"
+import ExtensionPageV2 from "extension/components/ExtensionPageV2"
 
 interface IRoute {
   path: string
@@ -46,7 +46,6 @@ export const useWalletRoutes = (): IRoute[] => {
       path: "/asset/:chain/:denom",
       element: <AssetPage />,
       backPath: "/",
-      title: t("Asset"),
     },
     {
       path: `/asset/${chainID}/${encode("uluna")}/vesting`,
@@ -67,13 +66,12 @@ export default function WalletRouter() {
           path={route.path}
           element={
             route.title ? (
-              <ExtensionPage
+              <ExtensionPageV2
                 title={route.title}
                 backButtonPath={route.backPath}
-                modal
               >
                 {route.element}
-              </ExtensionPage>
+              </ExtensionPageV2>
             ) : (
               route.element
             )

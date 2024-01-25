@@ -108,7 +108,7 @@ export const useSettingsRoutes = () => {
     addressBookNew: {
       route: "address-book/new",
       element: <AddAddressBookForm />,
-      title: t("New Address Entry"),
+      title: t("New Address"),
     },
     myWallet: {
       route: "address-book/my-addresses",

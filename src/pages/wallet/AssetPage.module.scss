@@ -1,96 +1,89 @@
 @import "mixins";
 @import "font_mixins";
 
-.details {
-  // background-color: var(--token-dark-500);
-  @include flex(center);
-  flex-direction: column;
-  width: 100%;
-  padding-bottom: 16px;
-  height: fit-content;
-  grid-area: details;
+.asset__page__wrapper {
+  max-width: var(--extension-width);
+  margin: 0 auto;
+  min-height: calc(100vh - var(--header-height));
+  display: flex;
 
-  .cost__container {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    gap: 8px;
-  }
+  .content__container {
+    background-color: var(--token-dark-300);
 
-  .token {
-    @include flex(center);
-    color: var(--token-light-100);
-    gap: 8px;
-
-    .icon {
+    .details {
+      position: relative;
+      background-color: var(--token-dark-500);
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
+      gap: 16px;
+      padding: 24px 24px 16px 24px;
+      border-bottom: 1px solid var(--token-dark-100);
+
+      .back__button {
+        position: absolute;
+        top: 6px;
+        left: 8px;
+        padding: 16px;
+      }
+
+      .cost__container {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        gap: 8px;
+
+        .token {
+          display: flex;
+          align-items: center;
+          color: var(--token-light-100);
+          gap: 8px;
+
+          .icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .token__amount {
+            @include X-Small;
+            color: var(--token-light-100);
+          }
+        }
+
+        h1 {
+          @include XX-Large;
+          color: var(--token-light-white);
+        }
+      }
     }
 
-    .token__amount {
-      @include X-Small;
-      color: var(--token-light-100);
+    .chainlist__container {
+      padding: 24px 0;
+
+      .chainlist {
+        padding-inline: 14px;
+        overflow-y: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+
+        .chainlist__title {
+          padding: 0px 10px;
+        }
+
+        .chainlist__list {
+          overflow-y: auto;
+          margin-bottom: 14px;
+        }
+      }
+    }
+
+    .vesting {
+      width: 100%;
+      margin-bottom: 20px;
+      margin-top: 10px;
+      padding: 0 10px;
     }
   }
-
-  h1 {
-    @include XX-Large;
-    color: var(--token-light-white);
-    margin-bottom: 24px;
-  }
-
-  p {
-    color: var(--text-muted);
-    font-size: 12pt;
-    margin-top: 0.2rem;
-  }
-}
-
-.chainlist__container {
-  padding: 24px 0;
-}
-
-.chainlist {
-  padding-inline: 10px;
-  grid-area: list;
-  display: grid;
-  grid-template-areas: "title" "list";
-  grid-template-rows: min-content auto;
-  overflow-y: hidden;
-}
-
-.chainlist__title {
-  grid-area: title;
-  padding: 0px 10px 6px;
-}
-
-.chainlist__list {
-  gap: 4px;
-  display: grid;
-  overflow-y: auto;
-  grid-area: list;
-  padding-bottom: 14px;
-}
-
-.actions {
-  @include flex(space-between);
-  background-color: var(--card-bg);
-  padding-top: 0.6rem;
-  padding: 20px 20px;
-  gap: 0.6rem;
-  width: 100%;
-
-  button {
-    min-width: 0;
-    width: 100%;
-    padding-block: 20px;
-    height: fit-content;
-  }
-}
-
-.vesting {
-  width: 100%;
-  margin-bottom: 20px;
-  margin-top: 10px;
 }

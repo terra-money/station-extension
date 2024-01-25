@@ -13,7 +13,6 @@ import {
   LoadingCircular,
   Modal,
   SubmitButton,
-  WalletIcon,
 } from "@terra-money/station-ui"
 import {
   useIsBalanceEnough,
@@ -234,55 +233,27 @@ export default function GasHelper({
           </p>
           <div className={styles.asset__selector__container}>
             <AssetSelectorFrom
-              extra={
-                <Flex justify="space-between">
-                  <Flex gap={8} justify="flex-start">
-                    <WalletIcon fill="currentColor" width={12} height={12} />
-                    <p>
-                      <Read
-                        className={
-                          insufficientBalance
-                            ? styles.amount__error
-                            : styles.amount
-                        }
-                        amount={getBalanceAmount(
-                          swapDenom.denom,
-                          swapDenom.chainId
-                        )}
-                        decimals={readSwapDenom.decimals}
-                        fixed={2}
-                      />{" "}
-                      {readSwapDenom.symbol}
-                    </p>
-                  </Flex>
-                  {!isDefaultAmount && !!minimumSwapData?.amount_in && (
-                    <button
-                      onClick={() =>
-                        setSwapAmount(
-                          `${
-                            minimumSwapData.amount_in /
-                            10 ** readSwapDenom.decimals
-                          }`
-                        )
-                      }
-                    >
-                      {t("RESET")}
-                    </button>
-                  )}
-                </Flex>
+              walletAmount={
+                getBalanceAmount(swapDenom.denom, swapDenom.chainId) /
+                10 ** readSwapDenom.decimals
               }
+              handleMaxClick={() => {
+                setSwapAmount(
+                  `${
+                    getBalanceAmount(swapDenom.denom, swapDenom.chainId) /
+                    10 ** readSwapDenom.decimals
+                  }`
+                )
+              }}
               symbol={offerAsset.symbol}
               chainIcon={offerAsset.chainIcon}
               chainName={offerAsset.chainName}
               tokenIcon={offerAsset.icon ?? ""}
               onSymbolClick={() => setModalOpen(true)}
+              currencySymbol={currency}
               currencyAmount={
-                currency +
-                " " +
-                (
-                  ((swapAmount ?? 0) / 10 ** readSwapDenom.decimals) *
-                  (prices?.[readSwapDenom.token]?.price ?? 0)
-                ).toFixed(2)
+                ((swapAmount ?? 0) / 10 ** readSwapDenom.decimals) *
+                (prices?.[readSwapDenom.token]?.price ?? 0)
               }
               amountInputAttrs={{
                 type: "text",

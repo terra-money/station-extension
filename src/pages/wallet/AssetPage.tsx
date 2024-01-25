@@ -3,7 +3,11 @@ import { CoinBalance, useBankBalance } from "data/queries/bank"
 import { useNavigate, useParams } from "react-router-dom"
 import { useExchangeRates } from "data/queries/coingecko"
 import WalletActionButtons from "./WalletActionButtons"
-import { SectionHeader } from "@terra-money/station-ui"
+import {
+  BackArrowIcon,
+  FlexColumn,
+  SectionHeader,
+} from "@terra-money/station-ui"
 import { Read, TokenIcon } from "components/token"
 import { useAccount } from "data/queries/vesting"
 import { useTranslation } from "react-i18next"
@@ -74,7 +78,7 @@ const AssetPage = () => {
           withLine
           className={styles.chainlist__title}
         />
-        <div className={styles.chainlist__list}>
+        <FlexColumn gap={4} align="stretch" className={styles.chainlist__list}>
           {data
             .sort((a, b) => parseInt(b.amount) - parseInt(a.amount))
             .map((b) => (
@@ -88,7 +92,7 @@ const AssetPage = () => {
                 decimals={decimals}
               />
             ))}
-        </div>
+        </FlexColumn>
       </div>
     )
   }
@@ -101,6 +105,9 @@ const AssetPage = () => {
 
     return (
       <section className={styles.details}>
+        <button className={styles.back__button} onClick={() => navigate("/")}>
+          <BackArrowIcon height={16} fill={"var(--token-light-100)"} />
+        </button>
         <div className={styles.cost__container}>
           <span className={styles.token}>
             <span className={styles.icon}>
@@ -163,17 +170,23 @@ const AssetPage = () => {
   }
 
   return (
-    <>
-      <AssetPageHeader />
-      <section className={styles.chainlist__container}>
-        <AssetChainList title={t("Balances")} data={supportedAssets} />
-        <AssetChainList
-          title={t("Unsupported Assets")}
-          data={unsupportedAssets}
-        />
-        <VestingSection />
-      </section>
-    </>
+    <div className={styles.asset__page__wrapper}>
+      <FlexColumn
+        justify="flex-start"
+        align="stretch"
+        className={styles.content__container}
+      >
+        <AssetPageHeader />
+        <section className={styles.chainlist__container}>
+          <AssetChainList title={t("Balances")} data={supportedAssets} />
+          <AssetChainList
+            title={t("Unsupported Assets")}
+            data={unsupportedAssets}
+          />
+          <VestingSection />
+        </section>
+      </FlexColumn>
+    </div>
   )
 }
 

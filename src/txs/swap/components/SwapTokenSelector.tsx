@@ -48,7 +48,7 @@ const SwapTokenSelector = ({ tokens, tokenOnClick }: Props) => {
         />
       </InputWrapper>
       <SectionHeader title={t("Tokens")} withLine />
-      <WithSearchInput gap={16} small label={t("Search tokens...")}>
+      <WithSearchInput gap={24} small label={t("Search tokens...")}>
         {(input) => (
           <Grid gap={20} className={style.token__container}>
             {tokens

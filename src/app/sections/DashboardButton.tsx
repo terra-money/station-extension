@@ -8,9 +8,7 @@ const DashboardButton = forwardRef(
     const openDashboard = () => window.open(STATION, "_blank")
     return (
       <HeaderIconButton onClick={openDashboard} ref={ref}>
-        <DashboardIcon
-          style={{ height: 18, width: 18, fill: "var(--token-dark-900)" }}
-        />
+        <DashboardIcon height={18} width={18} fill={"var(--token-dark-900)"} />
       </HeaderIconButton>
     )
   }

@@ -133,6 +133,7 @@ export const isPasswordValid = (password: string) => {
         } else if ("encrypted" in w) {
           return w.encrypted[330]
         }
+        return ""
       })
       .filter((w): w is string => !!w)
 

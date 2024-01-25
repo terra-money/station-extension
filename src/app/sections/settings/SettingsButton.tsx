@@ -5,17 +5,14 @@ const SettingsButton = () => {
   const navigate = useNavigate()
 
   return (
-    <SettingsIcon
-      width={18}
-      height={18}
-      onClick={() => navigate("/preferences")}
-      style={{
-        cursor: "pointer",
-        //marginTop: "24px",
-        //marginBottom: "16px",
-      }}
-      fill={"var(--token-dark-900)"}
-    />
+    <button>
+      <SettingsIcon
+        width={18}
+        height={18}
+        onClick={() => navigate("/preferences")}
+        fill={"var(--token-dark-900)"}
+      />
+    </button>
   )
 }
 

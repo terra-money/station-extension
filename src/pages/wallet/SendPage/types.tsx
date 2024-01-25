@@ -26,4 +26,5 @@ export interface TxValues {
   assetInfo?: AssetType
   currencyAmount?: number
   ibcWarning?: boolean
+  recipientWalletName?: string
 }
