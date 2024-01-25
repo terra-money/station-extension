@@ -104,13 +104,13 @@ export function useIBCChannels() {
 
       if (
         icsChannel &&
-        (networks[to]?.ics20Channels?.[from].find(
+        (networks[to]?.ics20Channels?.[from]?.find(
           ({ channel }) => channel === icsChannel
         ) ||
           networks[to]?.icsChannels?.[from]?.channel === icsChannel)
       ) {
         return (
-          networks[to]?.ics20Channels?.[from].find(
+          networks[to]?.ics20Channels?.[from]?.find(
             ({ channel }) => channel === icsChannel
           )?.otherChannel || networks[to]?.icsChannels?.[from]?.otherChannel
         )
