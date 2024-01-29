@@ -33,7 +33,7 @@ const NetWorth = () => {
     (_: any, ref: ForwardedRef<HTMLButtonElement>) => {
       return (
         <button ref={ref}>
-          <InfoIcon style={{ fill: "var(--token-dark-900)" }} />
+          <InfoIcon width={12} height={12} fill="var(--token-dark-900)" />
         </button>
       )
     }

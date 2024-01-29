@@ -3,164 +3,133 @@ import Form from './Form';
 import * as FormStories from './Form.stories';
 import 'scss/storybookoverrides.scss';
 
-
 <Meta title='Components/Form' of={FormStories} />
 
 # Form
-Form wrappers for inputs and buttons.
-* Should be used with [useForm] from react-hook-form.
+Wraps a form with a submit button. Should be used with [useForm] from react-hook-form.
 
 ## Imports
 ```tsx
-import Form, { FormArrow, FormGroup, FormItem } from './Form';
+import Form from "@terra-money/station-ui"
 ```
 
-* `<Form>` Wraps a form with a submit button. Should be used with [useForm] from react-hook-form.
-* `<FormItem>` Wraps an `<Input />` with a label and error message.
-* `<FormGroup>` Groups an `<Input />` and a button together inline.
-* `<FormArrow>` An arrow icon that points down. If `onClick` is provided, `<button>` will wrap the Icon.
-
-## Usage
-```tsx
-  <Form onSubmit={handleSubmit(submit)}>
-    {...}
-    <FormItem // import from Form.tsx
-      label={'Amount'}
-      error={errors.amount?.message}  // errors from react-hook-form
-    >
-      <Input  // import from Input.tsx
-        //*requires register() from react-hook-form*
-        token={asset} // Asset comes from another imput not displayed here
-        inputMode='decimal'
-        placeholder='0.00'
-      />
-    </FormItem>
-  </Form>
-```
+## Props
+- **`fullHeight`** - Adds `width: 100%` to the form.
+- **`spaceBetween`** - Adds `justify-content: space-between` to the form.
+- **`extends HTMLAttributes<HTMLFormElement>`**
 
 # Stories
 
-## Form Example
-* Wraps a form with a `<Submit />`. Should be used with [useForm] from react-hook-form.
-* Note that some components, like `<Tx>`, have their own Submit buttons. In which case it's not required to use `<Submit />`.
-<div className='story_with_source_below'>
-  <Canvas>
-    <Story id='components-form--full-form-example' />
-  </Canvas>
+## FullFormExample
+This is an example of Form in use with but fullHeight and spaceBetween true.
+
+<div className="story_with_source_below">
+  <Canvas of={FormStories.FullFormExample} />
   <Source code={`
-    // Example from AddNetworkForm.tsx
-    {...}
+    const { register, handleSubmit, formState } = useForm();
+const { errors } = formState;
+const onSubmit = handleSubmit(data => console.log(data));
 
-    /* form */
-    const form = useForm<CustomNetwork>({ mode: 'onChange' })
-    const { register, watch, handleSubmit, formState } = form
-    const { errors, isValid } = formState
-    const { preconfigure } = watch()
-
-    const submit = (values: CustomNetwork) => {
-      add(values)
-      setNetwork(values.name)
-      navigate('/')
-    }
-
-    return (
-      <Form onSubmit={handleSubmit(submit)}>
-        <FormItem label={t('Name')} error={errors.name?.message}>
-          <Input
-            {...register('name', {})}
-            placeholder={mainnet.name}
-            autoFocus
-          />
-        </FormItem>
-
-        <FormItem label={t('Chain ID')} error={errors.chainID?.message}>
-          <Input
-            {...register('chainID', { required: true })}
-            placeholder={mainnet.chainID}
-          />
-        </FormItem>
-
-        <FormItem label={t('LCD')} error={errors.lcd?.message}>
-          <Input
-            {...register('lcd', { required: true })}
-            placeholder={mainnet.lcd}
-          />
-        </FormItem>
-
-        <Checkbox {...register('preconfigure')} checked={preconfigure}>
-          {t('Preconfigure accounts')}
-        </Checkbox>
-
-        <Submit disabled={!isValid} />
-      </Form>
-    )
+return (
+  <Form onSubmit={onSubmit} spaceBetween fullHeight>
+    <FlexColumn gap={24}>
+      <InputWrapper label='First Name' error={errors?.first?.message as string | undefined}>
+        <Input
+          placeholder='Name'
+          {...register('first', {
+            required: true,
+            pattern: {
+              value: /\S+@\S+\.\S+/,
+              message: "Entered value does not match email format",
+            },
+          })}
+        />
+      </InputWrapper>
+      <InputWrapper label='Last Name' error={errors?.last?.message as string | undefined}>
+        <Input
+          placeholder='Name'
+          {...register('last', { required: true })}
+        />
+      </InputWrapper>
+    </FlexColumn>
+    <SubmitButton type='submit'>Submit</SubmitButton>
+  </Form>
+)
   `} />
 </div>
 
-## FormGroup
-* Groups an `<Input />` and a button together inline.
-<div className='story_with_source_below'>
-  <Canvas>
-    <Story id='components-form--group' />
-  </Canvas>
+## No Props
+example with fullHeight and spaceBetween false
+
+<div className="story_with_source_below">
+  <Canvas of={FormStories.NoProps} />
   <Source code={`
-    <FormItem label='Amount'>
-      {fields.map((_, i) => (
-        <FormGroup
-          button={
-            fields.length - 1 === i
-              ? {
-                  onClick: () => addField(),
-                  children: <AddIcon style={{ fontSize: 18 }} />,
-                }
-              : {
-                  onClick: () => removeField(i),
-                  children: <RemoveIcon style={{ fontSize: 18 }} />,
-                }
-          }
-          key={i}
-        >
-          <Input
-            inputMode='decimal'
-            placeholder='0.00'
-            selectBefore={
-              <Select before>
-                <option value='USD'>USD</option>
-                <option value='EUR'>EUR</option>
-                <option value='GBP'>GBP</option>
-              </Select>
-            }
-          />
-        </FormGroup>
-      ))}
-    </FormItem>
+    const { register, handleSubmit, formState } = useForm();
+const { errors } = formState;
+const onSubmit = handleSubmit(data => console.log(data));
+
+return (
+  <Form onSubmit={onSubmit}>
+    <FlexColumn gap={24}>
+      <InputWrapper label='First Name' error={errors?.first?.message as string | undefined}>
+        <Input
+          placeholder='Name'
+          {...register('first', {
+            required: true,
+            pattern: {
+              value: /\S+@\S+\.\S+/,
+              message: "Entered value does not match email format",
+            },
+          })}
+        />
+      </InputWrapper>
+      <InputWrapper label='Last Name' error={errors?.last?.message as string | undefined}>
+        <Input
+          placeholder='Name'
+          {...register('last', { required: true })}
+        />
+      </InputWrapper>
+    </FlexColumn>
+    <SubmitButton type='submit'>Submit</SubmitButton>
+  </Form>
+)
   `} />
 </div>
 
-## FormItem
-This is the wrapper around an input item that provides the possibility of a label and error message.
-<div className='story_with_source_below'>
-  <Canvas>
-    <Story id='components-form--item' />
-  </Canvas>
-  <Source code={`
-    <FormItem
-      label='Username'
-      error='This field is required'
-      extra='Optional'
-    >
-      <Input placeholder='This is an input'/>
-    </FormItem>
-  `} />
-</div>
+## With Space Between And Full Height
+This is an example of Form in use with but fullHeight and spaceBetween true.
 
-## FormArrow
-* An arrow icon that points down. If `onClick` is provided, `<button>` will wrap the Icon.
-<div className='story_with_source_below'>
-  <Canvas>
-    <Story id='components-form--arrow' />
-  </Canvas>
+<div className="story_with_source_below">
+  <Canvas of={FormStories.WithSpaceBetweenAndFullHeight} />
   <Source code={`
-    <FormArrow />
+    const { register, handleSubmit, formState } = useForm();
+const { errors } = formState;
+const onSubmit = handleSubmit(data => console.log(data));
+
+return (
+  <Form onSubmit={onSubmit}>
+    <FlexColumn gap={24}>
+      <InputWrapper label='First Name' error={errors?.first?.message as string | undefined}>
+        <Input
+          placeholder='Name'
+          {...register('first', {
+            required: true,
+            pattern: {
+              value: /\S+@\S+\.\S+/,
+              message: "Entered value does not match email format",
+            },
+          })}
+        />
+      </InputWrapper>
+      <InputWrapper label='Last Name' error={errors?.last?.message as string | undefined}>
+        <Input
+          placeholder='Name'
+          {...register('last', { required: true })}
+        />
+      </InputWrapper>
+    </FlexColumn>
+    <SubmitButton type='submit'>Submit</SubmitButton>
+  </Form>
+)
   `} />
 </div>

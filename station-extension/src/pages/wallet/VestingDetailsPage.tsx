@@ -22,7 +22,7 @@ const AssetVesting = () => {
   }
 
   return (
-    <Grid gap={12}>
+    <Grid gap={24}>
       <VestingCard />
       {schedule.map((item, i) => (
         <div key={i}>

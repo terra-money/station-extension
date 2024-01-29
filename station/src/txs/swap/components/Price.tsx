@@ -12,12 +12,12 @@ const Price = ({ price, offerAsset, askAsset, className }: Props) => {
   return price > 1 ? (
     <span className={className}>
       <Read amount={String(1)} denom={askAsset} decimals={0} /> ={" "}
-      <Read amount={String(price)} denom={offerAsset} decimals={0} auto />
+      <Read amount={String(price)} denom={offerAsset} decimals={0} />
     </span>
   ) : (
     <span className={className}>
       <Read amount={String(1)} denom={offerAsset} decimals={0} /> ={" "}
-      <Read amount={String(1 / price)} denom={askAsset} decimals={0} auto />
+      <Read amount={String(1 / price)} denom={askAsset} decimals={0} />
     </span>
   )
 }

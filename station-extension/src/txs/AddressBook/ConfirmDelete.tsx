@@ -1,6 +1,8 @@
-import { useAddressBook } from "data/settings/AddressBook"
 import { useTranslation } from "react-i18next"
 import { useLocation, useNavigate } from "react-router-dom"
+import { useAddressBook } from "data/settings/AddressBook"
+import ExtensionPageV2 from "extension/components/ExtensionPageV2"
+import AddressWalletList from "./AddressWalletList"
 import {
   SubmitButton,
   ButtonInlineWrapper,
@@ -8,7 +10,6 @@ import {
   SummaryHeader,
   Grid,
 } from "@terra-money/station-ui"
-import AddressWalletList from "./AddressWalletList"
 import style from "./AddressBook.module.scss"
 
 const ConfirmDelete = () => {
@@ -25,22 +26,27 @@ const ConfirmDelete = () => {
   }
 
   return (
-    <div className={style.confirm__delete__container}>
-      <Grid gap={34}>
-        <SummaryHeader
-          statusLabel={t("Delete Address")}
-          status="alert"
-          statusMessage={t(
-            "Are you sure you want to remove this address from your address book?"
-          )}
-        />
-        <AddressWalletList items={[list[state.index]]} onClick={handleDelete} />
-      </Grid>
-      <ButtonInlineWrapper>
-        <Button label={t("Cancel")} onClick={goBack} variant="secondary" />
-        <SubmitButton label={t("Submit")} onClick={handleDelete} />
-      </ButtonInlineWrapper>
-    </div>
+    <ExtensionPageV2>
+      <div className={style.confirm__delete__container}>
+        <Grid gap={24}>
+          <SummaryHeader
+            statusLabel={t("Delete Address")}
+            status="warning"
+            statusMessage={t(
+              "Are you sure you want to remove this address from your address book?"
+            )}
+          />
+          <AddressWalletList
+            items={[list[state.index]]}
+            onClick={handleDelete}
+          />
+        </Grid>
+        <ButtonInlineWrapper>
+          <Button label={t("Cancel")} onClick={goBack} variant="secondary" />
+          <SubmitButton label={t("Confirm")} onClick={handleDelete} />
+        </ButtonInlineWrapper>
+      </div>
+    </ExtensionPageV2>
   )
 }
 

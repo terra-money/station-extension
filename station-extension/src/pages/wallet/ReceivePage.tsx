@@ -3,7 +3,11 @@ import { getChainNamefromID } from "data/queries/chains"
 import { useAllNetworks } from "data/wallet"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import WithSearchInput from "pages/custom/WithSearchInput"
-import { AddressSelectableListItem, Button } from "@terra-money/station-ui"
+import {
+  AddressSelectableListItem,
+  Button,
+  FlexColumn,
+} from "@terra-money/station-ui"
 import { truncate } from "@terra-money/terra-utils"
 import { capitalize } from "@mui/material"
 import styles from "./ReceivePage.module.scss"
@@ -29,18 +33,22 @@ export const SearchChains = ({ data }: SearchChainsProps) => {
             .filter((item) =>
               item.name.toLowerCase().includes(input.toLowerCase())
             )
-            .map(({ address, id, name, onClick }) => (
-              <AddressSelectableListItem
-                key={id}
-                label={capitalize(name)}
-                chain={{
-                  icon: networks[id]?.icon,
-                  label: name,
-                }}
-                subLabel={truncate(address, [11, 6])}
-                onClick={onClick}
-              />
-            ))
+            .map(({ address, id, name, onClick }) => {
+              const labelText =
+                name === "dydx protocol" ? "dYdX Protocol" : capitalize(name)
+              return (
+                <AddressSelectableListItem
+                  key={id}
+                  label={labelText}
+                  chain={{
+                    icon: networks[id]?.icon,
+                    label: name,
+                  }}
+                  subLabel={truncate(address, [11, 6])}
+                  onClick={onClick}
+                />
+              )
+            })
         }
       </WithSearchInput>
     </>
@@ -66,7 +74,7 @@ const ReceivePage = () => {
   if (!data.length) return null
 
   return (
-    <>
+    <FlexColumn gap={24} justify="space-between">
       <SearchChains data={data} />
       <Button
         label={t("Back")}
@@ -74,7 +82,7 @@ const ReceivePage = () => {
         onClick={() => navigate("/")}
         variant="secondary"
       />
-    </>
+    </FlexColumn>
   )
 }
 

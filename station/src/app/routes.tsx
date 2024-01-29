@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate, useRoutes } from "react-router-dom"
+import Activity from "pages/activity/Activity"
 
 import { ReactComponent as HistoryIcon } from "styles/images/menu/History.svg"
 import { ReactComponent as SwapIcon } from "styles/images/menu/Swap.svg"
@@ -9,7 +10,6 @@ import { ReactComponent as GovernanceIcon } from "styles/images/menu/Governance.
 import { ReactComponent as ContractIcon } from "styles/images/menu/Contract.svg"
 
 /* menu */
-import History from "pages/history/History"
 import Stake from "pages/stake/Stake"
 import Governance from "pages/gov/Governance"
 import Contract from "pages/contract/Contract"
@@ -65,9 +65,9 @@ export const useNav = () => {
       icon: <SwapIcon {...ICON_SIZE} />,
     },
     {
-      path: "/history",
-      element: <History />,
-      title: t("History"),
+      path: "/activity",
+      element: <Activity />,
+      title: t("Activity"),
       icon: <HistoryIcon {...ICON_SIZE} />,
     },
     {

@@ -62,21 +62,42 @@
   }
 
   .text {
+    position: relative;
     display: flex;
     justify-content: space-between;
     margin-top: 8px;
+    height: 10px;
 
     @include XX-Small;
     color: var(--token-light-100);
 
     .label {
       display: flex;
+      justify-content: center;
       width: 5px;
-      flex-wrap: nowrap;
       width: auto;
+      flex-wrap: nowrap;
+      text-wrap: nowrap;
+      justify-content: center;
+
+      position: absolute;
+      left: 50%;
+      right: 50%;
 
       &.completed {
         color: var(--token-light-white);
+      }
+
+      &.first {
+        position: absolute;
+        left: 0;
+        right: unset;
+      }
+
+      &.last {
+        position: absolute;
+        right: 0;
+        left: unset;
       }
     }
   }

@@ -150,6 +150,13 @@ import { Checkbox } from "station-ui";
     </DocsLink>
   </div>
   <div className="story__wrapper">
+    <DocsLink linkToRoute="Components/Inputs/Checkbox" linkToID="indented">
+      <h6 className="h6">Indented</h6>
+      <Story of={CheckboxStories.Indented} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper">
     <DocsLink linkToRoute="Components/Inputs/Checkbox" linkToID="disabled-checkbox">
       <h6 className="h6">Disabled</h6>
       <Story of={CheckboxStories.DisabledCheckbox} />
@@ -185,6 +192,13 @@ import { Dropdown } from "station-ui";
     <DocsLink linkToRoute="Components/Inputs/Dropdown" linkToID="default">
       <h6 className="h6">Default</h6>
       <Story of={DropdownStories.Default} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/Dropdown" linkToID="multi-select">
+      <h6 className="h6">Multi Select</h6>
+      <Story of={DropdownStories.MultiSelect} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>
@@ -356,12 +370,34 @@ import { AssetSelectorFrom, AssetSelectorTo } from "station-ui";
   </div>
 </div>
 
+## To Empty
+<div className="sub__items">
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/AssetSelector" linkToID="to-empty">
+      <h6 className="h6">To Empty</h6>
+      <Story of={AssetSelectorStories.ToEmpty} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+</div>
+
 ## To
 <div className="sub__items">
   <div className="story__wrapper" style={{ width: "100%" }}>
     <DocsLink linkToRoute="Components/Inputs/AssetSelector" linkToID="to">
       <h6 className="h6">To</h6>
       <Story of={AssetSelectorStories.To} />
+      <p className="p">See More<RightArrow /></p>
+    </DocsLink>
+  </div>
+</div>
+
+## Send Example
+<div className="sub__items">
+  <div className="story__wrapper" style={{ width: "100%" }}>
+    <DocsLink linkToRoute="Components/Inputs/AssetSelector" linkToID="send-example">
+      <h6 className="h6">Send Example</h6>
+      <Story of={AssetSelectorStories.SendExample} />
       <p className="p">See More<RightArrow /></p>
     </DocsLink>
   </div>

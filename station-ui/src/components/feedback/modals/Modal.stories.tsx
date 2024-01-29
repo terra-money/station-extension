@@ -93,6 +93,18 @@ export const ExtensionDefault: StoryObj = {
           <InputWrapper label={"This is a label"}>
             <Input inputMode="text" placeholder={"am placeholder"} />
           </InputWrapper>
+          <InputWrapper label={"This is a label"}>
+            <Input inputMode="text" placeholder={"am placeholder"} />
+          </InputWrapper>
+          <InputWrapper label={"This is a label"}>
+            <Input inputMode="text" placeholder={"am placeholder"} />
+          </InputWrapper>
+          <InputWrapper label={"This is a label"}>
+            <Input inputMode="text" placeholder={"am placeholder"} />
+          </InputWrapper>
+          <InputWrapper label={"This is a label"}>
+            <Input inputMode="text" placeholder={"am placeholder"} />
+          </InputWrapper>
 
           <SubmitButton variant="primary" onClick={() => {}} label={"Submit"} />
         </Form>

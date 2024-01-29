@@ -3,6 +3,7 @@
 .grid {
   display: grid;
   width: 100%;
+  grid-auto-rows: min-content;
 }
 
 .row {

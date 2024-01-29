@@ -97,6 +97,25 @@ export const CheckedCheckbox: StoryObj<CheckboxProps> = {
   }
 };
 
+export const Indented: StoryObj<CheckboxProps> = {
+  render: (args: CheckboxProps) => (
+    <Checkbox
+      checked={args.checked}
+      disabled={args.disabled}
+      label='Checkbox'
+      indent
+    />
+  ),
+  args: {
+    checked: true,
+    disabled: false,
+  },
+  argTypes: {
+    checked: { control: false },
+    disabled: { control: false },
+  }
+};
+
 export const DisabledCheckbox: StoryObj<CheckboxProps> = {
   render: (args: CheckboxProps) => (
     <Checkbox
