@@ -28,23 +28,30 @@ const NetworkSetting = () => {
   if (!networkOptions) return null
 
   return (
-    <FlexColumn gap={30}>
+    <FlexColumn gap={30} data-testid="network-settings">
       <SettingsSelector
         accordion
         options={networkOptions}
         value={network}
         onChange={setNetwork}
+        data-testid="network-options-selector"
       />
       <NavButton
         icon={<AddIcon />}
         label="Add Custom LCD Endpoint"
         onClick={() => navigate("/preferences/network/lcd")}
+        data-testid="add-custom-lcd-button"
       />
       {!!list.length && (
         <>
-          <SectionHeader title="Custom LCD Endpoints" withLine />
-          {list.map((i) => (
+          <SectionHeader
+            title="Custom LCD Endpoints"
+            withLine
+            data-testid="custom-lcd-section-header"
+          />
+          {list.map((i, index) => (
             <AddressSelectableListItem
+              key={index}
               active
               subLabel={i.lcd ?? ""}
               chain={i.chain}
@@ -54,6 +61,8 @@ const NetworkSetting = () => {
                   state: { chainID: i.chainID },
                 })
               }
+              data-testid={`address-selectable-list-item-${index}`}
+              data-debug="true"
             />
           ))}
         </>

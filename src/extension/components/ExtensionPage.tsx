@@ -135,6 +135,7 @@ const ExtensionPage = (props: PropsWithChildren<Props>) => {
                         className={styles.modal__close__icon}
                         onClick={() => navigate("/")}
                         fill="currentColor"
+                        data-testid="close-button"
                       />
                     )}
                   </div>

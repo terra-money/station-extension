@@ -238,6 +238,7 @@ const CreateWalletForm = () => {
             {...register("name", { validate: validate.name })}
             autoFocus
             placeholder="e.g. 'my-wallet'"
+            data-testid="wallet-name-input"
           />
         </InputWrapper>
 
@@ -251,7 +252,7 @@ const CreateWalletForm = () => {
               <Value>{mnemonic}</Value>
             </InputWrapper>
 
-            <Grid gap={4}>
+            <Grid gap={4} data-testid="recovery-phrase-grid">
               <Banner
                 variant="warning"
                 title={t(
@@ -264,6 +265,7 @@ const CreateWalletForm = () => {
               {...register("checked", { required: true })}
               checked={!!checked}
               label={t("I have written down the recovery phrase")}
+              data-testid="recovery-phrase-checkbox"
             />
           </>
         ) : (
@@ -304,6 +306,7 @@ const CreateWalletForm = () => {
           disabled={!isValid}
           variant={"primary"}
           className={styles.submit__button}
+          data-testid="submit-button"
         >
           {generated ? t("Create Wallet") : t("Import")}
         </SubmitButton>

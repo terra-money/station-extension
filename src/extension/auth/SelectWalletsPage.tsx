@@ -25,8 +25,10 @@ export default function SelectWalletsPage() {
         <NavButton
           label={t("Add Wallet")}
           onClick={() => navigate("/manage-wallet/add")}
+          data-testid="add-wallet-button"
         />
         <WalletList
+          data-testid="wallet-list"
           activeWallet={{
             name: activeWallet?.name ?? "",
             address: activeWalletAddress,

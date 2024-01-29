@@ -21,11 +21,11 @@ const WalletMain = () => {
   return (
     <>
       <section className={styles.wallet__page}>
-        <div className={styles.main__container}>
+        <div className={styles.main__container} data-testid="main-container">
           <UpdateNotification />
           <NetWorth />
         </div>
-        <div className={styles.tabs__container}>
+        <div className={styles.tabs__container} data-testid="tabs-container">
           <PageTabs
             activeTab={tab}
             onClick={(i) => {
@@ -37,23 +37,39 @@ const WalletMain = () => {
             }}
             tabs={[
               t("Assets"),
-              <Flex gap={6}>
+              <Flex gap={6} data-testid="activity-tab">
                 {t("Activity")}
                 {!!totalSuccess && (
-                  <Pill variant="success" text={`${totalSuccess}`} />
+                  <Pill
+                    variant="success"
+                    text={`${totalSuccess}`}
+                    data-testid="success-pill"
+                  />
                 )}
                 {!!totalPending && (
-                  <Pill variant="warning" text={`${totalPending}`} />
+                  <Pill
+                    variant="warning"
+                    text={`${totalPending}`}
+                    data-testid="pending-pill"
+                  />
                 )}
                 {!!totalFailed && (
-                  <Pill variant="danger" text={`${totalFailed}`} />
+                  <Pill
+                    variant="danger"
+                    text={`${totalFailed}`}
+                    data-testid="failed-pill"
+                  />
                 )}
               </Flex>,
             ]}
           />
         </div>
-        <div className={styles.list__container}>
-          {tab === 0 ? <AssetList /> : <ActivityList />}
+        <div className={styles.list__container} data-testid="list-container">
+          {tab === 0 ? (
+            <AssetList data-testid="asset-list" />
+          ) : (
+            <ActivityList data-testid="activity-list" />
+          )}
         </div>
       </section>
       <ExtensionFooter />
