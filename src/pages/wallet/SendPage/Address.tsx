@@ -8,6 +8,7 @@ import {
   InputInLine,
   Tabs,
   Button,
+  FlexColumn,
 } from "@terra-money/station-ui"
 import { AddressBookList } from "./Components/AddressBookList"
 import MyWallets from "./Components/MyWallets"
@@ -16,16 +17,23 @@ import { useRecentRecipients } from "utils/localStorage"
 import { useTranslation } from "react-i18next"
 import { WalletName } from "types/network"
 import { useLocation } from "react-router-dom"
+import { useNetworkName } from "data/wallet"
 
 const Address = () => {
   const { form, goToStep, getWalletName, networks } = useSend()
   const { state: denom } = useLocation()
+
   const { recipients } = useRecentRecipients()
+  const networkName = useNetworkName()
+  const networkRecipients = recipients.filter(
+    (recipient) => recipient.network === networkName
+  )
+
   const { register, setValue, formState, watch, trigger } = form
   const { errors } = formState
   const { recipient } = watch()
   const { t } = useTranslation()
-  
+
   useEffect(() => {
     setValue("asset", denom) // pre-selected from asset page
   }, [denom, setValue])
@@ -45,10 +53,14 @@ const Address = () => {
     },
   ]
 
-  const handleKnownWallet = (recipient: AccAddress | WalletName, _: number, memo?: string) => {
+  const handleKnownWallet = (
+    recipient: AccAddress | WalletName,
+    _: number,
+    memo?: string
+  ) => {
     setValue("memo", memo)
     if (!AccAddress.validate(recipient ?? "")) {
-      setValue("recipient", recipient)
+      setValue("recipientWalletName", recipient)
       goToStep(2)
     } else {
       handleKnownChain(recipient)
@@ -65,7 +77,7 @@ const Address = () => {
   }
 
   return (
-    <>
+    <FlexColumn gap={24} justify="flex-start" align="stretch">
       <InputWrapper error={errors.recipient?.message}>
         <InputInLine
           type="text"
@@ -83,11 +95,11 @@ const Address = () => {
           label={t("Continue")}
         />
       )}
-      {recipients.length > 0 && (
+      {networkRecipients.length > 0 && (
         <>
           <SectionHeader title="Recently Used" withLine />
           <AddressBookList
-            items={recipients.map((r) => ({
+            items={networkRecipients.map((r) => ({
               ...r,
               name: getWalletName(r.recipient),
             }))}
@@ -98,7 +110,7 @@ const Address = () => {
       <SectionHeader title="Other Wallets" withLine />
       <Tabs activeTabKey={tab} tabs={tabs} />
       <MyWallets tab={tab} onClick={handleKnownWallet} />
-    </>
+    </FlexColumn>
   )
 }
 export default Address

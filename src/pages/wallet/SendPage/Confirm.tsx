@@ -6,6 +6,7 @@ import {
   SectionHeader,
   ActivityListItem,
   Banner,
+  FlexColumn,
 } from "@terra-money/station-ui"
 import { useSend } from "./SendContext"
 import { truncate } from "@terra-money/terra-utils"
@@ -29,6 +30,7 @@ import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { CoinInput } from "txs/utils"
 import style from "./Send.module.scss"
 import { useIsLedger } from "utils/ledger"
+import { useNetworkName } from "data/wallet"
 
 enum TxType {
   SEND = "Send",
@@ -58,6 +60,7 @@ const Confirm = () => {
   const [error, setError] = useState<string | null>(null)
   const { input, assetInfo, destination, recipient, chain, memo } = form.watch()
   const isLedger = useIsLedger()
+  const networkName = useNetworkName()
 
   /* fee */
   const coins = useMemo(() => [{ input, denom: "" }] as CoinInput[], [input])
@@ -177,7 +180,7 @@ const Confirm = () => {
     ]
 
     return (
-      <>
+      <FlexColumn gap={24} align="stretch" justify="space-between">
         <SendHeader
           heading={t("Sending")}
           label={`${input} ${assetInfo?.symbol}`}
@@ -213,7 +216,7 @@ const Confirm = () => {
         />
 
         {fee.render(rows)}
-      </>
+      </FlexColumn>
     )
   }
   const tx = {
@@ -227,7 +230,11 @@ const Confirm = () => {
     estimationTxValues,
     createTx,
     onSuccess: () => {
-      addRecipient({ recipient, name: getWalletName(recipient ?? "") })
+      addRecipient({
+        recipient,
+        name: getWalletName(recipient ?? ""),
+        network: networkName,
+      })
       isLedger && window.close()
     },
     queryKeys: [queryKey.bank.balances, queryKey.bank.balance],
@@ -239,10 +246,12 @@ const Confirm = () => {
   return (
     <Tx {...tx}>
       {({ submit, fee }) => (
-        <Form onSubmit={handleSubmit(submit.fn)}>
+        <Form onSubmit={handleSubmit(submit.fn)} spaceBetween fullHeight>
           <TxInfo {...fee} />
-          {submit.button}
-          {error && <Banner variant="warning" title={t(error)} />}
+          <FlexColumn gap={24} align="stretch">
+            {error && <Banner variant="warning" title={t(error)} />}
+            {submit.button}
+          </FlexColumn>
         </Form>
       )}
     </Tx>

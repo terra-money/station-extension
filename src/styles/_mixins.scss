@@ -44,3 +44,9 @@ $breakpoint: 992px;
     @content;
   }
 }
+
+@mixin extension {
+  @media (max-width: 400px) {
+    @content;
+  }
+}

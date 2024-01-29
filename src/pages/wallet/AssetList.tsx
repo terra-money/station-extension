@@ -129,12 +129,14 @@ const AssetList = () => {
         {assets.visible.map(renderAsset)}
         {assets.lowBal.length > 0 && (
           <>
-            <button className={styles.low__bal} onClick={toggleHideLowBal}>
+            <button className={styles.low__bal}>
               <SectionHeader
                 title={t(`${showHideText} Low Balance Assets ({{count}})`, {
                   count: assets.lowBal.length,
                 })}
                 withLine
+                withArrow
+                onClick={toggleHideLowBal}
               />
             </button>
             {!hideLowBal && assets.lowBal.map(renderAsset)}
