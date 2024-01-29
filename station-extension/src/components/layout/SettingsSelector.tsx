@@ -19,13 +19,15 @@ const SettingsSelector = ({
   const { networks } = useNetworks()
 
   return (
-    <RadioList>
+    <RadioList data-testid="radio-list">
       {options.map(({ value, label }, index) => (
         <RadioListItem
           key={value}
           label={label}
           checked={value === selectedOption}
           onClick={() => onChange(value)}
+          data-testid={`radio-list-item-${index}`}
+          data-debug="true"
           {...(accordion && {
             isOpen: openAcc === index,
             setOpenAcc: () => setOpenAcc(openAcc === index ? undefined : index),
