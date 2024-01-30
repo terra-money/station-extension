@@ -73,6 +73,15 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const [rememberPassword, setStorePassword] = useState(shouldStorePassword())
   const [areFeesReady, setFeesReady] = useState(!("tx" in props))
   const [showPasswordInput, setShowPasswordInput] = useState(false)
+  const { baseAsset, gasPrices } =
+    "tx" in props ? network[props.tx?.chainID] : ({} as any)
+  const [feeDenom, setFeeDenom] = useState<string | undefined>(
+    "tx" in props
+      ? props.tx.fee?.amount?.toAmino()?.[0]?.denom ?? baseAsset in gasPrices
+        ? baseAsset
+        : Object.keys(gasPrices ?? {})[0]
+      : undefined
+  )
 
   useEffect(() => {
     getStoredPassword().then((password) => {
@@ -100,16 +109,12 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
       try {
         if (!addresses || !addresses[tx?.chainID] || !network[tx?.chainID])
           return 0
-        const { baseAsset, gasPrices } = network[tx?.chainID]
-
-        const feeDenom =
-          baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices ?? {})[0]
 
         const unsignedTx = await lcd.tx.create(
           [{ address: addresses[tx?.chainID] }],
           {
             ...tx,
-            feeDenoms: [feeDenom],
+            feeDenoms: [feeDenom as string],
           }
         )
 
@@ -131,19 +136,16 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   )
 
   let fee: Fee | undefined
+  let gas = 0
 
   if ("tx" in props && network[props.tx?.chainID]) {
     const { tx } = props
-    fee = tx.fee
-    if (!tx.fee?.gas_limit) {
-      const { baseAsset, gasPrices, gasAdjustment } = network[tx?.chainID]
-      const gas = Math.ceil((estimatedGas ?? 0) * gasAdjustment)
+    const { gasPrices, gasAdjustment } = network[tx?.chainID]
+    gas = tx.fee?.gas_limit || Math.ceil((estimatedGas ?? 0) * gasAdjustment)
 
-      const feeDenom =
-        baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices ?? {})[0]
-
-      fee = new Fee(gas, { [feeDenom]: Math.ceil(gasPrices[feeDenom] * gas) })
-    }
+    fee = new Fee(gas, {
+      [feeDenom as string]: Math.ceil(gasPrices[feeDenom as string] * gas),
+    })
   }
 
   const disabled =
@@ -317,6 +319,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
               {...props}
               tx={{ ...props.tx, fee }}
               onFeesReady={(state) => setFeesReady(state)}
+              setFeeDenom={(denom) => setFeeDenom(denom)}
             />
           )}
           {"bytes" in props && <SignBytesDetails {...props} />}
