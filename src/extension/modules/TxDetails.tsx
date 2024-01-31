@@ -14,7 +14,7 @@ const TxDetails = ({
   setFeeDenom,
 }: TxRequest & {
   onFeesReady: (state: boolean) => void
-  setFeeDenom: (denom: string) => void
+  setFeeDenom?: (denom: string) => void
 }) => {
   const { msgs, memo, fee, chainID } = tx
 

@@ -73,15 +73,16 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const [rememberPassword, setStorePassword] = useState(shouldStorePassword())
   const [areFeesReady, setFeesReady] = useState(!("tx" in props))
   const [showPasswordInput, setShowPasswordInput] = useState(false)
-  const { baseAsset, gasPrices } =
+  const { baseAsset, gasPrices, isClassic } =
     "tx" in props ? network[props.tx?.chainID] : ({} as any)
+  console.log("tx" in props && props.tx.fee?.amount?.toData()?.[0]?.denom)
   const [feeDenom, setFeeDenom] = useState<string | undefined>(
     "tx" in props
-      ? props.tx.fee?.amount?.toAmino()?.[0]?.denom ?? baseAsset in gasPrices
-        ? baseAsset
-        : Object.keys(gasPrices ?? {})[0]
+      ? props.tx.fee?.amount?.toData()?.[0]?.denom ??
+          (baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices ?? {})[0])
       : undefined
   )
+  console.log(feeDenom)
 
   useEffect(() => {
     getStoredPassword().then((password) => {
@@ -143,9 +144,11 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
     const { gasPrices, gasAdjustment } = network[tx?.chainID]
     gas = tx.fee?.gas_limit || Math.ceil((estimatedGas ?? 0) * gasAdjustment)
 
-    fee = new Fee(gas, {
-      [feeDenom as string]: Math.ceil(gasPrices[feeDenom as string] * gas),
-    })
+    fee = isClassic
+      ? tx.fee
+      : new Fee(gas, {
+          [feeDenom as string]: Math.ceil(gasPrices[feeDenom as string] * gas),
+        })
   }
 
   const disabled =
@@ -319,7 +322,9 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
               {...props}
               tx={{ ...props.tx, fee }}
               onFeesReady={(state) => setFeesReady(state)}
-              setFeeDenom={(denom) => setFeeDenom(denom)}
+              setFeeDenom={
+                isClassic ? undefined : (denom) => setFeeDenom(denom)
+              }
             />
           )}
           {"bytes" in props && <SignBytesDetails {...props} />}
