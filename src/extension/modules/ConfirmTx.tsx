@@ -75,14 +75,12 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const [showPasswordInput, setShowPasswordInput] = useState(false)
   const { baseAsset, gasPrices, isClassic } =
     "tx" in props ? network[props.tx?.chainID] : ({} as any)
-  console.log("tx" in props && props.tx.fee?.amount?.toData()?.[0]?.denom)
   const [feeDenom, setFeeDenom] = useState<string | undefined>(
     "tx" in props
       ? props.tx.fee?.amount?.toData()?.[0]?.denom ??
           (baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices ?? {})[0])
       : undefined
   )
-  console.log(feeDenom)
 
   useEffect(() => {
     getStoredPassword().then((password) => {
