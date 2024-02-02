@@ -74,7 +74,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const [areFeesReady, setFeesReady] = useState(!("tx" in props))
   const [showPasswordInput, setShowPasswordInput] = useState(false)
   const { baseAsset, gasPrices, isClassic } =
-    "tx" in props ? network[props.tx?.chainID] : ({} as any)
+    ("tx" in props && network[props.tx?.chainID]) || ({} as any)
   const [feeDenom, setFeeDenom] = useState<string | undefined>(
     "tx" in props
       ? props.tx.fee?.amount?.toData()?.[0]?.denom ??
