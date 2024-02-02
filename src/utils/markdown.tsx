@@ -93,7 +93,6 @@ export const markdownTextParser = (text: string, showLinks?: boolean) => {
       if (line.startsWith("- ")) {
         result.push(<li key={i}>{lineResult}</li>)
       } else {
-        console.log(line, lineResult)
         result.push(
           lineResult.length >= 1 && lineResult[0] !== "\r" ? (
             <p key={i}>{lineResult}</p>
