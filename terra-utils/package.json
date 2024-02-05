@@ -1,6 +1,6 @@
 {
   "name": "@terra-money/terra-utils",
-  "version": "1.2.0-beta.8",
+  "version": "1.2.0-beta.7",
   "author": "Terra <engineering@terra.money> (https://terra.money)",
   "repository": "github:terra-money/terra-utils",
   "license": "MIT",
@@ -22,20 +22,16 @@
     "prepare": "tsdx build"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.17.19",
     "@terra-money/feather.js": "^2.0.0-beta.7",
     "@types/numeral": "^2.0.2",
     "@types/ramda": "^0.27.57",
     "bignumber.js": "^9.0.1",
     "numeral": "^2.0.6",
     "ramda": "^0.27.1",
-    "react": "^18.2.0",
     "tiny-warning": "^1.0.3"
   },
   "devDependencies": {
-    "@types/react": "^18.2.48",
     "husky": "^7.0.4",
-    "prettier": "^3.2.4",
     "tsdx": "^0.14.1",
     "tslib": "^2.3.1",
     "typescript": "^4.5.2"
@@ -44,5 +40,8 @@
     "hooks": {
       "pre-commit": "tsdx lint"
     }
+  },
+  "prettier": {
+    "semi": false
   }
 }

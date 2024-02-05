@@ -1,7 +1,6 @@
 {
   "include": ["src", "types"],
   "compilerOptions": {
-    "typeRoots": ["./node_modules/@types", "./src/types"],
     "module": "esnext",
     "lib": ["dom", "esnext"],
     "importHelpers": true,
