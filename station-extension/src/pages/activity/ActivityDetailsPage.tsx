@@ -24,6 +24,7 @@ import {
   getRecvIbcTxDetails,
   useIbcNextHop,
   useIbcPrevHop,
+  useIbcTimeout,
 } from "txs/useIbcTxs"
 
 interface Props {
@@ -131,7 +132,9 @@ const PrevHopActivity = (ibcDetails: IbcTxDetails) => {
 }
 
 const NextHopActivity = (ibcDetails: IbcTxDetails) => {
-  const { data: tx } = useIbcNextHop(ibcDetails)
+  const { data: nextTx } = useIbcNextHop(ibcDetails)
+  const { data: timeoutTx } = useIbcTimeout(ibcDetails, !!nextTx)
+  const tx = nextTx ?? timeoutTx
   const network = useNetwork()
   const { t } = useTranslation()
   const parseMsgs = useParseMessages()
@@ -155,12 +158,12 @@ const NextHopActivity = (ibcDetails: IbcTxDetails) => {
 
   const { activityMessages, activityType } = parseMsgs(tx)
 
-  const nextIbcDetails = getIbcTxDetails(tx)
+  const nextIbcDetails = nextTx && getIbcTxDetails(nextTx)
 
   const timelineDisplayMessages = activityMessages.map(
     (message: ReactElement) => {
       return {
-        variant: (tx.code === 0 ? "success" : "warning") as
+        variant: (tx.code !== 0 || !!timeoutTx ? "warning" : "success") as
           | "success"
           | "warning",
         msg: message,
@@ -173,7 +176,7 @@ const NextHopActivity = (ibcDetails: IbcTxDetails) => {
       <Timeline
         startOverride={
           <ActivityListItem
-            variant={tx.code === 0 ? "success" : "failed"}
+            variant={tx.code !== 0 || !!timeoutTx ? "failed" : "success"}
             chain={{
               icon: network[tx.chain].icon,
               label: network[tx.chain].name,
@@ -256,10 +259,7 @@ const ActivityDetailsPage = ({
               type={type}
               time={toNow(new Date(time))}
               msgCount={timelineDisplayMessages.length}
-              hasTimeline={
-                !!timelineDisplayMessages.length ||
-                (!!ibcDetails && variant !== "failed")
-              }
+              hasTimeline={!!timelineDisplayMessages.length || !!ibcDetails}
               extra={
                 <ExternalLink
                   href={externalLink}
@@ -271,11 +271,9 @@ const ActivityDetailsPage = ({
             />
           }
           middleItems={timelineDisplayMessages}
-          hasNextElement={!!ibcDetails && variant !== "failed"}
+          hasNextElement={!!ibcDetails}
         />
-        {!!ibcDetails && variant !== "failed" && (
-          <NextHopActivity {...ibcDetails} />
-        )}
+        {!!ibcDetails && <NextHopActivity {...ibcDetails} />}
       </div>
 
       <SectionHeader title={t("Details")} withLine />

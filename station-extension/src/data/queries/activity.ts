@@ -154,7 +154,13 @@ export const useTxActivity = () => {
   )
 
   result.forEach((tx, i) => {
-    if (discarededTxsHashes.includes(tx.txhash)) return
+    if (
+      discarededTxsHashes.includes(tx.txhash) ||
+      !!tx.logs.find((log) =>
+        log.events.find((e) => e.type === "timeout_packet")
+      )
+    )
+      return
 
     const senderDetails = getIbcTxDetails(tx)
 
