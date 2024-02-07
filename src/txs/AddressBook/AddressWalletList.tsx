@@ -16,10 +16,16 @@ const AddressWalletList = ({
 }) => {
   if (!items.length) return null
   return (
-    <Grid gap={16}>
-      {title && <SectionHeader withLine title={title} />}
+    <Grid gap={16} data-testid="address-wallet-list">
+      {title && (
+        <SectionHeader
+          withLine
+          title={title}
+          data-testid="address-wallet-header"
+        />
+      )}
       <Grid gap={8}>
-        {items.map((item) => (
+        {items.map((item, index) => (
           <WalletSelectableListItem
             copyValue={item.recipient}
             walletName={item.name}
@@ -29,6 +35,7 @@ const AddressWalletList = ({
             settingsOnClick={onClick ? () => onClick?.(item) : undefined}
             label={item.name}
             subLabel={truncate(item.recipient, [11, 6])}
+            data-testid={`wallet-item-${index}`}
           />
         ))}
       </Grid>
