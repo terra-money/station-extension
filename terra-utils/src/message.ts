@@ -331,7 +331,7 @@ export const getCanonicalMsg = (
           } else {
             /* ------------------------- Contract Execution ------------------------- */
 
-            for (const executable of Object.keys((msg as any).msg)) {
+            for (const executable of [...Object.keys((msg as any).msg || {}), ...Object.keys((msg as any).execute_msg || {})]) {
               if (!["increase_allowance"].includes(executable))
                 returnMsgs.push({
                   msgType: "Execute",
