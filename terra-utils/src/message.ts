@@ -411,10 +411,19 @@ export const getCanonicalMsg = (
         extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
         break
 
+      case "/ibc.core.channel.v1.MsgTimeout":
+        extractMsgFn = (_: any) => {
+          returnMsgs.push({
+            msgType: "Timeout",
+            canonicalMsg: [`Refund timed out IBC transfer`]
+          })
+        }
+        extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
+        break
+
       /* ------------------------- Irrelevant Transactions ------------------------ */
 
       case "/ibc.core.client.v1.MsgUpdateClient":
-      case "/ibc.core.channel.v1.MsgTimeout":
         continue
 
       /* ----------------------------- Unknown Message ---------------------------- */
