@@ -13,7 +13,7 @@ import {
 } from "./types"
 import { InterchainAddresses } from "types/network"
 import { IInterchainNetworks } from "data/wallet"
-import { isTerraChain } from "utils/chain"
+//import { isTerraChain } from "utils/chain"
 
 export const skipApi = {
   queryTokens: async () => {
@@ -89,17 +89,18 @@ export const skipApi = {
         dest_asset_denom: askAsset.denom,
         dest_asset_chain_id: askAsset.chainId,
         cumulative_affiliate_fee_bps: "0",
+        allow_multi_tx: false,
       }
-      const swapOnTerra = [offerAsset.chainId, askAsset.chainId].every(
+      /*const swapOnTerra = [offerAsset.chainId, askAsset.chainId].every(
         isTerraChain
       )
 
-      if (swapOnTerra) {
+      /*if (swapOnTerra) {
         payload.swap_venue = {
           name: SwapVenue.ASTROPORT,
           chain_id: offerAsset.chainId,
         }
-      }
+      }*/
 
       const res = await axios.post(SKIP_SWAP_API.routes.route, payload, {
         baseURL: SKIP_SWAP_API.baseUrl,
