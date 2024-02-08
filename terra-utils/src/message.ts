@@ -330,8 +330,10 @@ export const getCanonicalMsg = (
             }
           } else {
             /* ------------------------- Contract Execution ------------------------- */
-
-            for (const executable of [...Object.keys((msg as any).msg || {}), ...Object.keys((msg as any).execute_msg || {})]) {
+            const executables = [...Object.keys((msg as any).msg || {}), ...Object.keys((msg as any).execute_msg || {})].length ?
+              [...Object.keys((msg as any).msg || {}), ...Object.keys((msg as any).execute_msg || {})] : 
+              ["unknown_executable"]
+            for (const executable of executables) {
               if (!["increase_allowance"].includes(executable))
                 returnMsgs.push({
                   msgType: "Execute",
