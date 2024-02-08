@@ -24,7 +24,7 @@ import legacyEncrypt from "../scripts/encrypt"
 import { encrypt } from "../scripts/aes"
 import useAvailable from "./useAvailable"
 import { addressFromWords } from "utils/bech32"
-import { useNetwork } from "./useNetwork"
+import { IInterchainNetworks, useAllNetworks, useNetwork } from "./useNetwork"
 import { useLedgerKey } from "utils/ledger"
 import { useLogin } from "extension/modules/Login"
 
@@ -36,6 +36,7 @@ export const walletState = atom({
 const useAuth = () => {
   const lcd = useInterchainLCDClient()
   const networks = useNetwork()
+  const allNetworks = useAllNetworks()
   const available = useAvailable()
   const { isLoggedIn } = useLogin()
 
@@ -297,8 +298,13 @@ const useAuth = () => {
     }
   }
 
-  const signBytes = (bytes: Buffer, password = "") => {
+  const signBytes = (
+    bytes: Buffer,
+    chainID: string | undefined,
+    password = ""
+  ) => {
     if (!wallet) throw new Error("Wallet is not defined")
+    const requestedCointype = allNetworks[chainID ?? ""]?.coinType
 
     if (is.ledger(wallet)) {
       throw new Error("Ledger can not sign arbitrary data")
@@ -309,7 +315,7 @@ const useAuth = () => {
       if ("seed" in pk) {
         const key = new SeedKey({
           seed: Buffer.from(pk.seed, "hex"),
-          coinType: pk.legacy ? 118 : 330,
+          coinType: Number(requestedCointype) || (pk.legacy ? 118 : 330),
           index: pk.index || 0,
         })
         const { signature, recid } = key.ecdsaSign(bytes)
@@ -320,7 +326,12 @@ const useAuth = () => {
           public_key: key.publicKey?.toAmino().value as string,
         }
       } else {
-        const key = new RawKey(Buffer.from(pk["330"], "hex"))
+        const rawkey = pk[requestedCointype ?? "330"]
+        if (!rawkey)
+          throw new Error(
+            "The requested cointype is not available for the current wallet."
+          )
+        const key = new RawKey(Buffer.from(rawkey, "hex"))
         const { signature, recid } = key.ecdsaSign(bytes)
         if (!signature) throw new Error("Signature is undefined")
         return {
