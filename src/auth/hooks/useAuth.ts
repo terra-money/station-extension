@@ -6,6 +6,7 @@ import {
   Tx,
   isTxError,
   SeedKey,
+  Key,
 } from "@terra-money/feather.js"
 import { AccAddress, SignDoc } from "@terra-money/feather.js"
 import { RawKey, SignatureV2 } from "@terra-money/feather.js"
@@ -343,6 +344,73 @@ const useAuth = () => {
     }
   }
 
+  const signArbitrary = async (
+    bytes: Buffer,
+    chainID: string | undefined,
+    password = ""
+  ) => {
+    if (!wallet) throw new Error("Wallet is not defined")
+    if (!chainID)
+      throw new Error("A chainID must be specified for ADR-036 signatures.")
+
+    const requestedCointype = allNetworks[chainID]?.coinType ?? 330
+    const requestedPrefix = allNetworks[chainID]?.prefix ?? "terra"
+
+    let key: Key
+
+    if (is.ledger(wallet)) {
+      key = await getLedgerKey(requestedCointype)
+    } else {
+      const pk = getKey(password)
+      if (!pk) throw new Error("Incorrect password")
+
+      if ("seed" in pk) {
+        key = new SeedKey({
+          seed: Buffer.from(pk.seed, "hex"),
+          coinType:
+            pk.legacy && parseInt(requestedCointype) === 330
+              ? 118
+              : parseInt(requestedCointype),
+          index: pk.index || 0,
+        })
+      } else {
+        if (!pk[requestedCointype]) throw new Error("Incorrect password")
+
+        key = new RawKey(Buffer.from(pk[requestedCointype] ?? "", "hex"))
+      }
+    }
+
+    return await key.signTx(
+      Tx.fromAmino({
+        type: "cosmos-sdk/StdTx",
+        value: {
+          msg: [
+            {
+              type: "sign/MsgSignData",
+              value: {
+                signer: key.accAddress(requestedPrefix),
+                data: bytes.toString("base64"),
+              },
+            },
+          ],
+          fee: {
+            amount: [],
+            gas: "0",
+          },
+          memo: "",
+          signatures: [],
+          timeout_height: "",
+        },
+      }),
+      {
+        accountNumber: 0,
+        sequence: 0,
+        chainID: "",
+        signMode: SignatureV2.SignMode.SIGN_MODE_LEGACY_AMINO_JSON,
+      }
+    )
+  }
+
   const post = async (
     txOptions: CreateTxOptions,
     password = "",
@@ -385,6 +453,7 @@ const useAuth = () => {
     createSignature,
     create,
     signBytes,
+    signArbitrary,
     sign,
     post,
     getPubkey,
