@@ -194,11 +194,13 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
       }
     } else {
       // arbitrary data
-      const { requestType, bytes, chainID } = props
+      const { requestType, bytes, chainID, adr036 } = props
 
       try {
         if (disabled) throw new Error(disabled)
-        const result = await auth.signBytes(bytes, chainID, password)
+        const result = adr036
+          ? await auth.signArbitrary(bytes, chainID, password)
+          : await auth.signBytes(bytes, chainID, password)
         const response = { result, success: true }
         actions.tx(requestType, props, response)
       } catch (error) {
