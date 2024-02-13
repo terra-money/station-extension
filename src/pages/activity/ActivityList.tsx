@@ -1,14 +1,17 @@
-import { useState } from "react"
 import {
+  Banner,
   LoadingCircular,
   SectionHeader,
   SubmitButton,
 } from "@terra-money/station-ui"
-import { useTxActivity } from "data/queries/activity"
+import { PaginationItem, useTxActivity } from "data/queries/activityAPI"
+import { getWallet } from "auth/scripts/keystore"
 import styles from "./ActivityList.module.scss"
+import { useEffect, useState } from "react"
 import ActivityItem from "./ActivityItem"
 import { Page } from "components/layout"
 import moment from "moment"
+
 //import useIbcTxs, { IbcTxState } from "txs/useIbcTxs"
 //import { useTranslation } from "react-i18next"
 /*
@@ -45,24 +48,41 @@ const IbcActivityItem = ({
 */
 const ActivityList = () => {
   //const { ibcTxs } = useIbcTxs()
-  const { activitySorted: activity, state } = useTxActivity()
 
-  const activityItemsPerPage = 20
-  const [visibleActivity, setVisibleActivity] = useState(activityItemsPerPage)
+  const wallet = getWallet()
+  const addresses: string[] = Object.values(wallet.words)
 
-  const handleClick = async () => {
-    await setVisibleActivity((prevVisibleActivity) => prevVisibleActivity + 20)
+  const [pagination, setPagination] = useState<PaginationItem[] | undefined>(
+    undefined
+  )
+  const { data, isLoading, isError } = useTxActivity({
+    addresses: addresses,
+    pagination: pagination,
+  })
+
+  const [visibleActivity, setVisibleActivity] = useState(data?.response)
+
+  useEffect(() => {
+    setVisibleActivity((prevVisibleActivity) => [
+      ...(prevVisibleActivity || []),
+      ...(data?.response || []),
+    ])
+  }, [data])
+
+  const handleLoadMore = () => {
+    if (data?.pagination) {
+      setPagination(data.pagination)
+    }
   }
 
   let priorDisplayDate = ""
-  const visibleActivityItems = activity
+  const visibleActivityItems =
     // do not show pending txs in the main activity page
     /*.filter(
       ({ txhash }) =>
         !ibcTxs.find(({ txhash: ibcTxhash }) => ibcTxhash === txhash)
     )*/
-    .slice(0, visibleActivity)
-    .map((activityItem: AccountHistoryItem & { chain: string }) => {
+    visibleActivity?.map((activityItem: ActivityItem) => {
       const activityItemDate = new Date(activityItem.timestamp)
       const displayDate = getDisplayDate(activityItemDate)
       let header = null
@@ -72,57 +92,69 @@ const ActivityList = () => {
       }
       return (
         <ActivityItem
-          key={activityItem.txhash}
+          key={`${activityItem.tx_hash}-${activityItem.code}`}
           {...activityItem}
           dateHeader={header}
         />
       )
     })
 
-  const allActivityDisplayed = visibleActivityItems.length === activity.length
-  const loadMoreButton = !allActivityDisplayed ? (
-    <SubmitButton
-      onClick={handleClick}
-      variant={"secondary"}
-      label={"Load More"}
-    />
-  ) : null
-
   let loader: JSX.Element | null
-  if (!activity?.length && state.isLoading) {
+  if (!visibleActivity?.length && isLoading) {
     loader = (
       <div className={styles.loader}>
         <LoadingCircular size={40} />
       </div>
     )
-  } else if (activity?.length && state.isLoading) {
+  } else if (!visibleActivity?.length && !isLoading && !isError) {
     loader = (
-      <span className={styles.loadingtext}>
-        Gathering activity across all chains...
+      <span className={styles.empty}>
+        This wallet has no activity to display
       </span>
-    )
-  } else if (!activity?.length && !state.isLoading) {
-    loader = (
-      <span className={styles.loadingtext}>This wallet has no activity</span>
     )
   } else {
     loader = null
   }
 
+  const loadMoreButton = visibleActivity?.length ? (
+    <SubmitButton
+      onClick={handleLoadMore}
+      variant={"secondary"}
+      loading={isLoading}
+      label={"Load More"}
+    />
+  ) : null
+
+  const errorBanner = isError ? (
+    <Banner
+      variant="warning"
+      title={
+        "There seems to be a problem with our servers. Please try again later."
+      }
+    />
+  ) : null
+
+  const footer = (
+    <div className={styles.footer}>
+      {errorBanner}
+      {loadMoreButton}
+    </div>
+  )
+
   const render = () => {
-    if (!activity) return null
+    if (!visibleActivity) return null
 
     return (
       <div className={styles.activitylist}>
         {loader}
         {visibleActivityItems}
-        {loadMoreButton}
+        {footer}
       </div>
     )
   }
 
   return (
-    <Page {...state} invisible>
+    <Page {...[isLoading, isError]} invisible>
       {render()}
     </Page>
   )

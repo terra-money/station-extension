@@ -25,7 +25,7 @@ import legacyEncrypt from "../scripts/encrypt"
 import { encrypt } from "../scripts/aes"
 import useAvailable from "./useAvailable"
 import { addressFromWords } from "utils/bech32"
-import { IInterchainNetworks, useAllNetworks, useNetwork } from "./useNetwork"
+import { useAllNetworks, useNetwork } from "./useNetwork"
 import { useLedgerKey } from "utils/ledger"
 import { useLogin } from "extension/modules/Login"
 
