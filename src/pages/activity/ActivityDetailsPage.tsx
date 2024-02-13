@@ -6,29 +6,30 @@ import {
   Timeline,
   ExternalLinkIcon,
 } from "@terra-money/station-ui"
-import styles from "./ActivityDetailsPage.module.scss"
-import { ExternalLink } from "components/general"
-import { ReadMultiple } from "components/token"
-import { useTranslation } from "react-i18next"
-import { useNetwork } from "data/wallet"
-import { toNow } from "utils/date"
-import moment from "moment"
-import { ReactElement } from "react"
-import { useAllInterchainAddresses } from "auth/hooks/useAddress"
-import { getCanonicalMsg } from "@terra-money/terra-utils"
-import { last } from "ramda"
-import ActivityMessage from "./ActivityMessage"
 import {
   IbcTxDetails,
   getIbcTxDetails,
   getRecvIbcTxDetails,
   useIbcNextHop,
   useIbcPrevHop,
+  useIbcTimeout,
 } from "txs/useIbcTxs"
+import { useAllInterchainAddresses } from "auth/hooks/useAddress"
+import { getCanonicalMsg } from "@terra-money/terra-utils"
+import styles from "./ActivityDetailsPage.module.scss"
+import { ExternalLink } from "components/general"
+import { ReadMultiple } from "components/token"
+import ActivityMessage from "./ActivityMessage"
+import { useTranslation } from "react-i18next"
+import { useNetwork } from "data/wallet"
+import { ReactElement } from "react"
+import { toNow } from "utils/date"
+import { last } from "ramda"
+import moment from "moment"
 
 interface Props {
   variant: "success" | "failed" | "loading"
-  chain: string
+  chain_id: string
   msg: ReactElement
   type: string
   time: any
@@ -50,7 +51,9 @@ export const useParseMessages = () => {
       if (index === 0 && msg?.msgType) {
         msgType = last(msg?.msgType.split("/")) ?? ""
       }
-      return msg && <ActivityMessage chainID={tx.chain} msg={msg} key={index} />
+      return (
+        msg && <ActivityMessage chainID={tx.chain_id} msg={msg} key={index} />
+      )
     })
 
     const activityType = msgType.charAt(0).toUpperCase() + msgType.substring(1)
@@ -79,8 +82,8 @@ const PrevHopActivity = (ibcDetails: IbcTxDetails) => {
       />
     )
 
-  const explorer = network[tx.chain]?.explorer
-  const externalLink = explorer?.tx?.replace("{}", tx.txhash)
+  const explorer = network[tx.chain_id]?.explorer
+  const externalLink = explorer?.tx?.replace("{}", tx.tx_hash)
 
   const { activityMessages, activityType } = parseMsgs(tx)
 
@@ -106,8 +109,8 @@ const PrevHopActivity = (ibcDetails: IbcTxDetails) => {
           <ActivityListItem
             variant={tx.code === 0 ? "success" : "failed"}
             chain={{
-              icon: network[tx.chain].icon,
-              label: network[tx.chain].name,
+              icon: network[tx.chain_id]?.icon,
+              label: network[tx.chain_id]?.name,
             }}
             msg={activityMessages[0]}
             type={t(activityType)}
@@ -131,7 +134,9 @@ const PrevHopActivity = (ibcDetails: IbcTxDetails) => {
 }
 
 const NextHopActivity = (ibcDetails: IbcTxDetails) => {
-  const { data: tx } = useIbcNextHop(ibcDetails)
+  const { data: nextTx } = useIbcNextHop(ibcDetails)
+  const { data: timeoutTx } = useIbcTimeout(ibcDetails, !!nextTx)
+  const tx = nextTx ?? timeoutTx
   const network = useNetwork()
   const { t } = useTranslation()
   const parseMsgs = useParseMessages()
@@ -150,17 +155,17 @@ const NextHopActivity = (ibcDetails: IbcTxDetails) => {
       />
     )
 
-  const explorer = network[tx.chain]?.explorer
-  const externalLink = explorer?.tx?.replace("{}", tx.txhash)
+  const explorer = network[tx.chain_id]?.explorer
+  const externalLink = explorer?.tx?.replace("{}", tx.tx_hash)
 
   const { activityMessages, activityType } = parseMsgs(tx)
 
-  const nextIbcDetails = getIbcTxDetails(tx)
+  const nextIbcDetails = nextTx && getIbcTxDetails(nextTx)
 
   const timelineDisplayMessages = activityMessages.map(
     (message: ReactElement) => {
       return {
-        variant: (tx.code === 0 ? "success" : "warning") as
+        variant: (tx.code !== 0 || !!timeoutTx ? "warning" : "success") as
           | "success"
           | "warning",
         msg: message,
@@ -173,10 +178,10 @@ const NextHopActivity = (ibcDetails: IbcTxDetails) => {
       <Timeline
         startOverride={
           <ActivityListItem
-            variant={tx.code === 0 ? "success" : "failed"}
+            variant={tx.code !== 0 || !!timeoutTx ? "failed" : "success"}
             chain={{
-              icon: network[tx.chain].icon,
-              label: network[tx.chain].name,
+              icon: network[tx.chain_id]?.icon,
+              label: network[tx.chain_id]?.name,
             }}
             msg={activityMessages[0]}
             type={t(activityType)}
@@ -203,7 +208,7 @@ const NextHopActivity = (ibcDetails: IbcTxDetails) => {
 
 const ActivityDetailsPage = ({
   variant,
-  chain,
+  chain_id,
   msg,
   type,
   time,
@@ -215,10 +220,10 @@ const ActivityDetailsPage = ({
   const { t } = useTranslation()
 
   const networks = useNetwork()
-  const explorer = networks[chain ?? ""]?.explorer
+  const explorer = networks[chain_id ?? ""]?.explorer
   const externalLink = explorer?.tx?.replace("{}", txHash)
-  const ibcDetails = getIbcTxDetails({ logs, chain })
-  const prevIbcDetails = getRecvIbcTxDetails({ logs, chain })
+  const ibcDetails = getIbcTxDetails({ logs, chain_id })
+  const prevIbcDetails = getRecvIbcTxDetails({ logs, chain_id })
 
   const timelineDisplayMessages = timelineMessages.map(
     (message: ReactElement) => {
@@ -236,7 +241,7 @@ const ActivityDetailsPage = ({
       label: "Timestamp (UTC)",
       value: moment(time).utc().format("DD/MM/YY, H:mm:ss"),
     },
-    { label: "Chain", value: `${networks[chain]?.name} (${chain})` },
+    { label: "Chain", value: `${networks[chain_id]?.name} (${chain_id})` },
     { label: "Fee", value: <ReadMultiple list={fee} /> },
   ]
 
@@ -249,17 +254,14 @@ const ActivityDetailsPage = ({
             <ActivityListItem
               variant={variant}
               chain={{
-                icon: networks[chain]?.icon,
-                label: networks[chain]?.name,
+                icon: networks[chain_id]?.icon,
+                label: networks[chain_id]?.name,
               }}
               msg={msg}
               type={type}
               time={toNow(new Date(time))}
               msgCount={timelineDisplayMessages.length}
-              hasTimeline={
-                !!timelineDisplayMessages.length ||
-                (!!ibcDetails && variant !== "failed")
-              }
+              hasTimeline={!!timelineDisplayMessages.length || !!ibcDetails}
               extra={
                 <ExternalLink
                   href={externalLink}
@@ -271,11 +273,9 @@ const ActivityDetailsPage = ({
             />
           }
           middleItems={timelineDisplayMessages}
-          hasNextElement={!!ibcDetails && variant !== "failed"}
+          hasNextElement={!!ibcDetails}
         />
-        {!!ibcDetails && variant !== "failed" && (
-          <NextHopActivity {...ibcDetails} />
-        )}
+        {!!ibcDetails && <NextHopActivity {...ibcDetails} />}
       </div>
 
       <SectionHeader title={t("Details")} withLine />

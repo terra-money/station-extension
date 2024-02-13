@@ -6,6 +6,7 @@ import {
   Tx,
   isTxError,
   SeedKey,
+  Key,
 } from "@terra-money/feather.js"
 import { AccAddress, SignDoc } from "@terra-money/feather.js"
 import { RawKey, SignatureV2 } from "@terra-money/feather.js"
@@ -24,7 +25,7 @@ import legacyEncrypt from "../scripts/encrypt"
 import { encrypt } from "../scripts/aes"
 import useAvailable from "./useAvailable"
 import { addressFromWords } from "utils/bech32"
-import { useNetwork } from "./useNetwork"
+import { useAllNetworks, useNetwork } from "./useNetwork"
 import { useLedgerKey } from "utils/ledger"
 import { useLogin } from "extension/modules/Login"
 
@@ -36,6 +37,7 @@ export const walletState = atom({
 const useAuth = () => {
   const lcd = useInterchainLCDClient()
   const networks = useNetwork()
+  const allNetworks = useAllNetworks()
   const available = useAvailable()
   const { isLoggedIn } = useLogin()
 
@@ -297,8 +299,13 @@ const useAuth = () => {
     }
   }
 
-  const signBytes = (bytes: Buffer, password = "") => {
+  const signBytes = (
+    bytes: Buffer,
+    chainID: string | undefined,
+    password = ""
+  ) => {
     if (!wallet) throw new Error("Wallet is not defined")
+    const requestedCointype = allNetworks[chainID ?? ""]?.coinType
 
     if (is.ledger(wallet)) {
       throw new Error("Ledger can not sign arbitrary data")
@@ -309,7 +316,7 @@ const useAuth = () => {
       if ("seed" in pk) {
         const key = new SeedKey({
           seed: Buffer.from(pk.seed, "hex"),
-          coinType: pk.legacy ? 118 : 330,
+          coinType: Number(requestedCointype) || (pk.legacy ? 118 : 330),
           index: pk.index || 0,
         })
         const { signature, recid } = key.ecdsaSign(bytes)
@@ -320,7 +327,12 @@ const useAuth = () => {
           public_key: key.publicKey?.toAmino().value as string,
         }
       } else {
-        const key = new RawKey(Buffer.from(pk["330"], "hex"))
+        const rawkey = pk[requestedCointype ?? "330"]
+        if (!rawkey)
+          throw new Error(
+            "The requested cointype is not available for the current wallet."
+          )
+        const key = new RawKey(Buffer.from(rawkey, "hex"))
         const { signature, recid } = key.ecdsaSign(bytes)
         if (!signature) throw new Error("Signature is undefined")
         return {
@@ -330,6 +342,73 @@ const useAuth = () => {
         }
       }
     }
+  }
+
+  const signArbitrary = async (
+    bytes: Buffer,
+    chainID: string | undefined,
+    password = ""
+  ) => {
+    if (!wallet) throw new Error("Wallet is not defined")
+    if (!chainID)
+      throw new Error("A chainID must be specified for ADR-036 signatures.")
+
+    const requestedCointype = allNetworks[chainID]?.coinType ?? 330
+    const requestedPrefix = allNetworks[chainID]?.prefix ?? "terra"
+
+    let key: Key
+
+    if (is.ledger(wallet)) {
+      key = await getLedgerKey(requestedCointype)
+    } else {
+      const pk = getKey(password)
+      if (!pk) throw new Error("Incorrect password")
+
+      if ("seed" in pk) {
+        key = new SeedKey({
+          seed: Buffer.from(pk.seed, "hex"),
+          coinType:
+            pk.legacy && parseInt(requestedCointype) === 330
+              ? 118
+              : parseInt(requestedCointype),
+          index: pk.index || 0,
+        })
+      } else {
+        if (!pk[requestedCointype]) throw new Error("Incorrect password")
+
+        key = new RawKey(Buffer.from(pk[requestedCointype] ?? "", "hex"))
+      }
+    }
+
+    return await key.signTx(
+      Tx.fromAmino({
+        type: "cosmos-sdk/StdTx",
+        value: {
+          msg: [
+            {
+              type: "sign/MsgSignData",
+              value: {
+                signer: key.accAddress(requestedPrefix),
+                data: bytes.toString("base64"),
+              },
+            },
+          ],
+          fee: {
+            amount: [],
+            gas: "0",
+          },
+          memo: "",
+          signatures: [],
+          timeout_height: "",
+        },
+      }),
+      {
+        accountNumber: 0,
+        sequence: 0,
+        chainID: "",
+        signMode: SignatureV2.SignMode.SIGN_MODE_LEGACY_AMINO_JSON,
+      }
+    )
   }
 
   const post = async (
@@ -374,6 +453,7 @@ const useAuth = () => {
     createSignature,
     create,
     signBytes,
+    signArbitrary,
     sign,
     post,
     getPubkey,

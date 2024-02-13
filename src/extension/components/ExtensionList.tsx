@@ -67,16 +67,25 @@ const ExtensionList = ({ list }: { list: Item[] }) => {
         </>
       ),
       key: index,
+      "data-testid": `list-item-${index}`,
     }
 
     return "to" in item ? (
-      <Link {...props} to={item.to} />
+      <Link {...props} to={item.to} data-testid={`link-item-${index}`} />
     ) : (
-      <button {...props} onClick={manage ? manage : item.onClick} />
+      <button
+        {...props}
+        onClick={manage ? manage : item.onClick}
+        data-testid={`button-item-${index}`}
+      />
     )
   }
 
-  return <div className={styles.list}>{list.map(renderItem)}</div>
+  return (
+    <div className={styles.list} data-testid="extension-list">
+      {list.map(renderItem)}
+    </div>
+  )
 }
 
 export default ExtensionList
