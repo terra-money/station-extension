@@ -4,20 +4,20 @@ import {
   StepStatus,
   TransactionTracker,
 } from "@terra-money/station-ui"
-import { getIbcTxDetails, useIbcTxStatus, usePendingIbcTx } from "txs/useIbcTxs"
 import ActivityDetailsPage, { useParseMessages } from "./ActivityDetailsPage"
-import useInterval from "utils/hooks/useInterval"
 import styles from "./ActivityItem.module.scss"
 import { useTranslation } from "react-i18next"
-import { intervalToDuration } from "date-fns"
 import { useNetwork } from "data/wallet"
 import { toNow } from "utils/date"
 import { useState } from "react"
+import useInterval from "utils/hooks/useInterval"
+import { intervalToDuration } from "date-fns"
+import { getIbcTxDetails, useIbcTxStatus, usePendingIbcTx } from "txs/useIbcTxs"
 
 const ActivityItem = ({
-  tx_hash,
+  txhash,
   timestamp,
-  chain_id,
+  chain,
   dateHeader,
   ...props
 }: ActivityItem & {
@@ -26,13 +26,13 @@ const ActivityItem = ({
   const { code, tx } = props
   const success = code === 0
   const ibcDetails = getIbcTxDetails({
-    chain_id,
+    chain,
     ...props,
   })
 
   const { showStatusTxHashes } = usePendingIbcTx()
   const isIbc = !!ibcDetails
-  const showStatusBar = isIbc && showStatusTxHashes.includes(tx_hash)
+  const showStatusBar = isIbc && showStatusTxHashes.includes(txhash)
   const ibcStatus = useIbcTxStatus(ibcDetails ? [ibcDetails] : [])[0]?.data
 
   const activityVariant = isIbc
@@ -49,9 +49,9 @@ const ActivityItem = ({
   const parseMsgs = useParseMessages()
 
   const { activityMessages, activityType } = parseMsgs({
-    tx_hash,
+    txhash,
     timestamp,
-    chain_id,
+    chain,
     ...props,
   })
 
@@ -96,8 +96,8 @@ const ActivityItem = ({
               onClick={open}
               variant={activityVariant}
               chain={{
-                icon: network[chain_id]?.icon,
-                label: network[chain_id]?.name,
+                icon: network[chain].icon,
+                label: network[chain].name,
               }}
               msg={activityMessages[0]}
               type={t(activityType)}
@@ -120,12 +120,12 @@ const ActivityItem = ({
       >
         <ActivityDetailsPage
           variant={activityVariant}
-          chain_id={chain_id}
+          chain={chain}
           msg={activityMessages[0]}
           type={activityType}
           time={timestamp}
           timelineMessages={activityMessages.slice(1)}
-          txHash={tx_hash}
+          txHash={txhash}
           fee={tx?.auth_info?.fee?.amount ?? []}
           logs={props.logs}
         />
