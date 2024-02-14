@@ -29,8 +29,8 @@ export function useCachedTx() {
   const cache = useRecoilValue(cachedTxHistoryState)
 
   return cache.filter(
-    ({ walletName, chain_id }) =>
-      name === walletName && Object.keys(networks).includes(chain_id)
+    ({ walletName, chain }) =>
+      name === walletName && Object.keys(networks).includes(chain)
   )
 }
 
@@ -86,7 +86,7 @@ export const useTxActivity = () => {
       return {
         queryKey: [queryKey.History, networks?.[chainID]?.lcd, address],
         queryFn: async (): Promise<ActivityItem[]> => {
-          const result: ActivityItem[] = []
+          const result: AccountHistoryItem[] = []
           const hashArray: string[] = []
 
           if (!networks?.[chainID]?.lcd) {
@@ -116,15 +116,16 @@ export const useTxActivity = () => {
 
           for (const { data } of requests) {
             data.tx_responses.forEach((tx) => {
-              if (!hashArray.includes(tx.tx_hash)) {
+              if (!hashArray.includes(tx.txhash)) {
                 result.push(tx)
-                hashArray.push(tx.tx_hash)
+                hashArray.push(tx.txhash)
               }
             })
           }
 
           return (
             result
+              .sort((a, b) => Number(b.height) - Number(a.height))
               // .slice(0, LIMIT)
               .map((tx) => ({ ...tx, chain: chainID }))
           )
@@ -145,7 +146,7 @@ export const useTxActivity = () => {
   )
 
   const fixedHistoryCache = cachedTxs.filter(
-    ({ tx_hash }) => !fetchedHistory.find((tx) => tx.tx_hash === tx_hash)
+    ({ txhash }) => !fetchedHistory.find((tx) => tx.txhash === txhash)
   )
 
   const result = [...fetchedHistory, ...fixedHistoryCache].sort(
@@ -154,7 +155,7 @@ export const useTxActivity = () => {
 
   result.forEach((tx, i) => {
     if (
-      discarededTxsHashes.includes(tx.tx_hash) ||
+      discarededTxsHashes.includes(tx.txhash) ||
       !!tx.logs.find((log) =>
         log.events.find((e) => e.type === "timeout_packet")
       )
@@ -181,11 +182,10 @@ export const useTxActivity = () => {
                 senderDetails.next_hop_memo.src_channel &&
               Math.round(receiverDetails.timeout_timestamp) ===
                 Math.round(senderDetails.next_hop_memo.timeout_timestamp) &&
-              senderDetails.next_hop_memo.receiver ===
-                addresses?.[tx2.chain_id])
+              senderDetails.next_hop_memo.receiver === addresses?.[tx2.chain])
           )
         })
-        .forEach((tx) => discarededTxsHashes.push(tx.tx_hash))
+        .forEach((tx) => discarededTxsHashes.push(tx.txhash))
 
     activitySorted.push(tx)
   })

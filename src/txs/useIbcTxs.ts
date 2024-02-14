@@ -1,9 +1,10 @@
-import { useQueries, useQuery, useQueryClient } from "react-query"
-import { RefetchOptions, queryKey } from "data/query"
-import { atom, useRecoilState } from "recoil"
-import { useNetwork } from "data/wallet"
 import { useAuth } from "auth"
 import axios from "axios"
+import { RefetchOptions, queryKey } from "data/query"
+import { useNetwork } from "data/wallet"
+import { useQueries, useQuery, useQueryClient } from "react-query"
+import { atom, useRecoilState } from "recoil"
+
 const LOCALSTORAGE_IBC_TXS_KEY = "pendingIbcTxs"
 
 type WalletName = string
@@ -82,7 +83,7 @@ export const usePendingIbcTx = () => {
       if (ibcDetails) {
         setIbcTxs((txs) => [
           ...txs,
-          { ...ibcDetails, txhash: tx.tx_hash, state: IbcTxStatus.LOADING },
+          { ...ibcDetails, txhash: tx.txhash, state: IbcTxStatus.LOADING },
         ])
       }
     },
@@ -444,7 +445,7 @@ function parsePacketData(pktData: string): NextHopMemo | undefined {
 
 export const getIbcTxDetails = (tx: {
   logs: ActivityItem["logs"]
-  chain_id: string
+  chain: string
 }): IbcTxDetails | undefined => {
   for (const log of tx.logs) {
     const ibcEvent = log.events.find((e) => e.type === "send_packet")
@@ -452,7 +453,7 @@ export const getIbcTxDetails = (tx: {
     if (ibcEvent) {
       try {
         return {
-          src_chain_id: tx.chain_id,
+          src_chain_id: tx.chain,
           sequence: ibcEvent.attributes.find(
             ({ key }) => key === "packet_sequence"
           )!.value,
@@ -488,7 +489,7 @@ export const getIbcTxDetails = (tx: {
 
 export const getRecvIbcTxDetails = (tx: {
   logs: ActivityItem["logs"]
-  chain_id: string
+  chain: string
 }): (IbcTxDetails & { next_hop?: IbcTxDetails }) | undefined => {
   for (const log of tx.logs) {
     const ibcEvent = log.events.find((e) => e.type === "recv_packet")
@@ -496,7 +497,7 @@ export const getRecvIbcTxDetails = (tx: {
     if (ibcEvent) {
       try {
         return {
-          src_chain_id: tx.chain_id,
+          src_chain_id: tx.chain,
           sequence: ibcEvent.attributes.find(
             ({ key }) => key === "packet_sequence"
           )!.value,
@@ -518,7 +519,7 @@ export const getRecvIbcTxDetails = (tx: {
                 ({ key }) => key === "packet_timeout_timestamp"
               )!.value
             ) / 1_000_000,
-          next_hop: getIbcTxDetails({ logs: [log], chain_id: tx.chain_id }),
+          next_hop: getIbcTxDetails({ logs: [log], chain: tx.chain }),
         }
       } catch (e) {}
     }

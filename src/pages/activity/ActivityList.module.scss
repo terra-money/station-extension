@@ -1,4 +1,3 @@
-@import "font_mixins";
 @import "mixins";
 
 .activitylist {
@@ -8,20 +7,15 @@
 }
 
 .loader {
-  color: var(--token-dark-900);
-  padding-top: 40px;
+  color: #065bed;
   display: flex;
   justify-content: center;
+  padding-top: 100px;
 }
 
-.empty {
-  @include X-Small;
-  color: var(--token-dark-900);
-  padding-top: 40px;
+.loadingtext {
+  color: white;
+  padding-top: 8px;
   display: flex;
   justify-content: center;
-}
-
-.footer > * {
-  margin-top: 16px;
 }
