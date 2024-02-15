@@ -3,7 +3,7 @@ interface AccountHistory {
     total: string
     next_key: string | null
   }
-  tx_responses: ActivityItem[]
+  tx_responses: AccountHistoryItem[]
 }
 
 interface PubKey {
@@ -46,16 +46,12 @@ interface MultiSignerInfo {
   sequence: string
 }
 
-interface ActivityItem {
-  addresses: string[]
-  chain_id: string
-  children: ActivityItem[]
-  code: number
-  coinType: 60 | 118 | 330
-  events: any[]
-  logs: TxLog[]
-  raw_log: string
+interface AccountHistoryItem {
+  txhash: string
   timestamp: any
+  code: number
+  height: string
+  // collapsed?: number // WHAT IS THIS?
   tx: {
     body: {
       messages: any[]
@@ -68,8 +64,8 @@ interface ActivityItem {
       signer_infos: SignerInfo[] | MultiSignerInfo[]
     }
   }
-  tx_hash: string
-  words_from_key: string
+  raw_log?: string
+  logs: TxLog[]
 }
 
 interface TxLog {
@@ -84,6 +80,10 @@ interface TxLogEvent {
     key: string
     value: string
   }[]
+}
+
+type ActivityItem = AccountHistoryItem & {
+  chain: string
 }
 
 interface TxMessage {

@@ -35,7 +35,7 @@ const GasHelperStatus = ({
   const ibcDetails =
     tx?.logs &&
     getIbcTxDetails({
-      chain_id: chainID,
+      chain: chainID,
       logs: tx.logs,
     })
 
