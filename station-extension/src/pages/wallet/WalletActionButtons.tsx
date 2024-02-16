@@ -101,7 +101,7 @@ const WalletActionButtons = ({ token }: { token?: TokenItem }) => {
   return (
     <div className={styles.networth__buttons}>
       {buttons.map(
-        ({ size, icon, label, onClick, disabled, primary, hide }) =>
+        ({ size, icon, label, onClick, disabled, primary, hide }, index) =>
           !hide && (
             <FlexColumn key={label} gap={8} className={styles.button__wrapper}>
               <RoundedButton
@@ -110,6 +110,7 @@ const WalletActionButtons = ({ token }: { token?: TokenItem }) => {
                 onClick={onClick}
                 icon={icon}
                 disabled={disabled}
+                data-testid={`wallet-action-button-${index}`}
               />
               <span className={styles.networth__buttons__labels}>
                 {capitalize(label)}

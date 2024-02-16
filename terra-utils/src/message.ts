@@ -330,8 +330,12 @@ export const getCanonicalMsg = (
             }
           } else {
             /* ------------------------- Contract Execution ------------------------- */
-
-            for (const executable of Object.keys((msg as any).msg)) {
+            const executables = Object.keys((msg as any).msg || {}).length ?
+              Object.keys((msg as any).msg) :
+              Object.keys((msg as any).execute_msg || {}).length ?
+              Object.keys((msg as any).execute_msg) :
+              ["unknown_executable"]
+            for (const executable of executables) {
               if (!["increase_allowance"].includes(executable))
                 returnMsgs.push({
                   msgType: "Execute",
@@ -411,10 +415,19 @@ export const getCanonicalMsg = (
         extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
         break
 
+      case "/ibc.core.channel.v1.MsgTimeout":
+        extractMsgFn = (_: any) => {
+          returnMsgs.push({
+            msgType: "Timeout",
+            canonicalMsg: [`Refund timed out IBC transfer`]
+          })
+        }
+        extractMsg(extractMsgFn, msg, msgType, txInfo.txhash)
+        break
+
       /* ------------------------- Irrelevant Transactions ------------------------ */
 
       case "/ibc.core.client.v1.MsgUpdateClient":
-      case "/ibc.core.channel.v1.MsgTimeout":
         continue
 
       /* ----------------------------- Unknown Message ---------------------------- */

@@ -122,6 +122,7 @@ const AssetList = () => {
               value={search}
               placeholder={t("Filter by tokens, chains, etc.")}
               onChange={(e) => setSearch(e.target.value)}
+              data-testid="assetlist-filter-input"
             />
           </div>
         )}
@@ -155,6 +156,7 @@ const AssetList = () => {
           width={16}
           height={16}
           onClick={toggleFilter}
+          data-testid="assetlist-filter-icon"
         />
       </div>
       <div className={styles.assetlist__list}>{render()}</div>
@@ -164,6 +166,7 @@ const AssetList = () => {
           onClick={toggleFilter}
           label={t("Clear Filter")}
           variant="secondary"
+          data-testid="assetlist-clear-filter-button"
         />
       )}
     </article>
