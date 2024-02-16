@@ -10,6 +10,7 @@ const SettingsButton = () => {
         width={18}
         height={18}
         onClick={() => navigate("/preferences")}
+        data-testid="settings-button"
         fill={"var(--token-dark-900)"}
       />
     </button>

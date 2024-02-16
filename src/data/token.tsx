@@ -205,7 +205,7 @@ export const useNativeDenoms = () => {
           icon: "https://assets.terra.dev/icon/svg/LUNC.svg",
           decimals: 6,
           isNonWhitelisted: false,
-          chainID: "colombus-5",
+          chainID: "columbus-5",
         }
       } else if (chainID === "phoenix-1" || chainID === "pisco-1") {
         return {

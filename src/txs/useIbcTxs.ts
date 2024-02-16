@@ -312,6 +312,49 @@ export const useIbcPrevHop = (details?: IbcTxDetails) => {
   )
 }
 
+export const useIbcTimeout = (details: IbcTxDetails, disabled?: boolean) => {
+  const networks = useNetwork()
+  const lcd = networks[details?.src_chain_id ?? ""]?.lcd
+
+  return useQuery(
+    [
+      queryKey.ibc.receivePacket,
+      details.sequence,
+      details.dst_channel,
+      details.src_channel,
+      lcd,
+    ],
+    async () => {
+      const { data } = await axios.get(
+        `/cosmos/tx/v1beta1/txs?events=timeout_packet.packet_sequence%3D${details.sequence}&events=timeout_packet.packet_src_channel%3D%27${details.src_channel}%27&events=timeout_packet.packet_dst_channel%3D%27${details.dst_channel}%27`,
+        { baseURL: lcd }
+      )
+
+      if (!data.tx_responses.length) return undefined
+
+      const result = {
+        ...(data.tx_responses as ActivityItem[])[0],
+        chain: details.src_chain_id,
+      } as ActivityItem
+
+      return result
+    },
+    {
+      staleTime: Infinity,
+      enabled: !disabled,
+      refetchInterval: (data?: ActivityItem) => {
+        if (data) {
+          return false
+        }
+
+        return (details.timeout_timestamp ?? 0) > new Date().getTime()
+          ? 30_000
+          : (details.timeout_timestamp ?? 0) - new Date().getTime() + 15_000
+      },
+    }
+  )
+}
+
 export const useIbcNextHop = (details?: IbcTxDetails) => {
   const result = useIbcNextHops(details ? [details] : [])[0]
 

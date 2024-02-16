@@ -97,6 +97,8 @@ export interface TxRequest extends DefaultRequest {
 
 export interface SignBytesRequest extends DefaultRequest {
   bytes: Buffer
+  chainID?: string
+  adr036?: boolean
   requestType: "signBytes"
 }
 
