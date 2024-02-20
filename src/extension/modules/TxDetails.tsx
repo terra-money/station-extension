@@ -11,7 +11,11 @@ const TxDetails = ({
   timestamp,
   tx,
   onFeesReady,
-}: TxRequest & { onFeesReady: (state: boolean) => void }) => {
+  setFeeDenom,
+}: TxRequest & {
+  onFeesReady: (state: boolean) => void
+  setFeeDenom?: (denom: string) => void
+}) => {
   const { msgs, memo, fee, chainID } = tx
 
   const { t } = useTranslation()
@@ -37,7 +41,7 @@ const TxDetails = ({
         gas={fee?.gas_limit}
         gasDenom={fee?.amount.denoms()[0]}
         descriptions={contents.filter(({ value }) => !!value)}
-        setGasDenom={() => {}}
+        setGasDenom={setFeeDenom}
         onReady={(state) => onFeesReady(state)}
       />
     </Grid>

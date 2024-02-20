@@ -162,7 +162,7 @@ export default function GasHelper({
     )
 
   // gas helper not supported for multisig wallets
-  if (isWallet.multisig(wallet)) {
+  if (isWallet.multisig(wallet) || !swappableDenoms.length) {
     return (
       <GasHelperCard className={styles.card} progressColor="gray">
         <h3 className={styles.title}>
@@ -171,7 +171,7 @@ export default function GasHelper({
         </h3>
         <p className={styles.description}>
           {t(
-            "You don't have enough {{token}} to complete all the steps in this transaction, but we can fix that for you! Please select an available token below to convert for gas fees.",
+            "You don't have enough {{token}} to complete all the steps in this transaction.",
             { token: readNativeDenom(gasDenom, chainID).symbol }
           )}
         </p>

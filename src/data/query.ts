@@ -63,6 +63,7 @@ export const queryKey = mirror({
     channelInfo: "",
     packetStatus: "",
     receivePacket: "",
+    timeoutPacket: "",
     sendPacket: "",
   },
   market: { params: "" },

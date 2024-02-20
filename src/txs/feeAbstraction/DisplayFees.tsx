@@ -29,7 +29,7 @@ export default function DisplayFees({
   chainID: string
   gas: number | undefined
   gasDenom: string | undefined
-  setGasDenom: (gasDenom: string) => void
+  setGasDenom?: (gasDenom: string) => void
   descriptions?: { label: ReactNode; value: ReactNode }[]
   onReady: (state: boolean) => void
 }) {
@@ -58,7 +58,7 @@ export default function DisplayFees({
       availableGasDenoms.length &&
       !availableGasDenoms.includes(gasDenom ?? "")
     ) {
-      setGasDenom(availableGasDenoms[0])
+      setGasDenom && setGasDenom(availableGasDenoms[0])
     }
   }, [availableGasDenoms]) // eslint-disable-line
 
@@ -126,7 +126,7 @@ export default function DisplayFees({
           label: (
             <div className={styles.gas}>
               {t("Fee")}{" "}
-              {availableGasDenoms.length > 1 && (
+              {availableGasDenoms.length > 1 && setGasDenom && (
                 <Select
                   value={gasDenom}
                   onChange={(e) => setGasDenom(e.target.value)}
