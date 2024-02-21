@@ -42,6 +42,9 @@ export default function DisplayFees({
   const gasPrices = chainID.startsWith("carbon-")
     ? carbonFees?.prices
     : network[chainID]?.gasPrices ?? {}
+  console.log("chainID", chainID)
+  console.log("gas prices", gasPrices)
+
   const isBalanceLoading = useIsBalanceLoading(chainID)
   const queryClient = useQueryClient()
   const { decimals } = readNativeDenom(gasDenom ?? "", chainID)
@@ -107,14 +110,14 @@ export default function DisplayFees({
           gas,
           gasDenom,
           chainID,
-          gasPrice: gasPrices[gasDenom],
+          gasPrice: gasPrices?.[gasDenom],
           setState: setHelperState,
         }}
       />
     )
   }
 
-  const feeAmount = Math.ceil(gasPrices[gasDenom] * (gas ?? 0))
+  const feeAmount = Math.ceil(gasPrices?.[gasDenom] * (gas ?? 0))
   if (chainsWithGas.includes(chainID) && availableGasDenoms.length)
     onReady(true)
 
