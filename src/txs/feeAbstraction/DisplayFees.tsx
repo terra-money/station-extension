@@ -42,9 +42,6 @@ export default function DisplayFees({
   const gasPrices = chainID.startsWith("carbon-")
     ? carbonFees?.prices
     : network[chainID]?.gasPrices ?? {}
-  console.log("chainID", chainID)
-  console.log("gas prices", gasPrices)
-
   const isBalanceLoading = useIsBalanceLoading(chainID)
   const queryClient = useQueryClient()
   const { decimals } = readNativeDenom(gasDenom ?? "", chainID)
