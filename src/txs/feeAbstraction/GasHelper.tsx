@@ -250,11 +250,10 @@ export default function GasHelper({
               chainName={offerAsset.chainName}
               tokenIcon={offerAsset.icon ?? ""}
               onSymbolClick={() => setModalOpen(true)}
-              currencySymbol={currency}
-              currencyAmount={
+              currencyAmount={`${
                 ((swapAmount ?? 0) / 10 ** readSwapDenom.decimals) *
                 (prices?.[readSwapDenom.token]?.price ?? 0)
-              }
+              } ${currency} `}
               amountInputAttrs={{
                 type: "text",
                 step: "any",
@@ -384,68 +383,65 @@ export default function GasHelper({
             )
           ))}
 
-        {!isLoading &&
-          !isError &&
-          !insufficientBalance &&
-          !isLessThanMinimum && (
-            <Grid gap={14}>
-              {error && <Banner variant="error" title={error} />}
-              {!passwordState.stored && !passwordState.loading && (
-                <InputWrapper label={t("Password")}>
-                  <Input
-                    type="password"
-                    value={passwordState.password}
-                    onChange={(e) => {
-                      setPasswordState((d) => ({
-                        ...d,
-                        password: e.target.value,
-                      }))
-                    }}
-                  />
-                </InputWrapper>
-              )}
-              <SubmitButton
-                onClick={() => {
-                  setState({
-                    submitting: true,
-                    time: new Date().getTime(),
+        {!isLoading && !isError && !insufficientBalance && !isLessThanMinimum && (
+          <Grid gap={14}>
+            {error && <Banner variant="error" title={error} />}
+            {!passwordState.stored && !passwordState.loading && (
+              <InputWrapper label={t("Password")}>
+                <Input
+                  type="password"
+                  value={passwordState.password}
+                  onChange={(e) => {
+                    setPasswordState((d) => ({
+                      ...d,
+                      password: e.target.value,
+                    }))
+                  }}
+                />
+              </InputWrapper>
+            )}
+            <SubmitButton
+              onClick={() => {
+                setState({
+                  submitting: true,
+                  time: new Date().getTime(),
+                  chainID: swapDenom.chainId,
+                })
+                submitTx(
+                  {
                     chainID: swapDenom.chainId,
+                    msgs: [
+                      isDefaultAmount
+                        ? minimumSwapData!.msg
+                        : fixedSwapData!.msg,
+                    ],
+                    fee: new Fee(gasAmount, {
+                      [swapDenom.denom]: feeAmount,
+                    }),
+                  },
+                  passwordState.password
+                )
+                  .then((tx) => {
+                    setState((s) => ({
+                      ...s,
+                      tx,
+                    }))
                   })
-                  submitTx(
-                    {
-                      chainID: swapDenom.chainId,
-                      msgs: [
-                        isDefaultAmount
-                          ? minimumSwapData!.msg
-                          : fixedSwapData!.msg,
-                      ],
-                      fee: new Fee(gasAmount, {
-                        [swapDenom.denom]: feeAmount,
-                      }),
-                    },
-                    passwordState.password
-                  )
-                    .then((tx) => {
-                      setState((s) => ({
-                        ...s,
-                        tx,
-                      }))
+                  .catch((e) => {
+                    setError(e.message || e.toString() || "Unknown error")
+                    setState({
+                      submitting: false,
                     })
-                    .catch((e) => {
-                      setError(e.message || e.toString() || "Unknown error")
-                      setState({
-                        submitting: false,
-                      })
-                    })
-                }}
-                label={t("Get me some gas!")}
-                loading={isLoading || passwordState.loading}
-                disabled={
-                  isLoading || !passwordState.password || passwordState.loading
-                }
-              />
-            </Grid>
-          )}
+                  })
+              }}
+              label={t("Get me some gas!")}
+              loading={isLoading || passwordState.loading}
+              disabled={
+                isLoading || !passwordState.password || passwordState.loading
+              }
+            />
+          </Grid>
+        )}
       </div>
     </>
   )

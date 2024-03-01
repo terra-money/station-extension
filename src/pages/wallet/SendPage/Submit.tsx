@@ -128,8 +128,7 @@ const Submit = () => {
               validate: validate.input(toInput(balance, decimals), decimals),
             }),
           }}
-          currencyAmount={currencyAmount ?? 0}
-          currencySymbol={currency.symbol}
+          currencyAmount={`${currency.symbol} ${currencyAmount ?? 0}`}
         />
         <InputWrapper
           label={`${t("Memo")} (${t("optional")})`}
