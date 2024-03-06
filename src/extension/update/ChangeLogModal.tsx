@@ -74,6 +74,7 @@ export default function ChangeLogModal() {
         )}
         <div
           style={{
+            marginTop: "24px",
             display: "flex",
             justifyContent: "center",
           }}
