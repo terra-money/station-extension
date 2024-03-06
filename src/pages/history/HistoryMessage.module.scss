@@ -1,0 +1,13 @@
+@import "mixins";
+
+.component {
+  @include desktop {
+    @include flex(flex-start);
+    gap: 12px;
+  }
+}
+
+.message {
+  font-size: 14px;
+  color: var(--text-muted);
+}

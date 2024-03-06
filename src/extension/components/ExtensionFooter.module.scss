@@ -10,8 +10,11 @@
     font-weight: 500;
     font-size: var(--font-size-small);
     color: var(--token-dark-900);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 
-    img {
+    svg {
       margin-right: 8px;
     }
 
