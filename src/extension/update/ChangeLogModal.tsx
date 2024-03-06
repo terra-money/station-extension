@@ -1,8 +1,9 @@
 import { useQuery } from "react-query"
 import styles from "./ChangeLogModal.module.scss"
-import { LoadingCircular, Modal } from "@terra-money/station-ui"
+import { LoadingCircular, Modal, Button } from "@terra-money/station-ui"
 import axios from "axios"
 import { RefetchOptions } from "data/query"
+import { useTranslation } from "react-i18next"
 import browser from "webextension-polyfill"
 import { markdownTextParser } from "utils/markdown"
 import { useState } from "react"
@@ -29,6 +30,7 @@ const useChangeLogInfo = (version?: string) => {
 }
 
 export default function ChangeLogModal() {
+  const { t } = useTranslation()
   const currentVersion = browser.runtime?.getManifest?.()?.version
   const lastVersionShown = localStorage.getItem(LOCALSTORAGE_CHANGELOG_KEY)
   const [showChangelog, setShowChangelog] = useState<boolean>(
@@ -70,6 +72,22 @@ export default function ChangeLogModal() {
             <LoadingCircular />
           </div>
         )}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            variant="primary"
+            onClick={() => {
+              setShowChangelog(false)
+              localStorage.setItem(LOCALSTORAGE_CHANGELOG_KEY, currentVersion)
+            }}
+          >
+            {t("Close")}
+          </Button>
+        </div>
       </article>
     </Modal>
   )
