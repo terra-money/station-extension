@@ -67,7 +67,7 @@ export const markdownTextParser = (text: string, showLinks?: boolean) => {
             )
           )
         } else if (match[4] && match[5]) {
-          result.push(
+          lineResult.push(
             showLinks || isLinkSafe(match[3]) ? (
               <ExternalLink
                 href={match[5]}
@@ -94,7 +94,9 @@ export const markdownTextParser = (text: string, showLinks?: boolean) => {
         result.push(<li key={i}>{lineResult}</li>)
       } else {
         result.push(
-          lineResult.length >= 1 && lineResult[0] !== "\r" ? (
+          lineResult.length >= 1 &&
+            lineResult[0] !== "\r" &&
+            !!lineResult[0] ? (
             <p key={i}>{lineResult}</p>
           ) : (
             <br />
