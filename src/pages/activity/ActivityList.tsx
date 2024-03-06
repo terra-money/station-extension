@@ -46,7 +46,6 @@ const IbcActivityItem = ({
 const ActivityList = () => {
   //const { ibcTxs } = useIbcTxs()
   const { activitySorted: activity, state } = useTxActivity()
-  console.log("activity", activity)
 
   const activityItemsPerPage = 20
   const [visibleActivity, setVisibleActivity] = useState(activityItemsPerPage)
