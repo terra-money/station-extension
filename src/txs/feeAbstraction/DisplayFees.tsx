@@ -107,14 +107,14 @@ export default function DisplayFees({
           gas,
           gasDenom,
           chainID,
-          gasPrice: gasPrices[gasDenom],
+          gasPrice: gasPrices?.[gasDenom],
           setState: setHelperState,
         }}
       />
     )
   }
 
-  const feeAmount = Math.ceil(gasPrices[gasDenom] * (gas ?? 0))
+  const feeAmount = Math.ceil(gasPrices?.[gasDenom] * (gas ?? 0))
   if (chainsWithGas.includes(chainID) && availableGasDenoms.length)
     onReady(true)
 

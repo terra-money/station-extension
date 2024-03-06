@@ -7,14 +7,14 @@
 }
 
 .loader {
-  color: #065bed;
+  color: var(--token-dark-900);
   display: flex;
   justify-content: center;
   padding-top: 100px;
 }
 
 .loadingtext {
-  color: white;
+  color: var(--token-dark-900);
   padding-top: 8px;
   display: flex;
   justify-content: center;

@@ -250,11 +250,10 @@ export default function GasHelper({
               chainName={offerAsset.chainName}
               tokenIcon={offerAsset.icon ?? ""}
               onSymbolClick={() => setModalOpen(true)}
-              currencySymbol={currency}
-              currencyAmount={
+              currencyAmount={`${
                 ((swapAmount ?? 0) / 10 ** readSwapDenom.decimals) *
                 (prices?.[readSwapDenom.token]?.price ?? 0)
-              }
+              } ${currency} `}
               amountInputAttrs={{
                 type: "text",
                 step: "any",

@@ -117,20 +117,15 @@ const SwapForm = () => {
   }
 
   // Values
-  const currencyAmount = useMemo(() => {
-    const offer = offerAsset.price
-      ? `${(Number(offerInput) * offerAsset.price).toFixed(2)}`
-      : "—"
+  const offerCurrencyAmount = useMemo(() => {
+    const { price } = offerAsset
+    return (Number(offerInput) * (price ?? 0)).toFixed(2)
+  }, [offerAsset, offerInput])
 
-    const ask = askAsset.price
-      ? `${toInput(
-          Number(route?.amountOut) * askAsset.price,
-          askAsset.decimals
-        ).toFixed(2)}`
-      : "—"
-
-    return { offer, ask }
-  }, [offerAsset, offerInput, askAsset, route, currency])
+  const askCurrencyAmount = useMemo(() => {
+    const { price, decimals } = askAsset
+    return toInput(Number(route?.amountOut) * (price ?? 0), decimals).toFixed(2)
+  }, [route, askAsset])
 
   const sameAssets = !validateAssets({ offerAsset, askAsset })
   const disabled = !(offerInput && !error && route)
@@ -163,8 +158,7 @@ const SwapForm = () => {
             tokenIcon={offerAsset.icon ?? ""}
             onSymbolClick={() => handleOpenModal(SwapAssetType.OFFER)}
             amountInputAttrs={{ ...register("offerInput") }}
-            currencyAmount={parseFloat(currencyAmount.offer) || 0}
-            currencySymbol={currency.symbol}
+            currencyAmount={`${currency.symbol} ${offerCurrencyAmount}`}
           />
           <FlipButton className={styles.swapper} onClick={swapAssetsOnClick} />
           <AssetSelectorTo
@@ -175,8 +169,7 @@ const SwapForm = () => {
             tokenIcon={askAsset?.icon ?? ""}
             onSymbolClick={() => handleOpenModal(SwapAssetType.ASK)}
             amount={parseFloat(askAssetAmount)}
-            currencyAmount={parseFloat(currencyAmount.ask) || 0}
-            currencySymbol={currency.symbol}
+            currencyAmount={`${currency.symbol} ${askCurrencyAmount}`}
           />
         </Grid>
         <Footer />
