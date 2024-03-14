@@ -6,6 +6,11 @@
   width: 100%;
 }
 
+.chain__loader__container {
+  padding: 10px 10px 0px;
+  margin-bottom: 12px;
+}
+
 .loader {
   color: var(--token-dark-900);
   display: flex;
