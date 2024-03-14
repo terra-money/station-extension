@@ -15,6 +15,7 @@ interface IRoute {
   element: React.ReactNode
   title?: string
   backPath?: string
+  isFullHeight?: boolean
 }
 
 export const useWalletRoutes = (): IRoute[] => {
@@ -31,12 +32,14 @@ export const useWalletRoutes = (): IRoute[] => {
       path: "/receive",
       title: t("Receive"),
       element: <ReceivePage />,
+      isFullHeight: true,
     },
     {
       path: "/receive/:address",
       backPath: "/receive",
       element: <AddressChain />,
       title: t("Copy Address"),
+      isFullHeight: true,
     },
     {
       path: "/send/*",
@@ -69,6 +72,7 @@ export default function WalletRouter() {
               <ExtensionPageV2
                 title={route.title}
                 backButtonPath={route.backPath}
+                fullHeight={route.isFullHeight ?? false}
               >
                 {route.element}
               </ExtensionPageV2>
