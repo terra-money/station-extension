@@ -1,8 +1,7 @@
 @import "mixins";
 
 .activityitems > * {
-  padding: 8px;
-  margin: 10px 0px;
+  padding: 12px;
 }
 
 .activityitem {
@@ -23,6 +22,7 @@
 .transaction__progress {
   padding-top: 8px;
   position: relative;
+  margin-left: 50px;
 
   .transaction__timer {
     transition: 300ms;

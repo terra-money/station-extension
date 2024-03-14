@@ -6,6 +6,8 @@ import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { useCustomTokensCW20 } from "data/settings/CustomTokens"
 import { useNetwork } from "data/wallet"
 import { getChainIDFromAddress } from "utils/bech32"
+import { Coin, Coins } from "@terra-money/feather.js"
+import { Pagination } from "@terra-money/feather.js/dist/client/lcd/APIRequester"
 
 export const useInitialTokenBalance = () => {
   const addresses = useInterchainAddresses()
@@ -58,11 +60,27 @@ export const useInitialBankBalance = () => {
       return {
         queryKey: [queryKey.bank.balances, address, chainID],
         queryFn: async () => {
-          const bal = ["phoenix-1", "pisco-1"].includes(chainID)
-            ? await lcd.bank.spendableBalances(address)
-            : await lcd.bank.balance(address)
+          const rawBalances: Coin[] = []
+          let next_key: string | null = null
 
-          return bal[0].toArray().map(({ denom, amount }) => ({
+          do {
+            const data: [Coins, Pagination] = ["phoenix-1", "pisco-1"].includes(
+              chainID
+            )
+              ? await lcd.bank.spendableBalances(
+                  address,
+                  next_key ? { "pagination.key": next_key } : undefined
+                )
+              : await lcd.bank.balance(
+                  address,
+                  next_key ? { "pagination.key": next_key } : undefined
+                )
+
+            rawBalances.push(...data[0].toArray())
+            next_key = data[1].next_key
+          } while (next_key)
+
+          return rawBalances.map(({ denom, amount }) => ({
             denom,
             amount: amount.toString(),
             chain: chainID,

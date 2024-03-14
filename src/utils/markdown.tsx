@@ -1,5 +1,6 @@
 import { TooltipIcon } from "components/display"
 import { ExternalLink } from "components/general"
+import styles from "./markdown.module.scss"
 
 export const markdownTextParser = (text: string, showLinks?: boolean) => {
   if (!text) return null
@@ -11,11 +12,23 @@ export const markdownTextParser = (text: string, showLinks?: boolean) => {
     //if (!line) return
 
     if (line.startsWith("# ")) {
-      result.push(<h1 key={i}>{line.replace("# ", "")}</h1>)
+      result.push(
+        <h1 key={i} className={styles.title1}>
+          {line.replace("# ", "")}
+        </h1>
+      )
     } else if (line.startsWith("## ")) {
-      result.push(<h2 key={i}>{line.replace("## ", "")}</h2>)
+      result.push(
+        <h2 key={i} className={styles.title2}>
+          {line.replace("## ", "")}
+        </h2>
+      )
     } else if (line.startsWith("### ")) {
-      result.push(<h3 key={i}>{line.replace("### ", "")}</h3>)
+      result.push(
+        <h3 key={i} className={styles.title3}>
+          {line.replace("### ", "")}
+        </h3>
+      )
     } else {
       const lineResult: (React.ReactNode | string)[] = []
       const pattern =
@@ -54,7 +67,7 @@ export const markdownTextParser = (text: string, showLinks?: boolean) => {
             )
           )
         } else if (match[4] && match[5]) {
-          result.push(
+          lineResult.push(
             showLinks || isLinkSafe(match[3]) ? (
               <ExternalLink
                 href={match[5]}
@@ -81,7 +94,9 @@ export const markdownTextParser = (text: string, showLinks?: boolean) => {
         result.push(<li key={i}>{lineResult}</li>)
       } else {
         result.push(
-          lineResult.length > 1 && lineResult[0] !== "\r" ? (
+          lineResult.length >= 1 &&
+            lineResult[0] !== "\r" &&
+            !!lineResult[0] ? (
             <p key={i}>{lineResult}</p>
           ) : (
             <br />

@@ -1,4 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useMemo, useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
+import { useLocation, useNavigate } from "react-router-dom"
+import { toAmount } from "@terra-money/terra-utils"
+import { AccAddress } from "@terra-money/feather.js"
+import { SwapAssetExtra, SwapState } from "data/queries/swap/types"
+import { useCurrency } from "data/settings/Currency"
+import { has } from "utils/num"
+import { toInput } from "txs/utils"
+import SwapTokenSelector from "./components/SwapTokenSelector"
+import { useSwap } from "./SwapContext"
+import { validateAssets } from "./SwapConfirm"
+import Footer from "./components/Footer"
+
 import {
   AssetSelectorTo,
   AssetSelectorFrom,
@@ -8,22 +22,7 @@ import {
   FlipButton,
   Grid,
 } from "@terra-money/station-ui"
-import { useMemo, useState } from "react"
-import { SwapAssetExtra, SwapState } from "data/queries/swap/types"
-import { useSwap } from "./SwapContext"
-import { useTranslation } from "react-i18next"
-import { toInput } from "txs/utils"
-import SwapTokenSelector from "./components/SwapTokenSelector"
-import { useEffect } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
 import styles from "./Swap.module.scss"
-import { useCurrency } from "data/settings/Currency"
-import { has } from "utils/num"
-import AssetFormExtra from "./components/AssetFormExtra"
-import { toAmount } from "@terra-money/terra-utils"
-import { validateAssets } from "./SwapConfirm"
-import Footer from "./components/Footer"
-import { AccAddress } from "@terra-money/feather.js"
 
 enum SwapAssetType {
   ASK = "askAsset",
@@ -36,7 +35,7 @@ const SwapForm = () => {
     useSwap()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { state } = useLocation()
+  const { state: denom } = useLocation()
   const currency = useCurrency()
   // State
   const { watch, getValues, setValue, register } = form
@@ -63,9 +62,9 @@ const SwapForm = () => {
 
   // Lifecycle
   useEffect(() => {
-    if (!state?.denom) return
+    if (!denom) return
     const token = tokens
-      .filter((t) => t.originDenom === state.denom && has(t.balance))
+      .filter((t) => t.originDenom === denom && has(t.balance))
       .sort((a, b) => Number(b.balance) - Number(a.balance))[0]
     if (!token) return
     setValue("offerAsset", token)
@@ -97,13 +96,16 @@ const SwapForm = () => {
 
   // Handlers
   const handleOpenModal = (type: SwapAssetType) => {
-    const toDisplay = type === SwapAssetType.OFFER ?  getTokensWithBal(tokens) : tokens
+    const toDisplay =
+      type === SwapAssetType.OFFER ? getTokensWithBal(tokens) : tokens
     setDisplayTokens(toDisplay)
     setAssetModal(type)
   }
   const tokenOnClick = (token: SwapAssetExtra) => {
     // add prefix to align with Skips expected formatting
-    const parsed = AccAddress.validate(token.denom) ? { ...token, denom: `cw20:${token.denom}` } : token
+    const parsed = AccAddress.validate(token.denom)
+      ? { ...token, denom: `cw20:${token.denom}` }
+      : token
     if (assetModal) setValue(assetModal as keyof SwapState, parsed)
     setAssetModal(undefined) // close modal
   }
@@ -114,30 +116,27 @@ const SwapForm = () => {
     setValue("offerAsset", askAsset)
   }
 
-  const onOfferBalanceClick = () => {
+  // Values
+  const offerCurrencyAmount = useMemo(() => {
+    const { price } = offerAsset
+    return (Number(offerInput) * (price ?? 0)).toFixed(2)
+  }, [offerAsset, offerInput])
+
+  const askCurrencyAmount = useMemo(() => {
+    const { price, decimals } = askAsset
+    return toInput(Number(route?.amountOut) * (price ?? 0), decimals).toFixed(2)
+  }, [route, askAsset])
+
+  const sameAssets = !validateAssets({ offerAsset, askAsset })
+  const disabled = !(offerInput && !error && route)
+  const loading = !!(has(offerInput) && !error && !route)
+
+  const handleMaxClick = () => {
     setValue(
       "offerInput",
       toInput(offerAsset.balance, offerAsset.decimals).toString()
     )
   }
-
-  // Values
-  const currencyAmount = useMemo(() => {
-    const offer =  offerAsset.price ? `${currency.symbol} ${(
-      Number(offerInput) * offerAsset.price
-    ).toFixed(2)}` : "—"
-
-    const ask = askAsset.price ? `${currency.symbol} ${toInput(
-      Number(route?.amountOut) * askAsset.price,
-      askAsset.decimals
-    ).toFixed(2)}`: "—"
-
-    return { offer, ask }
-  }, [offerAsset, offerInput, askAsset, route, currency])
-
-  const sameAssets = !validateAssets({ offerAsset, askAsset })
-  const disabled = !(offerInput && !error && route)
-  const loading = !!(has(offerInput) && !error && !route)
 
   return (
     <div className={styles.container}>
@@ -151,30 +150,26 @@ const SwapForm = () => {
       <Grid gap={24}>
         <Grid gap={4}>
           <AssetSelectorFrom
-            extra={
-              <AssetFormExtra
-                asset={offerAsset}
-                onClick={onOfferBalanceClick}
-              />
-            }
+            handleMaxClick={handleMaxClick}
+            walletAmount={toInput(offerAsset.balance, offerAsset.decimals)}
             symbol={offerAsset.symbol}
             chainIcon={offerAsset.chain?.icon}
             chainName={offerAsset.chain?.name}
             tokenIcon={offerAsset.icon ?? ""}
             onSymbolClick={() => handleOpenModal(SwapAssetType.OFFER)}
-            currencyAmount={currencyAmount.offer}
             amountInputAttrs={{ ...register("offerInput") }}
+            currencyAmount={`${currency.symbol} ${offerCurrencyAmount}`}
           />
           <FlipButton className={styles.swapper} onClick={swapAssetsOnClick} />
           <AssetSelectorTo
-            extra={<AssetFormExtra asset={askAsset} />}
+            walletAmount={toInput(askAsset.balance, askAsset.decimals)}
             symbol={askAsset?.symbol}
             chainIcon={askAsset?.chain?.icon}
             chainName={askAsset?.chain?.name}
             tokenIcon={askAsset?.icon ?? ""}
             onSymbolClick={() => handleOpenModal(SwapAssetType.ASK)}
-            amount={askAssetAmount}
-            currencyAmount={currencyAmount.ask}
+            amount={parseFloat(askAssetAmount)}
+            currencyAmount={`${currency.symbol} ${askCurrencyAmount}`}
           />
         </Grid>
         <Footer />

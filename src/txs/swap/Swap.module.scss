@@ -6,10 +6,11 @@
   margin: -20px 0px -20px 65%;
 }
 .container {
-  margin: 10px;
+  // margin: 10px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  justify-content: space-between;
+  gap: 16px;
 }
 
 .text {

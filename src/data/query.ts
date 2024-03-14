@@ -36,6 +36,7 @@ export const queryKey = mirror({
   TerraAPI: "",
   History: "",
   gammTokens: "",
+  domainBlacklist: "",
 
   /* lcd */
   auth: { accountInfo: "", vestingAccountInfo: "" },
@@ -63,6 +64,7 @@ export const queryKey = mirror({
     channelInfo: "",
     packetStatus: "",
     receivePacket: "",
+    timeoutPacket: "",
     sendPacket: "",
   },
   market: { params: "" },

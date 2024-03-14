@@ -59,7 +59,7 @@ const LedgerActionOverlay = () => {
           appName: appName ?? "Terra",
         })
       case LedgerDeviceAction.CONFIRM:
-        return t("Confirm the transaction on yout Ledger")
+        return t("Confirm the transaction on your Ledger")
     }
   }
 

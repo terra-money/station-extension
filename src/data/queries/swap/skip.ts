@@ -13,7 +13,7 @@ import {
 } from "./types"
 import { InterchainAddresses } from "types/network"
 import { IInterchainNetworks } from "data/wallet"
-import { isTerraChain } from "utils/chain"
+//import { isTerraChain } from "utils/chain"
 
 export const skipApi = {
   queryTokens: async () => {
@@ -89,17 +89,18 @@ export const skipApi = {
         dest_asset_denom: askAsset.denom,
         dest_asset_chain_id: askAsset.chainId,
         cumulative_affiliate_fee_bps: "0",
+        allow_multi_tx: false,
       }
-      const swapOnTerra = [offerAsset.chainId, askAsset.chainId].every(
+      /*const swapOnTerra = [offerAsset.chainId, askAsset.chainId].every(
         isTerraChain
       )
 
-      if (swapOnTerra) {
+      /*if (swapOnTerra) {
         payload.swap_venue = {
           name: SwapVenue.ASTROPORT,
           chain_id: offerAsset.chainId,
         }
-      }
+      }*/
 
       const res = await axios.post(SKIP_SWAP_API.routes.route, payload, {
         baseURL: SKIP_SWAP_API.baseUrl,
@@ -139,36 +140,45 @@ const getTimelineMessages = (
   swap: SwapState,
   network: IInterchainNetworks
 ) => {
-  let swapOccured = false
+  let swapsOccured = 0
+  const swapsRequired = route.operations.filter(
+    (op: any) => Object.keys(op)[0] === "swap"
+  ).length
 
   const timelineMsgs: TimelineMessage[] = route.operations.map(
     // eslint-disable-next-line array-callback-return
     (op: any, i: number) => {
       const type = Object.keys(op)[0] as OperationType
+      const swapIn = route.operations[i + 1]?.swap?.swap_in
+      const swapOut = route.operations[i + 1]?.swap?.swap_out
+      const venue = (swapIn ?? swapOut)?.swap_venue
 
       if (type === "transfer") {
         const fromChainId = op[type].chain_id
-        const toChainId =
-          route.operations[i + 1]?.transfer?.chain_id ??
-          route.operations[i + 1]?.swap.swap_in.swap_venue.chain_id
+        const toChainId = venue?.chain_id
         return {
           type,
-          symbol: swapOccured ? swap.askAsset.symbol : swap.offerAsset.symbol, // TODO: make robust against multiple swaps
+          symbol:
+            swapsOccured === swapsRequired
+              ? swap.askAsset.symbol
+              : swap.offerAsset.symbol,
           from: network[fromChainId]?.name ?? "Unknown",
           to: network[toChainId ?? swap.askAsset.chainId]?.name ?? "Unknown", // get final chainId from askAsset or next one in ops
         }
       }
 
       if (type === "swap") {
-        swapOccured = true
-        return {
-          type,
-          venue: op[type].swap_in.swap_venue.name as SwapVenue,
-          askAssetSymbol: swap.askAsset.symbol,
-          offerAssetSymbol: swap.offerAsset.symbol,
+        swapsOccured++
+        if (venue?.name) {
+          return {
+            type,
+            venue: venue.name as SwapVenue,
+            askAssetSymbol: swap.askAsset.symbol,
+            offerAssetSymbol: swap.offerAsset.symbol,
+          }
         }
       }
     }
   )
-  return timelineMsgs
+  return timelineMsgs.filter(Boolean)
 }

@@ -310,8 +310,9 @@ function setupEvents() {
   const createEvent = (changes, namespace) => {
     if (namespace === "local") {
       if (
-        changes.wallet &&
-        (changes.wallet.oldValue.address !== changes.wallet.newValue.address ||
+        changes.wallet && changes.wallet.oldValue && changes.wallet.newValue &&
+        (changes.wallet.oldValue.address !==
+          changes.wallet.newValue.address ||
           changes.wallet.oldValue.name !== changes.wallet.newValue.name ||
           Object.values(changes.wallet.oldValue.pubkey || {}).join(",") !==
             Object.values(changes.wallet.newValue.pubkey || {}).join(","))

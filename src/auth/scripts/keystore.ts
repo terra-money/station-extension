@@ -104,7 +104,7 @@ export const isLoginNeeded = async () => {
   if (!wallets) return false
 
   if (shouldStorePassword()) {
-    return !(await getStoredPassword())
+    return !(await isLoggedIn()) && !(await getStoredPassword())
   } else {
     return !(await isLoggedIn())
   }
@@ -118,26 +118,35 @@ export const passwordExists = () => {
   return !!passwordChallenge
 }
 
-// unlocks the wallet when the user inset the password on the login screen
-export const unlockWallets = (password: string) => {
-  const passwordChallenge = localStorage.getItem(
-    LocalStorage.PASSWORD_CHALLENGE
-  )
-  if (!passwordChallenge) return
-  if (decrypt(passwordChallenge, password) !== CHALLENGE_TEXT)
-    throw new Error("Incorrect password")
-
-  setLogin(true)
-}
-
 // checks if the given password is valid
 export const isPasswordValid = (password: string) => {
   const passwordChallenge = localStorage.getItem(
     LocalStorage.PASSWORD_CHALLENGE
   )
 
-  // if user has not set a password yet, it's valid
-  if (!passwordChallenge) return true
+  // [RECOVERY]: if password challenge has not been set
+  if (!passwordChallenge) {
+    const walletChallenge = getStoredWallets()
+      .map((w) => {
+        if ("encryptedSeed" in w) {
+          return w.encryptedSeed
+        } else if ("encrypted" in w) {
+          return w.encrypted[330]
+        }
+        return ""
+      })
+      .filter((w): w is string => !!w)
+
+    if (!walletChallenge.length) return false
+
+    try {
+      const isValid = !!decrypt(walletChallenge[0], password)
+      if (isValid) storePasswordChallenge(password)
+      return isValid
+    } catch {
+      return false
+    }
+  }
 
   try {
     return decrypt(passwordChallenge, password) === CHALLENGE_TEXT
@@ -290,7 +299,8 @@ type AddWalletParams =
   | MultisigWallet
 
 export const addWallet = (params: AddWalletParams, password: string) => {
-  if (!isPasswordValid(password)) throw new Error("Invalid password")
+  if (passwordExists() && !isPasswordValid(password))
+    throw new Error("Invalid password")
   const wallets = getStoredWallets()
 
   if (wallets.find((wallet) => wallet.name === params.name))

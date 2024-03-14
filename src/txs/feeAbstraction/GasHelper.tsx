@@ -13,7 +13,6 @@ import {
   LoadingCircular,
   Modal,
   SubmitButton,
-  WalletIcon,
 } from "@terra-money/station-ui"
 import {
   useIsBalanceEnough,
@@ -77,7 +76,6 @@ export default function GasHelper({
     chainIcon: networks[swapDenom.chainId]?.icon,
   }
   const [rawSwapAmount, setSwapAmount] = useState<string | undefined>()
-  console.log(rawSwapAmount)
   const swapAmount = Number(rawSwapAmount || 0) * 10 ** readSwapDenom.decimals
   const {
     data: minimumSwapData,
@@ -164,7 +162,7 @@ export default function GasHelper({
     )
 
   // gas helper not supported for multisig wallets
-  if (isWallet.multisig(wallet)) {
+  if (isWallet.multisig(wallet) || !swappableDenoms.length) {
     return (
       <GasHelperCard className={styles.card} progressColor="gray">
         <h3 className={styles.title}>
@@ -173,7 +171,7 @@ export default function GasHelper({
         </h3>
         <p className={styles.description}>
           {t(
-            "You don't have enough {{token}} to complete all the steps in this transaction, but we can fix that for you! Please select an available token below to convert for gas fees.",
+            "You don't have enough {{token}} to complete all the steps in this transaction.",
             { token: readNativeDenom(gasDenom, chainID).symbol }
           )}
         </p>
@@ -235,56 +233,27 @@ export default function GasHelper({
           </p>
           <div className={styles.asset__selector__container}>
             <AssetSelectorFrom
-              extra={
-                <Flex justify="space-between">
-                  <Flex gap={8} justify="flex-start">
-                    <WalletIcon fill="currentColor" width={12} height={12} />
-                    <p>
-                      <Read
-                        className={
-                          insufficientBalance
-                            ? styles.amount__error
-                            : styles.amount
-                        }
-                        amount={getBalanceAmount(
-                          swapDenom.denom,
-                          swapDenom.chainId
-                        )}
-                        decimals={readSwapDenom.decimals}
-                        fixed={2}
-                      />{" "}
-                      {readSwapDenom.symbol}
-                    </p>
-                  </Flex>
-                  {!isDefaultAmount && !!minimumSwapData?.amount_in && (
-                    <button
-                      onClick={() =>
-                        setSwapAmount(
-                          `${
-                            minimumSwapData.amount_in /
-                            10 ** readSwapDenom.decimals
-                          }`
-                        )
-                      }
-                    >
-                      {t("RESET")}
-                    </button>
-                  )}
-                </Flex>
+              walletAmount={
+                getBalanceAmount(swapDenom.denom, swapDenom.chainId) /
+                10 ** readSwapDenom.decimals
               }
+              handleMaxClick={() => {
+                setSwapAmount(
+                  `${
+                    getBalanceAmount(swapDenom.denom, swapDenom.chainId) /
+                    10 ** readSwapDenom.decimals
+                  }`
+                )
+              }}
               symbol={offerAsset.symbol}
               chainIcon={offerAsset.chainIcon}
               chainName={offerAsset.chainName}
               tokenIcon={offerAsset.icon ?? ""}
               onSymbolClick={() => setModalOpen(true)}
-              currencyAmount={
-                currency +
-                " " +
-                (
-                  ((swapAmount ?? 0) / 10 ** readSwapDenom.decimals) *
-                  (prices?.[readSwapDenom.token]?.price ?? 0)
-                ).toFixed(2)
-              }
+              currencyAmount={`${
+                ((swapAmount ?? 0) / 10 ** readSwapDenom.decimals) *
+                (prices?.[readSwapDenom.token]?.price ?? 0)
+              } ${currency} `}
               amountInputAttrs={{
                 type: "text",
                 step: "any",

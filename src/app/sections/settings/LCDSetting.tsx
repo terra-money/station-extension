@@ -1,26 +1,27 @@
-import { useNetworkName, useNetworkOptions } from "data/wallet"
+import { useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
+import { useLocation, useNavigate } from "react-router-dom"
+import classNames from "classnames"
+import { useNetworkName, useNetworkOptions } from "data/wallet"
 import { useNetworks } from "app/InitNetworks"
-import { useEffect, useMemo } from "react"
-import styles from "./LCDSetting.module.scss"
 import { useValidateLCD } from "data/queries/tendermint"
 import { LoadingCircular } from "components/feedback"
 import ClearIcon from "@mui/icons-material/Clear"
 import CheckIcon from "@mui/icons-material/Check"
-import { Flex } from "components/layout"
+import DeleteButton from "components/form/DeleteButton"
 import { useCustomLCDs } from "utils/localStorage"
 import {
   Dropdown,
   Input,
-  Form,
   InputWrapper,
   ButtonInlineWrapper,
   SubmitButton,
+  Flex,
+  FlexColumn,
+  Form,
 } from "@terra-money/station-ui"
-import classNames from "classnames"
-import DeleteButton from "components/form/DeleteButton"
-import { useLocation, useNavigate } from "react-router-dom"
+import styles from "./LCDSetting.module.scss"
 
 const cx = classNames.bind(styles)
 
@@ -133,36 +134,41 @@ const LCDSetting = (props: Props) => {
   }
 
   return (
-    <Form onSubmit={handleSubmit(submit)}>
-      <InputWrapper label={t("Network")} error={errors.network?.message}>
-        <Dropdown
-          options={networkOptions}
-          value={network}
-          onChange={(network) => setValue("network", network)}
-        />
-      </InputWrapper>
+    <Form onSubmit={handleSubmit(submit)} spaceBetween>
+      <FlexColumn gap={24}>
+        <InputWrapper label={t("Network")} error={errors.network?.message}>
+          <Dropdown
+            options={networkOptions}
+            value={network}
+            onChange={(network) => setValue("network", network)}
+          />
+        </InputWrapper>
 
-      <InputWrapper label={t("Source Chain")} error={errors?.chainID?.message}>
-        <Dropdown
-          withSearch
-          options={networksList}
-          value={chainID}
-          onChange={(chainID) => setValue("chainID", chainID)}
-        />
-      </InputWrapper>
-      <InputWrapper
-        label={t("Custom URL")}
-        error={errorMessage}
-        extra={renderIsValidLCD()}
-      >
-        <Input
-          type="text"
-          placeholder={networks[network]?.[chainID]?.lcd}
-          {...register("lcd", {
-            value: customLCDs[chainID] ?? "",
-          })}
-        />
-      </InputWrapper>
+        <InputWrapper
+          label={t("Source Chain")}
+          error={errors?.chainID?.message}
+        >
+          <Dropdown
+            withSearch
+            options={networksList}
+            value={chainID}
+            onChange={(chainID) => setValue("chainID", chainID)}
+          />
+        </InputWrapper>
+        <InputWrapper
+          label={t("Custom URL")}
+          error={errorMessage}
+          extra={renderIsValidLCD()}
+        >
+          <Input
+            type="text"
+            placeholder={networks[network]?.[chainID]?.lcd}
+            {...register("lcd", {
+              value: customLCDs[chainID] ?? "",
+            })}
+          />
+        </InputWrapper>
+      </FlexColumn>
       <ButtonInlineWrapper>
         {selectedChainID && <DeleteButton onClick={handleDelete} />}
         <SubmitButton

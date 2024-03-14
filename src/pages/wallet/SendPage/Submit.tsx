@@ -1,22 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useMemo } from "react"
+import { useTranslation } from "react-i18next"
+import { truncate } from "@terra-money/terra-utils"
+import validate from "txs/validate"
+import { toInput } from "txs/utils"
+import { useCurrency } from "data/settings/Currency"
+import { useIBCBaseDenom } from "data/queries/ibc"
+import { useSend } from "./SendContext"
 import {
   InputInLine,
-  SendAmount,
-  TokenSingleChainListItem,
+  AssetSelectorFrom,
   Button,
   InputWrapper,
   Input,
   Banner,
   Checkbox,
+  FlexColumn,
 } from "@terra-money/station-ui"
-import { useSend } from "./SendContext"
-import { truncate } from "@terra-money/terra-utils"
-import validate from "txs/validate"
-import { useCurrency } from "data/settings/Currency"
-import { toInput } from "txs/utils"
-import { useTranslation } from "react-i18next"
-import style from "./Send.module.scss"
-import { useEffect, useMemo } from "react"
-import { useIBCBaseDenom } from "data/queries/ibc"
 
 const Submit = () => {
   const { form, getWalletName, goToStep, networks } = useSend()
@@ -67,8 +67,21 @@ const Submit = () => {
     } else {
       clearErrors("ibcWarning")
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showIBCWarning, ibcWarning, assetInfo, destination])
+
+  useEffect(() => {
+    if (!(assetInfo && recipient)) {
+      goToStep(1)
+      return
+    }
+
+    const { price } = assetInfo
+
+    if (price) {
+      const amount = input || 0
+      setValue("currencyAmount", amount * price)
+    }
+  }, [input])
 
   if (!(assetInfo && recipient)) {
     goToStep(1)
@@ -78,7 +91,7 @@ const Submit = () => {
   const { balance, decimals, price, tokenImg, symbol } = assetInfo
 
   const handleMax = () => {
-    setValue("input", toInput(balance, decimals))
+    setValue("input", toInput(balance, decimals, 5)) // 5 decimal place round-down for SendAmount component
     if (price) {
       setValue("currencyAmount", toInput(Number(balance) * price, decimals))
     }
@@ -88,74 +101,70 @@ const Submit = () => {
   const recipientName = getWalletName(recipient)
 
   return (
-    <>
-      <InputInLine
-        style={{ cursor: "pointer" }}
-        label={t("To")}
-        onClick={() => goToStep(1)}
-        extra={!recipientName.includes("...") && truncate(recipient)}
-        value={recipientName}
-      />
-      <SendAmount
-        setValue={setValue}
-        tokenInputAttr={{
-          ...register("input", {
-            required: true,
-            valueAsNumber: true,
-            validate: validate.input(toInput(balance, decimals), decimals),
-          }),
-        }}
-        tokenAmount={input ?? 0}
-        currencyInputAttrs={{
-          ...register("currencyAmount", {
-            valueAsNumber: true,
-            required: true,
-            deps: ["input"],
-          }),
-        }}
-        currencyAmount={currencyAmount ?? 0}
-        tokenIcon={tokenImg}
-        symbol={symbol}
-        currencySymbol={currency.symbol}
-        price={price}
-        formState={formState}
-      />
-      <TokenSingleChainListItem {...assetInfo} onClick={handleMax} />
-      <InputWrapper
-        label={`${t("Memo")} (${t("optional")})`}
-        error={errors.memo?.message}
-      >
-        <Input
-          {...register("memo", {
-            validate: {
-              size: validate.size(256, "Memo"),
-              brackets: validate.memo(),
-              mnemonic: validate.isNotMnemonic(),
-            },
-          })}
+    <FlexColumn gap={24} justify="space-between" align="stretch">
+      <FlexColumn gap={24} justify="flex-start" align="stretch">
+        <InputInLine
+          style={{ cursor: "pointer" }}
+          label={t("To")}
+          onClick={() => goToStep(1)}
+          extra={!recipientName.includes("...") && truncate(recipient, [11, 6])}
+          value={recipientName}
         />
-      </InputWrapper>
-      {showIBCWarning && (
-        <>
-          <Banner
-            variant="warning"
-            title={t(
-              "Caution: This asset may not be recognized on the destination chain. Send asset back to {{home}} first before proceeding.",
-              {
-                home: networks[originChain ?? ""].name,
-              }
-            )}
+        <AssetSelectorFrom
+          walletAmount={toInput(balance, decimals)}
+          handleMaxClick={handleMax}
+          symbol={symbol}
+          onSymbolClick={() => {
+            setValue("asset", undefined)
+            goToStep(3)
+          }}
+          tokenIcon={tokenImg}
+          chainIcon={assetInfo.chain.icon}
+          chainName={assetInfo.chain.label}
+          amountInputAttrs={{
+            ...register("input", {
+              required: true,
+              valueAsNumber: true,
+              validate: validate.input(toInput(balance, decimals), decimals),
+            }),
+          }}
+          currencyAmount={`${currency.symbol} ${currencyAmount ?? 0}`}
+        />
+        <InputWrapper
+          label={`${t("Memo")} (${t("optional")})`}
+          error={errors.memo?.message}
+        >
+          <Input
+            {...register("memo", {
+              validate: {
+                size: validate.size(256, "Memo"),
+                brackets: validate.memo(),
+                mnemonic: validate.isNotMnemonic(),
+              },
+            })}
           />
-          <Checkbox
-            {...register("ibcWarning")}
-            className={style.checkbox}
-            checked={ibcWarning}
-            label={t(`I know what I'm doing`)}
-          />
-        </>
-      )}
+        </InputWrapper>
+        {showIBCWarning && (
+          <>
+            <Banner
+              variant="warning"
+              title={t(
+                "Caution: This asset may not be recognized on the destination chain. Send asset back to {{home}} first before proceeding.",
+                {
+                  home: networks[originChain ?? ""].name,
+                }
+              )}
+            />
+            <Checkbox
+              {...register("ibcWarning")}
+              checked={ibcWarning}
+              label={t(`I know what I'm doing`)}
+              indent
+            />
+          </>
+        )}
+      </FlexColumn>
       <Button
-        className={style.button}
         disabled={
           input !== undefined &&
           (Object.keys(formState.errors).length !== 0 || !formState.isValid)
@@ -164,7 +173,8 @@ const Submit = () => {
         onClick={() => goToStep(5)}
         label={t("Continue")}
       />
-    </>
+    </FlexColumn>
   )
 }
+
 export default Submit

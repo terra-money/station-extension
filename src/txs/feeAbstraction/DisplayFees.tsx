@@ -29,7 +29,7 @@ export default function DisplayFees({
   chainID: string
   gas: number | undefined
   gasDenom: string | undefined
-  setGasDenom: (gasDenom: string) => void
+  setGasDenom?: (gasDenom: string) => void
   descriptions?: { label: ReactNode; value: ReactNode }[]
   onReady: (state: boolean) => void
 }) {
@@ -58,7 +58,7 @@ export default function DisplayFees({
       availableGasDenoms.length &&
       !availableGasDenoms.includes(gasDenom ?? "")
     ) {
-      setGasDenom(availableGasDenoms[0])
+      setGasDenom && setGasDenom(availableGasDenoms[0])
     }
   }, [availableGasDenoms]) // eslint-disable-line
 
@@ -107,14 +107,14 @@ export default function DisplayFees({
           gas,
           gasDenom,
           chainID,
-          gasPrice: gasPrices[gasDenom],
+          gasPrice: gasPrices?.[gasDenom],
           setState: setHelperState,
         }}
       />
     )
   }
 
-  const feeAmount = Math.ceil(gasPrices[gasDenom] * (gas ?? 0))
+  const feeAmount = Math.ceil(gasPrices?.[gasDenom] * (gas ?? 0))
   if (chainsWithGas.includes(chainID) && availableGasDenoms.length)
     onReady(true)
 
@@ -126,7 +126,7 @@ export default function DisplayFees({
           label: (
             <div className={styles.gas}>
               {t("Fee")}{" "}
-              {availableGasDenoms.length > 1 && (
+              {availableGasDenoms.length > 1 && setGasDenom && (
                 <Dropdown
                   value={gasDenom}
                   options={availableGasDenoms.map((denom) => ({value: denom, label:readNativeDenom(denom, chainID).symbol }))}
@@ -136,7 +136,12 @@ export default function DisplayFees({
             </div>
           ),
           value: (
-            <Read amount={feeAmount} decimals={decimals} denom={gasDenom} />
+            <Read
+              amount={feeAmount}
+              decimals={decimals}
+              denom={gasDenom}
+              chainID={chainID}
+            />
           ),
         },
       ]}

@@ -10,11 +10,15 @@ const Chain = () => {
   const { form, goToStep } = useSend()
   const { setValue, watch } = form
   const networks = useAllNetworks()
-  const { recipient } = watch()
-  const wallet = getWallet(recipient)
+  const { recipientWalletName } = watch()
+  const wallet = getWallet(recipientWalletName)
 
   const chains = Object.values(networks)
-    .filter((n) => wallet.words?.[n.coinType] && wallet.multisig ? n.prefix === "terra" : true)
+    .filter((n) =>
+      wallet.words?.[n.coinType] && wallet.multisig
+        ? n.prefix === "terra"
+        : true
+    )
     .map(({ chainID, prefix, coinType }) => {
       const address = addressFromWords(wallet.words?.[coinType] ?? "", prefix)
       return {
@@ -28,11 +32,8 @@ const Chain = () => {
         address,
       }
     })
+    .filter((item) => AccAddress.validate(item.address))
 
-  return (
-    <SearchChains
-      data={chains.filter((item) => AccAddress.validate(item.address))}
-    />
-  )
+  return <SearchChains data={chains} />
 }
 export default Chain

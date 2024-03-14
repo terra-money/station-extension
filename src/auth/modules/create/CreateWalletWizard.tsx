@@ -61,7 +61,6 @@ const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
     const { name, mnemonic, coinType, index, seedPassword, legacySeedKey } =
       values
 
-    console.log(seedPassword && legacyDecrypt(mnemonic, seedPassword ?? ""))
     const seed = seedPassword
       ? legacySeedKey
         ? Buffer.from(legacyDecrypt(mnemonic, seedPassword), "hex")

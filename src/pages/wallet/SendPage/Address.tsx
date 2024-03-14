@@ -8,6 +8,7 @@ import {
   InputInLine,
   Tabs,
   Button,
+  FlexColumn,
 } from "@terra-money/station-ui"
 import { AddressBookList } from "./Components/AddressBookList"
 import MyWallets from "./Components/MyWallets"
@@ -19,7 +20,7 @@ import { useLocation } from "react-router-dom"
 
 const Address = () => {
   const { form, goToStep, getWalletName, networks } = useSend()
-  const { state } = useLocation()
+  const { state: denom } = useLocation()
   const { recipients } = useRecentRecipients()
   const { register, setValue, formState, watch, trigger } = form
   const { errors } = formState
@@ -27,8 +28,8 @@ const Address = () => {
   const { t } = useTranslation()
 
   useEffect(() => {
-    setValue("asset", state?.denom)
-  }, [state?.denom, setValue])
+    setValue("asset", denom) // pre-selected from asset page
+  }, [denom, setValue])
 
   const [tab, setTab] = useState("wallets")
 
@@ -45,9 +46,14 @@ const Address = () => {
     },
   ]
 
-  const handleKnownWallet = (recipient: AccAddress | WalletName) => {
+  const handleKnownWallet = (
+    recipient: AccAddress | WalletName,
+    _: number,
+    memo?: string
+  ) => {
+    setValue("memo", memo)
     if (!AccAddress.validate(recipient ?? "")) {
-      setValue("recipient", recipient)
+      setValue("recipientWalletName", recipient)
       goToStep(2)
     } else {
       handleKnownChain(recipient)
@@ -64,7 +70,7 @@ const Address = () => {
   }
 
   return (
-    <>
+    <FlexColumn gap={24} justify="flex-start" align="stretch">
       <InputWrapper error={errors.recipient?.message}>
         <InputInLine
           type="text"
@@ -97,7 +103,7 @@ const Address = () => {
       <SectionHeader title="Other Wallets" withLine />
       <Tabs activeTabKey={tab} tabs={tabs} />
       <MyWallets tab={tab} onClick={handleKnownWallet} />
-    </>
+    </FlexColumn>
   )
 }
 export default Address

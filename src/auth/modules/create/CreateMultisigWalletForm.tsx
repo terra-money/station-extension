@@ -17,6 +17,7 @@ import {
   InputWrapper,
   Banner,
   SubmitButton,
+  ButtonInlineWrapper,
 } from "@terra-money/station-ui"
 import { wordsFromAddress } from "utils/bech32"
 import { truncate } from "@terra-money/terra-utils"
@@ -35,9 +36,10 @@ interface Props {
     threshold: number
     words: { "330": string }
   }) => void
+  onBack?: () => void
 }
 
-const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
+const CreateMultisigWalletForm = ({ onCreated, onPubkey, onBack }: Props) => {
   const { t } = useTranslation()
   const lcd = useInterchainLCDClient()
 
@@ -143,24 +145,33 @@ const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
 
       <MultiInputWrapper label={t("Wallets")} layout="vertical">
         {fields.map(({ id }, index) => (
-          <Input
-            {...register(`addresses.${index}.value`, {
-              validate: validate.address,
-            })}
-            placeholder={truncate(SAMPLE_ADDRESS, [14, 5])}
-            key={id}
-            actionIcon={
-              fields.length > 2
-                ? {
-                    icon: <DeleteOutlineIcon />,
-                    onClick: () => remove(index),
-                  }
-                : undefined
-            }
-          />
+          <div data-testid={`wallet-input-container-${index}`}>
+            {" "}
+            {/* Wrapper with data-testid */}
+            <Input
+              {...register(`addresses.${index}.value`, {
+                validate: validate.address,
+              })}
+              placeholder={truncate(SAMPLE_ADDRESS, [14, 5])}
+              key={id}
+              data-testid={`wallet-input-${index}`} // data-testid for the Input
+              actionIcon={
+                fields.length > 2
+                  ? {
+                      icon: <DeleteOutlineIcon />,
+                      onClick: () => remove(index),
+                    }
+                  : undefined
+              }
+            />
+          </div>
         ))}
 
-        <Button variant="dashed" onClick={() => append({ value: "" })}>
+        <Button
+          variant="dashed"
+          onClick={() => append({ value: "" })}
+          data-testid="add-wallet-button"
+        >
           {t("Add Wallet Address")}
         </Button>
       </MultiInputWrapper>
@@ -177,11 +188,20 @@ const CreateMultisigWalletForm = ({ onCreated, onPubkey }: Props) => {
 
       {error && <Banner variant="error" title={error.message} />}
 
-      <SubmitButton
-        loading={submitting}
-        disabled={!isValid}
-        label={t("Create")}
-      />
+      <ButtonInlineWrapper>
+        {!!onBack && (
+          <Button
+            variant="secondary"
+            label={t("Back")}
+            onClick={() => onBack()}
+          />
+        )}
+        <SubmitButton
+          loading={submitting}
+          disabled={!isValid}
+          label={t("Create")}
+        />
+      </ButtonInlineWrapper>
     </Form>
   )
 }

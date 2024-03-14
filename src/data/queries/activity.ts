@@ -67,7 +67,7 @@ export const useTxActivity = () => {
   const addresses = useInterchainAddresses()
   const cachedTxs = useCachedTx()
 
-  const LIMIT = 60
+  // const LIMIT = 60
   const EVENTS = [
     // any tx signed by the user
     "message.sender",
@@ -104,7 +104,7 @@ export const useTxActivity = () => {
                       //order_by: "ORDER_BY_DESC",
                       [paginationKeys.offset]: 0 || undefined,
                       [paginationKeys.reverse]: isTerra ? 2 : true,
-                      [paginationKeys.limit]: LIMIT,
+                      // [paginationKeys.limit]: LIMIT,
                     },
                   })
                 } catch (e) {
@@ -123,10 +123,12 @@ export const useTxActivity = () => {
             })
           }
 
-          return result
-            .sort((a, b) => Number(b.height) - Number(a.height))
-            .slice(0, LIMIT)
-            .map((tx) => ({ ...tx, chain: chainID }))
+          return (
+            result
+              .sort((a, b) => Number(b.height) - Number(a.height))
+              // .slice(0, LIMIT)
+              .map((tx) => ({ ...tx, chain: chainID }))
+          )
         },
         ...RefetchOptions.DEFAULT,
       }
@@ -152,7 +154,13 @@ export const useTxActivity = () => {
   )
 
   result.forEach((tx, i) => {
-    if (discarededTxsHashes.includes(tx.txhash)) return
+    if (
+      discarededTxsHashes.includes(tx.txhash) ||
+      !!tx.logs.find((log) =>
+        log.events.find((e) => e.type === "timeout_packet")
+      )
+    )
+      return
 
     const senderDetails = getIbcTxDetails(tx)
 
@@ -182,5 +190,5 @@ export const useTxActivity = () => {
     activitySorted.push(tx)
   })
 
-  return { activitySorted: activitySorted.reverse().slice(0, LIMIT), state }
+  return { activitySorted: activitySorted.reverse(), state }
 }
