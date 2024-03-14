@@ -143,7 +143,10 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
     gas = tx.fee?.gas_limit || Math.ceil((estimatedGas ?? 0) * gasAdjustment)
 
     fee = isClassic
-      ? tx.fee
+      ? tx.fee ??
+        new Fee(gas, {
+          [feeDenom as string]: Math.ceil(gasPrices[feeDenom as string] * gas),
+        })
       : new Fee(gas, {
           [feeDenom as string]: Math.ceil(gasPrices[feeDenom as string] * gas),
         })
