@@ -1,25 +1,23 @@
+import { useMemo, useState } from "react"
+import classNames from "classnames"
+import { encode } from "js-base64"
+import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
 import {
   SectionHeader,
   Button,
   Banner,
   Input,
   FilterIcon,
+  ChainLoader,
 } from "@terra-money/station-ui"
-// import {
-//   useCustomTokensCW20,
-//   useCustomTokensNative,
-// } from "data/settings/CustomTokens"
 import { useIsWalletEmpty } from "data/queries/bank"
-import { useTokenFilters } from "utils/localStorage"
 import { useParsedAssetList } from "data/token"
-import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
-import styles from "./AssetList.module.scss"
-import { useMemo, useState } from "react"
-import classNames from "classnames"
-import { encode } from "js-base64"
-import Asset from "./Asset"
+import { useTokenFilters } from "utils/localStorage"
 import { toInput } from "txs/utils"
+import { useNetworks } from "app/InitNetworks"
+import Asset from "./Asset"
+import styles from "./AssetList.module.scss"
 
 const cx = classNames.bind(styles)
 
@@ -27,27 +25,18 @@ const AssetList = () => {
   const { t } = useTranslation()
   const isWalletEmpty = useIsWalletEmpty()
   const { onlyShowWhitelist, hideLowBal, toggleHideLowBal } = useTokenFilters()
-  // const native = useCustomTokensNative()
-  // const cw20 = useCustomTokensCW20()
   const list = useParsedAssetList()
   const [search, setSearch] = useState("")
   const [showFilter, setShowFilter] = useState(false)
   const navigate = useNavigate()
+  const { networksLoading, validNetworksLength, validationResultLength } =
+    useNetworks()
   const showHideText = hideLowBal ? "Show" : "Hide"
 
   const toggleFilter = () => {
     setSearch("")
     setShowFilter(!showFilter)
   }
-
-  // const alwaysVisibleDenoms = useMemo(
-  //   () =>
-  //     new Set([
-  //       ...cw20.list.map((a) => a.token),
-  //       ...native.list.map((a) => a.denom),
-  //     ]),
-  //   [cw20.list, native.list]
-  // )
 
   const assets = useMemo(() => {
     const filtered = list
@@ -123,6 +112,15 @@ const AssetList = () => {
               placeholder={t("Filter by tokens, chains, etc.")}
               onChange={(e) => setSearch(e.target.value)}
               data-testid="assetlist-filter-input"
+            />
+          </div>
+        )}
+        {networksLoading && (
+          <div className={styles.chain__loader__container}>
+            <ChainLoader
+              count={validNetworksLength}
+              total={validationResultLength}
+              textLabel={t("Chains Loading")}
             />
           </div>
         )}

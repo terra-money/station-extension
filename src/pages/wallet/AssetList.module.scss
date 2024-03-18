@@ -1,11 +1,16 @@
 @import "mixins";
 
+.chain__loader__container {
+  padding: 0 10px;
+  margin-bottom: 12px;
+}
+
 .assetlist {
   display: grid;
   grid-template-areas: "title" "list";
   grid-template-rows: min-content auto;
   overflow-y: hidden;
-  row-gap: 16px;
+  row-gap: 22px;
 }
 
 .assetlist__title {
