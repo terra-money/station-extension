@@ -78,7 +78,8 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const [feeDenom, setFeeDenom] = useState<string | undefined>(
     "tx" in props
       ? props.tx.fee?.amount?.toData()?.[0]?.denom ??
-          (baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices ?? {})[0])
+          (gasPrices &&
+            (baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices)[0]))
       : undefined
   )
 
