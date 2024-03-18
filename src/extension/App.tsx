@@ -97,7 +97,14 @@ const App = () => {
       return <Welcome />
     }
     // main page
-    const hidePaths = ["/auth/", "/manage-wallet/", "/preferences"]
+    const hidePaths = [
+      "/auth/",
+      "/manage-wallet/",
+      "/preferences",
+      "/send",
+      "/swap",
+      "/receive",
+    ]
     const hideHeader = hidePaths.some((p) => location.pathname.startsWith(p))
 
     return (

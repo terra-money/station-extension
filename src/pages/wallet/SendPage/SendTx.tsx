@@ -38,6 +38,7 @@ const SendTx = () => {
               <ExtensionPageV2
                 backButtonPath={getBackPath(pathname)}
                 title={t(r.title)}
+                fullHeight
               >
                 {r.element}
               </ExtensionPageV2>
