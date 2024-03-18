@@ -13,6 +13,7 @@ import { SignBytesRequest, TxResponse } from "./utils"
 import { isBytes, isSign } from "./utils"
 import { parseBytes, parseDefault, useParseTx, toData } from "./utils"
 import { useChainID, useNetwork } from "data/wallet"
+import { Fee } from "@terra-money/feather.js"
 
 interface RequestContext {
   requests: {
@@ -27,7 +28,7 @@ interface RequestContext {
     tx: (
       requestType: RequestType,
       request: PrimitiveDefaultRequest,
-      response: TxResponse
+      response: TxResponse & { fee?: Fee }
     ) => void
     multisigTx: (request: PrimitiveDefaultRequest) => void
     pubkey: () => void
@@ -198,10 +199,14 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
         ({ id, origin }) => id === request.id && origin === request.origin
       )
 
-      const result = toData(
-        response.result,
-        networks[defaultChainID]?.isClassic
-      )
+      const fee = response.fee?.toAmino()
+
+      const result = {
+        fee,
+        ...toData(response.result, networks[defaultChainID]?.isClassic),
+      }
+
+      // @ts-expect-error
       const next = update(index, { ...list[index], ...response, result }, list)
       browser.storage?.local.set({ [type]: next }).then(() => setTx(undefined))
     })

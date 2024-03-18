@@ -181,7 +181,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
           else navigate({ pathname, search })
         } else {
           const result = await auth[requestType](txOptions, password, signMode)
-          const response = { result, success: true }
+          const response = { result, success: true, fee }
           actions.tx(requestType, props, response)
         }
       } catch (error) {
