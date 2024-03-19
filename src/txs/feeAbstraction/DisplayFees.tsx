@@ -1,8 +1,11 @@
 import { useNetwork } from "auth/hooks/useNetwork"
-import { Select } from "components/form"
 import { ReactNode, useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { LoadingCircular, SummaryTable } from "@terra-money/station-ui"
+import {
+  Dropdown,
+  LoadingCircular,
+  SummaryTable,
+} from "@terra-money/station-ui"
 import styles from "./DisplayFees.module.scss"
 import { useNativeDenoms } from "data/token"
 import { Read } from "components/token"
@@ -127,18 +130,14 @@ export default function DisplayFees({
             <div className={styles.gas}>
               {t("Fee")}{" "}
               {availableGasDenoms.length > 1 && setGasDenom && (
-                <Select
+                <Dropdown
                   value={gasDenom}
-                  onChange={(e) => setGasDenom(e.target.value)}
-                  className={styles.select}
-                  small
-                >
-                  {availableGasDenoms.map((denom, i) => (
-                    <option value={denom} key={i}>
-                      {readNativeDenom(denom, chainID).symbol}
-                    </option>
-                  ))}
-                </Select>
+                  options={availableGasDenoms.map((denom) => ({
+                    value: denom,
+                    label: readNativeDenom(denom, chainID).symbol,
+                  }))}
+                  onChange={(val) => setGasDenom(val)}
+                />
               )}
             </div>
           ),

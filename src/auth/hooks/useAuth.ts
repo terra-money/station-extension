@@ -294,7 +294,7 @@ const useAuth = () => {
           Buffer.from(pk[networks[txOptions?.chainID].coinType] ?? "", "hex")
         )
         const w = lcd.wallet(key)
-        return await w.createAndSignTx(txOptions)
+        return await w.createAndSignTx({ ...txOptions, signMode })
       }
     }
   }

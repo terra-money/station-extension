@@ -7,7 +7,6 @@ import { useAddress, useNetwork } from "data/wallet"
 import { getChainIDFromAddress } from "utils/bech32"
 import { useValidators } from "data/queries/staking"
 import { truncate } from "@terra-money/terra-utils"
-import { useProposal } from "data/queries/gov"
 import { Read } from "components/token"
 
 const ValidatorAddress = ({ children: address }: { children: string }) => {
@@ -89,15 +88,20 @@ interface ProposalProps {
 }
 
 const Proposal = (props: ProposalProps) => {
-  const { proposalID, chainID } = props
+  const {
+    proposalID,
+    //chainID
+  } = props
 
+  /*
   const { data: proposal } = useProposal(proposalID, chainID)
 
   const proposalName = proposal?.content?.title
     ? proposal.content.title
     : `Proposal ID ${proposalID}`
+    */
 
-  return <span>{proposalName}</span>
+  return <span>Proposal ID {proposalID}</span>
 }
 
 interface Props {

@@ -32,6 +32,7 @@ const SwapTx = () => {
                 backButtonPath={backPath}
                 title={t(r.title)}
                 overNavbar={r.path !== "/"}
+                fullHeight
               >
                 {r.element}
               </ExtensionPageV2>
