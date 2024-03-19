@@ -4,7 +4,8 @@ import { useQueries, useQuery } from "react-query"
 import { useNetworks } from "app/InitNetworks"
 import { randomAddress } from "utils/bech32"
 import axios from "axios"
-import { useEffect, useState } from "react"
+import { useState } from "react"
+import { ChainID } from "types/network"
 
 export const useLocalNodeInfo = (chainID: string) => {
   const { networks } = useNetworks()
@@ -78,53 +79,47 @@ interface Network {
 }
 
 export const useValidNetworks = (networks: Network[]) => {
+  const MAX_ATTEMPTS = 10
+  const REFETCH_WAIT_INTERVAL = 5000 // 5 seconds
+
   const [failedNetworks, setFailedNetworks] = useState<Network[]>([])
+  const [successNetworks, setSuccessNetworks] = useState<ChainID[]>([])
   const [attemptCount, setAttemptCount] = useState(0)
-  console.log("attemptCount", attemptCount)
-  console.log("failedNetworks", failedNetworks)
 
-  useEffect(() => {
-    if (failedNetworks.length > 0 && attemptCount < 10) {
-      const timer = setTimeout(() => {
-        setAttemptCount(attemptCount + 1)
-      }, 10000)
-
-      return () => clearTimeout(timer)
-    }
-  }, [failedNetworks, attemptCount])
-
-  const validationQueries = useQueries(
+  return useQueries(
     networks.map(({ chainID, prefix, lcd }) => {
       return {
         queryKey: [queryKey.tendermint.nodeInfo, lcd],
         queryFn: async () => {
-          try {
-            if (prefix === "terra") return chainID
-            if (prefix === "eth") throw Error("poop")
-            const { data } = (await axios.get(
-              `/cosmos/bank/v1beta1/balances/${randomAddress(prefix)}`,
-              {
-                baseURL: lcd,
-                timeout: VALIDATION_TIMEOUT,
-              }
-            )) ?? { data: {} }
-            if (Array.isArray(data.balances)) return chainID
-          } catch (error) {
-            setFailedNetworks((prev) => [...prev, { chainID, prefix, lcd }])
+          if (successNetworks.includes(chainID) || prefix === "terra")
+            return chainID
+          const res = await axios.get(
+            `/cosmos/bank/v1beta1/balances/${randomAddress(prefix)}`,
+            {
+              baseURL: lcd,
+              timeout: VALIDATION_TIMEOUT,
+            }
+          )
+          if (Array.isArray(res?.data?.balances)) {
+            setSuccessNetworks((prev) => [...prev, chainID])
+            return chainID
           }
         },
         ...RefetchOptions.INFINITY,
+        enabled: attemptCount < MAX_ATTEMPTS,
+        refetchOnMount: false,
+        refetchInterval: failedNetworks.some((network) => network.lcd === lcd)
+          ? REFETCH_WAIT_INTERVAL
+          : undefined,
+        onSettled: (data: any, error: any) => {
+          if (error && attemptCount < MAX_ATTEMPTS - 1) {
+            setFailedNetworks((prev) => [...prev, { chainID, prefix, lcd }])
+            setAttemptCount(attemptCount + 1)
+          } else if (data) {
+            setSuccessNetworks((prev) => [...prev, chainID])
+          }
+        },
       }
     })
   )
-
-  return validationQueries.map((query, index) => {
-    if (
-      query.isError &&
-      !failedNetworks.some((network) => network.lcd === networks[index].lcd)
-    ) {
-      return { ...query, data: null }
-    }
-    return query
-  })
 }
