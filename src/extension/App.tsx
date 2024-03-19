@@ -39,6 +39,7 @@ import Auth from "./auth/Auth"
 import UpgradeWalletButton from "app/sections/UpgradeWalletButton"
 import { Tooltip } from "@terra-money/station-ui"
 import { useTranslation } from "react-i18next"
+import SwapContext, { SwapProvider } from "txs/swap/SwapContext"
 
 const App = () => {
   const { networks } = useNetworks()
@@ -82,7 +83,14 @@ const App = () => {
     { path: "/preferences/*", element: <PreferencesRouter /> },
 
     /* default txs */
-    { path: "/swap/*", element: <SwapTx /> },
+    {
+      path: "/swap/*",
+      element: (
+        <SwapContext>
+          <SwapTx />
+        </SwapContext>
+      ),
+    },
     { path: "/multisig/sign", element: <SignMultisigTxPage /> },
     { path: "/multisig/post", element: <PostMultisigTxPage /> },
 

@@ -9,6 +9,7 @@ import SendTx from "./SendPage/SendTx"
 import WalletMain from "./WalletMain"
 import AssetPage from "./AssetPage"
 import ExtensionPageV2 from "extension/components/ExtensionPageV2"
+import SendContext from "./SendPage/SendContext"
 
 interface IRoute {
   path: string
@@ -43,7 +44,11 @@ export const useWalletRoutes = (): IRoute[] => {
     },
     {
       path: "/send/*",
-      element: <SendTx />,
+      element: (
+        <SendContext>
+          <SendTx />
+        </SendContext>
+      ),
     },
     {
       path: "/asset/:chain/:denom",

@@ -39,7 +39,7 @@ interface Send {
   networks: IInterchainNetworks
 }
 
-export const [useSend, SendProvider] = createContext<Send>("useSwap")
+export const [useSend, SendProvider] = createContext<Send>("useSend")
 const SendContext = ({ children }: PropsWithChildren<{}>) => {
   const navigate = useNavigate()
   const form = useForm<TxValues>({ mode: "onChange" })

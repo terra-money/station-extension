@@ -1,16 +1,21 @@
-import { Routes, Route, useLocation } from "react-router-dom"
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import Address from "./Address"
 import Chain from "./Chain"
 import Token from "./Token"
 import Submit from "./Submit"
 import Confirm from "./Confirm"
-import SendContext from "./SendContext"
 import ExtensionPageV2 from "extension/components/ExtensionPageV2"
+import { useSend } from "./SendContext"
+import ConfirmLeaveModal from "components/form/ConfirmLeaveModal"
+import useConfirmLeave from "components/form/useConfirmLeave"
 
 const SendTx = () => {
   const { pathname } = useLocation()
   const { t } = useTranslation()
+  const { form } = useSend()
+  const { confirmModal, setConfirmModal, onClose, handleConfirmLeave } =
+    useConfirmLeave(form.formState.isDirty)
 
   const getBackPath = (pathname: string) => {
     const step = Number(pathname.split("/").pop())
@@ -28,7 +33,13 @@ const SendTx = () => {
   ]
 
   return (
-    <SendContext>
+    <>
+      <ConfirmLeaveModal
+        isOpen={confirmModal}
+        onRequestClose={() => setConfirmModal(false)}
+        onConfirm={handleConfirmLeave}
+      />
+
       <Routes>
         {routes.map((r) => (
           <Route
@@ -39,6 +50,7 @@ const SendTx = () => {
                 backButtonPath={getBackPath(pathname)}
                 title={t(r.title)}
                 fullHeight
+                onClose={onClose}
               >
                 {r.element}
               </ExtensionPageV2>
@@ -46,7 +58,7 @@ const SendTx = () => {
           />
         ))}
       </Routes>
-    </SendContext>
+    </>
   )
 }
 
