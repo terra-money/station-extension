@@ -23,7 +23,6 @@ import {
   Grid,
 } from "@terra-money/station-ui"
 import styles from "./Swap.module.scss"
-import { useNetworks } from "app/InitNetworks"
 import { useNetwork } from "data/wallet"
 import { useGasEstimation } from "data/queries/tx"
 
