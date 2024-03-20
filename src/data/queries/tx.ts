@@ -1,11 +1,19 @@
 import { QueryKey, useQuery, useQueryClient } from "react-query"
 import { useInterchainLCDClient } from "./lcdClient"
-import { atom, useSetRecoilState } from "recoil"
+import { atom, useRecoilValue, useSetRecoilState } from "recoil"
 import { CARBON_API, OSMOSIS_GAS_ENDPOINT } from "config/constants"
 import { useNetworks } from "app/InitNetworks"
-import { RefetchOptions } from "../query"
-import { queryKey } from "../query"
 import axios from "axios"
+import { useCallback, useMemo } from "react"
+import BigNumber from "bignumber.js"
+import { isNil } from "ramda"
+import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { useNetwork } from "data/wallet"
+import { useIsWalletEmpty } from "data/queries/bank"
+import { queryKey, RefetchOptions } from "data/query"
+import { useAuth } from "auth"
+import { getLocalSetting, SettingKey } from "utils/localStorage"
+import { CreateTxOptions, Msg } from "@terra-money/feather.js"
 
 interface LatestTx {
   txhash: string
@@ -103,4 +111,103 @@ export const useCarbonFees = () => {
     },
     { ...RefetchOptions.INFINITY }
   )
+}
+
+interface UseGasEstimationProps {
+  chain: string
+  estimationTxValues: any
+  createTx: (values: any) => CreateTxOptions | undefined
+  txGasAdjustment?: number
+  gasDenom?: string
+}
+
+export const useGasEstimation = ({
+  chain,
+  estimationTxValues,
+  createTx,
+  txGasAdjustment,
+  gasDenom,
+}: UseGasEstimationProps) => {
+  const lcd = useInterchainLCDClient()
+  const networks = useNetwork()
+  const { wallet } = useAuth()
+  const addresses = useInterchainAddresses()
+  const isWalletEmpty = useIsWalletEmpty()
+  const { data: carbonFees } = useCarbonFees()
+  const { data: osmosisGas } = useOsmosisGas(!chain?.startsWith("osmosis-"))
+  const isBroadcasting = useRecoilValue(isBroadcastingState)
+
+  const simulationTx = estimationTxValues && createTx(estimationTxValues)
+  const gasAdjustmentSetting = SettingKey.GasAdjustment
+  const gasAdjustment =
+    networks[chain]?.gasAdjustment *
+    getLocalSetting<number>(gasAdjustmentSetting)
+
+  const key = {
+    address: addresses?.[chain],
+    gasAdjustment: gasAdjustment * (txGasAdjustment ?? 1),
+    estimationTxValues,
+    msgs: simulationTx?.msgs.map(
+      (msg: Msg) => msg.toData(networks[chain].isClassic)["@type"]
+    ),
+  }
+
+  const carbonFee = useMemo(() => {
+    const fee =
+      carbonFees?.costs[key.msgs?.[0] ?? ""] ?? carbonFees?.costs["default_fee"]
+    return Number(fee)
+  }, [carbonFees, key.msgs])
+
+  const { data: estimatedGas, ...estimatedGasState } = useQuery(
+    [queryKey.tx.create, key, isWalletEmpty, carbonFee],
+    async () => {
+      if (!key.address || isWalletEmpty) return 0
+      if (!wallet) return 0
+      if (!simulationTx || !simulationTx.msgs.length) return 0
+      try {
+        if (chain.startsWith("carbon-")) return carbonFee
+        const unsignedTx = await lcd.tx.create([{ address: key.address }], {
+          ...simulationTx,
+          feeDenoms: [gasDenom],
+        })
+        console.log(
+          "unsignedTx.auth_info.fee.gas_limit",
+          unsignedTx.auth_info.fee.gas_limit
+        )
+        return Math.ceil(unsignedTx.auth_info.fee.gas_limit)
+      } catch (error) {
+        console.error(error)
+        return 200_000
+      }
+    },
+    {
+      ...RefetchOptions.INFINITY,
+      retry: 3,
+      retryDelay: 1000,
+      refetchOnWindowFocus: false,
+      enabled: !isBroadcasting,
+    }
+  )
+
+  const getGasAmount = useCallback(
+    (denom: CoinDenom) => {
+      const gasPrice = chain?.startsWith("carbon-")
+        ? carbonFees?.prices[denom]
+        : chain?.startsWith("osmosis-")
+        ? (osmosisGas || 0.0025) * 10
+        : networks[chain]?.gasPrices[denom]
+      if (isNil(estimatedGas) || !gasPrice) return "0"
+      return new BigNumber(estimatedGas)
+        .times(gasPrice)
+        .integerValue(BigNumber.ROUND_CEIL)
+        .toString()
+    },
+    [chain, carbonFees?.prices, osmosisGas, networks, estimatedGas]
+  )
+
+  return {
+    estimatedGas,
+    estimatedGasState,
+    getGasAmount,
+  }
 }
