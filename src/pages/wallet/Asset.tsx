@@ -105,9 +105,7 @@ const Asset = (props: Props) => {
             {...props}
             amount={price * parseInt(totalBalance ?? "0")}
             decimals={decimals}
-            fixed={2}
             denom=""
-            token=""
             currency
           />
         ) : (
