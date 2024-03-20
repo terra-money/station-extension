@@ -19,8 +19,21 @@ import { ChainID } from "types/network"
 import { has } from "utils/num"
 import { useSend } from "./SendContext"
 import { AssetType } from "./types"
+import { toInput } from "txs/utils"
 
-const Token = () => {
+type TokenChainData = {
+  denom: string
+  id: string
+  balance: number
+  decimals: number
+  tokenPrice: number
+  chainID: string
+  chainName: string
+  tokenIcon: string
+  supported: boolean
+}
+
+const TokenSelection = () => {
   const { form, goToStep, getWalletName, assetList, getIBCChannel, networks } =
     useSend()
   const { setValue, watch, register } = form
@@ -31,9 +44,9 @@ const Token = () => {
   const { destination, recipient, asset } = watch()
   const [selectedChain, setSelectedChain] = useState<ChainID | "all">("all")
 
-  const tokens = useMemo(() => {
+  const tokens: AssetType[] = useMemo(() => {
     return assetList.reduce((acc, a) => {
-      a.tokenChainInfo.forEach((tokenChainData: any) => {
+      a.tokenChainInfo.forEach((tokenChainData: TokenChainData) => {
         const {
           denom,
           id,
@@ -46,12 +59,13 @@ const Token = () => {
           supported,
         } = tokenChainData
 
-        if (acc.some((asset: AssetType) => asset.id === id)) {
+        if (
+          acc.some((asset: AssetType) => asset.id === id) ||
+          !has(tokenChainData.balance)
+        ) {
           return acc
         }
-        if (!has(tokenChainData.balance)) {
-          return acc
-        }
+
         const isNative = chain === destination
         const channel = getIBCChannel({
           from: chain,
@@ -61,23 +75,22 @@ const Token = () => {
         })
 
         if ((isNative || channel) && supported) {
-          const balVal = balance * price
+          const value = balance * price
+          console.log({ value, denom })
           const senderAddress = addresses?.[chain]
-          const item = {
+          const item: AssetType = {
             ...a,
             id,
             denom,
             tokenImg: icon,
-            balVal,
+            value: value / Math.pow(10, decimals),
             senderAddress,
             balance,
             channel,
             tokenChain: chain,
             amountNode: <Read amount={balance} fixed={2} decimals={decimals} />,
-            priceNode: balVal ? (
-              <>
-                <Read amount={balVal} currency fixed={2} decimals={decimals} />
-              </>
+            priceNode: value ? (
+              <Read amount={value} currency fixed={2} decimals={decimals} />
             ) : (
               <span>—</span>
             ),
@@ -85,7 +98,7 @@ const Token = () => {
               label: name ?? chain,
               icon: networks[chain]?.icon,
             },
-          } as AssetType
+          }
 
           acc.push(item)
         }
@@ -102,54 +115,53 @@ const Token = () => {
     getIBCChannel,
   ])
 
-  const [filtered, setFiltered] = useState(tokens)
+  const [filteredTokens, setFilteredTokens] = useState<AssetType[]>(tokens)
 
-  useEffect(() => {
-    console.log("🚀 ~ useEffect ~ asset:", asset)
-    if (asset) {
-      const filtered = tokens
-        .filter((t: AssetType) => {
-          if (selectedChain === "all") {
+  const filterTokens = useMemo(() => {
+    return (searchTerm: string, chain: ChainID | "all") => {
+      if (searchTerm) {
+        const filtered = tokens.filter((t: AssetType) => {
+          if (chain === "all") {
             return (
-              t.symbol.toLowerCase().includes(asset.toLowerCase()) ||
-              t.chain.label.toLowerCase().includes(asset.toLowerCase())
+              t.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              t.chain.label.toLowerCase().includes(searchTerm.toLowerCase())
             )
           }
 
           return (
-            (t.symbol.toLowerCase().includes(asset.toLowerCase()) ||
-              t.chain.label.toLowerCase().includes(asset.toLowerCase())) &&
-            t.tokenChain.toLowerCase() === selectedChain.toLowerCase()
+            (t.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              t.chain.label.toLowerCase().includes(searchTerm.toLowerCase())) &&
+            t.tokenChain.toLowerCase() === chain.toLowerCase()
           )
-        })
-        .sort(
-          (a: AssetType, b: AssetType) =>
-            parseInt(b.balVal) - parseInt(a.balVal)
-        )
-      setFiltered(filtered)
-    } else if (selectedChain !== "all" && (asset === "" || !asset)) {
-      const filtered = tokens
-        .filter((t: AssetType) => {
-          return t.tokenChain.toLowerCase() === selectedChain.toLowerCase()
-        })
-        .sort(
-          (a: AssetType, b: AssetType) =>
-            parseInt(b.balVal) - parseInt(a.balVal)
-        )
-      setFiltered(filtered)
-    } else {
-      setFiltered(tokens)
+        }) as AssetType[]
+
+        return filtered
+      } else if (chain !== "all") {
+        const filtered = tokens.filter(
+          (t: AssetType) => t.tokenChain.toLowerCase() === chain.toLowerCase()
+        ) as AssetType[]
+
+        return filtered
+      } else {
+        return tokens
+      }
     }
+  }, [tokens])
+
+  useEffect(() => {
+    const tokens = filterTokens(asset ?? "", selectedChain)
+    setFilteredTokens(tokens)
+    // eslint-disable-next-line
   }, [asset, selectedChain])
 
-  const onClick = (asset: AssetType) => {
+  const handleTokenClick = (asset: AssetType) => {
     setValue("asset", asset.denom)
     setValue("chain", asset.tokenChain)
     setValue("assetInfo", asset)
     goToStep(4)
   }
 
-  const options = [
+  const chainOptions = [
     { label: "All Chains", value: "all" },
     ...Object.values(networks).map((n) => ({
       label: n.name,
@@ -161,7 +173,8 @@ const Token = () => {
     goToStep(1)
     return null
   }
-  const recipientName = getWalletName(recipient) // wallet name or address if none found
+
+  const recipientName = getWalletName(recipient)
 
   return (
     <FlexColumn gap={24} justify="flex-start" align="stretch">
@@ -179,7 +192,7 @@ const Token = () => {
           {...register("asset")}
           extra={
             <Dropdown
-              options={options}
+              options={chainOptions}
               value={selectedChain ?? "all"}
               onChange={(value) => setSelectedChain(value)}
               variant="textDisplay"
@@ -189,17 +202,19 @@ const Token = () => {
         />
       </InputWrapper>
       <FlexColumn gap={24} align="stretch">
-        {filtered.length === 0 && <Empty />}
-        {filtered.map((asset: AssetType, i: number) => (
-          <TokenSingleChainListItem
-            key={`asset-${i}-${asset.denom}`}
-            {...asset}
-            onClick={() => onClick(asset)}
-          />
-        ))}
+        {filteredTokens.length === 0 && <Empty />}
+        {filteredTokens
+          .sort((a, b) => b.value - a.value)
+          .map((asset: AssetType) => (
+            <TokenSingleChainListItem
+              key={asset.id}
+              {...asset}
+              onClick={() => handleTokenClick(asset)}
+            />
+          ))}
       </FlexColumn>
     </FlexColumn>
   )
 }
 
-export default Token
+export default TokenSelection

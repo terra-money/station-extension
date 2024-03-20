@@ -2,7 +2,7 @@ import { TokenSingleChainListItemProps } from "@terra-money/station-ui"
 import { AccAddress } from "@terra-money/feather.js"
 
 export interface AssetType extends TokenSingleChainListItemProps {
-  balVal: string
+  value: number
   balance: string
   decimals: number
   amount: string
