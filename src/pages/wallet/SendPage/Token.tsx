@@ -76,7 +76,6 @@ const TokenSelection = () => {
 
         if ((isNative || channel) && supported) {
           const value = balance * price
-          console.log({ value, denom })
           const senderAddress = addresses?.[chain]
           const item: AssetType = {
             ...a,
