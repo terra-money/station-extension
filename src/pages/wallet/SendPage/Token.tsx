@@ -105,7 +105,6 @@ const Token = () => {
   const [filtered, setFiltered] = useState(tokens)
 
   useEffect(() => {
-    console.log("🚀 ~ useEffect ~ asset:", asset)
     if (asset) {
       const filtered = tokens
         .filter((t: AssetType) => {
