@@ -1,23 +1,11 @@
 import {
   ActivityListItem,
+  ExternalLinkIcon,
   SectionHeader,
   SummaryColumn,
   SummaryTable,
   Timeline,
-  ExternalLinkIcon,
 } from "@terra-money/station-ui"
-import styles from "./ActivityDetailsPage.module.scss"
-import { ExternalLink } from "components/general"
-import { ReadMultiple } from "components/token"
-import { useTranslation } from "react-i18next"
-import { useNetwork } from "data/wallet"
-import { toNow } from "utils/date"
-import moment from "moment"
-import { ReactElement } from "react"
-import { useAllInterchainAddresses } from "auth/hooks/useAddress"
-import { getCanonicalMsg } from "@terra-money/terra-utils"
-import { last } from "ramda"
-import ActivityMessage from "./ActivityMessage"
 import {
   IbcTxDetails,
   getIbcTxDetails,
@@ -26,6 +14,21 @@ import {
   useIbcPrevHop,
   useIbcTimeout,
 } from "txs/useIbcTxs"
+import AssetChain from "pages/wallet/AssetChain"
+import { useAllInterchainAddresses } from "auth/hooks/useAddress"
+import { getCanonicalMsg } from "@terra-money/terra-utils"
+import { useExchangeRates } from "data/queries/coingecko"
+import styles from "./ActivityDetailsPage.module.scss"
+import { ExternalLink } from "components/general"
+import { ReadMultiple } from "components/token"
+import ActivityMessage from "./ActivityMessage"
+import { useTranslation } from "react-i18next"
+import { useNativeDenoms } from "data/token"
+import { useNetwork } from "data/wallet"
+import { ReactElement } from "react"
+import { toNow } from "utils/date"
+import { last } from "ramda"
+import moment from "moment"
 
 interface Props {
   variant: "success" | "failed" | "loading"
@@ -216,12 +219,13 @@ const ActivityDetailsPage = ({
   logs,
 }: Props) => {
   const { t } = useTranslation()
-
   const networks = useNetwork()
   const explorer = networks[chain ?? ""]?.explorer
   const externalLink = explorer?.tx?.replace("{}", txHash)
   const ibcDetails = getIbcTxDetails({ logs, chain })
   const prevIbcDetails = getRecvIbcTxDetails({ logs, chain })
+  const readNativeDenom = useNativeDenoms()
+  const { data: prices } = useExchangeRates()
 
   const timelineDisplayMessages = timelineMessages.map(
     (message: ReactElement) => {
@@ -275,6 +279,58 @@ const ActivityDetailsPage = ({
         />
         {!!ibcDetails && <NextHopActivity {...ibcDetails} />}
       </div>
+
+      {/* Balance Changes Display */}
+      {msg?.props?.msg?.inAssets?.length ||
+      msg?.props?.msg?.outAssets?.length ? (
+        <SectionHeader title={t("Balance Changes")} withLine />
+      ) : null}
+
+      {/* In Assets Display */}
+      {msg?.props?.msg?.outAssets?.map((outAsset: any) => {
+        const amount = outAsset.match(/^\d+/)?.[0]
+        const denom = outAsset.match(/[a-z]+[/]*?[A-Za-z/\d]*$/)?.[0]
+
+        console.log(outAsset, denom, chain, amount, msg)
+
+        const { symbol, decimals } = readNativeDenom(denom, chain)
+
+        return (
+          <AssetChain
+            key={denom + chain}
+            symbol={symbol}
+            balance={amount}
+            chain={chain}
+            price={prices?.[denom]?.price || 0}
+            denom={denom}
+            decimals={decimals}
+            sign={"-"}
+          />
+        )
+      })}
+
+      {/* Out Assets Display */}
+      {msg?.props?.msg?.inAssets?.map((inAsset: any) => {
+        const amount = inAsset.match(/^\d+/)?.[0]
+        const denom = inAsset.match(/[a-z]+[/]*?[A-Za-z/\d]*$/)?.[0]
+
+        console.log(inAsset, denom, chain, amount)
+
+        const { symbol, decimals } = readNativeDenom(denom, chain)
+
+        return (
+          <AssetChain
+            key={denom + chain}
+            symbol={symbol}
+            balance={amount}
+            chain={chain}
+            price={prices?.[denom]?.price || 0}
+            denom={denom}
+            decimals={decimals}
+            sign={"+"}
+          />
+        )
+      })}
 
       <SectionHeader title={t("Details")} withLine />
       <SummaryColumn
