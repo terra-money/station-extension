@@ -78,7 +78,8 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
   const [feeDenom, setFeeDenom] = useState<string | undefined>(
     "tx" in props
       ? props.tx.fee?.amount?.toData()?.[0]?.denom ??
-          (baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices ?? {})[0])
+          (gasPrices &&
+            (baseAsset in gasPrices ? baseAsset : Object.keys(gasPrices)[0]))
       : undefined
   )
 
@@ -143,7 +144,10 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
     gas = tx.fee?.gas_limit || Math.ceil((estimatedGas ?? 0) * gasAdjustment)
 
     fee = isClassic
-      ? tx.fee
+      ? tx.fee ??
+        new Fee(gas, {
+          [feeDenom as string]: Math.ceil(gasPrices[feeDenom as string] * gas),
+        })
       : new Fee(gas, {
           [feeDenom as string]: Math.ceil(gasPrices[feeDenom as string] * gas),
         })
@@ -178,7 +182,7 @@ const ConfirmTx = (props: TxRequest | SignBytesRequest) => {
           else navigate({ pathname, search })
         } else {
           const result = await auth[requestType](txOptions, password, signMode)
-          const response = { result, success: true }
+          const response = { result, success: true, fee }
           actions.tx(requestType, props, response)
         }
       } catch (error) {

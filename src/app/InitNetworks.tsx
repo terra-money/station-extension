@@ -11,6 +11,8 @@ import { InterchainNetworks } from "types/network"
 export const [useNetworks, NetworksProvider] = createContext<{
   networks: InterchainNetworks
   networksLoading: boolean
+  validationResultLength: number
+  validNetworksLength: number
   filterEnabledNetworks: <T>(network: Record<string, T>) => Record<string, T>
   filterDisabledNetworks: <T>(network: Record<string, T>) => Record<string, T>
 }>("useNetworks")
@@ -82,6 +84,8 @@ const InitNetworks = ({ children }: PropsWithChildren<{}>) => {
           value={{
             networks,
             networksLoading: validationState.isLoading,
+            validationResultLength: validationResult.length,
+            validNetworksLength: validNetworks.length,
             filterEnabledNetworks: (networks) =>
               Object.fromEntries(
                 Object.entries(networks ?? {}).filter(
