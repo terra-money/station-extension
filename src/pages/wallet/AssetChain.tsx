@@ -43,7 +43,10 @@ const AssetChain = (props: Props) => {
     !!path?.find((chain) => !networks[chain]) ||
     (symbol === "LUNC" && networkName !== "classic")
 
-  const signStyle = sign === "-" ? { color: "#dc534c" } : { color: "#1da188" }
+  const signStyle =
+    sign === "-"
+      ? { color: "var(--token-error-500)" }
+      : { color: "var(--token-success-500)" }
   const amount = (
     <Read {...props} amount={balance} token="" fixed={2} decimals={decimals} />
   )
