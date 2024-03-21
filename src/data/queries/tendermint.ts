@@ -4,6 +4,8 @@ import { useQueries, useQuery } from "react-query"
 import { useNetworks } from "app/InitNetworks"
 import { randomAddress } from "utils/bech32"
 import axios from "axios"
+import { useState } from "react"
+import { ChainID } from "types/network"
 
 export const useLocalNodeInfo = (chainID: string) => {
   const { networks } = useNetworks()
@@ -77,26 +79,46 @@ interface Network {
 }
 
 export const useValidNetworks = (networks: Network[]) => {
+  const MAX_ATTEMPTS = 10
+  const REFETCH_WAIT_INTERVAL = 5000 // 5 seconds
+
+  const [failedNetworks, setFailedNetworks] = useState<Network[]>([])
+  const [successNetworks, setSuccessNetworks] = useState<ChainID[]>([])
+  const [attemptCount, setAttemptCount] = useState(0)
+
   return useQueries(
     networks.map(({ chainID, prefix, lcd }) => {
       return {
         queryKey: [queryKey.tendermint.nodeInfo, lcd],
         queryFn: async () => {
-          if (prefix === "terra") return chainID
-
-          const { data } = (await axios.get(
+          if (successNetworks.includes(chainID) || prefix === "terra")
+            return chainID
+          const res = await axios.get(
             `/cosmos/bank/v1beta1/balances/${randomAddress(prefix)}`,
             {
-              baseURL: lcd, // TODO: pass custom lcd to the function
+              baseURL: lcd,
               timeout: VALIDATION_TIMEOUT,
             }
-          )) || {
-            data: {},
+          )
+          if (Array.isArray(res?.data?.balances)) {
+            setSuccessNetworks((prev) => [...prev, chainID])
+            return chainID
           }
-
-          if (Array.isArray(data.balances)) return chainID
         },
         ...RefetchOptions.INFINITY,
+        enabled: attemptCount < MAX_ATTEMPTS,
+        refetchOnMount: false,
+        refetchInterval: failedNetworks.some((network) => network.lcd === lcd)
+          ? REFETCH_WAIT_INTERVAL
+          : undefined,
+        onSettled: (data: any, error: any) => {
+          if (error && attemptCount < MAX_ATTEMPTS - 1) {
+            setFailedNetworks((prev) => [...prev, { chainID, prefix, lcd }])
+            setAttemptCount(attemptCount + 1)
+          } else if (data) {
+            setSuccessNetworks((prev) => [...prev, chainID])
+          }
+        },
       }
     })
   )
