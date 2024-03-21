@@ -291,8 +291,6 @@ const ActivityDetailsPage = ({
         const amount = outAsset.match(/^\d+/)?.[0]
         const denom = outAsset.match(/[a-z]+[/]*?[A-Za-z/\d]*$/)?.[0]
 
-        console.log(outAsset, denom, chain, amount, msg)
-
         const { symbol, decimals } = readNativeDenom(denom, chain)
 
         return (
@@ -313,8 +311,6 @@ const ActivityDetailsPage = ({
       {msg?.props?.msg?.inAssets?.map((inAsset: any) => {
         const amount = inAsset.match(/^\d+/)?.[0]
         const denom = inAsset.match(/[a-z]+[/]*?[A-Za-z/\d]*$/)?.[0]
-
-        console.log(inAsset, denom, chain, amount)
 
         const { symbol, decimals } = readNativeDenom(denom, chain)
 
