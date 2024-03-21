@@ -23,6 +23,8 @@ import {
   Grid,
 } from "@terra-money/station-ui"
 import styles from "./Swap.module.scss"
+import { useNetwork } from "data/wallet"
+import { useGasEstimation } from "data/queries/tx"
 
 enum SwapAssetType {
   ASK = "askAsset",
@@ -31,8 +33,16 @@ enum SwapAssetType {
 
 const SwapForm = () => {
   // Hooks
-  const { tokens, getTokensWithBal, getBestRoute, form, getMsgs, slippage } =
-    useSwap()
+  const {
+    tokens,
+    getTokensWithBal,
+    getBestRoute,
+    form,
+    getMsgs,
+    slippage,
+    createTx,
+    estimationTxValues,
+  } = useSwap()
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { state: denom } = useLocation()
@@ -44,6 +54,19 @@ const SwapForm = () => {
   const { offerAsset, askAsset, offerInput, route } = watch()
   const [error, setError] = useState<string | undefined>()
   const [warning, setWarning] = useState<string | undefined>()
+  const [maxClicked, setMaxClicked] = useState(0)
+  const network = useNetwork()
+  const { estimatedGas, getGasAmount } = useGasEstimation({
+    chain: offerAsset.chainId,
+    createTx,
+    estimationTxValues,
+    gasDenom: network[offerAsset.chainId]?.baseAsset,
+  })
+
+  const estimatedGasAmount = useMemo(
+    () => getGasAmount(offerAsset.denom),
+    [estimatedGas, getGasAmount]
+  )
 
   const offerAssetAmount = useMemo(
     () => toAmount(offerInput, { decimals: offerAsset.decimals }),
@@ -72,7 +95,6 @@ const SwapForm = () => {
 
   useEffect(() => {
     setError(undefined)
-    setWarning(undefined)
     setValue("route", undefined) // for loading purposees
 
     if (insufficientFunds) setError("Insufficient funds")
@@ -128,14 +150,34 @@ const SwapForm = () => {
   }, [route, askAsset])
 
   const sameAssets = !validateAssets({ offerAsset, askAsset })
-  const disabled = !(offerInput && !error && route)
+  const disabled = !(offerInput && !error && route && estimatedGasAmount)
   const loading = !!(has(offerInput) && !error && !route)
 
+  useEffect(() => {
+    setMaxClicked(0)
+  }, [offerAsset.denom])
+
   const handleMaxClick = () => {
-    setValue(
-      "offerInput",
-      toInput(offerAsset.balance, offerAsset.decimals).toString()
-    )
+    setMaxClicked(maxClicked + 1)
+    const maxClickedIsEven = maxClicked > 0 && maxClicked % 2 === 0
+
+    let maxAmount = parseInt(offerAsset.balance)
+
+    if (offerAsset.denom === network[offerAsset.chainId]?.baseAsset) {
+      const balMinusGasFee =
+        parseInt(offerAsset.balance) - parseInt(estimatedGasAmount)
+      const balMinusTwoGasFee =
+        parseInt(offerAsset.balance) - 2 * parseInt(estimatedGasAmount)
+      maxAmount = maxClickedIsEven ? balMinusGasFee : balMinusTwoGasFee
+      setWarning(
+        maxClickedIsEven
+          ? t(
+              "Executing this transaction will leave you no gas for future transactions"
+            )
+          : undefined
+      )
+    }
+    setValue("offerInput", toInput(maxAmount, offerAsset.decimals).toString())
   }
 
   return (
