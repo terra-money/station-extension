@@ -25,6 +25,7 @@ export enum SettingKey {
   NetworkCacheTime = "NetworkCacheTime",
   DevMode = "DevMode",
   RecentRecipients = "RecentRecipients",
+  DenomTrace = "DenomTrace",
 }
 
 //const isSystemDarkMode =
@@ -70,6 +71,10 @@ export const DefaultSettings = {
   [SettingKey.WithdrawAs]: "",
   [SettingKey.Network]: "",
   [SettingKey.EnabledNetworks]: { time: 0, networks: [] as string[] },
+  [SettingKey.DenomTrace]: {} as Record<
+    string,
+    { data: any; timestamp: number }
+  >,
   [SettingKey.CustomLCD]: {},
   [SettingKey.DevMode]: false,
 }

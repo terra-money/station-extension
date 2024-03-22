@@ -18,9 +18,9 @@ export interface TxValues {
   asset?: string
   chain?: string
   destination?: string
-  recipient?: string // AccAddress | TNS
-  address?: AccAddress // hidden input
-  input?: number
+  recipient: string // AccAddress | TNS
+  address: AccAddress | undefined
+  input: number | undefined
   memo?: string
   decimals?: number
   assetInfo?: AssetType

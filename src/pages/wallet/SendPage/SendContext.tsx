@@ -28,7 +28,7 @@ interface Send {
   form: UseFormReturn<TxValues>
   txType: TxType | null
   goToStep: (step: number) => void
-  estimationTxValues: { address: string | undefined; input: number }
+  estimationTxValues: { address: string | undefined; input: number | undefined }
   getWalletName: (address: string) => string
   balances: CoinBalance[]
   assetList: any[]

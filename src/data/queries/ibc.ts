@@ -6,6 +6,11 @@ import { useNetwork } from "data/wallet"
 import axios from "axios"
 import crypto from "crypto"
 import { AccAddress } from "@terra-money/feather.js"
+import {
+  getLocalSetting,
+  setLocalSetting,
+  SettingKey,
+} from "utils/localStorage"
 
 export const useIBCBaseDenom = (
   denom: Denom,
@@ -63,52 +68,74 @@ export const useIBCBaseDenoms = (data: { denom: Denom; chainID: string }[]) => {
   const network = useNetwork()
   const lcd = useInterchainLCDClient()
 
-  return useQueries(
-    data.map(({ denom, chainID }) => {
-      return {
-        queryKey: [queryKey.ibc.denomTrace, denom, network],
-        queryFn: async () => {
-          const { base_denom, path } = await lcd.ibcTransfer.denomTrace(
-            denom.replace("ibc/", ""),
-            chainID
-          )
+  const fetchDenomTrace = async ({
+    denom,
+    chainID,
+  }: {
+    denom: Denom
+    chainID: string
+  }) => {
+    const cachedDenomTraces = getLocalSetting<
+      Record<string, { data: any; timestamp: number }>
+    >(SettingKey.DenomTrace)
+    const oneWeekAgo = 7 * 24 * 60 * 60 * 1000
 
-          const paths = path.split("/")
-          const chains = [chainID]
-          const channels = []
+    if (
+      cachedDenomTraces[denom] &&
+      Date.now() - cachedDenomTraces[denom].timestamp < oneWeekAgo
+    ) {
+      return cachedDenomTraces[denom].data
+    }
 
-          for (let i = 0; i < paths.length; i += 2) {
-            const chain = chains[0]
+    const { base_denom, path } = await lcd.ibcTransfer.denomTrace(
+      denom.replace("ibc/", ""),
+      chainID
+    )
+    const paths = path.split("/")
+    const chains = [chainID]
+    const channels = []
 
-            if (!network[chain]?.lcd) return
+    for (let i = 0; i < paths.length; i += 2) {
+      const chain = chains[0]
+      if (!network[chain]?.lcd) return
 
-            const [port, channel] = [paths[i], paths[i + 1]]
-            channels.unshift({ port, channel })
+      const [port, channel] = [paths[i], paths[i + 1]]
+      channels.unshift({ port, channel })
 
-            const { data } = await axios.get(
-              `/ibc/core/channel/v1/channels/${channel}/ports/${port}/client_state`,
-              { baseURL: network[chain].lcd }
-            )
+      const { data } = await axios.get(
+        `/ibc/core/channel/v1/channels/${channel}/ports/${port}/client_state`,
+        { baseURL: network[chain].lcd }
+      )
 
-            chains.unshift(data.identified_client_state.client_state.chain_id)
-          }
+      chains.unshift(data.identified_client_state.client_state.chain_id)
+    }
 
-          return {
-            ibcDenom: denom,
-            baseDenom: base_denom.startsWith("cw20:")
-              ? base_denom.replace("cw20:", "")
-              : // fix for kujira factory tokens
-              base_denom.startsWith("factory:")
-              ? base_denom.replaceAll(":", "/")
-              : base_denom,
-            chainIDs: chains,
-            channels,
-          }
-        },
-        ...RefetchOptions.INFINITY,
-        enabled: isDenomIBC(denom) && !!network[chainID],
-      }
+    const result = {
+      ibcDenom: denom,
+      baseDenom: base_denom.startsWith("cw20:")
+        ? base_denom.replace("cw20:", "")
+        : base_denom.startsWith("factory:")
+        ? base_denom.replaceAll(":", "/")
+        : base_denom,
+      chainIDs: chains,
+      channels,
+    }
+
+    setLocalSetting(SettingKey.DenomTrace, {
+      ...cachedDenomTraces,
+      [denom]: { data: result, timestamp: Date.now() },
     })
+
+    return result
+  }
+
+  return useQueries(
+    data.map(({ denom, chainID }) => ({
+      queryKey: [queryKey.ibc.denomTrace, denom, network],
+      queryFn: () => fetchDenomTrace({ denom, chainID }),
+      ...RefetchOptions.INFINITY,
+      enabled: isDenomIBC(denom) && !!network[chainID],
+    }))
   )
 }
 
