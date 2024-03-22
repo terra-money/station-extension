@@ -61,7 +61,7 @@ const SwapContext = ({ children }: PropsWithChildren<{}>) => {
 
   const { askAsset, offerAsset, msgs: swapMsgs } = form.watch()
 
-  const estimationTxValues = useMemo(() => form.getValues(), [form.getValues])
+  const estimationTxValues = useMemo(() => form.getValues(), [form])
 
   const createTx = useCallback(() => {
     if (!swapMsgs?.length) return { msgs: [], chainID: "" }
