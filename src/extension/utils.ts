@@ -170,7 +170,7 @@ export const useParseTx = () => {
             chainID: chainID ?? defaultChainID,
           }
     },
-    [defaultChainID, networks]
+    [defaultChainID] // eslint-disable-line
   )
 }
 
