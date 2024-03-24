@@ -24,12 +24,12 @@ interface SingleWallet {
     "330": string
     "118"?: string
     "60"?: string
-  }
+  } & Record<string, string>
   pubkey?: {
     "330": string
     "118"?: string
     "60"?: string
-  }
+  } & Record<string, string>
   name: string
   icon?: string
   lock?: boolean

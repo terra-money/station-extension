@@ -6,6 +6,7 @@ import {
   setShouldStorePassword,
   shouldStorePassword,
   storePassword,
+  updateWalletsCointype,
 } from "auth/scripts/keystore"
 import {
   Checkbox,
@@ -24,6 +25,7 @@ import { atom, useRecoilState } from "recoil"
 import styles from "./Login.module.scss"
 import { useLocation, useNavigate } from "react-router-dom"
 import Forgot from "./Forgot"
+import { useAllCointypes } from "data/wallet"
 
 const LOGIN_ATOM = atom<{ isLoggedIn: boolean; isLoading: boolean }>({
   key: "login-state",
@@ -111,6 +113,8 @@ const Login = () => {
 
   const greeting = useMemo(() => getRandomGreetings(), [])
 
+  const coinTypes = useAllCointypes()
+
   const submit = async () => {
     try {
       if (!password.current?.value) return setError("Password is required")
@@ -126,6 +130,8 @@ const Login = () => {
       } else {
         setShouldStorePassword(false)
       }
+      // if new networks with different cointypes have been added, use the password to update all wallets
+      updateWalletsCointype(coinTypes, password.current?.value)
     } catch (e) {
       setError("Invalid password")
       setIsValid(false)

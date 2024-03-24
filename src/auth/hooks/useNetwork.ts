@@ -105,3 +105,13 @@ export const useChainID = () => {
 
   return ""
 }
+
+export const useAllCointypes = () => {
+  const { networks } = useNetworks()
+  const coinTypes = new Set<string>()
+  Object.values(networks).forEach((network) => {
+    Object.values(network).forEach(({ coinType }) => coinTypes.add(coinType))
+  })
+
+  return Array.from(coinTypes)
+}
