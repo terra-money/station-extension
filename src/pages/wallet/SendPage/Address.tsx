@@ -12,6 +12,7 @@ import {
   FlexColumn,
   Grid,
   WalletListItem,
+  AddressBookIcon,
 } from "@terra-money/station-ui"
 import validate from "txs/validate"
 import { getChainIDFromAddress } from "utils/bech32"
@@ -23,6 +24,7 @@ import { AddressBookList } from "./Components/AddressBookList"
 import MyWallets from "./Components/MyWallets"
 import { useSend } from "./SendContext"
 import styles from "./Address.module.scss"
+import AddressBookButton from "./Components/AddressBookButton"
 
 const cx = classNames.bind(styles)
 
@@ -57,21 +59,6 @@ const Address = () => {
     setValue("asset", denom) // pre-selected from asset page
   }, [denom, setValue])
 
-  const [tab, setTab] = useState("wallets")
-
-  const tabs = [
-    {
-      key: "wallets",
-      label: "My Wallets",
-      onClick: () => setTab("wallets"),
-    },
-    {
-      key: "address",
-      label: "Address Book",
-      onClick: () => setTab("address"),
-    },
-  ]
-
   const handleKnownWallet = (
     recipient: AccAddress | WalletName,
     _: number,
@@ -95,6 +82,16 @@ const Address = () => {
     }
   }
 
+  const InputExtra = () => {
+    return formState.isValid ? (
+      <button className={styles.done__button} onClick={() => goToStep(2)}>
+        {t("Done")}
+      </button>
+    ) : (
+      <AddressBookButton />
+    )
+  }
+
   return (
     <>
       {recipientInputFocused && <span className={styles.blur__bg} />}
@@ -104,21 +101,15 @@ const Address = () => {
         align="stretch"
         className={styles.flex__column__container}
       >
-        {recipientInputFocused && ( // This is here to fill the space of the input behind the blurred background
+        {/* This is here to fill the space of the input behind the blurred background */}
+        {recipientInputFocused && (
           <div
             className={cx(styles.input__wrapper__helper, {
               [styles.is__focused]: recipientInputFocused,
             })}
           >
             <InputWrapper error={errors.recipient?.message}>
-              <InputInLine
-                type="text"
-                label="To"
-                placeholder="Recipient Address"
-                {...register("recipient", {
-                  validate: { ...validate.recipient() },
-                })}
-              />
+              <InputInLine label="To" />
             </InputWrapper>
           </div>
         )}
@@ -132,10 +123,11 @@ const Address = () => {
             <InputInLine
               type="text"
               label="To"
-              placeholder="Recipient Address"
+              placeholder={t("Recipient Address")}
               {...register("recipient", {
                 validate: { ...validate.recipient() },
               })}
+              extra={<InputExtra />}
               onFocus={() => setRecipientInputFocused(true)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -143,7 +135,6 @@ const Address = () => {
                 }
               }}
             />
-
             {recipientInputFocused && (
               <div className={styles.options}>
                 <div className={cx(styles.options__container)}>
@@ -236,13 +227,6 @@ const Address = () => {
             )}
           </div>
         </InputWrapper>
-        {formState.isValid && (
-          <Button
-            variant="primary"
-            onClick={() => handleKnownChain(recipient ?? "")}
-            label={t("Continue")}
-          />
-        )}
         {recipients.length > 0 && (
           <>
             <SectionHeader title="Recently Used" withLine />
@@ -255,9 +239,8 @@ const Address = () => {
             />
           </>
         )}
-        <SectionHeader title="Other Wallets" withLine />
-        <Tabs activeTabKey={tab} tabs={tabs} />
-        <MyWallets tab={tab} onClick={handleKnownWallet} />
+        <SectionHeader title="My Wallets" withLine />
+        <MyWallets onClick={handleKnownWallet} />
       </FlexColumn>
     </>
   )
