@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect } from "react"
+import { PropsWithChildren, useCallback, useEffect, useMemo } from "react"
 import createContext from "utils/createContext"
 import { combineState } from "data/query"
 import { Fetching } from "components/feedback"
@@ -19,6 +19,12 @@ import {
 import { UseFormReturn, useForm } from "react-hook-form"
 import { useSwapSlippage } from "utils/localStorage"
 import SwapLoadingPage from "./components/SwapLoadingPage"
+import {
+  Coin,
+  Coins,
+  MsgExecuteContract,
+  MsgTransfer,
+} from "@terra-money/feather.js"
 
 interface Swap {
   tokens: SwapAssetExtra[]
@@ -28,6 +34,8 @@ interface Swap {
   form: UseFormReturn<SwapState>
   slippage: string
   changeSlippage: (slippage: string) => void
+  createTx: (swap: SwapState) => { msgs: any[]; chainID: string }
+  estimationTxValues: SwapState
 }
 
 export const [useSwap, SwapProvider] = createContext<Swap>("useSwap")
@@ -50,7 +58,38 @@ const SwapContext = ({ children }: PropsWithChildren<{}>) => {
   const state = combineState(...swap)
 
   const form = useForm<SwapState>({ mode: "onChange" })
-  const { askAsset } = form.watch()
+
+  const { askAsset, offerAsset, msgs: swapMsgs } = form.watch()
+
+  const estimationTxValues = useMemo(() => form.getValues(), [form])
+
+  const createTx = useCallback(() => {
+    if (!swapMsgs?.length) return { msgs: [], chainID: "" }
+    const msg = JSON.parse(swapMsgs?.[0]?.msg)
+    let msgs
+
+    if (msg.source_channel) {
+      msgs = new MsgTransfer(
+        "transfer",
+        msg.source_channel,
+        new Coin(msg.token?.denom ?? "", msg.token?.amount),
+        msg.sender,
+        msg.receiver,
+        undefined,
+        (Date.now() + 120 * 1000) * 1e6,
+        msg.memo
+      )
+    } else {
+      // for native swaps (osmo to osmo)
+      msgs = new MsgExecuteContract(
+        msg.sender,
+        msg.contract,
+        msg.msg,
+        Coins.fromAmino(msg.funds)
+      )
+    }
+    return { msgs: [msgs] ?? [], chainID: offerAsset.chainId }
+  }, [swapMsgs, offerAsset])
 
   useEffect(() => {
     if (!askAsset) {
@@ -78,7 +117,9 @@ const SwapContext = ({ children }: PropsWithChildren<{}>) => {
       form,
       getMsgs,
       slippage,
+      createTx,
       changeSlippage,
+      estimationTxValues,
     }
     return <SwapProvider value={value}>{children}</SwapProvider>
   }

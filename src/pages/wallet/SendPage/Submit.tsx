@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { truncate } from "@terra-money/terra-utils"
 import validate from "txs/validate"
@@ -17,9 +17,18 @@ import {
   Checkbox,
   FlexColumn,
 } from "@terra-money/station-ui"
+import { useNetwork } from "data/wallet"
+import { useGasEstimation } from "data/queries/tx"
 
 const Submit = () => {
-  const { form, getWalletName, goToStep, networks } = useSend()
+  const {
+    form,
+    getWalletName,
+    goToStep,
+    networks,
+    createTx,
+    estimationTxValues,
+  } = useSend()
   const {
     register,
     formState,
@@ -45,6 +54,21 @@ const Submit = () => {
   )
   const currency = useCurrency()
   const { t } = useTranslation()
+  const network = useNetwork()
+  const [maxClicked, setMaxClicked] = useState(0)
+  const [showFeeWarning, setShowFeeWarning] = useState(false)
+
+  const { estimatedGas, getGasAmount } = useGasEstimation({
+    chain: assetInfo?.tokenChain ?? "",
+    createTx,
+    estimationTxValues,
+    gasDenom: network[assetInfo?.tokenChain ?? ""]?.baseAsset,
+  })
+
+  const estimatedGasAmount = useMemo(
+    () => getGasAmount(assetInfo?.denom ?? ""),
+    [estimatedGas, getGasAmount]
+  )
 
   const originChain = useMemo(() => ibcData?.chainIDs?.[0], [ibcData])
 
@@ -90,10 +114,22 @@ const Submit = () => {
 
   const { balance, decimals, price, tokenImg, symbol } = assetInfo
 
-  const handleMax = () => {
-    setValue("input", toInput(balance, decimals, 5)) // 5 decimal place round-down for SendAmount component
+  const handleMaxClick = () => {
+    const maxClickCount = maxClicked + 1
+    setMaxClicked(maxClickCount)
+    const maxClickedIsEven = maxClickCount > 0 && maxClickCount % 2 === 0
+
+    let maxAmount = parseInt(balance)
+
+    if (assetInfo.denom === network[assetInfo.tokenChain]?.baseAsset) {
+      const balMinusGasFee = maxAmount - parseInt(estimatedGasAmount)
+      const balMinusTwoGasFee = maxAmount - 2 * parseInt(estimatedGasAmount)
+      maxAmount = maxClickedIsEven ? balMinusGasFee : balMinusTwoGasFee
+      setShowFeeWarning(maxClickedIsEven)
+    }
+    setValue("input", toInput(maxAmount, assetInfo.decimals, 5))
     if (price) {
-      setValue("currencyAmount", toInput(Number(balance) * price, decimals))
+      setValue("currencyAmount", toInput(Number(balance) * price, decimals, 4))
     }
     trigger("input")
   }
@@ -112,7 +148,7 @@ const Submit = () => {
         />
         <AssetSelectorFrom
           walletAmount={toInput(balance, decimals)}
-          handleMaxClick={handleMax}
+          handleMaxClick={handleMaxClick}
           symbol={symbol}
           onSymbolClick={() => {
             setValue("asset", undefined)
@@ -144,6 +180,16 @@ const Submit = () => {
             })}
           />
         </InputWrapper>
+        {showFeeWarning && (
+          <Banner
+            variant="warning"
+            title={t(
+              t(
+                "Executing this transaction will leave you no gas for future transactions"
+              )
+            )}
+          />
+        )}
         {showIBCWarning && (
           <>
             <Banner

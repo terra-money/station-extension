@@ -1,9 +1,6 @@
-import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import { MsgTransfer, Coin, MsgExecuteContract } from "@terra-money/feather.js"
 import { toAmount } from "@terra-money/terra-utils"
-import { Coins } from "@terra-money/feather.js"
 import { SectionHeader, Grid, Form } from "@terra-money/station-ui"
 import SwapTimeline from "./components/SwapTimeline"
 import Errors from "./components/ConfirmErrors"
@@ -26,44 +23,16 @@ export const validateAssets = (
 
 const Confirm = () => {
   const { t } = useTranslation()
-  const { form } = useSwap()
+  const { form, createTx, estimationTxValues } = useSwap()
   const navigate = useNavigate()
   const { watch, handleSubmit, getValues } = form
   const { offerAsset, offerInput, msgs: swapMsgs } = watch()
   const amount = toAmount(offerInput, { decimals: offerAsset.decimals })
-  const estimationTxValues = useMemo(() => getValues(), [getValues])
   const isLedger = useIsLedger()
 
   if (!swapMsgs) {
     navigate("/swap")
     return null
-  }
-
-  const createTx = ({ offerAsset }: SwapState) => {
-    const msg = JSON.parse(swapMsgs?.[0]?.msg)
-    let msgs
-
-    if (msg.source_channel) {
-      msgs = new MsgTransfer(
-        "transfer",
-        msg.source_channel,
-        new Coin(msg.token?.denom ?? "", msg.token?.amount),
-        msg.sender,
-        msg.receiver,
-        undefined,
-        (Date.now() + 120 * 1000) * 1e6,
-        msg.memo
-      )
-    } else {
-      // for native swaps (osmo to osmo)
-      msgs = new MsgExecuteContract(
-        msg.sender,
-        msg.contract,
-        msg.msg,
-        Coins.fromAmino(msg.funds)
-      )
-    }
-    return { msgs: [msgs] ?? [], chainID: offerAsset.chainId }
   }
 
   const tx = {

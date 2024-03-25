@@ -1,51 +1,22 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
+import moment from "moment"
 import {
+  ChainLoader,
   LoadingCircular,
   SectionHeader,
   SubmitButton,
 } from "@terra-money/station-ui"
 import { useTxActivity } from "data/queries/activity"
-import styles from "./ActivityList.module.scss"
-import ActivityItem from "./ActivityItem"
 import { Page } from "components/layout"
-import moment from "moment"
-//import useIbcTxs, { IbcTxState } from "txs/useIbcTxs"
-//import { useTranslation } from "react-i18next"
-/*
-interface IbcActivityItemProps {
-  chainID: string
-  txhash: string
-  state: IbcTxState
-  index: number
-  timestamp: any
-  msgs: Object[]
-}
+import { useNetworks } from "app/InitNetworks"
+import ActivityItem from "./ActivityItem"
+import styles from "./ActivityList.module.scss"
 
-const IbcActivityItem = ({
-  txhash,
-  chainID,
-  state,
-  index,
-  timestamp,
-  msgs,
-}: IbcActivityItemProps) => {
-  const data = { tx: { body: { messages: msgs } }, txhash, code: 0 }
-  const { t } = useTranslation()
-  return (
-    <ActivityItem
-      {...data}
-      timestamp={timestamp}
-      chain={chainID}
-      dateHeader={index === 0 ? <SectionHeader title={t("Pending")} /> : null}
-      variant={state}
-      showProgress
-    />
-  )
-}
-*/
 const ActivityList = () => {
-  //const { ibcTxs } = useIbcTxs()
+  const { t } = useTranslation()
   const { activitySorted: activity, state } = useTxActivity()
+  const { validNetworksLength, validationResultLength } = useNetworks()
 
   const activityItemsPerPage = 20
   const [visibleActivity, setVisibleActivity] = useState(activityItemsPerPage)
@@ -56,11 +27,6 @@ const ActivityList = () => {
 
   let priorDisplayDate = ""
   const visibleActivityItems = activity
-    // do not show pending txs in the main activity page
-    /*.filter(
-      ({ txhash }) =>
-        !ibcTxs.find(({ txhash: ibcTxhash }) => ibcTxhash === txhash)
-    )*/
     .slice(0, visibleActivity)
     .map((activityItem: AccountHistoryItem & { chain: string }) => {
       const activityItemDate = new Date(activityItem.timestamp)
@@ -97,9 +63,13 @@ const ActivityList = () => {
     )
   } else if (activity?.length && state.isLoading) {
     loader = (
-      <span className={styles.loadingtext}>
-        Gathering activity across all chains...
-      </span>
+      <div className={styles.chain__loader__container}>
+        <ChainLoader
+          count={validNetworksLength}
+          total={validationResultLength}
+          textLabel={t("Chains Loading")}
+        />
+      </div>
     )
   } else if (!activity?.length && !state.isLoading) {
     loader = (
