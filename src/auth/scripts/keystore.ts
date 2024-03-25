@@ -1,6 +1,6 @@
 import is from "./is"
 import { decrypt, encrypt } from "./aes"
-import { addressFromWords } from "utils/bech32"
+import { addressFromWords, wordsFromAddress } from "utils/bech32"
 import browser from "webextension-polyfill"
 
 enum LocalStorage {
