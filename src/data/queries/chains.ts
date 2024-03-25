@@ -46,17 +46,6 @@ export function useWhitelist(): WhitelistData {
   return data
 }
 
-export function getChainNamefromID(
-  id: string | undefined,
-  chains: Record<string, InterchainNetwork>
-) {
-  return (
-    Object.values(chains ?? {})
-      .find(({ chainID }) => chainID === id)
-      ?.name.toLowerCase() ?? ""
-  )
-}
-
 export function getChainIdFromAddress(
   address: string,
   chains: Record<string, InterchainNetwork>

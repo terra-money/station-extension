@@ -14,28 +14,13 @@ import { useCurrency } from "data/settings/Currency"
 import { toInput } from "txs/utils"
 import { useTranslation } from "react-i18next"
 import { toAmount } from "@terra-money/terra-utils"
-import { TxValues } from "./types"
-import {
-  MsgExecuteContract,
-  MsgTransfer,
-  MsgSend,
-} from "@terra-money/feather.js"
-import { AccAddress } from "@terra-money/feather.js"
 import { useRecentRecipients } from "utils/localStorage"
 import Tx from "txs/Tx"
-import { useCallback, useMemo, useEffect, useState, ReactNode } from "react"
-import { Coin } from "@terra-money/feather.js"
+import { useMemo, useEffect, useState, ReactNode } from "react"
 import { queryKey } from "data/query"
-import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { CoinInput } from "txs/utils"
 import style from "./Send.module.scss"
 import { useIsLedger } from "utils/ledger"
-
-enum TxType {
-  SEND = "Send",
-  EXECUTE = "Execute Contract",
-  TRANSFER = "Transfer",
-}
 
 interface InfoProps {
   render: (
@@ -50,91 +35,28 @@ interface InfoProps {
 }
 
 const Confirm = () => {
-  const { form, networks, getWalletName, getICSContract, goToStep } = useSend()
+  const {
+    form,
+    networks,
+    getWalletName,
+    goToStep,
+    txType,
+    createTx,
+    estimationTxValues,
+  } = useSend()
   const { t } = useTranslation()
   const currency = useCurrency()
   const { handleSubmit, setValue } = form
   const { addRecipient } = useRecentRecipients()
-  const addresses = useInterchainAddresses()
   const [error, setError] = useState<string | null>(null)
   const { input, assetInfo, destination, recipient, chain, memo } = form.watch()
   const isLedger = useIsLedger()
 
   /* fee */
   const coins = useMemo(() => [{ input, denom: "" }] as CoinInput[], [input])
-  const estimationTxValues = useMemo(() => {
-    return {
-      address: addresses?.[chain ?? "phoenix-1"],
-      input: toInput(1, assetInfo?.decimals),
-    }
-  }, [addresses, assetInfo, chain])
-
-  const amount = useMemo(() => {
-    return toAmount(input, { decimals: assetInfo?.decimals })
-  }, [input, assetInfo])
-
-  const txType = useMemo(() => {
-    if (!assetInfo?.denom) return null
-    return AccAddress.validate(assetInfo.denom)
-      ? TxType.EXECUTE
-      : destination === chain
-      ? TxType.SEND
-      : TxType.TRANSFER
-  }, [assetInfo, destination, chain])
-
-  const createTx = useCallback(
-    ({ memo }: TxValues) => {
-      const amount = toAmount(input, { decimals: assetInfo?.decimals })
-      const { senderAddress, denom, channel } = assetInfo ?? {}
-
-      if (!(recipient && AccAddress.validate(recipient))) return
-      if (!(chain && destination && denom && amount && senderAddress)) return
-
-      const execute_msg = {
-        transfer: { recipient, amount },
-      }
-
-      let msgs
-
-      if (destination === chain) {
-        msgs =
-          txType === TxType.EXECUTE
-            ? new MsgExecuteContract(senderAddress, denom, execute_msg)
-            : new MsgSend(senderAddress, recipient, amount + denom)
-      } else {
-        if (!channel) throw new Error("No IBC channel found")
-        msgs =
-          txType === TxType.EXECUTE
-            ? new MsgExecuteContract(senderAddress, denom, {
-                send: {
-                  contract: getICSContract({
-                    from: chain,
-                    to: destination,
-                    tokenAddress: denom,
-                  }),
-                  amount: amount,
-                  msg: Buffer.from(
-                    JSON.stringify({
-                      channel,
-                      remote_address: recipient,
-                    })
-                  ).toString("base64"),
-                },
-              })
-            : new MsgTransfer(
-                "transfer",
-                channel,
-                new Coin(denom ?? "", amount),
-                senderAddress,
-                recipient,
-                undefined,
-                (Date.now() + 120 * 1000) * 1e6,
-                undefined
-              )
-      }
-      return { msgs: [msgs], memo, chainID: chain }
-    },
-    [assetInfo, recipient, chain, getICSContract, destination, input, txType]
+  const amount = useMemo(
+    () => toAmount(input, { decimals: assetInfo?.decimals }),
+    [input, assetInfo]
   )
 
   if (!(input && destination && chain && recipient)) {

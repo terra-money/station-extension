@@ -99,7 +99,11 @@ const AssetPage = () => {
 
   const AssetPageHeader = () => {
     const totalBalance = useMemo(
-      () => supportedAssets.reduce((acc, b) => acc + parseInt(b.amount), 0),
+      () =>
+        [...unsupportedAssets, ...supportedAssets].reduce(
+          (acc, b) => acc + parseInt(b.amount),
+          0
+        ),
       []
     )
 

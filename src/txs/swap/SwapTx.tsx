@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next"
 import { Routes, Route, useLocation } from "react-router-dom"
-import Setup from "./SwapSetup"
+import Setup from "./SwapForm"
 import Confirm from "./SwapConfirm"
 import { useSwap } from "./SwapContext"
 import SwapSettings from "./SwapSettingsPage"
