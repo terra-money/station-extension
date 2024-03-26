@@ -7,12 +7,9 @@ import {
   InputWrapper,
   SectionHeader,
   InputInLine,
-  Tabs,
-  Button,
   FlexColumn,
   Grid,
   WalletListItem,
-  AddressBookIcon,
 } from "@terra-money/station-ui"
 import validate from "txs/validate"
 import { getChainIDFromAddress } from "utils/bech32"
@@ -61,7 +58,7 @@ const Address = () => {
 
   const handleKnownWallet = (
     recipient: AccAddress | WalletName,
-    _: number,
+    index?: number,
     memo?: string
   ) => {
     setValue("memo", memo)
@@ -148,20 +145,16 @@ const Address = () => {
                             title={t("My Wallets")}
                           />
                           {wallets.map((w) => {
-                            if (w.name.includes(recipient ?? "")) {
-                              return (
-                                <WalletListItem
-                                  key={w.name}
-                                  emoji={w.icon ?? w.name[0]}
-                                  name={w.name}
-                                  address={t("Multiple Addresses")}
-                                  smallText
-                                  onClick={() => handleKnownWallet(w.name, 0)}
-                                />
-                              )
-                            } else {
-                              return null
-                            }
+                            return w.name.includes(recipient ?? "") ? (
+                              <WalletListItem
+                                key={w.name}
+                                emoji={w.icon ?? w.name[0]}
+                                name={w.name}
+                                address={t("Multiple Addresses")}
+                                smallText
+                                onClick={() => handleKnownWallet(w.name)}
+                              />
+                            ) : null
                           })}
                         </Grid>
                       )}
@@ -176,20 +169,16 @@ const Address = () => {
                           />
 
                           {recipients.map((w) => {
-                            if (w.name.includes(recipient ?? "")) {
-                              return (
-                                <WalletListItem
-                                  key={w.name}
-                                  emoji={w.icon ?? w.name[0]}
-                                  name={w.name}
-                                  address={w.recipient}
-                                  smallText
-                                  onClick={() => handleKnownChain(w.recipient)}
-                                />
-                              )
-                            } else {
-                              return null
-                            }
+                            return w.name.includes(recipient ?? "") ? (
+                              <WalletListItem
+                                key={w.name}
+                                emoji={w.icon ?? w.name[0]}
+                                name={w.name}
+                                address={w.recipient}
+                                smallText
+                                onClick={() => handleKnownChain(w.recipient)}
+                              />
+                            ) : null
                           })}
                         </Grid>
                       )}
@@ -203,20 +192,16 @@ const Address = () => {
                             title={t("Address Book")}
                           />
                           {addressList.map((w) => {
-                            if (w.name.includes(recipient ?? "")) {
-                              return (
-                                <WalletListItem
-                                  key={w.name}
-                                  emoji={w.icon ?? w.name[0]}
-                                  name={w.name}
-                                  address={w.recipient}
-                                  smallText
-                                  onClick={() => handleKnownChain(w.recipient)}
-                                />
-                              )
-                            } else {
-                              return null
-                            }
+                            return w.name.includes(recipient ?? "") ? (
+                              <WalletListItem
+                                key={w.name}
+                                emoji={w.icon ?? w.name[0]}
+                                name={w.name}
+                                address={w.recipient}
+                                smallText
+                                onClick={() => handleKnownChain(w.recipient)}
+                              />
+                            ) : null
                           })}
                         </Grid>
                       )}
