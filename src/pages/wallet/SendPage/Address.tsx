@@ -22,6 +22,7 @@ import MyWallets from "./Components/MyWallets"
 import { useSend } from "./SendContext"
 import styles from "./Address.module.scss"
 import AddressBookButton from "./Components/AddressBookButton"
+import StationWalletList from "./Components/WalletList"
 
 const cx = classNames.bind(styles)
 
@@ -137,74 +138,37 @@ const Address = () => {
                 <div className={cx(styles.options__container)}>
                   <div className={styles.children}>
                     <FlexColumn gap={24}>
-                      {wallets.filter((w) => w.name.includes(recipient ?? ""))
-                        .length > 0 && (
-                        <Grid gap={16}>
-                          <SectionHeader
-                            extraSmallText
-                            title={t("My Wallets")}
-                          />
-                          {wallets.map((w) => {
-                            return w.name.includes(recipient ?? "") ? (
-                              <WalletListItem
-                                key={w.name}
-                                emoji={w.icon ?? w.name[0]}
-                                name={w.name}
-                                address={t("Multiple Addresses")}
-                                smallText
-                                onClick={() => handleKnownWallet(w.name)}
-                              />
-                            ) : null
-                          })}
-                        </Grid>
-                      )}
+                      <StationWalletList
+                        title="My Wallets"
+                        items={wallets.map((w) => ({
+                          emoji: w.icon ?? w.name[0],
+                          name: w.name,
+                          address: t("Multiple Addresses"),
+                        }))}
+                        onItemClick={(address) => handleKnownWallet(address)}
+                        filter={recipient ?? ""}
+                      />
 
-                      {recipients.filter((r) =>
-                        r.recipient.includes(recipient ?? "")
-                      ).length > 0 && (
-                        <Grid gap={16}>
-                          <SectionHeader
-                            extraSmallText
-                            title={t("Recently Used")}
-                          />
-
-                          {recipients.map((w) => {
-                            return w.name.includes(recipient ?? "") ? (
-                              <WalletListItem
-                                key={w.name}
-                                emoji={w.icon ?? w.name[0]}
-                                name={w.name}
-                                address={w.recipient}
-                                smallText
-                                onClick={() => handleKnownChain(w.recipient)}
-                              />
-                            ) : null
-                          })}
-                        </Grid>
-                      )}
-
-                      {addressList.filter((r) =>
-                        r.name.includes(recipient ?? "")
-                      ).length > 0 && (
-                        <Grid gap={16}>
-                          <SectionHeader
-                            extraSmallText
-                            title={t("Address Book")}
-                          />
-                          {addressList.map((w) => {
-                            return w.name.includes(recipient ?? "") ? (
-                              <WalletListItem
-                                key={w.name}
-                                emoji={w.icon ?? w.name[0]}
-                                name={w.name}
-                                address={w.recipient}
-                                smallText
-                                onClick={() => handleKnownChain(w.recipient)}
-                              />
-                            ) : null
-                          })}
-                        </Grid>
-                      )}
+                      <StationWalletList
+                        title="Recently Used"
+                        items={recipients.map((r) => ({
+                          emoji: r.icon ?? r.name[0],
+                          name: r.name,
+                          address: r.recipient,
+                        }))}
+                        onItemClick={(address) => handleKnownChain(address)}
+                        filter={recipient ?? ""}
+                      />
+                      <StationWalletList
+                        title="Address Book"
+                        items={addressList.map((w) => ({
+                          emoji: w.icon ?? w.name[0],
+                          name: w.name,
+                          address: w.recipient,
+                        }))}
+                        onItemClick={(address) => handleKnownChain(address)}
+                        filter={recipient ?? ""}
+                      />
                     </FlexColumn>
                   </div>
                 </div>
