@@ -19,7 +19,7 @@
     "@0xsquid/sdk": "^1.14.11",
     "@amplitude/analytics-browser": "^2.1.2",
     "@ledgerhq/hw-transport-web-ble": "^6.27.1",
-    "@mui/icons-material": "^5.8.0",
+    "@mui/icons-material": "^5.15.14",
     "@mui/material": "^5.9.1",
     "@sentry/react": "^7.53.1",
     "@terra-money/feather.js": "^2.0.4",
