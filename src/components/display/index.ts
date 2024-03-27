@@ -1,4 +1,3 @@
-export { default as Details } from "./Details"
 export { default as Dl } from "./Dl"
 export { default as List } from "./List"
 export * from "./List"
