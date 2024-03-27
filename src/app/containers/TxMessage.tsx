@@ -106,15 +106,9 @@ const TxMessage = ({ children: sentence, className }: Props) => {
       {sentence
         .split(" ")
         .filter((word, index) => index || word !== address)
-        .map((word, index) => {
-          const parsed = parse(word, index)
-
-          return !index ? (
-            <span key={index}>{parsed}</span>
-          ) : (
-            <span key={index}> {parsed}</span>
-          )
-        })}
+        .map((word, index) => (
+          <span key={index}>{parse(word, index)}</span>
+        ))}
     </p>
   )
 }
