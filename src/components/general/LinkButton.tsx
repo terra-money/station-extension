@@ -1,8 +1,18 @@
 import { Link, LinkProps } from "react-router-dom"
 import classNames from "classnames"
-import { ButtonConfig, getClassName } from "./Button"
+import { ReactNode } from "react"
+import styles from "./LinkButton.module.scss"
 
 const cx = classNames.bind({})
+interface ButtonConfig {
+  icon?: ReactNode
+  size?: "small"
+  color?: "default" | "primary" | "danger"
+  outline?: boolean
+  block?: boolean
+  loading?: boolean
+  disabled?: boolean
+}
 
 type Props = ButtonConfig & LinkProps
 
@@ -24,3 +34,9 @@ const LinkButton = (props: Props) => {
 }
 
 export default LinkButton
+
+export const getClassName = (props: ButtonConfig) => {
+  const { size, outline, block, disabled, loading } = props
+  const color = props.color ?? (!outline && "default")
+  return cx(styles.button, size, color, { outline, block, disabled, loading })
+}
