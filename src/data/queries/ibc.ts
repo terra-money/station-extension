@@ -84,6 +84,7 @@ export const useIBCBaseDenoms = (data: { denom: Denom; chainID: string }[]) => {
       cachedDenomTraces[denom] &&
       Date.now() - cachedDenomTraces[denom].timestamp < oneWeekAgo
     ) {
+      console.log(denom, "cached")
       return cachedDenomTraces[denom].data
     }
 
@@ -96,18 +97,14 @@ export const useIBCBaseDenoms = (data: { denom: Denom; chainID: string }[]) => {
     const channels = []
 
     for (let i = 0; i < paths.length; i += 2) {
-      const chain = chains[0]
-      if (!network[chain]?.lcd) return
-
+      if (!network[chainID]?.lcd) return
       const [port, channel] = [paths[i], paths[i + 1]]
       channels.unshift({ port, channel })
-
-      const { data } = await axios.get(
+      const res = await axios.get(
         `/ibc/core/channel/v1/channels/${channel}/ports/${port}/client_state`,
-        { baseURL: network[chain].lcd }
+        { baseURL: network[chainID].lcd }
       )
-
-      chains.unshift(data.identified_client_state.client_state.chain_id)
+      chains.unshift(res?.data?.identified_client_state.client_state.chain_id)
     }
 
     const result = {
@@ -121,22 +118,34 @@ export const useIBCBaseDenoms = (data: { denom: Denom; chainID: string }[]) => {
       channels,
     }
 
-    setLocalSetting(SettingKey.DenomTrace, {
-      ...cachedDenomTraces,
-      [denom]: { data: result, timestamp: Date.now() },
-    })
-
     return result
   }
 
-  return useQueries(
+  const queryResults = useQueries(
     data.map(({ denom, chainID }) => ({
+      ...RefetchOptions.INFINITY,
       queryKey: [queryKey.ibc.denomTrace, denom, network],
       queryFn: () => fetchDenomTrace({ denom, chainID }),
-      ...RefetchOptions.INFINITY,
       enabled: isDenomIBC(denom) && !!network[chainID],
     }))
   )
+
+  const updatedDenomTraces = queryResults.reduce((acc, result) => {
+    if (result.data) {
+      const { ibcDenom, ...rest } = result.data
+      acc[ibcDenom] = { data: rest, timestamp: Date.now() }
+    }
+    return acc
+  }, {} as Record<string, { data: any; timestamp: number }>)
+
+  setLocalSetting(SettingKey.DenomTrace, {
+    ...getLocalSetting<Record<string, { data: any; timestamp: number }>>(
+      SettingKey.DenomTrace
+    ),
+    ...updatedDenomTraces,
+  })
+
+  return queryResults
 }
 
 export function calculateIBCDenom(baseDenom: string, path: string) {
