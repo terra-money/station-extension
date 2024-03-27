@@ -7,4 +7,6 @@
 .address {
   color: var(--token-light-100, #8b8e9c);
   @include XX-Small;
+  text-align: right;
+  padding-right: 20;
 }

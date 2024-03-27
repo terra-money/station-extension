@@ -6,6 +6,7 @@ import { useNetwork } from "data/wallet"
 import { useAddressBook } from "data/settings/AddressBook"
 import { AccAddress } from "@terra-money/feather.js"
 import { truncate } from "@terra-money/terra-utils"
+import { getWallet } from "auth/scripts/keystore"
 
 /* auth | walle-provider */
 const useAddress = () => {
@@ -31,6 +32,25 @@ export const useAllInterchainAddresses = () => {
       return acc
     }, {} as Record<string, string>)
   return addresses
+}
+export const useAllWalletAddresses = () => {
+  const { wallets } = useAuth()
+  const { networks } = useNetworks()
+  const networkName = useNetworkName()
+  const walletAddresses = wallets.map((w) => {
+    const wallet = getWallet(w.name)
+    const words = wallet?.words
+    if (!words) return {}
+
+    const addresses = Object.values(networks[networkName] ?? {})
+      .filter(({ coinType }) => !!words[coinType])
+      .reduce((acc, { prefix, coinType, chainID }) => {
+        acc[chainID] = addressFromWords(words[coinType] as string, prefix)
+        return acc
+      }, {} as Record<string, string>)
+    return { [w.name]: addresses }
+  })
+  return walletAddresses
 }
 
 export const useInterchainAddresses = () => {

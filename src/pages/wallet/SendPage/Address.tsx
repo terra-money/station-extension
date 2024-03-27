@@ -8,8 +8,6 @@ import {
   SectionHeader,
   InputInLine,
   FlexColumn,
-  Grid,
-  WalletListItem,
 } from "@terra-money/station-ui"
 import validate from "txs/validate"
 import { getChainIDFromAddress } from "utils/bech32"
@@ -22,7 +20,8 @@ import MyWallets from "./Components/MyWallets"
 import { useSend } from "./SendContext"
 import styles from "./Address.module.scss"
 import AddressBookButton from "./Components/AddressBookButton"
-import StationWalletList from "./Components/WalletList"
+import DropdownWalletList from "./Components/DropdownWalletList"
+import { useAllWalletAddresses } from "auth/hooks/useAddress"
 
 const cx = classNames.bind(styles)
 
@@ -37,6 +36,7 @@ const Address = () => {
   const { list: addressList } = useAddressBook()
   const { recipients } = useRecentRecipients()
   const { wallets } = useAuth()
+  const walletAddresses = useAllWalletAddresses()
 
   const ref = useRef<HTMLDivElement>(null)
 
@@ -82,7 +82,10 @@ const Address = () => {
 
   const InputExtra = () => {
     return formState.isValid ? (
-      <button className={styles.done__button} onClick={() => goToStep(2)}>
+      <button
+        className={styles.done__button}
+        onClick={() => handleKnownChain(recipient ?? "")}
+      >
         {t("Done")}
       </button>
     ) : (
@@ -138,18 +141,29 @@ const Address = () => {
                 <div className={cx(styles.options__container)}>
                   <div className={styles.children}>
                     <FlexColumn gap={24}>
-                      <StationWalletList
+                      <DropdownWalletList
                         title="My Wallets"
-                        items={wallets.map((w) => ({
-                          emoji: w.icon ?? w.name[0],
-                          name: w.name,
-                          address: t("Multiple Addresses"),
-                        }))}
-                        onItemClick={(address) => handleKnownWallet(address)}
-                        filter={recipient ?? ""}
+                        onItemClick={(address) => handleKnownChain(address)}
+                        items={walletAddresses.flatMap((w) =>
+                          Object.entries(w).flatMap(([name, addresses]) =>
+                            Object.values(addresses)
+                              .filter(
+                                (address) =>
+                                  recipient &&
+                                  !AccAddress.validate(recipient) &&
+                                  address.includes(recipient)
+                              )
+                              .map((address) => ({
+                                emoji:
+                                  wallets.find((w) => w.name === name)?.icon ??
+                                  name[0],
+                                name,
+                                address,
+                              }))
+                          )
+                        )}
                       />
-
-                      <StationWalletList
+                      <DropdownWalletList
                         title="Recently Used"
                         items={recipients.map((r) => ({
                           emoji: r.icon ?? r.name[0],
@@ -157,9 +171,9 @@ const Address = () => {
                           address: r.recipient,
                         }))}
                         onItemClick={(address) => handleKnownChain(address)}
-                        filter={recipient ?? ""}
+                        filter={recipient}
                       />
-                      <StationWalletList
+                      <DropdownWalletList
                         title="Address Book"
                         items={addressList.map((w) => ({
                           emoji: w.icon ?? w.name[0],
@@ -167,7 +181,7 @@ const Address = () => {
                           address: w.recipient,
                         }))}
                         onItemClick={(address) => handleKnownChain(address)}
-                        filter={recipient ?? ""}
+                        filter={recipient}
                       />
                     </FlexColumn>
                   </div>

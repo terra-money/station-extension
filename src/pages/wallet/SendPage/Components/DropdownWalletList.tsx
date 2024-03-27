@@ -13,14 +13,14 @@ interface WalletListProps {
     address: AccAddress | WalletName | string
   }[]
   onItemClick: (address: AccAddress | WalletName) => void
-  filter: string
+  filter?: string
 }
 
 const WalletList: React.FC<WalletListProps> = ({
   title,
   items,
   onItemClick,
-  filter,
+  filter = "",
 }) => {
   const { t } = useTranslation()
 
@@ -33,7 +33,7 @@ const WalletList: React.FC<WalletListProps> = ({
       <SectionHeader extraSmallText title={t(title)} />
       {filteredItems.map((item) => (
         <WalletListItem
-          key={item.name}
+          key={item.name + item.address}
           emoji={item.emoji}
           name={item.name}
           address={item.address}
