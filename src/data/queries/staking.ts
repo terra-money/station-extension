@@ -20,9 +20,12 @@ import { readAmount, toAmount } from "@terra-money/terra-utils"
 import { useExchangeRates } from "data/queries/coingecko"
 import { useNativeDenoms } from "data/token"
 import shuffle from "utils/shuffle"
-import { getIsBonded } from "pages/stake/ValidatorsList"
 import { getChainIdFromAddress } from "./chains"
 import { useNetwork } from "data/wallet"
+import {
+  bondStatusFromJSON,
+  BondStatus,
+} from "@terra-money/terra.proto/cosmos/staking/v1beta1/staking"
 
 export const useInterchainValidators = () => {
   const addresses = useInterchainAddresses() || {}
@@ -37,7 +40,7 @@ export const useInterchainValidators = () => {
           let key: string | null = ""
 
           do {
-            // @ts-expect-error
+            // @ts-ignore
             const [list, pagination] = await lcd.staking.validators(chainID, {
               "pagination.limit": "100",
               "pagination.key": key,
@@ -64,7 +67,7 @@ export const useValidators = (chainID: string) => {
       let key: string | null = ""
 
       do {
-        // @ts-expect-error
+        // @ts-ignore
         const [list, pagination] = await lcd.staking.validators(chainID, {
           "pagination.limit": "100",
           "pagination.key": key,
@@ -520,6 +523,9 @@ export const getPriorityVals = (validators: Validator[]) => {
 
   const totalStaked = getTotalStakedTokens(validators)
   const getVotePower = (v: Validator) => Number(v.tokens) / totalStaked
+
+  const getIsBonded = (status: BondStatus) =>
+    bondStatusFromJSON(BondStatus[status]) === BondStatus.BOND_STATUS_BONDED
 
   return validators
     .sort((a, b) => getVotePower(a) - getVotePower(b)) // least to greatest
