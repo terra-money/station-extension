@@ -5,6 +5,7 @@ import {
   Modal,
   ModalProps,
 } from "@terra-money/station-ui"
+import styles from "./ConfirmLeaveModal.module.scss"
 
 interface ConfirmLeaveModalProps extends ModalProps {
   onConfirm: () => void
@@ -21,7 +22,7 @@ const ConfirmLeaveModal = (props: ConfirmLeaveModalProps) => {
           {t("Cancel")}
         </Button>
         <Button variant="primary" onClick={onConfirm}>
-          {t("Leave")}
+          {t("Yes, Leave")}
         </Button>
       </ButtonInlineWrapper>
     )
@@ -30,13 +31,17 @@ const ConfirmLeaveModal = (props: ConfirmLeaveModalProps) => {
   return (
     <Modal
       title={t("Leave")}
-      subtitle={t(
-        "Are you sure you want to stop what you're currently doing and return to the portfolio page? Your progress will not be saved."
-      )}
+      centerTitle
       isOpen={isOpen}
-      onRequestClose={onRequestClose}
       footer={Footer}
-    />
+      smallBottom
+    >
+      <div className={styles.text__content}>
+        {t(
+          "Are you sure you want to stop what you're currently doing and return to the portfolio page? Your progress will not be saved."
+        )}
+      </div>
+    </Modal>
   )
 }
 
