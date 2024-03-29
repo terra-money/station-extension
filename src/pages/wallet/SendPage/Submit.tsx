@@ -11,8 +11,6 @@ import {
   InputInLine,
   AssetSelectorFrom,
   Button,
-  InputWrapper,
-  Input,
   Banner,
   Checkbox,
   FlexColumn,
@@ -38,7 +36,6 @@ const Submit = () => {
     setError,
     clearErrors,
   } = form
-  const { errors } = formState
   const {
     assetInfo,
     recipient,
