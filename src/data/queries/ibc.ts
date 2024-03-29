@@ -80,11 +80,9 @@ export const useIBCBaseDenoms = (data: { denom: Denom; chainID: string }[]) => {
     >(SettingKey.DenomTrace)
     const oneWeekAgo = 7 * 24 * 60 * 60 * 1000
 
-    if (
-      cachedDenomTraces[denom] &&
-      Date.now() - cachedDenomTraces[denom].timestamp < oneWeekAgo
-    ) {
-      console.log(denom, "cached")
+    const isValid = Date.now() - cachedDenomTraces[denom].timestamp < oneWeekAgo
+
+    if (cachedDenomTraces[denom] && isValid) {
       return cachedDenomTraces[denom].data
     }
 
