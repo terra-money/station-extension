@@ -19,7 +19,6 @@ import { ChainID } from "types/network"
 import { has } from "utils/num"
 import { useSend } from "./SendContext"
 import { AssetType } from "./types"
-import { toInput } from "txs/utils"
 
 type TokenChainData = {
   denom: string

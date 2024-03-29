@@ -7,8 +7,12 @@ import {
   ActivityListItem,
   Banner,
   FlexColumn,
+  InputWrapper,
+  Input,
+  Grid,
 } from "@terra-money/station-ui"
 import { useSend } from "./SendContext"
+import validate from "txs/validate"
 import { truncate } from "@terra-money/terra-utils"
 import { useCurrency } from "data/settings/Currency"
 import { toInput } from "txs/utils"
@@ -21,6 +25,7 @@ import { queryKey } from "data/query"
 import { CoinInput } from "txs/utils"
 import style from "./Send.module.scss"
 import { useIsLedger } from "utils/ledger"
+import styles from "./Send.module.scss"
 
 interface InfoProps {
   render: (
@@ -46,7 +51,7 @@ const Confirm = () => {
   } = useSend()
   const { t } = useTranslation()
   const currency = useCurrency()
-  const { handleSubmit, setValue } = form
+  const { handleSubmit, setValue, register, formState } = form
   const { addRecipient } = useRecentRecipients()
   const [error, setError] = useState<string | null>(null)
   const { input, assetInfo, destination, recipient, chain, memo } = form.watch()
@@ -128,14 +133,30 @@ const Confirm = () => {
           }
         />
         <SectionHeader withLine title={t("Details")} />
-        <InputInLine
-          disabled
-          label={t("To")}
-          extra={truncate(recipient)}
-          value={getWalletName(recipient)}
-        />
-
+        <Grid gap={8}>
+          <InputInLine
+            disabled
+            label={t("To")}
+            extra={truncate(recipient, [11, 6])}
+            value={getWalletName(recipient)}
+          />
+          <span className={styles.address}>{recipient}</span>
+        </Grid>
         {fee.render(rows)}
+        <InputWrapper
+          label={`${t("Memo")} (${t("optional")})`}
+          error={formState.errors.memo?.message}
+        >
+          <Input
+            {...register("memo", {
+              validate: {
+                size: validate.size(256, "Memo"),
+                brackets: validate.memo(),
+                mnemonic: validate.isNotMnemonic(),
+              },
+            })}
+          />
+        </InputWrapper>
       </FlexColumn>
     )
   }
@@ -164,6 +185,7 @@ const Confirm = () => {
       {({ submit, fee }) => (
         <Form onSubmit={handleSubmit(submit.fn)} spaceBetween fullHeight>
           <TxInfo {...fee} />
+
           <FlexColumn gap={24} align="stretch">
             {error && <Banner variant="warning" title={t(error)} />}
             {submit.button}
