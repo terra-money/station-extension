@@ -18,8 +18,9 @@ import GasHelper from "./GasHelper"
 import { useQueryClient } from "react-query"
 import { queryKey } from "data/query"
 import { useCarbonFees } from "data/queries/tx"
-import { TxInfo } from "@terra-money/feather.js"
+import { Coins, TxInfo } from "@terra-money/feather.js"
 import GasHelperStatus from "./GasHelperStatus"
+import { Flex } from "components/layout"
 
 export default function DisplayFees({
   chainID,
@@ -28,6 +29,7 @@ export default function DisplayFees({
   setGasDenom,
   descriptions,
   onReady,
+  totalFees,
 }: {
   chainID: string
   gas: number | undefined
@@ -35,6 +37,7 @@ export default function DisplayFees({
   setGasDenom?: (gasDenom: string) => void
   descriptions?: { label: ReactNode; value: ReactNode }[]
   onReady: (state: boolean) => void
+  totalFees?: Coins
 }) {
   const chainsWithGas = useChainsWithGas()
   const availableGasDenoms = useAvailableGasDenoms(chainID, gas ?? 0)
@@ -55,7 +58,7 @@ export default function DisplayFees({
     chainID?: string
     submitting: boolean
   }>({ submitting: false })
-
+  const hasMultipleFeeCoins = !!totalFees?.denoms().length
   useEffect(() => {
     if (
       availableGasDenoms.length &&
@@ -129,19 +132,33 @@ export default function DisplayFees({
           label: (
             <div className={styles.gas}>
               {t("Fee")}{" "}
-              {availableGasDenoms.length > 1 && setGasDenom && (
-                <Dropdown
-                  value={gasDenom}
-                  options={availableGasDenoms.map((denom) => ({
-                    value: denom,
-                    label: readNativeDenom(denom, chainID).symbol,
-                  }))}
-                  onChange={(val) => setGasDenom(val)}
-                />
-              )}
+              {!hasMultipleFeeCoins &&
+                availableGasDenoms.length > 1 &&
+                setGasDenom && (
+                  <Dropdown
+                    value={gasDenom}
+                    options={availableGasDenoms.map((denom) => ({
+                      value: denom,
+                      label: readNativeDenom(denom, chainID).symbol,
+                    }))}
+                    onChange={(val) => setGasDenom(val)}
+                  />
+                )}
             </div>
           ),
-          value: (
+          value: hasMultipleFeeCoins ? (
+            <Flex gap={8}>
+              {totalFees.toArray().map(({ amount, denom }, i) => (
+                <Read
+                  amount={amount.toNumber()}
+                  decimals={decimals}
+                  denom={denom}
+                  chainID={chainID}
+                  key={i}
+                />
+              ))}
+            </Flex>
+          ) : (
             <Read
               amount={feeAmount}
               decimals={decimals}
