@@ -11,6 +11,7 @@ import {
   setLocalSetting,
   SettingKey,
 } from "utils/localStorage"
+import { DENOM_TRACE_CACHE_TIME_MS } from "config/constants"
 
 export const useIBCBaseDenom = (
   denom: Denom,
@@ -78,9 +79,10 @@ export const useIBCBaseDenoms = (data: { denom: Denom; chainID: string }[]) => {
     const cachedDenomTraces = getLocalSetting<
       Record<string, { data: any; timestamp: number }>
     >(SettingKey.DenomTrace)
-    const oneWeekAgo = 7 * 24 * 60 * 60 * 1000
 
-    const isValid = Date.now() - cachedDenomTraces[denom].timestamp < oneWeekAgo
+    const isValid =
+      Date.now() - cachedDenomTraces[denom].timestamp <
+      DENOM_TRACE_CACHE_TIME_MS
 
     if (cachedDenomTraces[denom] && isValid) {
       return cachedDenomTraces[denom].data
