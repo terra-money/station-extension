@@ -1,11 +1,10 @@
-import { ReactNode } from "react"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { ReactNode, useMemo } from "react"
+import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { QueryKey, useQuery, useQueryClient } from "react-query"
+import { QueryKey, useQueryClient } from "react-query"
 import { useRecoilValue, useSetRecoilState } from "recoil"
 import classNames from "classnames"
 import BigNumber from "bignumber.js"
-import { isNil } from "ramda"
 
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet"
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"
@@ -15,8 +14,7 @@ import { Fee } from "@terra-money/feather.js"
 
 import { has } from "utils/num"
 import { getErrorMessage } from "utils/error"
-import { getLocalSetting, SettingKey } from "utils/localStorage"
-import { combineState, RefetchOptions } from "data/query"
+import { combineState } from "data/query"
 import { queryKey } from "data/query"
 import { useNetwork } from "data/wallet"
 import { isBroadcastingState, latestTxState } from "data/queries/tx"
@@ -30,10 +28,8 @@ import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
 import { isWallet, useAuth } from "auth"
 import { toInput, CoinInput, calcTaxes } from "./utils"
 import styles from "./Tx.module.scss"
-import { useInterchainLCDClient } from "data/queries/lcdClient"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { getShouldTax, useTaxCap, useTaxRate } from "data/queries/treasury"
-import { useCarbonFees, useOsmosisGas } from "data/queries/tx"
 import {
   Banner,
   Button,
@@ -50,6 +46,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 import { usePendingIbcTx } from "./useIbcTxs"
 import { useNavigate } from "react-router-dom"
 import { useAddCachedTx } from "data/queries/activity"
+import { useGasEstimation } from "data/queries/tx"
 
 const cx = classNames.bind(styles)
 
@@ -121,16 +118,13 @@ function Tx<TxValues>(props: Props<TxValues>) {
 
   /* context */
   const { t } = useTranslation()
-  const lcd = useInterchainLCDClient()
   const networks = useNetwork()
   const { wallet, validatePassword, ...auth } = useAuth()
   const addresses = useInterchainAddresses()
   const isWalletEmpty = useIsWalletEmpty()
   const setLatestTx = useSetRecoilState(latestTxState)
   const isBroadcasting = useRecoilValue(isBroadcastingState)
-  const { data: carbonFees } = useCarbonFees()
   const { addTx: trackIbcTx } = usePendingIbcTx()
-  const { data: osmosisGas } = useOsmosisGas(!chain?.startsWith("osmosis-"))
 
   /* taxes */
   const isClassic = networks[chain]?.isClassic
@@ -146,71 +140,14 @@ function Tx<TxValues>(props: Props<TxValues>) {
       )
     : undefined
 
-  /* simulation: estimate gas */
-  const simulationTx = estimationTxValues && createTx(estimationTxValues)
-  const gasAdjustmentSetting = SettingKey.GasAdjustment
-  const gasAdjustment =
-    networks[chain]?.gasAdjustment *
-    getLocalSetting<number>(gasAdjustmentSetting)
-
-  const key = {
-    address: addresses?.[chain],
-    //network: networks,
-    gasAdjustment: gasAdjustment * (txGasAdjustment ?? 1),
+  /* gas estimation */
+  const { estimatedGas, estimatedGasState, getGasAmount } = useGasEstimation({
+    chain,
     estimationTxValues,
-    msgs: simulationTx?.msgs.map((msg) => msg.toData(isClassic)["@type"]),
-  }
-
-  const carbonFee = useMemo(() => {
-    const fee =
-      carbonFees?.costs[key.msgs?.[0] ?? ""] ?? carbonFees?.costs["default_fee"]
-    return Number(fee)
-  }, [carbonFees, key.msgs])
-
-  const { data: estimatedGas, ...estimatedGasState } = useQuery(
-    [queryKey.tx.create, key, isWalletEmpty, carbonFee],
-    async () => {
-      if (!key.address || isWalletEmpty) return 0
-      if (!wallet) return 0
-      if (!simulationTx || !simulationTx.msgs.length) return 0
-      try {
-        if (chain.startsWith("carbon-")) return carbonFee
-        const unsignedTx = await lcd.tx.create([{ address: key.address }], {
-          ...simulationTx,
-          feeDenoms: [gasDenom],
-        })
-        return Math.ceil(unsignedTx.auth_info.fee.gas_limit)
-      } catch (error) {
-        console.error(error)
-        return 200_000
-      }
-    },
-    {
-      ...RefetchOptions.INFINITY,
-      // To handle sequence mismatch
-      retry: 3,
-      retryDelay: 1000,
-      // Because the focus occurs once when posting back from the extension
-      refetchOnWindowFocus: false,
-      enabled: !isBroadcasting,
-    }
-  )
-
-  const getGasAmount = useCallback(
-    (denom: CoinDenom) => {
-      const gasPrice = chain?.startsWith("carbon-")
-        ? carbonFees?.prices[denom]
-        : chain?.startsWith("osmosis-")
-        ? (osmosisGas || 0.0025) * 10
-        : networks[chain]?.gasPrices[denom]
-      if (isNil(estimatedGas) || !gasPrice) return "0"
-      return new BigNumber(estimatedGas)
-        .times(gasPrice)
-        .integerValue(BigNumber.ROUND_CEIL)
-        .toString()
-    },
-    [chain, carbonFees?.prices, osmosisGas, networks, estimatedGas]
-  )
+    createTx,
+    txGasAdjustment,
+    gasDenom,
+  })
 
   const gasAmount = getGasAmount(gasDenom)
   const gasFee = { amount: gasAmount, denom: gasDenom, decimals }
@@ -248,13 +185,10 @@ function Tx<TxValues>(props: Props<TxValues>) {
   useEffect(() => {
     if (process.env.NODE_ENV === "development" && failed) {
       console.groupCollapsed("Fee estimation failed")
-      console.info(
-        simulationTx?.msgs.map((msg) => msg.toData(networks[chain].isClassic))
-      )
       console.info(failed)
       console.groupEnd()
     }
-  }, [failed, simulationTx, networks, chain])
+  }, [failed])
 
   /* submit */
   const passwordRequired = isWallet.single(wallet)

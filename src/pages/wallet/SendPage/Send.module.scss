@@ -1,3 +1,12 @@
+@import "font_mixins";
+
 .green {
   color: var(--token-success-500) !important;
+}
+
+.address {
+  color: var(--token-light-100, #8b8e9c);
+  @include XX-Small;
+  text-align: right;
+  padding-right: 20px;
 }

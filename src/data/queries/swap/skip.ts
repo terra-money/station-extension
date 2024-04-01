@@ -28,7 +28,7 @@ export const skipApi = {
         },
       })
 
-      const tokens = Object.entries(result.data.chain_to_assets_map).reduce(
+      const tokens = Object.entries(result.data?.chain_to_assets_map).reduce(
         // @ts-ignore
         (acc, [chainId, { assets }]) => {
           const transformedAssets = assets.map((asset: SkipTokenResponse) => ({
