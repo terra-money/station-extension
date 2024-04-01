@@ -22,10 +22,9 @@ const WalletNameInput = () => {
 
   const submit = (values: Values) => {
     const { name } = values
+    if (name.endsWith(" ")) return
     const validationResult = validate.name.exists(name)
-
     if (typeof validationResult === "string") {
-      // Revert the name to the previously stored wallet name
       setValue("name", wallet ?? "")
       return
     }

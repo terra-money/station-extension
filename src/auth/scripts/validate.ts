@@ -21,8 +21,6 @@ const validate = {
         return true
       }
     },
-    noSpaces: (name: string) =>
-      !name.includes(" ") || "A name cannot contain spaces.",
   },
 
   address: {
