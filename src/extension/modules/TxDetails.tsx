@@ -43,6 +43,7 @@ const TxDetails = ({
         descriptions={contents.filter(({ value }) => !!value)}
         setGasDenom={setFeeDenom}
         onReady={(state) => onFeesReady(state)}
+        totalFees={fee?.amount}
       />
     </Grid>
   )
