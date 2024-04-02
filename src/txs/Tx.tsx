@@ -23,16 +23,13 @@ import { useIsWalletEmpty } from "data/queries/bank"
 import { Pre } from "components/general"
 import { Grid, Flex } from "components/layout"
 import { Read } from "components/token"
-import ConnectWallet from "app/sections/ConnectWallet"
 import useToPostMultisigTx from "pages/multisig/utils/useToPostMultisigTx"
 import { isWallet, useAuth } from "auth"
 import { toInput, CoinInput, calcTaxes } from "./utils"
 import styles from "./Tx.module.scss"
-import { useInterchainAddresses } from "auth/hooks/useAddress"
 import { getShouldTax, useTaxCap, useTaxRate } from "data/queries/treasury"
 import {
   Banner,
-  Button,
   Checkbox,
   Input,
   InputWrapper,
@@ -120,7 +117,6 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const { t } = useTranslation()
   const networks = useNetwork()
   const { wallet, validatePassword, ...auth } = useAuth()
-  const addresses = useInterchainAddresses()
   const isWalletEmpty = useIsWalletEmpty()
   const setLatestTx = useSetRecoilState(latestTxState)
   const isBroadcasting = useRecoilValue(isBroadcastingState)
@@ -356,60 +352,47 @@ function Tx<TxValues>(props: Props<TxValues>) {
   const submitButton = (
     <>
       {walletError && <Banner variant="error" title={walletError} />}
+      <Grid gap={12}>
+        {failed && <Banner variant="error" title={failed} />}
+        {passwordRequired && showPasswordInput && !incorrect && (
+          <>
+            <InputWrapper label={t("Password")} error={incorrect}>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setIncorrect(undefined)
+                  setPassword(e.target.value)
+                }}
+              />
+            </InputWrapper>
 
-      {!addresses ? (
-        <ConnectWallet
-          renderButton={(open) => (
-            <Button
-              variant="secondary"
-              onClick={open}
-              label={t("Connect wallet")}
-            />
-          )}
-        />
-      ) : (
-        <Grid gap={12}>
-          {failed && <Banner variant="error" title={failed} />}
-          {passwordRequired && showPasswordInput && !incorrect && (
-            <>
-              <InputWrapper label={t("Password")} error={incorrect}>
-                <Input
-                  type="password"
-                  value={password}
-                  onChange={(e) => {
-                    setIncorrect(undefined)
-                    setPassword(e.target.value)
-                  }}
-                />
-              </InputWrapper>
+            <InputWrapper>
+              <Checkbox
+                label={t("Save password")}
+                checked={rememberPassword}
+                onChange={() => setRememberPassword((r) => !r)}
+              />
+            </InputWrapper>
+          </>
+        )}
 
-              <InputWrapper>
-                <Checkbox
-                  label={t("Save password")}
-                  checked={rememberPassword}
-                  onChange={() => setRememberPassword((r) => !r)}
-                />
-              </InputWrapper>
-            </>
-          )}
+        {error && (isIbc || hideLoader) && (
+          <Banner variant="error" title={error.message} />
+        )}
 
-          {error && (isIbc || hideLoader) && (
-            <Banner variant="error" title={error.message} />
-          )}
-
-          {feesReady && (
-            <SubmitButton
-              variant="primary"
-              icon={<CheckCircleIcon />}
-              disabled={
-                !estimatedGas || !!disabled || !!walletError || !feesReady
-              }
-              loading={submitting}
-              label={(submitting ? submittingLabel : disabled) || t("Submit")}
-            />
-          )}
-        </Grid>
-      )}
+        {feesReady && (
+          <SubmitButton
+            variant="primary"
+            icon={<CheckCircleIcon />}
+            disabled={
+              !estimatedGas || !!disabled || !!walletError || !feesReady
+            }
+            loading={submitting}
+            label={(submitting ? submittingLabel : disabled) || t("Submit")}
+          />
+        )}
+      </Grid>
     </>
   )
 

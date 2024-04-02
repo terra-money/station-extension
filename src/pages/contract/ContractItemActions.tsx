@@ -1,10 +1,11 @@
 import { useTranslation } from "react-i18next"
 import { useAddress } from "data/wallet"
-import { Button, LinkButton } from "components/general"
+import { LinkButton } from "components/general"
 import { ModalButton } from "components/feedback"
 import { ExtraActions } from "components/layout"
 import ContractQuery from "./ContractQuery"
 import { useContract } from "./Contract"
+import { Button } from "@terra-money/station-ui"
 
 const ContractItemActions = () => {
   const { t } = useTranslation()
@@ -16,7 +17,7 @@ const ContractItemActions = () => {
       <ModalButton
         title={t("Query")}
         renderButton={(open) => (
-          <Button onClick={open} size="small" outline>
+          <Button onClick={open} small variant="outlined">
             {t("Query")}
           </Button>
         )}

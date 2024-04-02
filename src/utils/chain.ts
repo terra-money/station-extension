@@ -30,13 +30,3 @@ export const sortTokens = (list: any[]) => {
     }
   })
 }
-
-export const convertAddress = (address: AccAddress, newPrefix: string) => {
-  let decodedAddress
-  try {
-    decodedAddress = bech32.decode(address)
-  } catch (error) {
-    throw new Error("Provided address is not a valid Bech32 address.")
-  }
-  return bech32.encode(newPrefix, decodedAddress.words)
-}
