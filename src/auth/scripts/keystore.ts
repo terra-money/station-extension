@@ -310,7 +310,7 @@ export const addWallet = (params: AddWalletParams, password: string) => {
   const next = wallets.filter((wallet) =>
     "words" in wallet
       ? wallet.words["330"] !== params.words["330"]
-      : wallet.address !== addressFromWords(params.words["330"])
+      : wordsFromAddress(wallet.address) !== params.words["330"]
   )
 
   if (!passwordExists()) storePasswordChallenge(password)
