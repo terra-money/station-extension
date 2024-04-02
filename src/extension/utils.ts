@@ -6,7 +6,7 @@ import {
   SignatureV2,
   Tx,
 } from "@terra-money/feather.js"
-import { useChainID, useNetwork } from "data/wallet"
+import { useAllNetworks, useChainID, useNetwork } from "data/wallet"
 import { isNil } from "ramda"
 import browser from "webextension-polyfill"
 
@@ -128,7 +128,7 @@ export const parseDefault = (
 export const useParseTx = () => {
   // for lecacy support
   const defaultChainID = useChainID()
-  const networks = useNetwork()
+  const networks = useAllNetworks()
 
   return useCallback(
     (request: PrimitiveTxRequest): TxRequest["tx"] => {
@@ -151,7 +151,7 @@ export const useParseTx = () => {
                 JSON.parse(msg),
                 shouldOverrideClassic
                   ? false
-                  : networks[chainID ?? defaultChainID].isClassic
+                  : networks[chainID ?? defaultChainID]?.isClassic
               )
             ),
             fee: fee ? Fee.fromData(JSON.parse(fee)) : undefined,
@@ -162,7 +162,7 @@ export const useParseTx = () => {
             msgs: msgs.map((msg) =>
               Msg.fromAmino(
                 JSON.parse(msg),
-                networks[chainID ?? defaultChainID].isClassic
+                networks[chainID ?? defaultChainID]?.isClassic
               )
             ),
             fee: fee ? Fee.fromAmino(JSON.parse(fee)) : undefined,
@@ -170,7 +170,7 @@ export const useParseTx = () => {
             chainID: chainID ?? defaultChainID,
           }
     },
-    [defaultChainID, networks]
+    [defaultChainID] // eslint-disable-line
   )
 }
 
