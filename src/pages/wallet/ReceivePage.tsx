@@ -51,7 +51,7 @@ export const SearchChains = ({ data }: SearchChainsProps) => {
                 key={`${chainID}-${address}`}
                 walletName={networks[chainID]?.name || chainID}
                 label={networks[chainID]?.name || chainID}
-                subLabel={truncate(address)}
+                subLabel={truncate(address, [11, 6])}
                 copyValue={address}
                 active={true}
               />

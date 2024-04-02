@@ -3,12 +3,21 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { AccAddress } from "@terra-money/feather.js"
 import MyWallets from "pages/wallet/SendPage/Components/MyWallets"
-import { Grid, Tabs, NavButton, WalletIcon } from "@terra-money/station-ui"
+import {
+  Grid,
+  Tabs,
+  NavButton,
+  WalletIcon,
+  FavoriteIcon,
+} from "@terra-money/station-ui"
+import { AddressBookList } from "pages/wallet/SendPage/Components/AddressBookList"
+import { useAddressBook } from "data/settings/AddressBook"
 
 const AddressBook = () => {
   const { t } = useTranslation()
-  const [tabKey, setTabKey] = useState("wallets")
+  const [tab, setTab] = useState("wallets")
   const navigate = useNavigate()
+  const { list: addressList } = useAddressBook()
 
   const handleOpen = (index?: number) => {
     navigate(`new`, { state: { index } })
@@ -18,17 +27,17 @@ const AddressBook = () => {
     {
       key: "wallets",
       label: t("My Wallets"),
-      onClick: () => setTabKey("wallets"),
+      onClick: () => setTab("wallets"),
     },
     {
       key: "address",
       label: t("Address Book"),
-      onClick: () => setTabKey("address"),
+      onClick: () => setTab("address"),
     },
   ]
 
   const onClick = (address: AccAddress, index: number) => {
-    if (tabKey === "wallets") {
+    if (tab === "wallets") {
       navigate("my-addresses", { state: address })
     } else if (index !== undefined) {
       handleOpen(index)
@@ -42,8 +51,24 @@ const AddressBook = () => {
         onClick={() => handleOpen()}
         icon={<WalletIcon fill="var(--token-light-white)" />}
       />
-      <Tabs activeTabKey={tabKey} tabs={tabs} />
-      <MyWallets tab={tabKey} onClick={onClick} />
+      <Tabs activeTabKey={tab} tabs={tabs} />
+      {tab === "address" ? (
+        <>
+          <AddressBookList
+            onClick={onClick}
+            title="Favorites"
+            icon={<FavoriteIcon fill={"var(--token-warning-500)"} />}
+            items={addressList.filter((i) => i.favorite)}
+          />
+          <AddressBookList
+            title="All Addresses"
+            onClick={onClick}
+            items={addressList.filter((i) => !i.favorite)}
+          />
+        </>
+      ) : (
+        <MyWallets onClick={onClick} />
+      )}
     </Grid>
   )
 }

@@ -11,8 +11,6 @@ import {
   InputInLine,
   AssetSelectorFrom,
   Button,
-  InputWrapper,
-  Input,
   Banner,
   Checkbox,
   FlexColumn,
@@ -38,7 +36,6 @@ const Submit = () => {
     setError,
     clearErrors,
   } = form
-  const { errors } = formState
   const {
     assetInfo,
     recipient,
@@ -71,6 +68,7 @@ const Submit = () => {
   )
 
   const originChain = useMemo(() => ibcData?.chainIDs?.[0], [ibcData])
+  console.log("formState.isValid", formState.errors)
 
   const showIBCWarning = useMemo(() => {
     return (
@@ -166,20 +164,6 @@ const Submit = () => {
           }}
           currencyAmount={`${currency.symbol} ${currencyAmount ?? 0}`}
         />
-        <InputWrapper
-          label={`${t("Memo")} (${t("optional")})`}
-          error={errors.memo?.message}
-        >
-          <Input
-            {...register("memo", {
-              validate: {
-                size: validate.size(256, "Memo"),
-                brackets: validate.memo(),
-                mnemonic: validate.isNotMnemonic(),
-              },
-            })}
-          />
-        </InputWrapper>
         {showFeeWarning && (
           <Banner
             variant="warning"

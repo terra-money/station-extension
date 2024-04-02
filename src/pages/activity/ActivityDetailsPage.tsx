@@ -1,31 +1,35 @@
 import {
   ActivityListItem,
+  Button,
+  ExternalLinkIcon,
+  Grid,
   SectionHeader,
   SummaryColumn,
   SummaryTable,
   Timeline,
-  ExternalLinkIcon,
 } from "@terra-money/station-ui"
-import styles from "./ActivityDetailsPage.module.scss"
-import { ExternalLink } from "components/general"
-import { ReadMultiple } from "components/token"
-import { useTranslation } from "react-i18next"
-import { useNetwork } from "data/wallet"
-import { toNow } from "utils/date"
-import moment from "moment"
-import { ReactElement } from "react"
-import { useAllInterchainAddresses } from "auth/hooks/useAddress"
-import { getCanonicalMsg } from "@terra-money/terra-utils"
-import { last } from "ramda"
-import ActivityMessage from "./ActivityMessage"
 import {
   IbcTxDetails,
   getIbcTxDetails,
   getRecvIbcTxDetails,
   useIbcNextHop,
   useIbcPrevHop,
-  useIbcTimeout,
 } from "txs/useIbcTxs"
+import { useAllInterchainAddresses } from "auth/hooks/useAddress"
+import { getCanonicalMsg } from "@terra-money/terra-utils"
+import { useExchangeRates } from "data/queries/coingecko"
+import styles from "./ActivityDetailsPage.module.scss"
+import { ExternalLink } from "components/general"
+import AssetChain from "pages/wallet/AssetChain"
+import { ReadMultiple } from "components/token"
+import ActivityMessage from "./ActivityMessage"
+import { ReactElement, useState } from "react"
+import { useTranslation } from "react-i18next"
+import { useNativeDenoms } from "data/token"
+import { useNetwork } from "data/wallet"
+import { toNow } from "utils/date"
+import { last } from "ramda"
+import moment from "moment"
 
 interface Props {
   variant: "success" | "failed" | "loading"
@@ -132,9 +136,7 @@ const PrevHopActivity = (ibcDetails: IbcTxDetails) => {
 }
 
 const NextHopActivity = (ibcDetails: IbcTxDetails) => {
-  const { data: nextTx } = useIbcNextHop(ibcDetails)
-  const { data: timeoutTx } = useIbcTimeout(ibcDetails, !!nextTx)
-  const tx = nextTx ?? timeoutTx
+  const { data: tx } = useIbcNextHop(ibcDetails)
   const network = useNetwork()
   const { t } = useTranslation()
   const parseMsgs = useParseMessages()
@@ -158,12 +160,12 @@ const NextHopActivity = (ibcDetails: IbcTxDetails) => {
 
   const { activityMessages, activityType } = parseMsgs(tx)
 
-  const nextIbcDetails = nextTx && getIbcTxDetails(nextTx)
+  const nextIbcDetails = getIbcTxDetails(tx)
 
   const timelineDisplayMessages = activityMessages.map(
     (message: ReactElement) => {
       return {
-        variant: (tx.code !== 0 || !!timeoutTx ? "warning" : "success") as
+        variant: (tx.code === 0 ? "success" : "warning") as
           | "success"
           | "warning",
         msg: message,
@@ -176,7 +178,7 @@ const NextHopActivity = (ibcDetails: IbcTxDetails) => {
       <Timeline
         startOverride={
           <ActivityListItem
-            variant={tx.code !== 0 || !!timeoutTx ? "failed" : "success"}
+            variant={tx.code === 0 ? "success" : "failed"}
             chain={{
               icon: network[tx.chain].icon,
               label: network[tx.chain].name,
@@ -216,12 +218,21 @@ const ActivityDetailsPage = ({
   logs,
 }: Props) => {
   const { t } = useTranslation()
-
   const networks = useNetwork()
   const explorer = networks[chain ?? ""]?.explorer
   const externalLink = explorer?.tx?.replace("{}", txHash)
   const ibcDetails = getIbcTxDetails({ logs, chain })
   const prevIbcDetails = getRecvIbcTxDetails({ logs, chain })
+  const readNativeDenom = useNativeDenoms()
+  const { data: prices } = useExchangeRates()
+  const [isCopied, setIsCopied] = useState(false)
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(txHash)
+
+    setIsCopied(true)
+    setTimeout(() => setIsCopied(false), 2000) // Reset after 2 seconds
+  }
 
   const timelineDisplayMessages = timelineMessages.map(
     (message: ReactElement) => {
@@ -246,7 +257,7 @@ const ActivityDetailsPage = ({
   return (
     <div className={styles.txcontainer}>
       <div className={styles.activityitem}>
-        {!!prevIbcDetails && <PrevHopActivity {...prevIbcDetails} />}
+        {prevIbcDetails && <PrevHopActivity {...prevIbcDetails} />}
         <Timeline
           startOverride={
             <ActivityListItem
@@ -259,7 +270,10 @@ const ActivityDetailsPage = ({
               type={type}
               time={toNow(new Date(time))}
               msgCount={timelineDisplayMessages.length}
-              hasTimeline={!!timelineDisplayMessages.length || !!ibcDetails}
+              hasTimeline={
+                !!timelineDisplayMessages.length ||
+                (!!ibcDetails && variant !== "failed")
+              }
               extra={
                 <ExternalLink
                   href={externalLink}
@@ -271,22 +285,79 @@ const ActivityDetailsPage = ({
             />
           }
           middleItems={timelineDisplayMessages}
-          hasNextElement={!!ibcDetails}
+          hasNextElement={ibcDetails && variant !== "failed"}
         />
-        {!!ibcDetails && <NextHopActivity {...ibcDetails} />}
+        {ibcDetails && variant !== "failed" && (
+          <NextHopActivity {...ibcDetails} />
+        )}
       </div>
 
+      {/* Balance Changes Display */}
+      {msg?.props?.msg?.inAssets?.length ||
+      msg?.props?.msg?.outAssets?.length ? (
+        <SectionHeader title={t("Balance Changes")} withLine />
+      ) : null}
+
+      {/* In Assets Display */}
+      {msg?.props?.msg?.outAssets?.map((outAsset: any) => {
+        const amount = outAsset.match(/^\d+/)?.[0]
+        const denom = outAsset.match(/[a-z]+[/]*?[A-Za-z/\d]*$/)?.[0]
+
+        const { symbol, decimals } = readNativeDenom(denom, chain)
+
+        return (
+          <AssetChain
+            key={denom + chain}
+            symbol={symbol}
+            balance={amount}
+            chain={chain}
+            price={prices?.[denom]?.price || 0}
+            denom={denom}
+            decimals={decimals}
+            sign={"-"}
+          />
+        )
+      })}
+
+      {/* Out Assets Display */}
+      {msg?.props?.msg?.inAssets?.map((inAsset: any) => {
+        const amount = inAsset.match(/^\d+/)?.[0]
+        const denom = inAsset.match(/[a-z]+[/]*?[A-Za-z/\d]*$/)?.[0]
+
+        const { symbol, decimals } = readNativeDenom(denom, chain)
+
+        return (
+          <AssetChain
+            key={denom + chain}
+            symbol={symbol}
+            balance={amount}
+            chain={chain}
+            price={prices?.[denom]?.price || 0}
+            denom={denom}
+            decimals={decimals}
+            sign={"+"}
+          />
+        )
+      })}
+
       <SectionHeader title={t("Details")} withLine />
-      <SummaryColumn
-        title={t("Transaction Hash")}
-        description={txHash.toLowerCase()}
-        extra={
-          <ExternalLink href={externalLink}>
-            <ExternalLinkIcon fill="#686b77" />
-          </ExternalLink>
-        }
-      />
-      <SummaryTable rows={detailRows} />
+      <Grid gap={20}>
+        <SummaryColumn
+          title={t("Transaction Hash")}
+          description={txHash.toLowerCase()}
+          extra={
+            <ExternalLink href={externalLink}>
+              <ExternalLinkIcon fill="#686b77" />
+            </ExternalLink>
+          }
+        />
+        <Button
+          variant="secondary"
+          label={t(isCopied ? "Copied!" : "Copy Transaction Hash")}
+          onClick={handleCopy}
+        />
+        <SummaryTable rows={detailRows} />
+      </Grid>
     </div>
   )
 }
