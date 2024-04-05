@@ -39,7 +39,7 @@ import Auth from "./auth/Auth"
 import UpgradeWalletButton from "app/sections/UpgradeWalletButton"
 import { Tooltip } from "@terra-money/station-ui"
 import { useTranslation } from "react-i18next"
-import SwapContext, { SwapProvider } from "txs/swap/SwapContext"
+import SwapContext from "txs/swap/SwapContext"
 
 const App = () => {
   const { networks } = useNetworks()

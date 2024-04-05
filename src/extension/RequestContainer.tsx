@@ -51,13 +51,13 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
   const [chain, setChain] = useState<SuggestChainRequest>()
   const [tx, setTx] = useState<TxRequest | SignBytesRequest>()
   const [network, setNetwork] = useState<SwitchNetworkRequest>()
-  const [isLoading, setLoading] = useState(true)
+  const [isLoading, setLoading] = useState(!!browser.storage?.local)
   const parseTx = useParseTx()
   const networks = useNetwork()
   const defaultChainID = useChainID()
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(!!browser.storage?.local)
     // Requests from storage
     // except for that is already success or failure
     browser.storage?.local

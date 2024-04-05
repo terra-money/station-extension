@@ -1,6 +1,5 @@
 import { AccAddress } from "@terra-money/feather.js"
 import { ChainID } from "types/network"
-import { bech32 } from "bech32"
 
 export const isTerraChain = (chainID: ChainID) => {
   return chainID?.startsWith("phoenix-") || chainID?.startsWith("pisco-")

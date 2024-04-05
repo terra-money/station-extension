@@ -1,15 +1,12 @@
 import { useCallback } from "react"
 import { atom, useRecoilState, useRecoilValue } from "recoil"
 import BigNumber from "bignumber.js"
-import { always } from "ramda"
 import themes, { Theme } from "styles/themes/themes"
 import { DefaultTheme, SettingKey } from "utils/localStorage"
 import {
   //getLocalSetting,
   setLocalSetting,
 } from "utils/localStorage"
-import { debug } from "utils/env"
-import { useAddress, useChainID, useNetworkName } from "data/wallet"
 
 export const themeNameState = atom({
   key: "themeName",
