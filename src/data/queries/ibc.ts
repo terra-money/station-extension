@@ -97,12 +97,13 @@ export const useIBCBaseDenoms = (data: { denom: Denom; chainID: string }[]) => {
     const channels = []
 
     for (let i = 0; i < paths.length; i += 2) {
-      if (!network[chainID]?.lcd) return
+      const chain = chains[0]
+      if (!network[chain]?.lcd) return
       const [port, channel] = [paths[i], paths[i + 1]]
       channels.unshift({ port, channel })
       const res = await axios.get(
         `/ibc/core/channel/v1/channels/${channel}/ports/${port}/client_state`,
-        { baseURL: network[chainID].lcd }
+        { baseURL: network[chain].lcd }
       )
       chains.unshift(res?.data?.identified_client_state.client_state.chain_id)
     }
@@ -132,8 +133,7 @@ export const useIBCBaseDenoms = (data: { denom: Denom; chainID: string }[]) => {
 
   const updatedDenomTraces = queryResults.reduce((acc, result) => {
     if (result.data) {
-      const { ibcDenom, ...rest } = result.data
-      acc[ibcDenom] = { data: rest, timestamp: Date.now() }
+      acc[result.data?.ibcDenom] = { data: result.data, timestamp: Date.now() }
     }
     return acc
   }, {} as Record<string, { data: any; timestamp: number }>)
