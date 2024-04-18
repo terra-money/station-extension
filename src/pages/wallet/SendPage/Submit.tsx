@@ -68,7 +68,6 @@ const Submit = () => {
   )
 
   const originChain = useMemo(() => ibcData?.chainIDs?.[0], [ibcData])
-  console.log("formState.isValid", formState.errors)
 
   const showIBCWarning = useMemo(() => {
     return (

@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation, useNavigate } from "react-router-dom"
+import { Routes, Route, useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import Address from "./Address"
 import Chain from "./Chain"
