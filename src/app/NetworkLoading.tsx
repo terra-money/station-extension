@@ -3,7 +3,7 @@ import styles from "./NetworkError.module.scss"
 import { useTheme } from "data/settings/Theme"
 import Overlay from "./components/Overlay"
 import { useEffect, useState } from "react"
-import { Button } from "components/general"
+import { Button } from "@terra-money/station-ui"
 import ReplayIcon from "@mui/icons-material/Replay"
 
 interface Props {
@@ -38,7 +38,7 @@ const NetworkLoading = ({ title, timeout }: Props) => {
             {timeout && showTimeout && (
               <FlexColumn gap={10}>
                 <p>Oops, something went wrong, this is taking too much time.</p>
-                <Button color="primary" onClick={timeout.fallback}>
+                <Button variant="primary" onClick={timeout.fallback}>
                   <ReplayIcon /> Reload Station
                 </Button>
               </FlexColumn>

@@ -37,6 +37,8 @@ export const OSMOSIS_GAS_ENDPOINT = "osmosis/txfees/v1beta1/cur_eip_base_fee"
 /* swap */
 export const TERRASWAP_COMMISSION_RATE = 0.003
 
+export const DENOM_TRACE_CACHE_TIME_MS = 7 * 24 * 60 * 60 * 1000
+
 /* placeholder */
 // https://github.com/terra-money/localterra
 export const SAMPLE_ADDRESS = "terra1x46rqay4d3cssq8gxxvqz8xt6nwlz4td20k38v"

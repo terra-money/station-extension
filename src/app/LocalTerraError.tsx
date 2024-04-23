@@ -1,10 +1,11 @@
 import { useTranslation } from "react-i18next"
 import Logo from "styles/images/LocalTerra.png"
 import { useNetworkState } from "data/wallet"
-import { Button, ExternalLink } from "components/general"
+import { ExternalLink } from "components/general"
 import { FlexColumn } from "components/layout"
 import styles from "./NetworkError.module.scss"
 import { useTheme } from "data/settings/Theme"
+import { Button } from "@terra-money/station-ui"
 
 const LocalTerraError = ({ refresh }: { refresh: () => void }) => {
   const { t } = useTranslation()
@@ -23,11 +24,11 @@ const LocalTerraError = ({ refresh }: { refresh: () => void }) => {
         </ExternalLink>
       </article>
       <FlexColumn gap={10}>
-        <Button onClick={refresh} size="small" color="primary">
+        <Button onClick={refresh} small variant="primary">
           {t("Refresh")}
         </Button>
 
-        <Button onClick={() => setNetwork("mainnet")} size="small" outline>
+        <Button onClick={() => setNetwork("mainnet")} small variant="secondary">
           {t("Back to mainnet")}
         </Button>
       </FlexColumn>

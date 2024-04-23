@@ -14,6 +14,7 @@ interface Props extends QueryState {
   overNavbar?: boolean
   backButtonPath?: string
   hideCloseButton?: boolean
+  onClose?: () => void
 }
 
 const ExtensionPageV2 = (props: PropsWithChildren<Props>) => {
@@ -25,9 +26,15 @@ const ExtensionPageV2 = (props: PropsWithChildren<Props>) => {
     backButtonPath,
     hideCloseButton,
     children,
+    onClose,
   } = props
   const cx = classNames.bind(styles)
   const navigate = useNavigate()
+
+  const handleClose = () => {
+    if (onClose) onClose()
+    else navigate("/")
+  }
 
   return (
     <Container
@@ -69,13 +76,13 @@ const ExtensionPageV2 = (props: PropsWithChildren<Props>) => {
               <button
                 type="button"
                 className={styles.close}
-                onClick={() => navigate("/")}
+                onClick={handleClose}
               >
                 <CloseIcon
                   width={16}
                   height={16}
                   className={styles.close__icon}
-                  onClick={() => navigate("/")}
+                  onClick={handleClose}
                   stroke={"var(--token-light-100)"}
                 />
               </button>

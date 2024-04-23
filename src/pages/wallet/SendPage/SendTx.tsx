@@ -5,18 +5,21 @@ import Chain from "./Chain"
 import Token from "./Token"
 import Submit from "./Submit"
 import Confirm from "./Confirm"
-import SendContext from "./SendContext"
 import ExtensionPageV2 from "extension/components/ExtensionPageV2"
+import { useSend } from "./SendContext"
+import ConfirmLeaveModal from "components/form/ConfirmLeaveModal"
+import useConfirmLeave from "components/form/useConfirmLeave"
+import AddressBook from "./AddressBook"
 
 const SendTx = () => {
   const { pathname } = useLocation()
   const { t } = useTranslation()
+  const { form } = useSend()
+  const { confirmModal, setConfirmModal, onClose, handleConfirmLeave } =
+    useConfirmLeave(form.formState.isDirty)
 
   const getBackPath = (pathname: string) => {
-    const step = Number(pathname.split("/").pop())
-    if (step !== 1) {
-      return `/send/${step === 3 ? 1 : step - 1}` // skip chain step on back to avoid confusion
-    }
+    if (pathname === "/send/address-book") return "/send/1"
   }
 
   const routes = [
@@ -25,10 +28,17 @@ const SendTx = () => {
     { path: "/3", element: <Token />, title: "Send" },
     { path: "/4", element: <Submit />, title: "Send" },
     { path: "/5", element: <Confirm />, title: "Confirm Send" },
+    { path: "/address-book", element: <AddressBook />, title: "Address Book" },
   ]
 
   return (
-    <SendContext>
+    <>
+      <ConfirmLeaveModal
+        isOpen={confirmModal}
+        onRequestClose={() => setConfirmModal(false)}
+        onConfirm={handleConfirmLeave}
+      />
+
       <Routes>
         {routes.map((r) => (
           <Route
@@ -39,6 +49,7 @@ const SendTx = () => {
                 backButtonPath={getBackPath(pathname)}
                 title={t(r.title)}
                 fullHeight
+                onClose={onClose}
               >
                 {r.element}
               </ExtensionPageV2>
@@ -46,7 +57,7 @@ const SendTx = () => {
           />
         ))}
       </Routes>
-    </SendContext>
+    </>
   )
 }
 

@@ -2,13 +2,14 @@ import { ReactNode, useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { RawKey, SeedKey } from "@terra-money/feather.js"
 import createContext from "utils/createContext"
-import { addWallet } from "../../scripts/keystore"
+import { addWallet, updateWalletsCointype } from "../../scripts/keystore"
 import CreateWalletForm from "./CreateWalletForm"
 import CreatedWallet from "./CreatedWallet"
 import { wordsFromAddress } from "utils/bech32"
 import PasswordForm from "./PasswordForm"
 import { decrypt } from "auth/scripts/aes"
 import legacyDecrypt from "auth/scripts/decrypt"
+import { useAllCointypes } from "auth/hooks/useNetwork"
 
 export interface Values {
   name: string
@@ -46,6 +47,7 @@ const DefaultValues = { name: "", mnemonic: "", index: 0 }
 
 const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
   /* step */
+  const coinTypes = useAllCointypes()
   const location = useLocation()
   const navigate = useNavigate()
   const step = Number(location.hash.replace("#", "")) || 1
@@ -99,6 +101,8 @@ const CreateWalletWizard = ({ defaultMnemonic = "", beforeCreate }: Props) => {
           },
           password
         )
+        // add all other cointypes
+        updateWalletsCointype(coinTypes, password)
       } catch (e) {}
       setCreatedWallet({ name, words, pubkey })
     } else {

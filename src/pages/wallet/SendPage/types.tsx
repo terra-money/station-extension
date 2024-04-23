@@ -2,7 +2,7 @@ import { TokenSingleChainListItemProps } from "@terra-money/station-ui"
 import { AccAddress } from "@terra-money/feather.js"
 
 export interface AssetType extends TokenSingleChainListItemProps {
-  balVal: string
+  value: number
   balance: string
   decimals: number
   amount: string
@@ -18,9 +18,9 @@ export interface TxValues {
   asset?: string
   chain?: string
   destination?: string
-  recipient?: string // AccAddress | TNS
-  address?: AccAddress // hidden input
-  input?: number
+  recipient: string // AccAddress | TNS
+  address: AccAddress | undefined
+  input: number | undefined
   memo?: string
   decimals?: number
   assetInfo?: AssetType

@@ -1,7 +1,8 @@
 import is from "./is"
 import { decrypt, encrypt } from "./aes"
-import { addressFromWords } from "utils/bech32"
+import { addressFromWords, wordsFromAddress } from "utils/bech32"
 import browser from "webextension-polyfill"
+import { SeedKey } from "@terra-money/feather.js"
 
 enum LocalStorage {
   CONNECTED_WALLET_NAME = "connectedWallet",
@@ -309,7 +310,7 @@ export const addWallet = (params: AddWalletParams, password: string) => {
   const next = wallets.filter((wallet) =>
     "words" in wallet
       ? wallet.words["330"] !== params.words["330"]
-      : wallet.address !== addressFromWords(params.words["330"])
+      : wordsFromAddress(wallet.address) !== params.words["330"]
   )
 
   if (!passwordExists()) storePasswordChallenge(password)
@@ -333,6 +334,7 @@ export const addWallet = (params: AddWalletParams, password: string) => {
           encryptedMnemonic,
         },
       ])
+      // ADD NEWER COINTYPES
     } else {
       const { name, words, key, pubkey } = params
       const encrypted = { "330": encrypt(key["330"].toString("hex"), password) }
@@ -354,6 +356,49 @@ export const addLedgerWallet = (params: LedgerWallet) => {
   )
 
   storeWallets([...next, params])
+}
+
+export const updateWalletsCointype = (
+  coinTypes: string[],
+  password: string
+) => {
+  const wallets = getStoredWallets()
+  const next = wallets.map((wallet) => {
+    if ("encryptedSeed" in wallet) {
+      const missingCointypes = coinTypes.filter((ct) => !wallet.words[ct])
+      if (missingCointypes.length) {
+        const newWords: [string, string][] = []
+        const newPubkeys: [string, string][] = []
+        missingCointypes.forEach((ct) => {
+          const key = new SeedKey({
+            seed: Buffer.from(decrypt(wallet.encryptedSeed, password), "hex"),
+            coinType: Number(ct),
+            index: wallet.index,
+          })
+
+          newWords.push([ct, wordsFromAddress(key.accAddress("terra"))])
+          // @ts-expect-error
+          newPubkeys.push([ct, key.publicKey.key])
+        })
+        return {
+          ...wallet,
+          words: {
+            ...Object.fromEntries(newWords),
+            ...wallet.words,
+          },
+          pubkeys: {
+            ...Object.fromEntries(newPubkeys),
+            ...wallet.words,
+          },
+        }
+      } else {
+        return wallet
+      }
+    } else {
+      return wallet
+    }
+  })
+  storeWallets(next)
 }
 
 export const addMultisigWallet = (params: MultisigWallet) => {

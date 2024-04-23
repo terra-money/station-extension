@@ -14,6 +14,7 @@ import { isBytes, isSign } from "./utils"
 import { parseBytes, parseDefault, useParseTx, toData } from "./utils"
 import { useChainID, useNetwork } from "data/wallet"
 import { Fee } from "@terra-money/feather.js"
+import Overlay from "app/components/Overlay"
 
 interface RequestContext {
   requests: {
@@ -50,11 +51,13 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
   const [chain, setChain] = useState<SuggestChainRequest>()
   const [tx, setTx] = useState<TxRequest | SignBytesRequest>()
   const [network, setNetwork] = useState<SwitchNetworkRequest>()
+  const [isLoading, setLoading] = useState(!!browser.storage?.local)
   const parseTx = useParseTx()
   const networks = useNetwork()
   const defaultChainID = useChainID()
 
   useEffect(() => {
+    setLoading(!!browser.storage?.local)
     // Requests from storage
     // except for that is already success or failure
     browser.storage?.local
@@ -110,7 +113,10 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
             requestType: "signBytes",
           })
         }
+        setLoading(false)
       })
+
+    return () => setLoading(false)
   }, [parseTx])
 
   /* connect */
@@ -237,7 +243,17 @@ const RequestContainer = ({ children }: PropsWithChildren<{}>) => {
   }
 
   return (
-    <RequestProvider value={{ requests, actions }}>{children}</RequestProvider>
+    <RequestProvider value={{ requests, actions }}>
+      {isLoading ? (
+        <Overlay>
+          {
+            // render an empty overlay to hide the portfolio page
+          }
+        </Overlay>
+      ) : (
+        children
+      )}
+    </RequestProvider>
   )
 }
 

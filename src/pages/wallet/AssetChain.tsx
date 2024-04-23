@@ -1,9 +1,9 @@
-import { Read } from "components/token"
-import { useNetwork, useNetworkName } from "data/wallet"
-import styles from "./AssetChain.module.scss"
-import { useNetworks } from "app/InitNetworks"
 import { TokenSingleChainListItem } from "@terra-money/station-ui"
+import { useNetwork, useNetworkName } from "data/wallet"
+import { useNetworks } from "app/InitNetworks"
+import styles from "./AssetChain.module.scss"
 import { useNativeDenoms } from "data/token"
+import { Read } from "components/token"
 
 export interface Props {
   chain: string
@@ -15,11 +15,21 @@ export interface Props {
   ibcDenom?: string
   sendBack?: boolean
   price?: number
+  sign?: string
 }
 
 const AssetChain = (props: Props) => {
-  const { chain, symbol, balance, decimals, path, denom, sendBack, price } =
-    props
+  const {
+    chain,
+    symbol,
+    balance,
+    decimals,
+    path,
+    denom,
+    sendBack,
+    price,
+    sign,
+  } = props
   const networkName = useNetworkName()
   const allNetworks = useNetworks().networks[networkName]
   const networks = useNetwork()
@@ -33,6 +43,14 @@ const AssetChain = (props: Props) => {
     !!path?.find((chain) => !networks[chain]) ||
     (symbol === "LUNC" && networkName !== "classic")
 
+  const signStyle =
+    sign === "-"
+      ? { color: "var(--token-error-500)" }
+      : { color: "var(--token-success-500)" }
+  const amount = (
+    <Read {...props} amount={balance} token="" fixed={2} decimals={decimals} />
+  )
+
   return (
     <article className={styles.chain}>
       <section className={styles.details}>
@@ -43,6 +61,7 @@ const AssetChain = (props: Props) => {
           chain={{ icon, label: name }}
           priceNode={
             <>
+              {sign && price ? sign : null}
               {price ? (
                 <Read
                   {...props}
@@ -59,13 +78,14 @@ const AssetChain = (props: Props) => {
             </>
           }
           amountNode={
-            <Read
-              {...props}
-              amount={balance}
-              token=""
-              fixed={2}
-              decimals={decimals}
-            />
+            sign ? (
+              <span style={signStyle}>
+                {sign}
+                {amount}
+              </span>
+            ) : (
+              amount
+            )
           }
         />
       </section>

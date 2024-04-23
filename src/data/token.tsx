@@ -261,19 +261,8 @@ export const readIBCDenom = (item: IBCTokenItem): TokenItem => {
 }
 
 export const usePortfolioValue = () => {
-  const readNativeDenom = useNativeDenoms()
-  const coins = useBankBalance()
-  const { data: prices } = useExchangeRates()
-
-  return coins?.reduce((acc, { amount, denom }) => {
-    const { token, decimals, symbol } = readNativeDenom(denom)
-    return (
-      acc +
-      (parseInt(amount) *
-        (symbol?.endsWith("...") ? 0 : prices?.[token]?.price ?? 0)) /
-        10 ** decimals
-    )
-  }, 0)
+  const assets = useParsedAssetList()
+  return assets.reduce((acc, { totalValue }) => acc + totalValue, 0)
 }
 
 interface IBCDenom {
@@ -321,17 +310,19 @@ interface ChainTokenItem {
   chainID: string
   chainName: string
   chainIcon: string
+  tokenIcon?: string
+  supported?: boolean
+  tokenPrice: number
 }
 
 export interface AssetItem {
-  //balance: string
   denom: string
   decimals: number
   totalBalance: string
   icon?: string
   symbol: string
-  price: number
   change: number
+  price: number
   tokenChainInfo: ChainTokenItem[]
   nativeChain: string
   id: string
@@ -355,9 +346,7 @@ export const useParsedAssetList = () => {
             ibcDenomData?.baseDenom ?? denom,
             ibcDenomData?.chainID ?? chain
           )
-
         const nativeChain = chainID ?? ibcDenomData?.chainID ?? chain
-
         const tokenID = `${nativeChain}*${token}`
 
         let tokenIcon, tokenPrice, tokenChange, tokenWhitelisted
@@ -372,7 +361,8 @@ export const useParsedAssetList = () => {
           tokenChange = prices?.[token]?.change ?? 0
           tokenWhitelisted = !(
             isNonWhitelisted ||
-            ibcDenomData?.chainIDs.find((c: any) => !networks[c])
+            (ibcDenomData?.chainIDs &&
+              ibcDenomData.chainIDs.some((c: string) => !networks[c]))
           )
         }
 
@@ -384,7 +374,8 @@ export const useParsedAssetList = () => {
           : ibcDenomData?.baseDenom === token
 
         const { name: chainName, icon: chainIcon } = networks[chain] || {}
-        const chainTokenItem = {
+
+        const chainTokenItem: ChainTokenItem = {
           denom,
           id: `${token}*${nativeChain}*${chain}`,
           decimals,
@@ -398,20 +389,15 @@ export const useParsedAssetList = () => {
         }
 
         if (acc[tokenID]) {
-          if (chainTokenItem.supported) {
-            acc[tokenID].totalBalance = `${
-              parseInt(acc[tokenID].totalBalance) + parseInt(amount)
-            }`
-            acc[tokenID].totalValue = acc[tokenID].totalValue +=
-              toInput(amount, decimals) * tokenPrice
-          }
+          acc[tokenID].totalBalance = `${
+            parseInt(acc[tokenID].totalBalance) + parseInt(amount)
+          }`
+          acc[tokenID].totalValue += toInput(amount, decimals) * tokenPrice
           acc[tokenID].tokenChainInfo.push(chainTokenItem)
           return acc
         } else {
-          const totalBalance = supported ? amount : "0"
-          const totalValue = supported
-            ? tokenPrice * toInput(amount, decimals)
-            : 0
+          const totalBalance = amount
+          const totalValue = tokenPrice * toInput(amount, decimals)
 
           const result: Record<string, AssetItem> = {
             ...acc,
@@ -426,7 +412,7 @@ export const useParsedAssetList = () => {
               price: tokenPrice,
               change: tokenChange,
               tokenChainInfo: [chainTokenItem],
-              nativeChain: nativeChain,
+              nativeChain,
               whitelisted: tokenWhitelisted,
             },
           }
@@ -436,5 +422,6 @@ export const useParsedAssetList = () => {
       }, {} as Record<string, AssetItem>) ?? {}
     )
   }, [coins, readNativeDenom, unknownIBCDenoms, prices, networks])
+
   return Object.values(list)
 }

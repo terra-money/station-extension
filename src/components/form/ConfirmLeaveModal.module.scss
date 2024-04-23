@@ -1,0 +1,9 @@
+@import "font_mixins";
+
+.text__content {
+  @include X-SmallLH;
+  color: var(--token-light-100, #8b8e9c);
+  max-width: 280px;
+  margin: 0 auto 8px;
+  text-align: center;
+}

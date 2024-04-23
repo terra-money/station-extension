@@ -1,6 +1,5 @@
 import { AccAddress } from "@terra-money/feather.js"
 import { ChainID } from "types/network"
-import { bech32 } from "bech32"
 
 export const isTerraChain = (chainID: ChainID) => {
   return chainID?.startsWith("phoenix-") || chainID?.startsWith("pisco-")
@@ -29,14 +28,4 @@ export const sortTokens = (list: any[]) => {
       return a.symbol?.localeCompare(b.symbol)
     }
   })
-}
-
-export const convertAddress = (address: AccAddress, newPrefix: string) => {
-  let decodedAddress
-  try {
-    decodedAddress = bech32.decode(address)
-  } catch (error) {
-    throw new Error("Provided address is not a valid Bech32 address.")
-  }
-  return bech32.encode(newPrefix, decodedAddress.words)
 }

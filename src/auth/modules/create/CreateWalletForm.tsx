@@ -21,6 +21,9 @@ import {
 import styles from "./CreateWalletForm.module.scss"
 import { decrypt } from "auth/scripts/aes"
 import legacyDecrypt from "auth/scripts/decrypt"
+import { RawKey, SeedKey } from "@terra-money/feather.js"
+import { getStoredWallets } from "auth/scripts/keystore"
+import { wordsFromAddress } from "utils/bech32"
 
 interface Values extends DefaultValues {
   confirm: string
@@ -65,6 +68,14 @@ const CreateWalletForm = () => {
     return () => reset()
   }, [reset])
 
+  const walletAlreadyExists = (words: string) => {
+    return !!getStoredWallets().filter((wallet) =>
+      "words" in wallet
+        ? wallet.words["330"] === words
+        : wordsFromAddress(wallet.address) === words
+    ).length
+  }
+
   const submit = ({ name, mnemonic, index, seedPassword }: Values) => {
     if (importOption === ImportOptions.SEED_KEY) {
       if (!seedPassword || !validateSeedPassword(mnemonic, seedPassword)) {
@@ -76,6 +87,23 @@ const CreateWalletForm = () => {
         Buffer.from(mnemonic, "base64").toString("ascii")
       )
 
+      const key = !seed
+        ? new RawKey(
+            Buffer.from(legacyDecrypt(encrypted_key, seedPassword), "hex")
+          )
+        : new SeedKey({
+            seed: Buffer.from(decrypt(seed, seedPassword), "base64"),
+            coinType: legacy ? 118 : 330,
+            index,
+          })
+
+      if (walletAlreadyExists(wordsFromAddress(key.accAddress("terra")))) {
+        setError("mnemonic", {
+          message: "A wallet with this address already exists",
+        })
+        return
+      }
+
       setValues({
         name,
         mnemonic: seed || encrypted_key,
@@ -86,6 +114,16 @@ const CreateWalletForm = () => {
       })
       setStep(2)
     } else {
+      const seed = SeedKey.seedFromMnemonic(mnemonic.trim())
+      const key = new SeedKey({ seed, index })
+
+      if (walletAlreadyExists(wordsFromAddress(key.accAddress("terra")))) {
+        setError("mnemonic", {
+          message: "A wallet with this address already exists",
+        })
+        return
+      }
+
       setValues({ name, mnemonic: mnemonic.trim(), index })
       setStep(2)
     }

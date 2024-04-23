@@ -4,11 +4,11 @@ import { useInfiniteQuery } from "react-query"
 import axios from "axios"
 import { queryKey } from "data/query"
 import { useNetwork } from "data/wallet"
-import { Button } from "components/general"
 import { Card, Col, Page } from "components/layout"
 import { Empty } from "components/feedback"
 import HistoryItem from "./HistoryItem"
 import { useInterchainAddresses } from "auth/hooks/useAddress"
+import { Button } from "@terra-money/station-ui"
 
 interface Props {
   chainID: string
@@ -81,6 +81,7 @@ const HistoryList = ({ chainID }: Props) => {
         ))}
 
         <Button
+          variant="primary"
           onClick={() => fetchNextPage()}
           disabled={!hasNextPage || isFetchingNextPage}
           loading={isFetchingNextPage}
